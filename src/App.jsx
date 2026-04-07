@@ -23,8 +23,7 @@ const STYLE_CATS = new Set(STYLE_PRIORITY);
 const SPIRIT_CATS = new Set(["Gim","Rum","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Aguardente Velha","Campari","Aperol","Cynar","Amaretto","St‑Germain","Licor Beirão","Luxardo Maraschino","Contreau","Espumante","Vermute Branco","Vermute Tinto","Vermute seco","Jack Apple","Ginger Beer","Ginger Bug","Cachaça"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 
-// ⚠️  Cole sua chave da API Anthropic aqui (apenas para uso local/dev)
-const ANTHROPIC_API_KEY = "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";
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
 
 const FAMILY_GROUPS = [
   { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Smash","Hot","Não alcóolicos"] },
