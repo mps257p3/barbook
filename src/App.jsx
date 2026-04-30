@@ -1266,6 +1266,7 @@ export default function OnTheRocks(){
   const [showForm,setShowForm]=useState(false);
   const [sort,setSort]=useState("nome");
   const [filterMode,setFilterMode]=useState("tudo");
+  const [filterAnd,setFilterAnd]=useState(false);
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState("descobrir");
   const [filterSheet,setFilterSheet]=useState(null);
@@ -1547,19 +1548,29 @@ export default function OnTheRocks(){
               </div>
               {/* receitas possíveis inline */}
               {owned.length>0&&(()=>{
-                const possiveis=allRecipes.filter(r=>hasAllIngredients(r));
+                const possiveis=filterAnd&&owned.length>1
+                  ?allRecipes.filter(r=>owned.every(s=>r.categories.includes(s)))
+                  :allRecipes.filter(r=>hasAllIngredients(r));
                 if(!possiveis.length)return null;
                 return(
                   <div style={{marginTop:28}}>
-                    <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:14}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:owned.length>1?10:14}}>
                       <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontWeight:700}}>
                         Você pode fazer · <span style={{color:"#C8A96E"}}>{possiveis.length}</span>
                       </div>
-                      <button onClick={()=>{setFilterMode("tenho");setMobileTab("explorar");}}
+                      <button onClick={()=>{if(filterAnd&&owned.length>1){setActiveSpirits(owned);setFilterMode("tudo");}else{setFilterMode("tenho");}setMobileTab("explorar");}}
                         style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>
                         ver todos →
                       </button>
                     </div>
+                    {owned.length>1&&(
+                      <button onClick={()=>setFilterAnd(p=>!p)} style={{display:"flex",alignItems:"center",gap:7,marginBottom:14,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"Archivo,sans-serif"}}>
+                        <div style={{width:28,height:16,borderRadius:8,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                          <div style={{position:"absolute",top:2,left:filterAnd?12:2,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
+                        </div>
+                        <span style={{fontSize:10,letterSpacing:1,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"color .2s"}}>no mesmo drink</span>
+                      </button>
+                    )}
                     <div style={{display:"flex",flexDirection:"column",gap:6}}>
                       {possiveis.slice(0,8).map(r=>{
                         const th=getTheme(r.categories);
@@ -1579,7 +1590,7 @@ export default function OnTheRocks(){
                         );
                       })}
                       {possiveis.length>8&&(
-                        <button onClick={()=>{setFilterMode("tenho");setMobileTab("explorar");}}
+                        <button onClick={()=>{if(filterAnd&&owned.length>1){setActiveSpirits(owned);setFilterMode("tudo");}else{setFilterMode("tenho");}setMobileTab("explorar");}}
                           style={{padding:"10px",borderRadius:8,background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.3)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:1}}>
                           +{possiveis.length-8} receitas
                         </button>
