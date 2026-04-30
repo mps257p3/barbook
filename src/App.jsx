@@ -1255,6 +1255,16 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
 
+  useEffect(()=>{
+    if(!("wakeLock" in navigator))return;
+    let lock=null;
+    const request=async()=>{try{lock=await navigator.wakeLock.request("screen");}catch{}};
+    const onVisible=()=>{if(document.visibilityState==="visible")request();};
+    request();
+    document.addEventListener("visibilitychange",onVisible);
+    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
+  },[]);
+
   const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r),...customRecipes],[customRecipes,overrides]);
 
   const [activeStyle,setActiveStyle]=useState(null);
@@ -1421,10 +1431,10 @@ export default function OnTheRocks(){
   const sidebarProps={sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab};
 
   return(
-    <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1"}}>
+    <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1",overflowX:"hidden"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Archivo:wght@300;400;500;600;700&display=swap');
-        html,body{overflow-x:hidden;max-width:100vw;background:#070707}
+        html,body{background:#070707}
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(240,235,225,0.08);border-radius:2px}
         input,button,textarea{font-family:Archivo,sans-serif;outline:none;cursor:pointer}textarea{cursor:text}
