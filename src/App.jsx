@@ -1575,7 +1575,7 @@ export default function OnTheRocks(){
                     <button onClick={()=>setComanda([])} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>limpar</button>
                   )}
                 </div>
-                <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Os drinks que você quer pedir no próximo encontro.</div>
+                <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Os drinks que você quer pedir na próxima noite.</div>
               </div>
               {comanda.length===0?(
                 <div style={{textAlign:"center",padding:"80px 0",color:"rgba(240,235,225,0.3)"}}>
