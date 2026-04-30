@@ -1296,20 +1296,23 @@ export default function OnTheRocks(){
   const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo");
 
   // ── Back button — navega dentro do app ──
+  const backRef=useRef({});
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
     push();
     const onPop=()=>{
-      if(open){setOpen(null);push();return;}
-      if(showForm||editing){setShowForm(false);setEditing(null);push();return;}
-      if(mobileTab!=="descobrir"){setMobileTab("descobrir");push();return;}
-      if(activeStyle||activeSpirits.length||search||filterMode!=="tudo"){
+      const s=backRef.current;
+      if(s.open){setOpen(null);push();return;}
+      if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
+      if(s.mobileTab!=="descobrir"){setMobileTab("descobrir");push();return;}
+      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"){
         setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");push();return;
       }
     };
     window.addEventListener("popstate",onPop);
     return()=>window.removeEventListener("popstate",onPop);
-  },[open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode]);
+  },[]);
 
   const hasAllIngredients=useCallback(recipe=>{
     const spirits=recipe.categories.filter(c=>SPIRIT_CATS.has(c)||customSpirits.includes(c));
