@@ -1008,7 +1008,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                 borderRadius:50,width:52,height:52,fontSize:22,
                 filter:isComanda?"drop-shadow(0 0 8px rgba(200,169,110,0.6))":"none",
                 transition:"all .15s"}}>{isComanda?"◫":"◻"}</div>
-              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>adicionar à conta</span>
+              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>adicionar à comanda</span>
             </button>
           </div>
         </div>
