@@ -1423,6 +1423,7 @@ export default function OnTheRocks(){
     <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Archivo:wght@300;400;500;600;700&display=swap');
+        html,body{overflow-x:hidden;max-width:100vw;background:#070707}
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(240,235,225,0.08);border-radius:2px}
         input,button,textarea{font-family:Archivo,sans-serif;outline:none;cursor:pointer}textarea{cursor:text}
