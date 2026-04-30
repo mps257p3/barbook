@@ -985,22 +985,30 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           {/* rodapé — tried e comanda centralizados */}
           <div style={{padding:"14px 40px 20px",display:"flex",alignItems:"center",justifyContent:"center",gap:40,borderTop:`1px solid ${theme.border}22`}}>
             <button onClick={e=>{e.stopPropagation();onTried();}}
-              style={{display:"flex",alignItems:"center",justifyContent:"center",
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+                background:"none",border:"none",cursor:"pointer",
+                color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",
+                transition:"all .15s"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                 background:isTried?"rgba(74,222,128,0.09)":"none",
                 border:`1px solid ${isTried?"rgba(74,222,128,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:52,height:52,cursor:"pointer",
-                color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",
-                fontSize:20,transition:"all .15s",
-                filter:isTried?"drop-shadow(0 0 6px rgba(74,222,128,0.4))":"none"}}>✓</button>
+                borderRadius:50,width:52,height:52,fontSize:20,
+                filter:isTried?"drop-shadow(0 0 6px rgba(74,222,128,0.4))":"none",
+                transition:"all .15s"}}>✓</div>
+              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>já provei</span>
+            </button>
             <button onClick={e=>{e.stopPropagation();onComanda();}}
-              style={{display:"flex",alignItems:"center",justifyContent:"center",
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+                background:"none",border:"none",cursor:"pointer",
+                color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",
+                transition:"all .15s"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                 background:isComanda?"rgba(200,169,110,0.12)":"none",
                 border:`1px solid ${isComanda?"rgba(200,169,110,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:52,height:52,cursor:"pointer",
-                color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",
-                fontSize:22,transition:"all .15s",
-                filter:isComanda?"drop-shadow(0 0 8px rgba(200,169,110,0.6))":"none"}}>
-              {isComanda?"◫":"◻"}
+                borderRadius:50,width:52,height:52,fontSize:22,
+                filter:isComanda?"drop-shadow(0 0 8px rgba(200,169,110,0.6))":"none",
+                transition:"all .15s"}}>{isComanda?"◫":"◻"}</div>
+              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>adicionar à conta</span>
             </button>
           </div>
         </div>
