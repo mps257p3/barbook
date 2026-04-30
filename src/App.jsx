@@ -1484,12 +1484,12 @@ export default function OnTheRocks(){
         <main className="app-main" style={{padding:"18px 22px 24px"}}>
           {/* mobile: tabs de conteúdo */}
           {mobileTab==="descobrir"&&!swipeRecipe ? (
-            <div style={{height:"calc(var(--vh,1vh)*100 - 135px)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,opacity:.45}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,opacity:.45}}>
               <span style={{fontSize:28}}>🥃</span>
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{height:"calc(var(--vh,1vh)*100 - 135px)",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background .6s ease"}}/>
