@@ -1527,6 +1527,14 @@ export default function OnTheRocks(){
                   )}
                 </div>
                 <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Marque o que você tem em casa e descubra o que pode fazer.</div>
+                {owned.length>1&&(
+                  <button onClick={()=>setFilterAnd(p=>!p)} style={{display:"flex",alignItems:"center",gap:8,marginTop:12,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"Archivo,sans-serif"}}>
+                    <div style={{width:32,height:18,borderRadius:9,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                      <div style={{position:"absolute",top:3,left:filterAnd?14:3,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
+                    </div>
+                    <span style={{fontSize:11,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.35)",transition:"color .2s",letterSpacing:.3}}>no mesmo drink</span>
+                  </button>
+                )}
               </div>
               {/* spirits em grid */}
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
@@ -1576,14 +1584,6 @@ export default function OnTheRocks(){
                         ver todos →
                       </button>
                     </div>
-                    {owned.length>1&&(
-                      <button onClick={()=>setFilterAnd(p=>!p)} style={{display:"flex",alignItems:"center",gap:7,marginBottom:14,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"Archivo,sans-serif"}}>
-                        <div style={{width:28,height:16,borderRadius:8,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
-                          <div style={{position:"absolute",top:2,left:filterAnd?12:2,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
-                        </div>
-                        <span style={{fontSize:10,letterSpacing:1,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"color .2s"}}>no mesmo drink</span>
-                      </button>
-                    )}
                     <div style={{display:"flex",flexDirection:"column",gap:6}}>
                       {possiveis.slice(0,8).map(r=>{
                         const th=getTheme(r.categories);
