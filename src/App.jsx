@@ -20,16 +20,17 @@ const TYPE_THEME = {
   "Smash":          { bg:"#001A0A", border:"#065F46", accent:"#10B981", label:"#6EE7B7" },
   "Sling":          { bg:"#1A0010", border:"#9D174D", accent:"#EC4899", label:"#F9A8D4" },
   "Hot":            { bg:"#1A0A00", border:"#DC2626", accent:"#F87171", label:"#FCA5A5" },
+  "Beer Highballs":    { bg:"#0F0800", border:"#A16207", accent:"#CA8A04", label:"#FEF08A" },
   "Preparos Caseiros": { bg:"#080E02", border:"#3D6B10", accent:"#74A828", label:"#AEDD72" },
   "_default":       { bg:"#151008", border:"#78614A", accent:"#C8A96E", label:"#E5C99E" },
 };
 
-const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Não alcóolicos","Buck","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
+const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Não alcóolicos","Buck","Beer Highballs","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
 const SPIRIT_CATS = new Set(["Gim","Rum","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Amaretto","St‑Germain","Licor Beirão","Luxardo Maraschino","Cointreau","Espumante","Vermute Branco","Vermute Tinto","Vermute seco","Ginger Beer","Cachaça","Fernet-Branca","Licor Strega","Jerez","Porto Tinto","Porto Branco","Lillet","Vinho"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 const FAMILY_GROUPS = [
-  { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Smash","Hot","Não alcóolicos"] },
+  { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Beer Highballs","Smash","Hot","Não alcóolicos"] },
   { label:"Preparos", items:["Preparos Caseiros"] },
 ];
 const TECHNIQUES = ["Stirred","Shaken","Built"];
@@ -37,7 +38,7 @@ const TECHNIQUES = ["Stirred","Shaken","Built"];
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
 const FAMILY_GLASS = {
   "Sour":"coupe","Cocktail":"coupe","Shaken":"coupe",
-  "Highball":"highball","Buck":"highball","Não alcóolicos":"highball",
+  "Highball":"highball","Buck":"highball","Beer Highballs":"highball","Não alcóolicos":"highball",
   "Collins":"collins","Fizz":"collins","Sling":"collins",
   "Stirred":"rocks","Built":"rocks","Smash":"rocks",
   "Spritz":"wine","Hot":"irish","_default":"rocks",
