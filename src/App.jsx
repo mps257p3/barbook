@@ -476,11 +476,12 @@ function RecipeForm({ initial, onSave, onClose }) {
       const base64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.onerror = rej; r.readAsDataURL(file); });
       const response = await fetch("/api/anthropic", {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1000, system:`Você é um bartender que lê receitas de drinks em imagens. Extraia as informações e retorne APENAS um JSON com as chaves: "name" (string), "ingredients" (array de strings), "steps" (array de strings), "notes" (string), "servings" (string). Sem texto fora do JSON.`, messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}},{type:"text",text:"Extraia a receita desta imagem e retorne o JSON."}]}] }),
+        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink da imagem e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30ml, 1/2 oz = 15ml, 3/4 oz = 22ml, 1/4 oz = 7ml, 2 oz = 60ml)\n- "steps": array de strings em português, descrevendo o preparo\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}},{type:"text",text:"Extraia a receita desta imagem e retorne o JSON."}]}] }),
       });
       const data = await response.json();
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
-      setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings }));
+      const newCats=[...new Set([...(parsed.styles||[]),...(parsed.spirits||[])])];
+      setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
     } catch (e) { setScanErr("Erro: " + (e?.message || "Não consegui ler a receita.")); }
     setScanning(false);
   }, []);
@@ -1006,7 +1007,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
     return()=>cancelAnimationFrame(id);
   },[]);
 
-  const THRESH=65;
+  const THRESH=38;
 
   const onPointerDown=e=>{startX.current=e.clientX;setDragging(true);cardRef.current?.setPointerCapture(e.pointerId);};
   const onPointerMove=e=>{if(!dragging)return;setDrag(e.clientX-startX.current);};
@@ -1533,10 +1534,11 @@ export default function OnTheRocks(){
 
   const pickDifferentFamily=useCallback((currentRecipe)=>{
     const currentFamily=currentRecipe?.categories.find(c=>STYLE_CATS.has(c));
-    const pool=drinkRecipes.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
-    const src=pool.length?pool:drinkRecipes;
+    const pool=drinkRecipes.filter(r=>r.name!==currentRecipe?.name&&r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
+    const src=pool.length?pool:drinkRecipes.filter(r=>r.name!==currentRecipe?.name);
+    if(!src.length)return currentRecipe;
     return src[Math.floor(Math.random()*src.length)];
-  },[allRecipes]);
+  },[drinkRecipes]);
 
   const nextSwipeRecipe=useCallback(()=>{
     if(swipeFiltered){
