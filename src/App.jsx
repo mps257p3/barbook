@@ -478,10 +478,14 @@ function RecipeForm({ initial, onSave, onClose }) {
         body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink da imagem e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30ml, 1/2 oz = 15ml, 3/4 oz = 22ml, 1/4 oz = 7ml, 2 oz = 60ml)\n- "steps": array de strings em português, descrevendo o preparo\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}},{type:"text",text:"Extraia a receita desta imagem e retorne o JSON."}]}] }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 429) throw new Error("Limite de uso atingido. Tente novamente mais tarde.");
+        throw new Error("Serviço indisponível no momento. Tente novamente em breve.");
+      }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       const newCats=[...new Set([...(parsed.styles||[]),...(parsed.spirits||[])])];
       setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
-    } catch (e) { setScanErr("Erro: " + (e?.message || "Não consegui ler a receita.")); }
+    } catch (e) { setScanErr(e?.message || "Não foi possível ler a receita. Tente novamente."); }
     setScanning(false);
   }, []);
 
@@ -494,9 +498,13 @@ function RecipeForm({ initial, onSave, onClose }) {
         body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:400, system:`Você é um bartender especialista. Analise o drink e retorne APENAS um JSON com "styles" e "spirits".\nEstilos: ${STYLE_PRIORITY.join(", ")}\nSpirits: ${[...SPIRIT_CATS].join(", ")}\nExemplo: {"styles":["Sour","Shaken"],"spirits":["Gim"]}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        if (res.status === 429) throw new Error("Limite de uso atingido.");
+        throw new Error("Serviço indisponível.");
+      }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       setField("categories", [...new Set([...form.categories,...(parsed.styles||[]),...(parsed.spirits||[])])]);
-    } catch { setSuggErr("Erro ao sugerir."); }
+    } catch (e) { setSuggErr(e?.message || "Erro ao sugerir."); }
     setSuggesting(false);
   }, [form.name, form.ingredients]);
 
