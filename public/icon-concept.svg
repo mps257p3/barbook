@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="#0A0906"/>
+
+  <defs>
+    <!-- Liquid gradient: amber, warm, light on upper-left -->
+    <radialGradient id="liq" cx="58%" cy="28%" r="68%">
+      <stop offset="0%"   stop-color="#D4832A"/>
+      <stop offset="55%"  stop-color="#9B4E15"/>
+      <stop offset="100%" stop-color="#5E2A06"/>
+    </radialGradient>
+    <!-- Highlight sheen on liquid surface -->
+    <radialGradient id="sheen" cx="30%" cy="25%" r="55%">
+      <stop offset="0%"   stop-color="#EAB96A" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#EAB96A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ── LIQUID FILL ──
+       Inner glass: left x=162, right x=350, radius=94
+       Liquid level: y=190 → fills bowl down through arc bottom at y=379 -->
+  <path d="M162,190 L162,285 A94,94 0 0 1 350,285 L350,190 Z" fill="url(#liq)"/>
+
+  <!-- Sheen / highlight on liquid -->
+  <ellipse cx="208" cy="216" rx="62" ry="32" fill="url(#sheen)"/>
+
+  <!-- ── GLASS OUTLINE (U-shape, top view) ──
+       Outer: left x=136, right x=376, radius=120
+       Vertical sides from y=62 down to y=285, then arc to bottom -->
+  <path d="M136,62 L136,285 A120,120 0 0 1 376,285 L376,62"
+        fill="none" stroke="#C8A96E" stroke-width="22" stroke-linecap="square"/>
+
+  <!-- Subtle inner rim line -->
+  <path d="M158,62 L158,285 A98,98 0 0 1 354,285 L354,62"
+        fill="none" stroke="#C8A96E" stroke-width="1.5" stroke-opacity="0.22"/>
+
+  <!-- ── ICE CUBE 1 — upper right, tilted −18° ── -->
+  <g transform="rotate(-18,296,216)">
+    <!-- outer face -->
+    <rect x="267" y="187" width="58" height="58" rx="5"
+          fill="#110D09" stroke="#C8A96E" stroke-width="5.5"/>
+    <!-- inner detail square -->
+    <rect x="278" y="198" width="36" height="36" rx="3"
+          fill="none" stroke="#C8A96E" stroke-width="3" stroke-opacity="0.55"/>
+  </g>
+
+  <!-- ── ICE CUBE 2 — lower center-left, tilted +10° ── -->
+  <g transform="rotate(10,216,294)">
+    <!-- outer face -->
+    <rect x="191" y="269" width="50" height="50" rx="4"
+          fill="#110D09" stroke="#C8A96E" stroke-width="5"/>
+    <!-- inner detail square -->
+    <rect x="201" y="279" width="30" height="30" rx="2"
+          fill="none" stroke="#C8A96E" stroke-width="2.5" stroke-opacity="0.55"/>
+  </g>
+
+  <!-- ── ROCKS TEXT ── -->
+  <text x="256" y="464"
+        text-anchor="middle"
+        font-family="Arial,sans-serif"
+        font-size="40" font-weight="900"
+        letter-spacing="12"
+        fill="#C8A96E" opacity="0.88">ROCKS</text>
+
+</svg>
