@@ -28,7 +28,6 @@ const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","
 const STYLE_CATS = new Set(STYLE_PRIORITY);
 const SPIRIT_CATS = new Set(["Gim","Rum","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Amaretto","St‑Germain","Licor Beirão","Luxardo Maraschino","Cointreau","Espumante","Vermute Branco","Vermute Tinto","Vermute seco","Ginger Beer","Cachaça","Fernet-Branca","Licor Strega","Jerez","Porto Tinto","Porto Branco","Lillet","Vinho"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
-const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
 const FAMILY_GROUPS = [
   { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Smash","Hot","Não alcóolicos"] },
   { label:"Preparos", items:["Preparos Caseiros"] },
