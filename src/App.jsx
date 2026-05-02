@@ -20,15 +20,19 @@ const TYPE_THEME = {
   "Smash":          { bg:"#001A0A", border:"#065F46", accent:"#10B981", label:"#6EE7B7" },
   "Sling":          { bg:"#1A0010", border:"#9D174D", accent:"#EC4899", label:"#F9A8D4" },
   "Hot":            { bg:"#1A0A00", border:"#DC2626", accent:"#F87171", label:"#FCA5A5" },
+  "Preparos Caseiros": { bg:"#080E02", border:"#3D6B10", accent:"#74A828", label:"#AEDD72" },
   "_default":       { bg:"#151008", border:"#78614A", accent:"#C8A96E", label:"#E5C99E" },
 };
 
-const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Não alcóolicos","Buck","Smash","Sling","Hot","Stirred","Shaken","Built"];
+const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Não alcóolicos","Buck","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
 const SPIRIT_CATS = new Set(["Gim","Rum","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Amaretto","St‑Germain","Licor Beirão","Luxardo Maraschino","Cointreau","Espumante","Vermute Branco","Vermute Tinto","Vermute seco","Ginger Beer","Cachaça","Fernet-Branca","Licor Strega","Jerez","Porto Tinto","Porto Branco","Lillet","Vinho"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
-const FAMILY_GROUPS = [{ label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Smash","Hot","Não alcóolicos"] }];
+const FAMILY_GROUPS = [
+  { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Sling","Buck","Smash","Hot","Não alcóolicos"] },
+  { label:"Preparos", items:["Preparos Caseiros"] },
+];
 const TECHNIQUES = ["Stirred","Shaken","Built"];
 
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
@@ -130,14 +134,14 @@ const BASE_RECIPES = [
   {name:"Dry Martini",categories:["Gim","Vermute seco","Stirred"],ingredients:["2½ partes Gim","½ parte Vermute seco","1 dash licor amargo de laranja","casca de limão"],steps:["Encher copo misturador com gelo.","Adicionar ingredientes e mexer.","Coar em taça gelada. Decorar com limão."],notes:"",rating:0,servings:"",custom:false},
   {name:"Elderflower Aviation",categories:["Gim","Luxardo Maraschino","St‑Germain","Sour","Shaken"],ingredients:["45 ml gin","10 ml St-Germain","10 ml Luxardo Maraschino","20 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente e coe duplo em coupe."],notes:"O St-Germain substitui parte do Maraschino — fica mais floral e menos doce que o Aviation clássico.",rating:0,servings:"",custom:false},
   {name:"Elderflower Daiquiri",categories:["Luxardo Maraschino","Rum","St‑Germain","Sour","Shaken"],ingredients:["60 ml rum branco","15 ml St-Germain","5 ml Maraschino","20 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em coupe gelada."],notes:"Fresco, floral e com fundo elegante de amêndoa. Mais complexo que o Daiquiri clássico.",rating:0,servings:"",custom:false},
-  {name:"Fermentação selvagem (Ginger Bug)",categories:["Ginger Bug"],ingredients:["8 cm gengibre fresco","2 xícaras açúcar branco","2 limões","Água sem cloro"],steps:["Adicione gengibre ralado e açúcar em 250ml água.","Cubra e guarde em local escuro.","Alimente diariamente até borbulhar (2–7 dias)."],notes:"Fermentação selvagem",rating:0,servings:"4L",custom:false},
+  {name:"Fermentação selvagem (Ginger Bug)",categories:["Ginger Bug","Preparos Caseiros"],ingredients:["8 cm gengibre fresco","2 xícaras açúcar branco","2 limões","Água sem cloro"],steps:["Adicione gengibre ralado e açúcar em 250ml água.","Cubra e guarde em local escuro.","Alimente diariamente até borbulhar (2–7 dias)."],notes:"Fermentação selvagem",rating:0,servings:"4L",custom:false},
   {name:"Flor de Cerejeira Fizz",categories:["Espumante","Fizz","Luxardo Maraschino","Spritz","St‑Germain","Built"],ingredients:["20 ml Luxardo","20 ml St-Germain","10 ml limão","completar com água com gás ou espumante"],steps:["Combine Luxardo, St-Germain e limão com gelo.","Complete com água com gás ou espumante gelado.","Decore com casca de limão ou flor comestível."],notes:"Floral, leve e muito perfumado. Baixo teor alcoólico.",rating:0,servings:"",custom:false},
   {name:"French 75",categories:["Espumante","Fizz","Gim","Shaken"],ingredients:["30 ml gin","15 ml suco de limão","15 ml xarope simples","prosecco para completar"],steps:["Combine gin, limão e xarope na coqueteleira com gelo.","Agite e coe em taça flute.","Complete com prosecco."],notes:"Cítrico, seco e sofisticado.",rating:0,servings:"",custom:false},
   {name:"Garden Spritz",categories:["Espumante","Luxardo Maraschino","Spritz","St‑Germain","Built"],ingredients:["25 ml St-Germain","10 ml Maraschino","80 ml prosecco","splash de soda"],steps:["Adicione gelo numa taça de vinho.","Coloque St-Germain e Maraschino.","Complete com prosecco e um splash de soda."],notes:"Leve, perfumado e delicado. Perfeito para aperitivo.",rating:0,servings:"",custom:false},
   {name:"Gin Fizz",categories:["Gim","Fizz","Shaken"],ingredients:["60 ml Gim","30 ml suco de lima","22 ml xarope simples","Água com gás","1 fatia limão"],steps:["Agite gim, limão e xarope com gelo.","Coe em copo alto.","Complete com água com gás."],notes:"",rating:0,servings:"",custom:false},
   {name:"Gin Tônica",categories:["Gim","Highball","Built"],ingredients:["50 ml Gin","150 ml Tônica","fatia de limão"],steps:["Encha taça balão com gelo.","Adicione o gin.","Complete com tônica pela lateral. Mexa uma vez."],notes:"",rating:0,servings:"",custom:false},
   {name:"Gin Tônica de Bergamota",categories:["Gim","Highball","Built"],ingredients:["50 ml Gin","150 ml Tônica","4 gomos de bergamota","2 gotas Angostura"],steps:["Esprema os gomos de bergamota no fundo da taça balão.","Encha com gelo. Adicione o gin.","Complete com tônica pela lateral. Pingue o Angostura."],notes:"Cítrico, levemente floral e com fundo amargo. Variação elegante do G&T clássico.",rating:0,servings:"",custom:false},
-  {name:"Ginger beer (caseira)",categories:["Ginger Beer"],ingredients:["100g gengibre","200g açúcar","1 limão","1,5L água","6g fermento"],steps:["Ferva a água com gengibre e limão fatiados. Adicione açúcar e cozinhe 15 min.","Coe e transfira para balde fermentador com o fermento dissolvido.","Após 4 dias, transfira com 8g açúcar/litro. Aguarde 2 semanas."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Ginger beer (caseira)",categories:["Ginger Beer","Preparos Caseiros"],ingredients:["100g gengibre","200g açúcar","1 limão","1,5L água","6g fermento"],steps:["Ferva a água com gengibre e limão fatiados. Adicione açúcar e cozinhe 15 min.","Coe e transfira para balde fermentador com o fermento dissolvido.","Após 4 dias, transfira com 8g açúcar/litro. Aguarde 2 semanas."],notes:"",rating:0,servings:"",custom:false},
   {name:"Granada Ginger Margarita",categories:["Contreau","Tequila","Sour","Shaken"],ingredients:["60ml tequila","15ml suco de romã","30ml suco de limão","15ml cointreau","15ml cerveja de gengibre"],steps:["Bata tudo com gelo e sirva."],notes:"",rating:0,servings:"",custom:false},
   {name:"Hemingway Daiquiri",categories:["Luxardo Maraschino","Rum","Sour","Shaken"],ingredients:["60 ml rum branco","15 ml Luxardo Maraschino","20 ml suco de limão","15 ml suco de grapefruit"],steps:["Agite rum, Maraschino, limão e grapefruit com gelo por 15s.","Coe em taça de coquetel gelada."],notes:"Criado para Ernest Hemingway, que preferia drinks menos doces. Seco, cítrico e com fundo floral.",rating:0,servings:"",custom:false},
   {name:"Highball de Luxardo",categories:["Highball","Luxardo Maraschino","Built"],ingredients:["30 ml Luxardo","10 ml limão Tahiti","água com gás para completar","gelo"],steps:["Esprema o limão no copo. Encha com gelo.","Adicione o Luxardo.","Complete com água com gás. Mexa suavemente."],notes:"Super leve, quase um refrigerante adulto. Perfeito pra calor.",rating:0,servings:"",custom:false},
@@ -357,6 +361,32 @@ const BASE_RECIPES = [
   {name:"Virgin Margarita",categories:["Não alcóolicos","Sour","Shaken"],ingredients:["60 ml suco de limão","30 ml xarope de agave","30 ml suco de laranja","sal na borda"],steps:["Bata tudo com gelo.","Coe em copo com borda salgada."],notes:"",rating:0,servings:"",custom:false},
   {name:"Ginger Lemonade",categories:["Não alcóolicos","Highball","Built"],ingredients:["20 ml xarope de gengibre","30 ml suco de limão","150 ml água com gás","rodela de limão","gelo"],steps:["Combine xarope e limão em copo com gelo.","Complete com água com gás."],notes:"",rating:0,servings:"",custom:false},
   {name:"Shrub de Frutas Vermelhas",categories:["Não alcóolicos","Highball","Built"],ingredients:["40 ml shrub de frutas vermelhas (vinagre + fruta + açúcar)","150 ml água com gás","gelo","frutas para decorar"],steps:["Combine shrub e água com gás em copo com gás com gelo.","Decore com frutas."],notes:"Shrub: macere 1:1:1 fruta, açúcar, vinagre de maçã por 24h.",rating:0,servings:"",custom:false},
+
+  // ── PREPAROS CASEIROS — XAROPES BASE ──
+  {name:"Xarope Simples",categories:["Preparos Caseiros"],ingredients:["200g açúcar refinado","200ml água filtrada"],steps:["Leve água e açúcar ao fogo médio.","Mexa até dissolver — não deixe ferver.","Retire, deixe esfriar e transfira para frasco."],notes:"Proporção 1:1. A base de quase todo drink. Dura 2 semanas na geladeira. Adicione 1 colher de vodka para conservar por mais tempo.",rating:0,servings:"400ml",custom:false},
+  {name:"Xarope Rico",categories:["Preparos Caseiros"],ingredients:["400g açúcar refinado","200ml água filtrada"],steps:["Aqueça a água em fogo baixo.","Adicione o açúcar aos poucos, mexendo até dissolver completamente.","Não deixe ferver — retire do fogo assim que homogeneizar.","Deixe esfriar e armazene."],notes:"Proporção 2:1. Mais viscoso e encorpado — dilui menos o drink. Preferido em stirred cocktails (Old Fashioned, Manhattan). Dura até 1 mês na geladeira.",rating:0,servings:"500ml",custom:false},
+  {name:"Xarope Demerara",categories:["Preparos Caseiros"],ingredients:["200g açúcar demerara","200ml água"],steps:["Leve ao fogo médio e mexa até dissolver.","Não ferva — retire assim que homogeneizar.","Deixe esfriar e armazene."],notes:"Notas de melaço e caramelo que o açúcar refinado não tem. Casa especialmente bem com rum, cachaça envelhecida e bourbon.",rating:0,servings:"400ml",custom:false},
+  {name:"Xarope de Agave",categories:["Preparos Caseiros"],ingredients:["150ml néctar de agave","75ml água morna"],steps:["Misture o néctar de agave com a água morna.","Agite bem até homogeneizar.","Armazene em frasco."],notes:"Proporção 2:1 (agave:água). O agave puro é muito viscoso para dosar com precisão — diluído funciona melhor. Base da Tommy's Margarita.",rating:0,servings:"225ml",custom:false},
+
+  // ── PREPAROS CASEIROS — XAROPES AROMATIZADOS ──
+  {name:"Xarope de Mel",categories:["Preparos Caseiros"],ingredients:["150g mel de boa qualidade","100ml água quente"],steps:["Misture mel e água quente diretamente no frasco.","Agite bem até homogeneizar.","Deixe esfriar antes de usar."],notes:"Não precisa de fogo. Proporção 3:2 (mel:água). Base do Bee's Knees, Gold Rush e Penicillin. Dura 3 semanas na geladeira.",rating:0,servings:"250ml",custom:false},
+  {name:"Xarope de Gengibre",categories:["Preparos Caseiros"],ingredients:["150g gengibre fresco","200g açúcar","200ml água"],steps:["Rale ou fatie o gengibre sem descascar.","Leve ao fogo com água e açúcar — mexa até dissolver.","Infuse por 30 min fora do fogo.","Coe e transfira para frasco."],notes:"Quanto mais tempo em infusão, mais picante. Para o xarope de mel e gengibre do Penicillin: misture partes iguais deste xarope com xarope de mel.",rating:0,servings:"350ml",custom:false},
+  {name:"Xarope de Canela",categories:["Preparos Caseiros"],ingredients:["3 paus de canela","200g açúcar","200ml água"],steps:["Leve tudo ao fogo médio até dissolver.","Ferva por 5 minutos para intensificar.","Retire do fogo, tampe e infuse por 1 hora.","Coe e armazene."],notes:"Base do Donn's Mix do Zombie. Ótimo também em drinks de inverno com bourbon e rum envelhecido.",rating:0,servings:"350ml",custom:false},
+  {name:"Xarope de Cardamomo",categories:["Preparos Caseiros"],ingredients:["10 vagens de cardamomo verde","200g açúcar","200ml água"],steps:["Abra as vagens pressionando com a faca — não precisa triturar.","Leve ao fogo com água e açúcar até dissolver.","Retire do fogo, tampe e infuse por 30 minutos.","Coe e armazene."],notes:"Aromático e levemente picante. Muito usado em gin sours e drinks nórdicos. Casa bem com vodka e aquavit.",rating:0,servings:"350ml",custom:false},
+  {name:"Xarope de Lavanda",categories:["Preparos Caseiros"],ingredients:["2 col. sopa flores de lavanda secas (culinárias)","200g açúcar","200ml água"],steps:["Ferva água com açúcar até dissolver.","Retire do fogo, adicione a lavanda.","Tampe e infuse por 20 minutos.","Coe bem e armazene."],notes:"Não infuse demais — fica medicinal. 15–20 min é o ponto certo. Base do Lavender Gin Sour.",rating:0,servings:"350ml",custom:false},
+  {name:"Xarope de Hibisco",categories:["Preparos Caseiros"],ingredients:["15g flores de hibisco secas","200g açúcar","400ml água"],steps:["Ferva a água e adicione o hibisco.","Infuse por 10 minutos — ficará vermelho intenso.","Coe, leve ao fogo com o açúcar e dissolva sem ferver.","Armazene em frasco."],notes:"Cor vibrante, acidez natural e levemente tanânico. Alternativa ao cranberry em sours. Ótimo com gin, vodka e tequila.",rating:0,servings:"500ml",custom:false},
+  {name:"Xarope de Hortelã",categories:["Preparos Caseiros"],ingredients:["1 maço grande de hortelã fresca","200g açúcar","200ml água"],steps:["Ferva água e açúcar até dissolver.","Retire do fogo e mergulhe a hortelã.","Infuse por 30 minutos tampado.","Coe sem espremer e armazene."],notes:"Não esprema a hortelã na coagem — amarga. Eleva qualquer Mojito e serve de base para coquetéis gelados de verão.",rating:0,servings:"350ml",custom:false},
+
+  // ── PREPAROS CASEIROS — CORDIAIS ──
+  {name:"Cordial de Limão",categories:["Preparos Caseiros"],ingredients:["Casca de 4 limões sicilianos (só a parte amarela)","200g açúcar","200ml água","60ml suco de limão siciliano fresco"],steps:["Faça xarope simples com água e açúcar.","Retire do fogo e adicione as cascas de limão.","Infuse por 2 horas tampado.","Coe e misture com o suco de limão fresco."],notes:"Mais rico que o Rose's industrializado. Essencial para o Gimlet clássico. Dura 2 semanas na geladeira.",rating:0,servings:"350ml",custom:false},
+  {name:"Cordial de Grapefruit",categories:["Preparos Caseiros"],ingredients:["Zest de 2 grapefruits (aprox 20g)","Suco de 2 grapefruits (aprox 180ml)","200g açúcar"],steps:["Coloque o zest, o suco e o açúcar no liquidificador.","Bata por 1 minuto até o açúcar dissolver e a casca liberar os óleos.","Coe bem em peneira fina ou pano.","Armazene em frasco na geladeira."],notes:"O zest processado junto libera óleos essenciais que o suco sozinho não tem — é o que diferencia este cordial. Cítrico, amargo e profundo. Casa com gin, tequila e mezcal.",rating:0,servings:"300ml",custom:false},
+  {name:"Cordial de Sabugueiro",categories:["Preparos Caseiros"],ingredients:["10g flores de sabugueiro secas (ou 20 cachos frescos)","400g açúcar","400ml água","Casca e suco de 2 limões sicilianos","2g ácido cítrico"],steps:["Prepare xarope simples com água e açúcar.","Retire do fogo e adicione as flores e a casca de limão.","Infuse por 24 horas em temperatura ambiente.","Coe, adicione o suco de limão e o ácido cítrico.","Armazene em frasco escuro."],notes:"Alternativa caseira ao St-Germain — mais fresco e menos adocicado. Flores frescas dão resultado superior. Dura 2 semanas na geladeira.",rating:0,servings:"600ml",custom:false},
+  {name:"Cordial de Framboesa",categories:["Preparos Caseiros"],ingredients:["250g framboesas frescas ou congeladas","200g açúcar","150ml água","15ml suco de limão"],steps:["Leve framboesas, açúcar e água ao fogo médio.","Amasse levemente com colher enquanto aquece.","Assim que ferver, retire do fogo e coe sem espremer.","Adicione o suco de limão e armazene."],notes:"Mais intenso que grenadine, com acidez real de fruta. Base do Kir, Russian Spring Punch e Mule de Framboesa.",rating:0,servings:"350ml",custom:false},
+
+  // ── PREPAROS CASEIROS — MODIFICADORES COMPLEXOS ──
+  {name:"Grenadine Caseira",categories:["Preparos Caseiros"],ingredients:["250ml suco de romã puro (ou 4 romãs espremidas)","250g açúcar","10ml suco de limão","splash de água de flor de laranjeira (opcional)"],steps:["Misture suco de romã e açúcar em fogo baixo.","Mexa até dissolver — não ferva (perde a cor).","Adicione limão e flor de laranjeira.","Deixe esfriar e armazene."],notes:"A grenadine industrial é corante e xarope de milho. A caseira tem cor e profundidade reais. Dura 3 semanas na geladeira.",rating:0,servings:"400ml",custom:false},
+  {name:"Orgeat (Xarope de Amêndoa)",categories:["Preparos Caseiros"],ingredients:["200g amêndoas cruas sem sal","300g açúcar","250ml água","30ml água de flor de laranjeira","5ml extrato de amêndoa (opcional)"],steps:["Cubra as amêndoas com água fervente por 1 min e retire a pele.","Triture as amêndoas com a água no liquidificador por 2 min.","Coe em pano de musselina espremendo bem — este é o leite de amêndoa.","Leve ao fogo com açúcar até dissolver.","Retire, adicione flor de laranjeira e extrato. Deixe esfriar."],notes:"Indispensável no Mai Tai e no Trinidad Sour. Espremer bem o bagaço é onde está o sabor.",rating:0,servings:"500ml",custom:false},
+  {name:"Falernum Caseiro",categories:["Preparos Caseiros"],ingredients:["500ml cachaça ou rum branco","60g amêndoas fatiadas","Casca de 5 limas","5 cravos-da-índia","1 col. chá extrato de baunilha","1 col. chá extrato de amêndoa","Suco de 2 limas","300g açúcar","200ml água"],steps:["Infuse a cachaça com amêndoas, casca de lima e cravos por 24h.","Coe a infusão descartando os sólidos.","Prepare xarope simples com açúcar e água.","Misture a infusão com o xarope, suco de lima e extratos.","Armazene em frasco escuro."],notes:"Licor caribenho de cravo, amêndoa e lima. Essencial no Zombie e no Illegal Sour. Versão sem álcool: substitua a cachaça por água e infuse por 48h.",rating:0,servings:"750ml",custom:false},
 
   // ── CLÁSSICOS IBA & OUTROS (adicionados dos PDFs) ──
   {name:"Champagne Cocktail",categories:["Conhaque","Espumante","Cocktail","Built"],ingredients:["90 ml champagne ou espumante brut gelado","20 ml conhaque","1 cubo de açúcar","2 dashes Angostura Bitters"],steps:["Embeba o cubo de açúcar com Angostura e coloque no fundo da taça.","Adicione o conhaque.","Complete devagar com o champagne gelado."],notes:"Um dos primeiros coquetéis documentados (1862). O cubo dissolve enquanto você bebe.",rating:0,servings:"1",custom:false},
@@ -1102,8 +1132,8 @@ function MobileNav({ tab, setTab, favCount }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestore, onAddRecipe }) {
-  const topRated = [...allRecipes].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating).slice(0,5);
+function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestore, onAddRecipe }) {
+  const topRated = [...allRecipes].filter(r=>r.rating>0&&!r.categories.includes("Preparos Caseiros")).sort((a,b)=>b.rating-a.rating).slice(0,5);
   const btnSt = {padding:"12px 16px",borderRadius:3,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",color:"rgba(240,235,225,0.5)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:10};
   return (
     <div style={{padding:"20px 20px 100px"}}>
@@ -1129,7 +1159,7 @@ function ProfileTab({ allRecipes, tried, favs, owned, customRecipes, exportJSON,
       {/* stats */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:28}}>
         {[
-          ["Receitas",allRecipes.length,"tudo"],
+          ["Receitas",drinkCount,"tudo"],
           ["Provados",tried.length,"provados"],
           ["Favoritos",favs.length,"favs"],
           ["Minhas receitas",customRecipes.length,"custom"],
@@ -1410,6 +1440,7 @@ export default function OnTheRocks(){
 
   const filtered=useMemo(()=>{
     let list=allRecipes.filter(r=>{
+      if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
       if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
       if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
       if(effectiveFilterMode==="custom"&&!r.custom)return false;
@@ -1429,28 +1460,30 @@ export default function OnTheRocks(){
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered:null,[hasFilters,filtered]);
 
+  const drinkRecipes=useMemo(()=>allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[allRecipes]);
+
   // inicializa histórico quando receitas carregam
   useEffect(()=>{
-    if(allRecipes.length&&swipeHistory.length===0){
-      const first=allRecipes[Math.floor(Math.random()*allRecipes.length)];
+    if(drinkRecipes.length&&swipeHistory.length===0){
+      const first=drinkRecipes[Math.floor(Math.random()*drinkRecipes.length)];
       setSwipeHistory([first.name]);
     }
-  },[allRecipes.length]);// eslint-disable-line
+  },[drinkRecipes.length]);// eslint-disable-line
 
   const swipeRecipe=useMemo(()=>{
     if(swipeFiltered){
       if(!swipeFiltered.length)return null;
       return swipeFiltered[Math.min(swipeHistIdx,swipeFiltered.length-1)];
     }
-    if(!swipeHistory.length||!allRecipes.length)return null;
+    if(!swipeHistory.length||!drinkRecipes.length)return null;
     const name=swipeHistory[Math.min(swipeHistIdx,swipeHistory.length-1)];
-    return allRecipes.find(r=>r.name===name)||allRecipes[0];
-  },[allRecipes,swipeHistory,swipeHistIdx,swipeFiltered]);
+    return drinkRecipes.find(r=>r.name===name)||drinkRecipes[0];
+  },[drinkRecipes,swipeHistory,swipeHistIdx,swipeFiltered]);
 
   const pickDifferentFamily=useCallback((currentRecipe)=>{
     const currentFamily=currentRecipe?.categories.find(c=>STYLE_CATS.has(c));
-    const pool=allRecipes.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
-    const src=pool.length?pool:allRecipes;
+    const pool=drinkRecipes.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
+    const src=pool.length?pool:drinkRecipes;
     return src[Math.floor(Math.random()*src.length)];
   },[allRecipes]);
 
@@ -1511,7 +1544,7 @@ export default function OnTheRocks(){
         </button>
 
         <div style={{display:"flex",flexDirection:"column",gap:1,marginRight:4}}>
-          <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>{allRecipes.length} receitas</span>
+          <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>{drinkRecipes.length} receitas</span>
           <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif"}}>
             <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:filterMode==="provados"?"#4ADE80":"#4ADE80",fontWeight:700,opacity:filterMode==="provados"?1:.8,textDecoration:filterMode==="provados"?"underline":"none"}}>{tried.length} provados</span>
           </button>
@@ -1701,7 +1734,7 @@ export default function OnTheRocks(){
               )}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestore={()=>{if(window.confirm("Restaurar todas as receitas base para o original? Suas notas e avaliações também serão apagadas."))setOverrides({});}} onAddRecipe={()=>setShowForm(true)}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestore={()=>{if(window.confirm("Restaurar todas as receitas base para o original? Suas notas e avaliações também serão apagadas."))setOverrides({});}} onAddRecipe={()=>setShowForm(true)}/>
           ) : (
             <>
               {/* mobile: botões família + spirit + filtros */}
