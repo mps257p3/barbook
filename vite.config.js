@@ -1,8 +1,10 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  return {
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
@@ -50,10 +52,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: () => '/v1/messages',
         headers: {
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'x-api-key': env.ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01',
         },
       }
     }
+  }
   }
 })
