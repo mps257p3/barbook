@@ -746,11 +746,12 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:700,lineHeight:1.05,color:"#F0EBE1",margin:"0 0 14px",letterSpacing:.3}}>{recipe.name}</h2>
 
               {/* estrelas */}
-              <div style={{display:"flex",gap:2,marginBottom:14}}>
+              <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:14,alignItems:"center"}}>
                 {[1,2,3,4,5].map(n=>(
                   <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>onRating(n===recipe.rating?0:n)} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||recipe.rating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
                 ))}
               </div>
+              {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:14}}>como você avaliaria?</div>}
 
               {/* ações */}
               <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -1204,7 +1205,6 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
           ["Provados",tried.length,"provados"],
           ["Favoritos",favs.length,"favs"],
           ["Minhas receitas",customRecipes.length,"custom"],
-          ["No bar",owned.length,"tenho"],
         ].map(([l,v,filter])=>(
           <button key={l} onClick={()=>onGoTo(filter)} style={{background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:5,padding:"16px 14px",textAlign:"left",cursor:"pointer",transition:"border-color .15s",fontFamily:"Archivo,sans-serif"}}
             onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(160,120,90,0.3)"}
@@ -1235,22 +1235,20 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         </div>
       )}
 
-      {/* no bar */}
-      {owned.length>0&&(
-        <div style={{marginBottom:28}}>
-          <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>No seu bar</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-            {owned.map(s=>(
-              <span key={s} style={{padding:"4px 11px",borderRadius:20,fontSize:11,background:"rgba(160,120,90,0.1)",border:"1px solid rgba(160,120,90,0.25)",color:"rgba(160,120,90,0.8)"}}>{s}</span>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* minhas receitas */}
       <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>Minhas receitas</div>
       <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:28}}>
         <button onClick={onAddRecipe} style={{...btnSt,color:"#A0785A",borderColor:"rgba(160,120,90,0.3)",background:"rgba(160,120,90,0.08)"}}><span style={{fontSize:18,lineHeight:1}}>+</span> Nova receita</button>
+        {customRecipes.map(r=>{const th=getTheme(r.categories);return(
+          <button key={r.name} onClick={()=>onOpenRecipe(r)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:4,background:"rgba(240,235,225,0.02)",border:`1px solid ${th.border}22`,cursor:"pointer",textAlign:"left",width:"100%",fontFamily:"Archivo,sans-serif",transition:"border-color .15s"}}
+            onMouseEnter={e=>e.currentTarget.style.borderColor=th.border+"55"}
+            onMouseLeave={e=>e.currentTarget.style.borderColor=th.border+"22"}>
+            <div style={{width:5,height:5,borderRadius:1,background:th.accent,flexShrink:0,opacity:.6}}/>
+            <span style={{flex:1,fontSize:13,color:"rgba(240,235,225,0.7)",fontFamily:"'Cormorant Garamond',serif",fontWeight:600}}>{r.name}</span>
+            {r.rating>0&&<Stars n={r.rating} color={th.accent}/>}
+          </button>
+        );})}
       </div>
 
       {/* dados */}
@@ -1501,7 +1499,7 @@ export default function OnTheRocks(){
       if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!activeSpirits.every(s=>r.categories.includes(s)))return false;
-      if(search){const q=search.toLowerCase();return r.name.toLowerCase().includes(q)||r.ingredients.some(i=>i.toLowerCase().includes(q))||r.categories.some(c=>c.toLowerCase().includes(q));}
+      if(search){const q=search.toLowerCase();return r.name.toLowerCase().includes(q)||r.ingredients.some(i=>i.toLowerCase().includes(q))||r.categories.some(c=>c.toLowerCase().includes(q))||r.notes.toLowerCase().includes(q);}
       return true;
     });
     if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
@@ -1563,12 +1561,10 @@ export default function OnTheRocks(){
   useEffect(()=>{
     if(mobileTab==="descobrir"){
       document.documentElement.style.overflow="hidden";
-      document.documentElement.style.touchAction="none";
     } else {
       document.documentElement.style.overflow="";
-      document.documentElement.style.touchAction="";
     }
-    return()=>{document.documentElement.style.overflow="";document.documentElement.style.touchAction="";};
+    return()=>{document.documentElement.style.overflow="";};
   },[mobileTab]);
 
   const sidebarProps={sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab};
@@ -1644,7 +1640,7 @@ export default function OnTheRocks(){
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",touchAction:"none"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background .6s ease"}}/>
@@ -1840,8 +1836,11 @@ export default function OnTheRocks(){
                     {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
                       const active=activeStyle===s;
                       const th=TYPE_THEME[s]||TYPE_THEME["_default"];
+                      const isPrep=s==="Preparos Caseiros";
                       return(<button key={s} onClick={()=>{setActiveStyle(active?null:s);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
-                        background:active?th.bg:"rgba(240,235,225,0.04)",border:`1px solid ${active?th.border+"66":"rgba(240,235,225,0.09)"}`,color:active?th.label:"rgba(240,235,225,0.45)"}}>{s}</button>);
+                        background:active?th.bg:isPrep?"rgba(116,168,40,0.06)":"rgba(240,235,225,0.04)",
+                        border:`1px solid ${active?th.border+"66":isPrep?"rgba(116,168,40,0.25)":"rgba(240,235,225,0.09)"}`,
+                        color:active?th.label:isPrep?"rgba(116,168,40,0.7)":"rgba(240,235,225,0.45)"}}>{s}</button>);
                     })}
                   </div>
                 </div>
@@ -1905,7 +1904,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav tab={mobileTab} setTab={t=>{setMobileTab(t);setOpen(null);if(t==="explorar"){setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}if(t==="descobrir"){setFilterMode("tudo");}}} favCount={favs.length}/>
+      <MobileNav tab={mobileTab} setTab={t=>{setMobileTab(t);setOpen(null);if(t==="explorar"){setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}else{setSearch("");}if(t==="descobrir"){setFilterMode("tudo");}}} favCount={favs.length}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>deleteRecipe(open)}/>}
