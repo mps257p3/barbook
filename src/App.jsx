@@ -36,22 +36,22 @@ const FAMILY_GROUPS = [
 const TECHNIQUES = ["Stirred","Shaken","Built"];
 
 const FAMILY_DESC = {
-  "Sour":           "Tríade clássica: destilado, cítrico e doce. Equilibram frescor ácido com corpo e profundidade. O Whisky Sour e o Daiquiri são os arquétipos.",
-  "Highball":       "Destilado com mixer em abundância — tônica, refrigerante ou ginger beer. Longos, gelados e fáceis de beber. Perfeitos para qualquer ocasião.",
-  "Collins":        "Versão alongada do Sour: destilado, cítrico, doce e água com gás. Refrescante, levemente efervescente e gentil.",
-  "Spritz":         "Espumante ou vinho frisante como base, com licor amargo e água com gás. Festivos, leves e perfeitos como aperitivo.",
-  "Fizz":           "Como o Collins, mas agitado primeiro e coado — a gaseificação vem depois. Textura mais sedosa e mais fria.",
-  "Cocktail":       "Categoria ampla para drinks mistos que não se encaixam numa família específica. Vai do Cosmopolitan ao Aviation.",
-  "Sling":          "Collins com licores adicionais que trazem cor e camadas extras de sabor. O Singapore Sling é o mais famoso.",
-  "Buck":           "Destilado, suco cítrico e ginger beer (ou ginger ale). A família do Moscow Mule e do Dark 'n' Stormy.",
+  "Sour":           "Equilíbrio clássico entre destilado, cítrico e adoçante. O frescor do limão encontra a doçura do xarope, criando drinks vibrantes e bem estruturados. Podem levar clara de ovo, que traz textura aveludada. É a base de famílias como Collins e Fizz — a principal diferença está no uso de gás e na textura final.",
+  "Highball":       "Simplicidade que nunca sai de moda. Um destilado combinado com um mixer gelado — água tônica, refrigerante ou soda — servido num copo alto com bastante gelo. Direto e refrescante, com foco no equilíbrio e na diluição ao longo do tempo.",
+  "Collins":        "Um Sour alongado com soda, servido num copo alto. Leve, cítrico e efervescente, perfeito para quem busca frescor com um pouco mais de volume.",
+  "Spritz":         "Drinks com vinho espumante ou prosecco como base, completados com um licor amargo ou aperitivo e uma splash de soda. Cor vibrante, amargor elegante e muitas bolhas. Uma alternativa sofisticada aos Highballs para quem prefere algo mais aromático e menos alcoólico.",
+  "Fizz":           "Compartilha o DNA do Sour e do Collins — destilado, cítrico e adoçante — mas é batido no shaker antes de receber a soda, criando uma textura mais leve, aerada e espumosa. Um clássico das tardes quentes.",
+  "Cocktail":       "Short drinks sem gás — Martini, Negroni, Cosmopolitan, Aviation. Não se encaixam no ritmo dos Collins e Highballs: são menores, mais concentrados e bebidos em taça. Uma categoria em discussão.",
+  "Sling":          "Destilado, adoçante, cítrico e água — uma das estruturas mais antigas da coquetelaria. Mais simples que um Sour e menos efervescente que um Collins, o Sling carrega uma elegância histórica que deu origem a muitos clássicos modernos.",
+  "Buck":           "Espirituoso, suco de limão e ginger beer ou ginger ale. A picância do gengibre faz todo o trabalho aqui — diferente do Highball, que usa mixers neutros, o Buck tem personalidade própria e inconfundível. O Moscow Mule é o exemplo mais famoso da família.",
   "Beer Highballs": "Cerveja como mixer principal — combinada com destilados ou licores para drinks longos, refrescantes e com caráter.",
-  "Smash":          "Destilado agitado com frutas frescas e ervas maceradas. Rústico, vegetal e muito vibrante. O Mint Julep é o ancestral.",
-  "Hot":            "Bebidas servidas quentes — chás, grogs e toddies. Conforto em forma líquida para noites frias.",
-  "Não alcóolicos": "Receitas sem álcool que preservam a complexidade, o ritual e a elegância dos grandes drinks.",
-  "Stirred":        "Mexidos longamente com gelo em copo misturador. Textura sedosa e temperatura precisa. Martini, Manhattan, Negroni.",
-  "Shaken":         "Agitados com gelo na coqueteleira. Mais aerados, mais frios, com leve diluição. Sours, Daquiris, Cósmicos.",
-  "Built":          "Montados diretamente no copo, sem coar. Simples, diretos e sem desperdício. Old Fashioned, Aperol Spritz.",
-  "Preparos Caseiros": "Xaropes, tinturas, cordiais e bases artesanais. Os ingredientes que transformam um drink bom em um drink seu.",
+  "Smash":          "Ervas frescas e frutas amassadas diretamente no copo ou shaker, misturadas com destilado e gelo quebrado. Mais rústico e aromático que um Sour, mais cheio de frescor que um Built. O processo de macerar os ingredientes é o que define o caráter do drink.",
+  "Hot":            "Para os dias frios ou momentos de aconchego. Drinks servidos quentes — com chá, café, leite ou água quente — que aquecem por dentro e encantam pelos aromas. Enquanto Shaken e Stirred trabalham o frio e a diluição, os Hot drinks jogam com o calor para liberar camadas de sabor.",
+  "Não alcóolicos": "Todo o sabor, zero álcool. Drinks elaborados com xaropes artesanais, sucos, ervas e água tônica — tão complexos e bem construídos quanto qualquer Sour, Spritz ou Collins da carta. A técnica é a mesma; o que muda é a base.",
+  "Stirred":        "Mexidos delicadamente com gelo até atingir a temperatura e diluição ideais. Sem shaker, sem barulho — só textura sedosa e sabor concentrado. O oposto do Shaken: aqui a aeração não é bem-vinda, e os destilados falam por si mesmos.",
+  "Shaken":         "Agitados vigorosamente no shaker para misturar, resfriar e aerar de uma vez. O oposto do Stirred: resultam em drinks mais frios, levemente diluídos e com textura viva. É a técnica certa para receitas com cítrico, clara de ovo ou sucos — como a maioria dos Sours e Fizzes.",
+  "Built":          "Construídos diretamente no copo, ingrediente por ingrediente, sem transferências. Sem shaker, sem coador — ao contrário dos Stirred, nem ao menos saem do copo em que serão bebidos. Diretos e honestos, como um bom Negroni ou um Old Fashioned.",
+  "Preparos Caseiros": "Os bastidores do bar: xaropes, tinturas, cordiais e infusões feitos em casa. Não são drinks prontos, mas são o que elevam uma receita comum e dão identidade a diversas famílias.",
 };
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
