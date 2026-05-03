@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.ontheroocks.app",
-    "sha256_cert_fingerprints": ["64:F9:93:E8:DF:77:8D:7B:CF:71:C6:B9:2F:F3:8A:96:DD:60:30:88:C9:E3:EA:D0:7F:0B:7C:47:E8:95:A2:2C"]
+    "package_name": "com.marceloparducci.ontherocks",
+    "sha256_cert_fingerprints": ["FE:16:48:AF:EE:B2:6B:4E:13:5E:BB:74:49:0D:81:CA:DB:04:3A:4D:A9:46:53:02:61:BE:3E:B7:3C:0A:B7:81"]
   }
 }]
