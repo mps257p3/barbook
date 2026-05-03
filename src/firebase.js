@@ -16,10 +16,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-export const signInWithGoogle = () =>
-  isMobile ? signInWithRedirect(auth, googleProvider) : signInWithPopup(auth, googleProvider);
+export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
 
 export { getRedirectResult };
 export const signOutUser = () => signOut(auth);

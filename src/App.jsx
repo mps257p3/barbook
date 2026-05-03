@@ -25,7 +25,7 @@ const TYPE_THEME = {
   "_default":       { bg:"#151008", border:"#78614A", accent:"#C8A96E", label:"#E5C99E" },
 };
 
-const STYLE_PRIORITY = ["Sour","Highball","Collins","Spritz","Fizz","Cocktail","Não alcóolicos","Buck","Beer Highballs","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
+const STYLE_PRIORITY = ["Não alcóolicos","Sour","Highball","Collins","Spritz","Fizz","Cocktail","Buck","Beer Highballs","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
 const SPIRIT_CATS = new Set(["Gim","Rum","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Amaretto","St‑Germain","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Branco","Vermute Tinto","Vermute seco","Ginger Beer","Cachaça","Fernet-Branca","Licor Strega","Jerez","Porto Tinto","Porto Branco","Lillet","Vinho"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
@@ -34,6 +34,27 @@ const FAMILY_GROUPS = [
   { label:"Preparos", items:["Preparos Caseiros"] },
 ];
 const TECHNIQUES = ["Stirred","Shaken","Built"];
+
+const FAMILY_DESC = {
+  "Sour":           "Tríade clássica: destilado, cítrico e doce. Equilibram frescor ácido com corpo e profundidade. O Whisky Sour e o Daiquiri são os arquétipos.",
+  "Highball":       "Destilado com mixer em abundância — tônica, refrigerante ou ginger beer. Longos, gelados e fáceis de beber. Perfeitos para qualquer ocasião.",
+  "Collins":        "Versão alongada do Sour: destilado, cítrico, doce e água com gás. Refrescante, levemente efervescente e gentil.",
+  "Spritz":         "Espumante ou vinho frisante como base, com licor amargo e água com gás. Festivos, leves e perfeitos como aperitivo.",
+  "Fizz":           "Como o Collins, mas agitado primeiro e coado — a gaseificação vem depois. Textura mais sedosa e mais fria.",
+  "Cocktail":       "Categoria ampla para drinks mistos que não se encaixam numa família específica. Vai do Cosmopolitan ao Aviation.",
+  "Sling":          "Collins com licores adicionais que trazem cor e camadas extras de sabor. O Singapore Sling é o mais famoso.",
+  "Buck":           "Destilado, suco cítrico e ginger beer (ou ginger ale). A família do Moscow Mule e do Dark 'n' Stormy.",
+  "Beer Highballs": "Cerveja como mixer principal — combinada com destilados ou licores para drinks longos, refrescantes e com caráter.",
+  "Smash":          "Destilado agitado com frutas frescas e ervas maceradas. Rústico, vegetal e muito vibrante. O Mint Julep é o ancestral.",
+  "Hot":            "Bebidas servidas quentes — chás, grogs e toddies. Conforto em forma líquida para noites frias.",
+  "Não alcóolicos": "Receitas sem álcool que preservam a complexidade, o ritual e a elegância dos grandes drinks.",
+  "Stirred":        "Mexidos longamente com gelo em copo misturador. Textura sedosa e temperatura precisa. Martini, Manhattan, Negroni.",
+  "Shaken":         "Agitados com gelo na coqueteleira. Mais aerados, mais frios, com leve diluição. Sours, Daquiris, Cósmicos.",
+  "Built":          "Montados diretamente no copo, sem coar. Simples, diretos e sem desperdício. Old Fashioned, Aperol Spritz.",
+  "Preparos Caseiros": "Xaropes, tinturas, cordiais e bases artesanais. Os ingredientes que transformam um drink bom em um drink seu.",
+};
+
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
 const FAMILY_GLASS = {
@@ -345,7 +366,7 @@ const BASE_RECIPES = [
   {name:"Lillet Rosé Spritz",categories:["Lillet","Espumante","Spritz","Built"],ingredients:["50 ml Lillet Rosé","80 ml prosecco","30 ml água com gás","1 morango","gelo"],steps:["Combine em taça de vinho com gelo.","Decore com morango."],notes:"Mais frutado e delicado que o Lillet Blanc.",rating:0,servings:"",custom:false},
 
   // ── APERITIVO / AMARO ──
-  {name:"Herbário Cítrico",categories:["Conhaque","Fernet-Branca","Vermute Branco","Stirred","Cocktail"],ingredients:["30 ml conhaque","15 ml fernet","30 ml martini branco","1 rodela de limão siciliano","gelo"],steps:["Encha um copo baixo com gelo.","Adicione o conhaque.","Entre com o martini branco.","Complete com o fernet.","Mexa suavemente — 2 a 3 voltas, sem agitar.","Esprema a rodela de limão e coloque no copo."],notes:"O conhaque traz corpo, o martini abre com floral e baunilha, o fernet aparece como personagem misterioso. O limão evita a guerra civil no paladar.",rating:0,servings:"1",custom:false},
+  {name:"Pedro",categories:["Conhaque","Fernet-Branca","Vermute Branco","Stirred","Cocktail"],ingredients:["30 ml conhaque","15 ml fernet","30 ml martini branco","1 rodela de limão siciliano","gelo"],steps:["Encha um copo baixo com gelo.","Adicione o conhaque.","Entre com o martini branco.","Complete com o fernet.","Mexa suavemente — 2 a 3 voltas, sem agitar.","Esprema a rodela de limão e coloque no copo."],notes:"O conhaque traz corpo, o martini abre com floral e baunilha, o fernet aparece como personagem misterioso. O limão evita a guerra civil no paladar.",rating:0,servings:"1",custom:false},
   {name:"Cynar Tônica",categories:["Cynar","Highball","Built"],ingredients:["50 ml Cynar","120 ml água tônica","rodela de laranja","gelo"],steps:["Encha taça balão com gelo.","Adicione Cynar.","Complete com tônica e decore."],notes:"Amargo e refrescante.",rating:0,servings:"",custom:false},
   {name:"Black Negroni",categories:["Gim","Fernet-Branca","Cocktail","Stirred"],ingredients:["30 ml gim","30 ml Fernet-Branca","30 ml vermute doce","casca de laranja"],steps:["Mexa tudo com gelo.","Coe em rocks com gelo."],notes:"Intenso e herbal.",rating:0,servings:"",custom:false},
   {name:"Fernet Sour",categories:["Fernet-Branca","Sour","Shaken"],ingredients:["45 ml Fernet-Branca","25 ml suco de limão","20 ml mel","1 clara de ovo"],steps:["Dry shake.","Adicione gelo e agite.","Coe em coupe."],notes:"",rating:0,servings:"",custom:false},
@@ -433,6 +454,13 @@ const BASE_RECIPES = [
   {name:"Margarita Ancho Chili e Toranja",categories:["Triple Sec","Tequila","Sour","Shaken"],ingredients:["45 ml tequila","15 ml licor de laranja","30 ml suco de limão taiti","30 ml suco de grapefruit","15 ml xarope de pimenta ancho","borda de ancho chili, sal e raspas de limão"],steps:["Prepare a borda com ancho chili, sal e raspas de limão.","Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"Xarope de ancho chili: ferva 1 xícara de água + 1 xícara de açúcar + 2 col. sopa de pimenta ancho moída. Coe e esfrie. Defumado, cítrico e com calor progressivo.",rating:0,servings:"1",custom:false},
   {name:"Margarita Picante de Pepino",categories:["Tequila","Sour","Shaken"],ingredients:["45 ml tequila","15 ml Ancho Reyes","15 ml xarope de agave","30 ml suco de limão taiti","22 ml suco de pepino","borda de tajin"],steps:["Prepare a borda com tajin.","Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"Ancho Reyes no lugar do licor de laranja — pimenta e notas defumadas. O pepino refresca e equilibra o calor.",rating:0,servings:"1",custom:false},
   {name:"Margarita Orange Creamsicle",categories:["Triple Sec","Tequila","Sour","Shaken"],ingredients:["60 ml tequila","15 ml licor de laranja","30 ml suco de laranja fresco","15 ml suco de limão taiti","22 ml creme de coco","açúcar com raspas de laranja e limão para a borda"],steps:["Prepare a borda com açúcar e raspas cítricas.","Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"Inspirado no picolé de laranja com creme. O creme de coco traz suavidade sem ser pesado.",rating:0,servings:"1",custom:false},
+  {name:"Alaska",categories:["Gim","Cocktail","Stirred"],ingredients:["45 ml gim","15 ml Chartreuse amarela","1 dash bitters"],steps:["Mexa gim e Chartreuse com gelo em copo misturador por 30s.","Coe em taça de coquetel gelada.","Decore com casca de limão."],notes:"Minimalista, herbal e muito elegante. O Chartreuse amplifica o gim sem dominar.",rating:0,servings:"1",custom:false},
+  {name:"Bijou",categories:["Gim","Vermute Tinto","Cocktail","Stirred"],ingredients:["30 ml gim","30 ml vermute tinto","30 ml Chartreuse verde"],steps:["Mexa tudo com gelo em copo misturador por 30s.","Coe em taça de coquetel.","Decore com cereja marrasquino."],notes:"Herbal intenso, quase um jardim engarrafado. Proporções iguais — sem dominante, todos brigam lindamente.",rating:0,servings:"1",custom:false},
+  {name:"Brown Derby",categories:["Whisky","Sour","Shaken"],ingredients:["50 ml bourbon","25 ml suco de toranja","10-15 ml mel (ou xarope de mel 1:1)"],steps:["Combine bourbon, suco de toranja e mel na coqueteleira com gelo.","Agite bem por 12s.","Coe em coupe.","Decore com casca de toranja."],notes:"Bourbon + toranja + mel: simples no papel, elegante no copo. Clássico Hollywood dos anos 1930. Se usar mel puro, dissolva com um pouco de suco antes de bater.",rating:0,servings:"1",custom:false},
+  {name:"Champs-Élysées",categories:["Conhaque","Sour","Shaken"],ingredients:["45 ml conhaque","15 ml Chartreuse amarela","15 ml suco de limão siciliano","10 ml xarope simples (ou mel)","1 dash Angostura"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem.","Coe em taça coupe.","Decore com casca de limão."],notes:"Ácido + doce + herbal em equilíbrio preciso. Um Sour vestido de alfaiataria francesa. Mel no lugar do xarope traz mais complexidade.",rating:0,servings:"1",custom:false},
+  {name:"Cynar Spritz",categories:["Cynar","Spritz","Built"],ingredients:["60 ml Cynar","90 ml espumante brut (ou prosecco)","água com gás a gosto","gelo","1 rodela de laranja"],steps:["Encha um copo largo com gelo.","Adicione o Cynar, depois o espumante.","Complete com água com gás.","Mexa suavemente e decore com rodela de laranja."],notes:"Aperol Spritz com mais personalidade e amargura herbal. Vai embora mais rápido do que deveria.",rating:0,servings:"1",custom:false},
+  {name:"Pegu Club",categories:["Gim","Triple Sec","Sour","Shaken"],ingredients:["50 ml gim","20 ml curaçao de laranja","15 ml suco de limão","1 dash Angostura","1 dash orange bitters"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em coupe.","Decore com casca de limão."],notes:"Criado no Pegu Club de Rangoon (atual Yangon), c. 1920. Um Sour mais sofisticado e seco.",rating:0,servings:"1",custom:false},
+  {name:"Remember the Maine",categories:["Whisky","Luxardo Maraschino","Vermute Tinto","Cocktail","Stirred"],ingredients:["50 ml whisky de centeio ou bourbon","20 ml vermute tinto","1 bar spoon Luxardo Maraschino","rinse de absinto"],steps:["Enxague a taça de coquetel com absinto e descarte o excesso.","Mexa o whisky, vermute e Maraschino com gelo em copo misturador por 30s.","Coe na taça preparada.","Decore com cereja."],notes:"Um Manhattan mais profundo e levemente misterioso. O absinto é sutil mas transforma o drink.",rating:0,servings:"1",custom:false},
 ];
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -521,7 +549,7 @@ function RecipeForm({ initial, onSave, onClose }) {
 
   const handleSave = () => {
     if (!form.name.trim()) return;
-    onSave({ ...form, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), custom:true, id:initial?.id||Date.now() });
+    onSave({ ...form, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), custom:initial?.custom??true, id:initial?.id||Date.now() });
   };
 
   const inp = (extra={}) => ({ style:{ width:"100%", background:"rgba(240,235,225,0.04)", border:"1px solid rgba(240,235,225,0.09)", borderRadius:3, padding:"8px 11px", color:"#F0EBE1", fontSize:13, outline:"none", fontFamily:"Archivo,sans-serif", ...extra.style }, ...extra });
@@ -1595,7 +1623,7 @@ export default function OnTheRocks(){
       if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!activeSpirits.every(s=>r.categories.includes(s)))return false;
-      if(search){const q=search.toLowerCase();return r.name.toLowerCase().includes(q)||r.ingredients.some(i=>i.toLowerCase().includes(q))||r.categories.some(c=>c.toLowerCase().includes(q))||r.notes.toLowerCase().includes(q);}
+      if(search){const q=norm(search);return norm(r.name).includes(q)||r.ingredients.some(i=>norm(i).includes(q))||r.categories.some(c=>norm(c).includes(q))||norm(r.notes).includes(q);}
       return true;
     });
     if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
@@ -1899,7 +1927,7 @@ export default function OnTheRocks(){
           ) : (
             <>
               {/* mobile: botões família + spirit + filtros */}
-              <div className="mnv" style={{display:"none",gap:6,flexWrap:"nowrap",overflowX:"auto",marginBottom:10,paddingBottom:2}}>
+              <div className="mnv" style={{display:"none",gap:6,flexWrap:"wrap",marginBottom:10,paddingBottom:4}}>
                 {/* família */}
                 <button onClick={()=>setFilterSheet(filterSheet==="familia"?null:"familia")}
                   style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
@@ -1958,7 +1986,13 @@ export default function OnTheRocks(){
                   </div>
                 </div>
               )}
-              {/* mobile: busca */}
+              {/* family description */}
+              {activeStyle&&FAMILY_DESC[activeStyle]&&(
+                <div className="mnv" style={{marginBottom:14,padding:"12px 14px",borderRadius:6,background:`${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg}cc`,border:`1px solid ${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border}44`}}>
+                  <div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase",color:(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).accent,fontWeight:700,marginBottom:6}}>{activeStyle}</div>
+                  <p style={{margin:0,fontSize:12,color:"rgba(240,235,225,0.65)",lineHeight:1.65}}>{FAMILY_DESC[activeStyle]}</p>
+                </div>
+              )}              {/* mobile: busca */}
               <div className="mnv" style={{marginBottom:14}}>
                 <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="buscar drink, ingrediente…" style={{width:"100%",background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:3,padding:"9px 12px",color:"#F0EBE1",fontSize:13,boxSizing:"border-box"}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
               </div>
@@ -2004,7 +2038,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav tab={mobileTab} setTab={t=>{setMobileTab(t);setOpen(null);if(t==="explorar"){setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}else{setSearch("");}if(t==="descobrir"){setFilterMode("tudo");}}} favCount={favs.length}/>
+      <MobileNav tab={mobileTab} setTab={t=>{window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}else{setSearch("");}if(t==="descobrir"){setFilterMode("tudo");}}} favCount={favs.length}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>deleteRecipe(open)}/>}
