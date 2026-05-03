@@ -1180,7 +1180,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           {/* área clicável */}
           <div onClick={()=>onOpen(recipe)} style={{cursor:"pointer",position:"relative"}}>
             <div style={{position:"relative",height:230,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 35%, ${theme.accent}22 0%, transparent 68%)`}}/>
+              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${theme.accent}28 0%, ${theme.accent}09 58%, transparent 100%)`}}/>
               <div style={{filter:`drop-shadow(0 0 36px ${theme.accent}bb) drop-shadow(0 0 90px ${theme.accent}55)`,position:"relative",zIndex:1}}>
                 <GlassIcon categories={recipe.categories} color={theme.accent} size={175} opacity={0.52}/>
               </div>
