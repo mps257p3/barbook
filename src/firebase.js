@@ -16,7 +16,16 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogle = async () => {
+  try {
+    return await signInWithPopup(auth, googleProvider);
+  } catch (err) {
+    if (err.code === "auth/popup-blocked") {
+      return signInWithRedirect(auth, googleProvider);
+    }
+    throw err;
+  }
+};
 
 export { getRedirectResult };
 export const signOutUser = () => signOut(auth);
