@@ -27,7 +27,9 @@ export default defineConfig(({ mode }) => {
           { src: 'Icon.png', sizes: '1024x1024', type: 'image/png', form_factor: 'narrow' }
         ],
         icons: [
-          { src: 'Icon.png', sizes: '1024x1024', type: 'image/png', purpose: 'any maskable' }
+          { src: 'Icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'Icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'Icon.png', sizes: '1024x1024', type: 'image/png', purpose: 'any' }
         ]
       },
       workbox: {
