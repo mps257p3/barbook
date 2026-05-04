@@ -465,7 +465,6 @@ const BASE_RECIPES = [
   {name:"Monkey Gland",categories:["Gim","Sour","Shaken"],ingredients:["45 ml gim","45 ml suco de laranja fresco","1 col. chá absinto","1 col. chá grenadine"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Criado no Harry's New York Bar, Paris, c. 1920. O absinto e a grenadine aparecem como sombras discretas.",rating:0,servings:"1",custom:false},
   {name:"Brandy Crusta",categories:["Conhaque","Luxardo Maraschino","Sour","Stirred"],ingredients:["52 ml conhaque","7 ml Luxardo Maraschino","7 ml Curaçao de laranja","15 ml suco de limão","5 ml xarope simples","2 dashes Angostura","açúcar na borda"],steps:["Prepare a borda da taça com açúcar.","Mexa todos os ingredientes com gelo.","Coe na taça preparada."],notes:"De Nova Orleans, c. 1850 — ancestral direto do Sidecar e do Cosmopolitan.",rating:0,servings:"1",custom:false},
   {name:"Casino",categories:["Gim","Luxardo Maraschino","Sour","Shaken"],ingredients:["40 ml gim (Old Tom ou London Dry)","10 ml Luxardo Maraschino","10 ml suco de limão","2 dashes Orange Bitters"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em taça coupe."],notes:"IBA classic. Com Old Tom Gim (levemente adocicado) fica mais equilibrado.",rating:0,servings:"1",custom:false},
-  {name:"John Collins",categories:["Whisky","Collins","Built"],ingredients:["60 ml gim London Dry","30 ml suco de limão fresco","15 ml xarope simples","60 ml soda","rodela de limão e cereja"],steps:["Combine gim, limão e xarope em copo Collins com gelo.","Complete com soda.","Mexa suavemente e decore."],notes:"Usa London Dry Gim — mais seco que o Tom Collins (Old Tom Gim).",rating:0,servings:"1",custom:false},
   {name:"Paradise",categories:["Gim","Sour","Shaken"],ingredients:["30 ml gim","20 ml apricot brandy (licor de damasco)","15 ml suco de laranja fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"IBA classic. Proporção 3:2:1,5. Floral, frutado e direto.",rating:0,servings:"1",custom:false},
   {name:"Old Cuban",categories:["Rum Envelhecido","Espumante","Fizz","Shaken"],ingredients:["45 ml rum envelhecido","22 ml suco de lima","22 ml xarope simples","6 folhas de hortelã","2 dashes Angostura Bitters","60 ml champagne ou prosecco brut"],steps:["Macere levemente a hortelã na coqueteleira.","Agite rum, lima, xarope, hortelã e Angostura com gelo.","Coe em taça. Complete com espumante gelado.","Decore com folha de hortelã."],notes:"Criado por Audrey Saunders, c. 2001. Um Mojito elevado ao território do champagne.",rating:0,servings:"1",custom:false},
   {name:"Yellow Bird",categories:["Rum Branco","Triple Sec","Licor","Sour","Shaken"],ingredients:["30 ml rum branco","15 ml Galliano","15 ml Cointreau","15 ml suco de lima"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Drink caribenho dos anos 1950. O Galliano herbal é o segredo da personalidade.",rating:0,servings:"1",custom:false},
@@ -881,7 +880,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{display:"flex",alignItems:"stretch",gap:0,marginBottom:24}}>
 
             {/* coluna esquerda */}
-            <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"space-between",position:"relative"}}>
+            <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"space-between",position:"relative",zIndex:1}}>
               {/* ambient glow detrás do nome */}
               <div style={{position:"absolute",top:-10,left:-28,width:240,height:130,background:theme.accent,opacity:0.09,borderRadius:"50%",filter:"blur(48px)",pointerEvents:"none"}}/>
 
@@ -1570,8 +1569,8 @@ export default function OnTheRocks(){
   const [mobileTab,setMobileTab]=useState("descobrir");
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
-  const [swipeHistory,setSwipeHistory]=useState(()=>{try{const s=localStorage.getItem("otr_swipeHistory");return s?JSON.parse(s):[];}catch{return [];}});
-  const [swipeHistIdx,setSwipeHistIdx]=useState(()=>{try{const s=localStorage.getItem("otr_swipeHistIdx");return s?parseInt(s,10):0;}catch{return 0;}});
+  const [swipeHistory,setSwipeHistory]=useState([]);
+  const [swipeHistIdx,setSwipeHistIdx]=useState(0);
 
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
@@ -1587,7 +1586,7 @@ export default function OnTheRocks(){
       const alreadyTried=p.includes(name);
       if(!alreadyTried){
         const recipe=allRecipes.find(r=>r.name===name);
-        if(recipe) setTimeout(()=>setRatingPopup(recipe),0);
+        if(recipe&&recipe.rating===0) setTimeout(()=>setRatingPopup(recipe),0);
       }
       return alreadyTried?p.filter(x=>x!==name):[...p,name];
     });
@@ -1690,10 +1689,6 @@ export default function OnTheRocks(){
   const swipeFiltered=useMemo(()=>hasFilters?filtered:null,[hasFilters,filtered]);
 
   const drinkRecipes=useMemo(()=>allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[allRecipes]);
-
-  // persiste histórico de swipe
-  useEffect(()=>{try{localStorage.setItem("otr_swipeHistory",JSON.stringify(swipeHistory));}catch{}},[swipeHistory]);
-  useEffect(()=>{try{localStorage.setItem("otr_swipeHistIdx",String(swipeHistIdx));}catch{}},[swipeHistIdx]);
 
   // inicializa histórico quando receitas carregam
   useEffect(()=>{
@@ -2092,7 +2087,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav tab={mobileTab} setTab={t=>{window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}else{setSearch("");}if(t==="descobrir"){setFilterMode("tudo");}}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav tab={mobileTab} setTab={t=>{window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>deleteRecipe(open)}/>}
