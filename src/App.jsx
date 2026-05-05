@@ -1656,8 +1656,9 @@ export default function OnTheRocks(){
 
   const [ratingPopup,setRatingPopup]=useState(null);
 
-  const toggleFav=n=>setFavs(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
-  const toggleComanda=n=>setComanda(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
+  const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(30);}catch{}};
+  const toggleFav=n=>{haptic();setFavs(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
+  const toggleComanda=n=>{haptic();setComanda(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
   const toggleOwned=s=>setOwned(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
   const toggleTried=n=>setTried(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
   const handleTried=useCallback(name=>{
@@ -2071,6 +2072,10 @@ export default function OnTheRocks(){
                     border:`1px solid ${activeSpirits.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                     color:activeSpirits.length?"#C8A96E":"rgba(240,235,225,0.5)"}}>
                   {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
+                </button>
+                {/* barra aberta */}
+                <button onClick={()=>{if(filterMode==="tenho"){setFilterMode("tudo");}else{setFilterMode("tenho");setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterSheet(null);}}} style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",background:filterMode==="tenho"?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.04)",border:`1px solid ${filterMode==="tenho"?"rgba(74,222,128,0.45)":"rgba(240,235,225,0.09)"}`,color:filterMode==="tenho"?"#4ADE80":"rgba(240,235,225,0.5)"}}>
+                  {filterMode==="tenho"?"✓ Barra":"⊙ Barra"}
                 </button>
                 {/* filtros rápidos */}
                 {[["favs","♥"],["naoprovei","Não provei"]].map(([v,l])=>(
