@@ -1594,7 +1594,6 @@ export default function OnTheRocks(){
             const d = snap.data();
             if(d.custom)    setCustomRecipes(d.custom);
             if(d.favs)      setFavs(d.favs);
-            if(d.comanda)   setComanda(d.comanda);
             if(d.owned)     setOwned(d.owned);
             if(d.tried)     setTried(d.tried);
             if(d.spirits)   setCustomSpirits(d.spirits);
@@ -1615,7 +1614,7 @@ export default function OnTheRocks(){
 
   useEffect(()=>{try{localStorage.setItem("otr_custom",JSON.stringify(customRecipes));}catch{}; syncToFirestore({custom:customRecipes});},[customRecipes]);
   useEffect(()=>{try{localStorage.setItem("otr_favs",JSON.stringify(favs));}catch{}; syncToFirestore({favs});},[favs]);
-  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{}; syncToFirestore({comanda});},[comanda]);
+  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{};},[comanda]);
   useEffect(()=>{try{localStorage.setItem("otr_owned",JSON.stringify(owned));}catch{}; syncToFirestore({owned});},[owned]);
   useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
