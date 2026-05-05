@@ -2057,7 +2057,7 @@ export default function OnTheRocks(){
               {/* mobile: botões família + spirit + filtros */}
               <div className="mnv" style={{display:"none",gap:6,flexWrap:"wrap",marginBottom:10,paddingBottom:4}}>
                 {/* família */}
-                <button onClick={()=>setFilterSheet(filterSheet==="familia"?null:"familia")}
+                <button onClick={()=>activeStyle?setActiveStyle(null):setFilterSheet(filterSheet==="familia"?null:"familia")}
                   style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
                     background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:"rgba(240,235,225,0.04)",
                     border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":"rgba(240,235,225,0.09)"}`,
