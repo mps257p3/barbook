@@ -1755,7 +1755,7 @@ export default function OnTheRocks(){
       if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!activeSpirits.every(s=>r.categories.includes(s)))return false;
-      if(search){const q=norm(search);return norm(r.name).includes(q)||r.ingredients.some(i=>norm(i).includes(q))||r.categories.some(c=>norm(c).includes(q))||norm(r.notes).includes(q);}
+      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+r.ingredients.map(norm).join(" ")+" "+r.categories.map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
     if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
