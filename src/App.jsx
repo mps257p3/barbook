@@ -892,6 +892,8 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const [genErr,setGenErr]=useState(null);
   const [confirmDelete,setConfirmDelete]=useState(false);
   const [hoverStar,setHoverStar]=useState(0);
+  const [localRating,setLocalRating]=useState(recipe.rating);
+  useEffect(()=>setLocalRating(recipe.rating),[recipe.rating]);
   const [noteVal,setNoteVal]=useState(recipe.notes||"");
   const [editingNote,setEditingNote]=useState(false);
   const [sharing,setSharing]=useState(false);
@@ -978,7 +980,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               {/* estrelas */}
               <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:14,alignItems:"center"}}>
                 {[1,2,3,4,5].map(n=>(
-                  <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===recipe.rating?0:n;onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||recipe.rating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
+                  <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
                 ))}
               </div>
               {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:14}}>como você avaliaria?</div>}
