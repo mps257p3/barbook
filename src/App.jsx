@@ -1400,20 +1400,20 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
           {/* área clicável */}
           <div onClick={()=>onOpen(recipe)} style={{cursor:"pointer",position:"relative"}}>
-            <div style={{position:"relative",height:"clamp(150px, 28vh, 230px)",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{position:"relative",height:"clamp(110px,18vh,155px)",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${theme.accent}28 0%, ${theme.accent}09 58%, transparent 100%)`}}/>
               <div style={{filter:`drop-shadow(0 0 36px ${theme.accent}bb) drop-shadow(0 0 90px ${theme.accent}55)`,position:"relative",zIndex:1}}>
-                <GlassIcon categories={recipe.categories} color={theme.accent} size={175} opacity={0.52}/>
+                <GlassIcon categories={recipe.categories} color={theme.accent} size={140} opacity={0.52}/>
               </div>
-              <div style={{position:"absolute",bottom:0,left:0,right:0,height:90,background:`linear-gradient(transparent,${theme.bg})`}}/>
+              <div style={{position:"absolute",bottom:0,left:0,right:0,height:60,background:`linear-gradient(transparent,${theme.bg})`}}/>
             </div>
-            <div style={{padding:"0 24px 26px"}}>
-              <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+            <div style={{padding:"0 18px 18px"}}>
+              <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
                 {[styleTag,spiritTag].filter(Boolean).filter((t,i,a)=>a.indexOf(t)===i).map(t=>(
                   <span key={t} style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:theme.accent,background:`${theme.accent}18`,border:`1px solid ${theme.accent}40`,borderRadius:2,padding:"3px 8px"}}>{t}</span>
                 ))}
               </div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:34,fontWeight:700,color:"#F0EBE1",lineHeight:1.05,letterSpacing:.3,marginBottom:8}}>{recipe.name}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:28,fontWeight:700,color:"#F0EBE1",lineHeight:1.05,letterSpacing:.3,marginBottom:6}}>{recipe.name}</div>
               {recipe.rating>0&&<div style={{marginBottom:10}}><Stars n={recipe.rating} color={theme.accent}/></div>}
               <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}55,transparent)`,marginBottom:12}}/>
               <div style={{display:"flex",flexWrap:"wrap",gap:"5px 8px"}}>
@@ -1429,29 +1429,29 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           </div>
 
           {/* rodapé — tried e comanda centralizados */}
-          <div style={{padding:"14px 40px 20px",display:"flex",alignItems:"center",justifyContent:"center",gap:40,borderTop:`1px solid ${theme.border}22`}}>
+          <div style={{padding:"10px 20px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:28,borderTop:`1px solid ${theme.border}22`}}>
             <button onClick={e=>{e.stopPropagation();onTried();}}
-              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,
                 background:"none",border:"none",cursor:"pointer",
                 color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",
                 transition:"all .15s"}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                 background:isTried?"rgba(74,222,128,0.09)":"none",
                 border:`1px solid ${isTried?"rgba(74,222,128,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:52,height:52,fontSize:20,
+                borderRadius:50,width:44,height:44,fontSize:18,
                 filter:isTried?"drop-shadow(0 0 6px rgba(74,222,128,0.4))":"none",
                 transition:"all .15s"}}>✓</div>
               <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>já provei</span>
             </button>
             <button onClick={e=>{e.stopPropagation();onComanda();}}
-              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,
                 background:"none",border:"none",cursor:"pointer",
                 color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",
                 transition:"all .15s"}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                 background:isComanda?"rgba(200,169,110,0.12)":"none",
                 border:`1px solid ${isComanda?"rgba(200,169,110,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:52,height:52,fontSize:22,
+                borderRadius:50,width:44,height:44,fontSize:20,
                 filter:isComanda?"drop-shadow(0 0 8px rgba(200,169,110,0.6))":"none",
                 transition:"all .15s"}}>{isComanda?"◫":"◻"}</div>
               <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>adicionar à comanda</span>
@@ -2170,9 +2170,9 @@ export default function OnTheRocks(){
                     overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                     boxShadow:`0 16px 40px rgba(0,0,0,0.5), 0 0 30px ${th.accent}18`,
                   }}>
-                    <div style={{position:"relative",height:"clamp(120px,22vh,180px)",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+                    <div style={{position:"relative",height:"clamp(110px,18vh,155px)",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
                       <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${th.accent}30 0%, transparent 100%)`}}/>
-                      <GlassIcon categories={pr.categories} color={th.accent} size={120} opacity={0.55}/>
+                      <GlassIcon categories={pr.categories} color={th.accent} size={110} opacity={0.55}/>
                     </div>
                     <div style={{padding:"6px 16px 20px",textAlign:"center"}}>
                       <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"rgba(240,235,225,0.75)",lineHeight:1.1,letterSpacing:.3}}>{pr.name}</div>
@@ -2181,8 +2181,33 @@ export default function OnTheRocks(){
                 );
               })}
               <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
-              {/* toggle não provados */}
-              <div style={{position:"absolute",bottom:12,left:0,right:0,display:"flex",justifyContent:"center"}}>
+              {/* sheet ocasião (descobrir) */}
+              {filterSheet==="ocasiao"&&(
+                <div style={{position:"absolute",bottom:88,left:12,right:12,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"14px 14px 12px",zIndex:20}}>
+                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:10}}>Ocasião</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {OCCASION_LIST.map(tag=>{
+                      const active=activeOccasions.includes(tag);
+                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
+                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                    })}
+                  </div>
+                  {activeOccasions.length>0&&<button onClick={()=>setActiveOccasions([])} style={{marginTop:8,fontSize:9,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",letterSpacing:1,fontFamily:"Archivo,sans-serif"}}>limpar ×</button>}
+                </div>
+              )}
+              {/* controles bottom */}
+              <div style={{position:"absolute",bottom:12,left:0,right:0,display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+                {/* botão ocasião */}
+                <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
+                  style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
+                    background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                    border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
+                    color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
+                  {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
+                </button>
+                {/* toggle não provados */}
                 <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
                   <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
                     <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
