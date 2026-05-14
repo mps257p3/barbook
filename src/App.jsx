@@ -2116,7 +2116,7 @@ export default function OnTheRocks(){
         </div>
 
         <div className="hdr-filters" style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-          {[["tudo","Todos"],["favs",`♥${favs.length?` ${favs.length}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
+          {[["tudo","Todos"],["favs",`Favoritos${favs.length?` ${favs.length}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
             <button key={v} onClick={()=>setFilterMode(v)} style={{padding:"5px 11px",borderRadius:3,fontSize:10,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.08)"}`,color:filterMode===v?"#A0785A":"rgba(240,235,225,0.3)",transition:"all .15s"}}>{l}</button>
           ))}
         </div>
@@ -2403,7 +2403,7 @@ export default function OnTheRocks(){
                   {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                 </button>
                 {/* filtros rápidos */}
-                {[["favs","♥"],["naoprovei","Não provei"]].map(([v,l])=>(
+                {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
                   <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
                     background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                     border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
