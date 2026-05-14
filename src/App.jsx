@@ -678,6 +678,131 @@ const BASE_RECIPES = [
 ];
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
+// ─── SISTEMA DE BACKGROUND DE CARD (DESCOBRIR) ────────────────────────────────
+const CARD_BG_FILES = {
+  velvet_aperitivo: "/bg/velvet-aperitivo.png",
+  midnight_citrus:  "/bg/midnight-citrus.png",
+  tropical_static:  "/bg/tropical-static.png",
+  smoked_amber:     "/bg/smoked-amber.png",
+  frost_tide:       "/bg/frost-tide.png",
+  silk_cream:       "/bg/silk-cream.png",
+  herbal_noir:      "/bg/herbal-noir.png",
+  electric_tiki:    "/bg/electric-tiki.png",
+  vintage_soda:     "/bg/vintage-soda.png",
+  espresso_void:    "/bg/espresso-void.png",
+  rose_static:      "/bg/rose-static.png",
+  polar_minimal:    "/bg/polar-minimal.png",
+};
+const CARD_SPIRIT_TINTS = {
+  "Gim":                 "rgba(70,130,90,0.22)",
+  "Rum Branco":          "rgba(210,190,110,0.18)",
+  "Rum Envelhecido":     "rgba(155,75,15,0.24)",
+  "Bourbon":             "rgba(170,95,20,0.22)",
+  "Vodka":               "rgba(170,205,235,0.14)",
+  "Whisky":              "rgba(175,95,15,0.26)",
+  "Tequila":             "rgba(195,175,45,0.18)",
+  "Mezcal":              "rgba(110,85,45,0.24)",
+  "Pisco":               "rgba(195,175,135,0.16)",
+  "Conhaque":            "rgba(155,85,15,0.24)",
+  "Campari":             "rgba(195,25,15,0.24)",
+  "Aperol":              "rgba(215,105,15,0.22)",
+  "Cynar":               "rgba(45,75,25,0.24)",
+  "Averna":              "rgba(35,25,15,0.26)",
+  "Fernet":              "rgba(25,45,25,0.26)",
+  "Licor Strega":        "rgba(195,175,35,0.22)",
+  "St‑Germain":          "rgba(175,205,75,0.18)",
+  "Absinto":             "rgba(35,155,55,0.22)",
+  "Cachaça":             "rgba(95,145,45,0.18)",
+  "Cachaça Envelhecida": "rgba(135,75,25,0.22)",
+  "Lillet":              "rgba(215,195,95,0.18)",
+  "Porto":               "rgba(95,25,55,0.24)",
+  "Jerez":               "rgba(175,135,55,0.20)",
+  "Vinho":               "rgba(115,35,55,0.22)",
+  "Espumante":           "rgba(235,215,135,0.16)",
+};
+const CARD_FAMILY_OVERLAYS = {
+  "Sour":      "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(0,0,0,0.18) 100%)",
+  "Highball":  "linear-gradient(180deg, transparent 25%, rgba(0,0,0,0.28) 100%)",
+  "Collins":   "linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.25) 100%)",
+  "Stirred":   "linear-gradient(180deg, rgba(0,0,0,0.08) 0%, transparent 35%, rgba(0,0,0,0.32) 100%)",
+  "Built":     "linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.22) 100%)",
+  "Shaken":    "linear-gradient(125deg, rgba(255,255,255,0.05) 0%, transparent 45%, rgba(0,0,0,0.12) 100%)",
+  "Tiki":      "linear-gradient(135deg, rgba(255,140,0,0.10) 0%, transparent 55%)",
+  "Frozen":    "linear-gradient(180deg, rgba(185,235,255,0.10) 0%, transparent 65%)",
+  "Blended":   "linear-gradient(180deg, rgba(185,235,255,0.08) 0%, transparent 65%)",
+  "Spritz":    "linear-gradient(180deg, rgba(255,215,170,0.08) 0%, transparent 55%)",
+  "Sparkling": "linear-gradient(180deg, rgba(255,215,170,0.07) 0%, transparent 55%)",
+  "Buck":      "linear-gradient(135deg, rgba(255,200,80,0.06) 0%, transparent 50%)",
+  "Hot":       "linear-gradient(180deg, rgba(255,90,0,0.10) 0%, transparent 65%)",
+  "Smash":     "linear-gradient(135deg, rgba(80,180,80,0.08) 0%, transparent 55%)",
+};
+function getMood(recipe) {
+  const cats = recipe.categories || [];
+  const ings = (recipe.ingredients || []).join(" ").toLowerCase();
+  const has  = (...ss) => ss.some(s => cats.includes(s));
+  const ing  = (...ws) => ws.some(w => ings.includes(w));
+  if (ing("café","espresso","coffee","cold brew"))                                    return "espresso_void";
+  if (has("St‑Germain","Lillet"))                                                     return "rose_static";
+  if (has("Tiki") && ing("falernum","orgeat","fassionola"))                           return "electric_tiki";
+  if (has("Tiki"))                                                                    return "tropical_static";
+  if (ing("maracujá","passion fruit") && !has("Campari","Aperol"))                   return "tropical_static";
+  if (ing("caju","cajuína") && !has("Campari","Aperol","Whisky","Bourbon"))          return "tropical_static";
+  if (has("Campari","Aperol","Cynar","Averna","Porto","Jerez","Vinho","Fernet") && !has("Highball","Spritz","Tiki")) return "velvet_aperitivo";
+  if (has("Absinto","Licor Strega") && !has("Highball","Spritz"))                    return "herbal_noir";
+  if (has("Whisky","Bourbon","Conhaque") && has("Stirred","Built") && !has("Highball")) return "smoked_amber";
+  if (has("Mezcal") && !has("Highball","Sour","Collins"))                            return "smoked_amber";
+  if (has("Frozen","Blended"))                                                        return "silk_cream";
+  if (has("Gim") && has("Stirred") && !has("Sour","Collins","Fizz","Highball"))     return "polar_minimal";
+  if (has("Vodka") && has("Stirred") && !has("Sour","Highball"))                    return "polar_minimal";
+  if (has("Gim") && has("Sour","Collins","Fizz","Smash"))                           return "midnight_citrus";
+  if (has("Highball","Spritz","Sparkling","Collins","Fizz","Buck","Não alcóolicos")) return "frost_tide";
+  if (ing("abacaxi","coco tropical","lichia","manga"))                               return "tropical_static";
+  if (has("Rum Branco","Rum Envelhecido","Cachaça","Cachaça Envelhecida") && has("Built","Stirred")) return "vintage_soda";
+  if (has("Rum Branco","Rum Envelhecido"))                                           return "tropical_static";
+  if (has("Cachaça","Cachaça Envelhecida"))                                          return "vintage_soda";
+  if (has("Whisky","Bourbon","Conhaque","Mezcal"))                                   return "smoked_amber";
+  if (has("Tequila") && has("Sour","Smash"))                                        return "midnight_citrus";
+  if (has("Tequila"))                                                                return "frost_tide";
+  if (has("Gim"))                                                                    return "midnight_citrus";
+  if (has("Vodka"))                                                                  return "frost_tide";
+  return "frost_tide";
+}
+function getCardVisual(recipe) {
+  const mood         = getMood(recipe);
+  const cats         = recipe.categories || [];
+  const ings         = (recipe.ingredients || []).join(" ").toLowerCase();
+  const spiritCat    = cats.find(c => CARD_SPIRIT_TINTS[c]);
+  const spiritTint   = spiritCat ? CARD_SPIRIT_TINTS[spiritCat] : null;
+  const TECH         = ["Stirred","Built","Shaken"];
+  const familyCat    = STYLE_PRIORITY.find(s => cats.includes(s))
+                    || TECH.find(t => cats.includes(t))
+                    || null;
+  const familyGrad   = familyCat ? CARD_FAMILY_OVERLAYS[familyCat] : null;
+  const particleClass =
+    (cats.includes("Sparkling")||cats.includes("Spritz")||ings.includes("espumante")||ings.includes("prosecco")||ings.includes("champagne"))
+      ? "otr-particles-bubbles"
+      : (ings.includes("café")||ings.includes("espresso"))
+      ? "otr-particles-grain"
+      : null;
+  return { bgImage: CARD_BG_FILES[mood] || CARD_BG_FILES.frost_tide, spiritTint, familyGrad, particleClass };
+}
+function buildCardBg(visual) {
+  const layers = [
+    "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.30) 44%, transparent 68%)",
+    visual.familyGrad,
+    visual.spiritTint ? `linear-gradient(${visual.spiritTint}, ${visual.spiritTint})` : null,
+    "linear-gradient(rgba(6,4,2,0.46), rgba(6,4,2,0.46))",
+    `url('${visual.bgImage}')`,
+  ].filter(Boolean);
+  const sizes = layers.slice(0,-1).map(()=>"100% 100%").concat("cover").join(", ");
+  return {
+    backgroundImage: layers.join(", "),
+    backgroundSize:  sizes,
+    backgroundPosition: layers.map(()=>"center").join(", "),
+    backgroundRepeat: "no-repeat",
+  };
+}
+
 function getTheme(cats=[]) {
   for (const s of STYLE_PRIORITY) if (cats.includes(s)) return TYPE_THEME[s];
   return TYPE_THEME["_default"];
@@ -1391,6 +1516,7 @@ function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActi
 // ─── SWIPE CARD ───────────────────────────────────────────────────────────────
 function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen}){
   const theme=getTheme(recipe.categories);
+  const visual=getCardVisual(recipe);
   const styleTag=recipe.categories.find(c=>STYLE_CATS.has(c));
   const spiritTag=recipe.categories.find(c=>SPIRIT_CATS.has(c));
   const [drag,setDrag]=useState(0);
@@ -1440,13 +1566,16 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
-          style={{width:"100%",background:theme.bg,borderRadius:12,
+          style={{width:"100%",...buildCardBg(visual),borderRadius:12,
             border:`1px solid ${theme.border}33`,
             cursor:dragging?"grabbing":"grab",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
             boxShadow:`0 28px 70px rgba(0,0,0,.75), 0 0 50px ${theme.accent}1a`,
-            overflow:"hidden",touchAction:"none"}}>
+            overflow:"hidden",touchAction:"none",position:"relative"}}>
+
+          {/* partículas por ingrediente */}
+          {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:2}}/>}
 
           {/* overlay esquerda — próximo */}
           <div style={{position:"absolute",inset:0,borderRadius:12,background:"linear-gradient(to right,rgba(240,235,225,0.07),transparent)",opacity:nextPct,pointerEvents:"none",zIndex:10}}/>
@@ -1461,7 +1590,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               <div style={{filter:`drop-shadow(0 0 28px ${theme.accent}bb) drop-shadow(0 0 70px ${theme.accent}55)`,position:"relative",zIndex:1}}>
                 <GlassIcon categories={recipe.categories} color={theme.accent} size={110} opacity={0.52}/>
               </div>
-              <div style={{position:"absolute",bottom:0,left:0,right:0,height:50,background:`linear-gradient(transparent,${theme.bg})`}}/>
+              <div style={{position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(4,2,1,0.88))"}}/>
             </div>
             <div style={{padding:"8px 18px 16px"}}>
               <div style={{display:"flex",gap:5,marginBottom:8,flexWrap:"wrap"}}>
@@ -2214,11 +2343,12 @@ export default function OnTheRocks(){
               ].map(({pr,dx,rot})=>{
                 if(!pr)return null;
                 const th=getTheme(pr.categories);
+                const pv=getCardVisual(pr);
                 return(
                   <div key={dx} style={{
                     position:"absolute",left:"50%",top:"50%",width:270,
                     transform:`translate(calc(-50% + ${dx}px),calc(-50% - 28px)) rotate(${rot}deg) scale(0.88)`,
-                    borderRadius:12,background:th.bg,border:`1px solid ${th.border}88`,
+                    borderRadius:12,...buildCardBg(pv),border:`1px solid ${th.border}88`,
                     overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                     boxShadow:`0 16px 40px rgba(0,0,0,0.5), 0 0 30px ${th.accent}18`,
                   }}>
