@@ -9,6 +9,7 @@ const TYPE_THEME = {
   "Sour":           { bg:"#1C1400", border:"#C8860A", accent:"#F4A623", label:"#FFD580" },
   "Highball":       { bg:"#00141E", border:"#0A7EA4", accent:"#38BDF8", label:"#7DD3FC" },
   "Collins":        { bg:"#00140A", border:"#16803C", accent:"#4ADE80", label:"#86EFAC" },
+  "Sparkling":      { bg:"#181600", border:"#BFA800", accent:"#E8D060", label:"#F5E98A" },
   "Spritz":         { bg:"#1E0800", border:"#C2410C", accent:"#FB923C", label:"#FDBA74" },
   "Fizz":           { bg:"#00131A", border:"#0E7490", accent:"#22D3EE", label:"#A5F3FC" },
   "Não alcóolicos": { bg:"#081400", border:"#4D7C0F", accent:"#84CC16", label:"#D9F99D" },
@@ -19,32 +20,67 @@ const TYPE_THEME = {
   "Smash":          { bg:"#001A0A", border:"#065F46", accent:"#10B981", label:"#6EE7B7" },
   "Sling":          { bg:"#1A0010", border:"#9D174D", accent:"#EC4899", label:"#F9A8D4" },
   "Hot":            { bg:"#1A0A00", border:"#DC2626", accent:"#F87171", label:"#FCA5A5" },
+  "Frozen":         { bg:"#001418", border:"#0891B2", accent:"#22D3EE", label:"#A5F3FC" },
+  "Tiki":           { bg:"#190B00", border:"#B45300", accent:"#F59E0B", label:"#FDE68A" },
+  "Blended":        { bg:"#0A001A", border:"#6D28D9", accent:"#A78BFA", label:"#DDD6FE" },
   "Beer Highballs":    { bg:"#0F0800", border:"#A16207", accent:"#CA8A04", label:"#FEF08A" },
   "Preparos Caseiros": { bg:"#080E02", border:"#3D6B10", accent:"#74A828", label:"#AEDD72" },
   "_default":       { bg:"#151008", border:"#78614A", accent:"#C8A96E", label:"#E5C99E" },
 };
 
-const STYLE_PRIORITY = ["Não alcóolicos","Sour","Highball","Collins","Spritz","Fizz","Buck","Beer Highballs","Smash","Sling","Hot","Stirred","Shaken","Built","Preparos Caseiros"];
+const STYLE_PRIORITY = ["Não alcóolicos","Sour","Highball","Collins","Sparkling","Spritz","Fizz","Buck","Beer Highballs","Smash","Sling","Hot","Frozen","Tiki","Blended","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
-const SPIRIT_CATS = new Set(["Gim","Rum Branco","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Averna","Drambuie","Absinto","Amaretto","St‑Germain","Licor","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Bianco","Vermute Rosso","Vermute seco","Ginger Beer","Cachaça","Cachaça Envelhecida","Fernet","Licor Strega","Jerez","Porto","Lillet","Vinho"]);
+const SPIRIT_CATS = new Set(["Gim","Rum Branco","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Averna","Drambuie","Absinto","Amaretto","St‑Germain","Licor","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Bianco","Vermute Rosso","Vermute seco","Ginger Beer","Cachaça","Cachaça Envelhecida","Fernet","Licor Strega","Jerez","Porto","Lillet","Vinho","Cordial"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 const FAMILY_GROUPS = [
-  { label:"Família", items:["Sour","Highball","Collins","Spritz","Fizz","Sling","Buck","Beer Highballs","Smash","Hot","Não alcóolicos"] },
+  { label:"Família", items:["Sour","Highball","Collins","Sparkling","Spritz","Fizz","Sling","Buck","Beer Highballs","Smash","Hot","Frozen","Tiki","Blended","Não alcóolicos"] },
   { label:"Preparos", items:["Preparos Caseiros"] },
 ];
 const TECHNIQUES = ["Stirred","Shaken","Built"];
+
+const OCCASION_LIST = ["Refrescante","Reconfortante","Festa","Introspectivo","Descomplicado","Complexo","Digestivo","Piscina","Churrasco","A dois","Inesperados","Clássicos","Baixo álcool","Tropical"];
+
+const OCCASION_TAGS = {
+  "Pisco Sour":["Clássicos","Festa"],"Uva & Sal":["Introspectivo","Descomplicado"],"Flor de Pedra":["Introspectivo","A dois"],"Campo Seco":["Introspectivo","Inesperados"],"Pisco & Coco Tostado":["Inesperados"],"Verde Urbano":["Refrescante","Piscina"],"Noite em Lima":["Introspectivo"],"Pisco com Cerveja Branca":["Descomplicado","Churrasco"],"Seco de Maçã":["Digestivo","Inesperados"],"Pisco Terroso":["Inesperados"],
+  "Sazerac":["Clássicos","Introspectivo"],"SAZERAC por Kennedy Nascimento":["Introspectivo","Complexo"],"Brandy Alexander":["Digestivo"],"Between the Sheets":["A dois"],"Stinger":["Digestivo","Descomplicado"],"French Connection":["Digestivo","Descomplicado"],"Brandy Crusta":["Clássicos","Complexo"],"Champs-Élysées":["Introspectivo","A dois"],
+  "Sevilla Sour":["Refrescante","A dois"],"Smokey Martini":["Introspectivo"],"Spring Martini":["Introspectivo","A dois"],"Tom Collins":["Refrescante","Clássicos"],"Tom Collins (20's B)":["Refrescante","Inesperados"],"Corpse Reviver #2":["Clássicos","Complexo"],"White Lady":["Clássicos","A dois"],"Hanky Panky":["Introspectivo","Inesperados"],"Southside":["Refrescante","Piscina"],"20th Century":["Introspectivo","Inesperados"],"Bee's Knees":["Clássicos","Refrescante"],"Last Word":["Clássicos","Complexo"],"Gimlet":["Clássicos","Descomplicado"],"Ramos Gim Fizz":["Complexo","Inesperados"],"The Clover Club":["Festa","A dois"],"Gibson":["Introspectivo","Clássicos"],"Angel Face":["Introspectivo","Inesperados"],"Casino":["Introspectivo","Clássicos"],"Paradise":["Refrescante"],"Monkey Gland":["Inesperados"],"Tuxedo":["Introspectivo","Complexo"],"Bijou":["Introspectivo","Complexo"],"Black Negroni":["Introspectivo"],"French Pearl":["Refrescante","Complexo"],"Alaska":["Introspectivo","Descomplicado"],"Pegu Club":["Introspectivo","Clássicos"],"Singapore Sling":["Clássicos","Complexo","Festa","Tropical"],"Industry Sour":["Inesperados"],"Vesper":["Clássicos","Introspectivo"],"Jardim Suspenso":["Refrescante","Piscina"],"Jardim Elétrico":["Refrescante","Piscina"],"Estufa":["Refrescante","Inesperados"],"Witch's Kiss":["Introspectivo"],"Strega Martini":["Introspectivo"],"French Gimlet":["Refrescante","A dois"],"Névoa Verde":["Introspectivo","Inesperados"],"Grapefruit Gimlet":["Refrescante","Descomplicado"],"Jardim Alto":["Refrescante","Piscina"],"Collins de Toranja com Ervas":["Refrescante"],"Rubi Tônico":["Refrescante"],
+  "Whiskey Sour":["Clássicos","Refrescante"],"New York Sour":["Clássicos","A dois"],"Penicillin":["Clássicos","Complexo"],"Gold Rush":["Reconfortante"],"Paper Plane":["Clássicos","Introspectivo"],"Amaretto Sour":["Festa","Reconfortante"],"Boulevardier":["Reconfortante","Clássicos"],"Rob Roy":["Introspectivo","Clássicos"],"Vieux Carré":["Introspectivo","Clássicos"],"Toronto":["Introspectivo","Inesperados"],"Black Manhattan":["Introspectivo","Inesperados"],"Horse's Neck":["Reconfortante","Churrasco"],"Blood and Sand":["Inesperados","Complexo"],"Godfather":["Reconfortante","Digestivo"],"Irish Coffee":["Reconfortante","Clássicos"],"Hot Toddy":["Reconfortante","Introspectivo"],"Rusty Nail":["Reconfortante","Digestivo"],"Brown Derby":["Reconfortante","Introspectivo"],"Mint Julep":["Clássicos","Refrescante"],"Trinidad Sour":["Inesperados","Complexo"],"Remember the Maine":["Introspectivo","Inesperados"],"Tipperary":["Introspectivo","Complexo"],"Smoked Apple Whiskey Tonic":["Reconfortante"],"Elder Fashion":["Reconfortante","Introspectivo"],"Benevento Old Fashioned":["Reconfortante","Introspectivo"],"Pera & Fumaça":["Introspectivo","A dois"],"Dourado Frio":["Reconfortante","Introspectivo"],"Shanksjillo":["Digestivo","Inesperados"],"Autumn Smoke":["Reconfortante","Introspectivo"],"Spiced Nightcap":["Digestivo","Reconfortante"],"Highland Orchard":["Reconfortante"],"Honey & Heather":["Introspectivo","Inesperados"],"Golden Citrus Fizz":["Refrescante"],"Bitter Hive":["Inesperados"],"Barley Highball":["Introspectivo","Inesperados"],"Tropical Heather":["Inesperados"],"Illegal Sour":["Inesperados","Complexo"],"Suffering Bastard":["Inesperados","Complexo"],"Highball de Toranja e Bourbon":["Refrescante","Churrasco"],
+  "Tommy's Margarita":["Clássicos","Refrescante"],"Spicy Margarita":["Festa","Churrasco"],"Ranch Water":["Refrescante","Piscina"],"Batanga":["Descomplicado","Churrasco"],"Naked and Famous":["Introspectivo","Inesperados"],"Mezcal Sour":["Reconfortante","Introspectivo"],"Matador":["Refrescante","Piscina","Tropical"],"Agave Spritz":["Refrescante","Piscina"],"Verde Brisa":["Refrescante","Piscina","Tropical"],"Sol e Sal":["Refrescante","Piscina"],"Sombra na Areia":["Piscina","Introspectivo"],"Cacto Poético":["Refrescante","Piscina"],"Bruma de Agave":["Refrescante","Piscina"],"Fumaça de Frutas":["Inesperados"],"Oaxacan Old Fashioned":["Introspectivo","Inesperados"],"Mezcal Negroni":["Introspectivo","Clássicos"],"Paloma":["Refrescante","Piscina","Clássicos"],"Paloma Cordial":["Refrescante","Piscina"],"Tequila Sunrise":["Festa","Piscina"],"Frozen Margarita":["Piscina","Festa"],"El Diablo":["Refrescante","Piscina"],"Bloody Maria":["Churrasco","Inesperados"],"Margarita Laranja Sanguínea e Aperol":["Refrescante","Churrasco"],"Key Lime Pie Margarita":["Inesperados"],"Margarita Ancho Chili e Toranja":["Inesperados","Churrasco"],"Margarita Picante de Pepino":["Refrescante","Churrasco"],"Mezcal & Cenoura Queimada":["Inesperados"],"Linha Clara":["Introspectivo","Inesperados"],
+  "Bloody Mary":["Clássicos","Churrasco"],"Harvey Wallbanger":["Festa","Inesperados"],"Sex on the Beach":["Piscina","Festa"],"Lemon Drop":["Festa","Refrescante"],"Mule de Framboesa":["Refrescante","Festa"],"Caipiroska":["Refrescante","Churrasco"],"White Russian":["Digestivo","Reconfortante"],"White Russian de abóbora":["Digestivo","Inesperados"],"Black Russian":["Digestivo","Descomplicado"],"Espresso Martini":["Digestivo","Festa"],"Cosmopolitan":["Festa","Clássicos"],"French Martini":["Festa","A dois"],"Rose":["A dois"],"Russian Spring Punch":["Festa","Refrescante"],"Vodka Tônica":["Descomplicado","Refrescante"],"Citrus Cloud":["Refrescante","A dois"],"Floral Mule Leve":["Refrescante","Piscina"],"Solar Fizz":["Refrescante","Piscina"],"Flor de Pressa":["Festa","Piscina"],"Bitter & Melão":["Inesperados"],"Salty Dog":["Refrescante","Piscina"],
+  "Daiquiri":["Clássicos","Refrescante"],"Frozen Daiquiri":["Piscina","Festa","Tropical"],"Cuba Libre":["Clássicos","Churrasco"],"El Presidente":["Clássicos","Introspectivo","Tropical"],"Planter's Punch":["Festa","Piscina","Tropical"],"Rum Old Fashioned":["Reconfortante","Introspectivo"],"Painkiller":["Piscina","Festa","Tropical"],"Mary Pickford":["Inesperados","Tropical"],"Piña Colada":["Piscina","Clássicos","Tropical"],"Mai Tai":["Clássicos","Festa","Tropical"],"Jungle Bird":["Festa","Complexo","Tropical"],"Jungle Bird Maraschino":["Festa","Complexo","Tropical"],"Old Cuban":["Clássicos","A dois"],"Yellow Bird":["Festa","Piscina","Tropical"],"Barracuda":["Festa","Piscina","Tropical"],"Zombie":["Festa","Complexo","Tropical"],"Kingston Mineral":["Introspectivo","Inesperados"],"Trópico Seco":["Introspectivo","Tropical"],
+  "Caipirinha":["Clássicos","Churrasco","Piscina"],"Batida de Coco":["Festa","Piscina","Tropical"],"Batida de Maracujá":["Festa","Piscina","Tropical"],"Cachaça Sour":["Refrescante","Churrasco"],"Quentão":["Reconfortante","Festa"],"Rabo de Galo":["Introspectivo","Clássicos"],"Leite de Onça":["Reconfortante","Festa"],"Caju Amigo":["Refrescante","Churrasco","Tropical"],"Macunaíma":["Introspectivo","Inesperados"],"Gabriela":["Inesperados"],"Cachaça Collins":["Refrescante","Piscina"],"Highball de Cachaça":["Descomplicado","Churrasco"],
+  "Old Fashioned de Cachaça":["Reconfortante","Clássicos"],"Caipirinha Envelhecida":["Introspectivo","Churrasco"],"Honey & Wood":["Reconfortante","Introspectivo"],"Julep Brasileiro":["Reconfortante","Introspectivo"],"Amaro Tropical":["Digestivo","Introspectivo"],"Madeira & Abacaxi":["Introspectivo","Inesperados","Tropical"],"Café com Cachaça":["Reconfortante","Digestivo"],"Orchard Brasileiro":["Introspectivo"],"Cachaça Manhattan":["Introspectivo"],"Spiced Cane":["Reconfortante","Inesperados"],"Rabo de Galo Envelhecido":["Introspectivo"],"Sazerac Brasileiro":["Introspectivo","Clássicos"],"Tropical Old Fashioned":["Introspectivo","Inesperados"],"Flor Rubra":["A dois","Refrescante"],"Highball de Amburana & Sal":["Introspectivo","Inesperados"],"Cachaça & Jerez":["Introspectivo","Inesperados"],
+  "St‑Germain Hugo Spritz":["Refrescante","Piscina","Baixo álcool"],"St‑Germain Spritz":["Refrescante","Piscina","Baixo álcool"],"St-Germain Sour":["Refrescante","A dois"],"The Harvest":["Refrescante","A dois","Baixo álcool"],"Chá da Tarde":["Refrescante","Introspectivo"],"Vinho de Jardim":["Refrescante","A dois","Baixo álcool"],"Dourado Amargo":["Reconfortante"],"White Orchard Martini":["Introspectivo","A dois"],
+  "Strega Sour":["Introspectivo","Inesperados"],"Strega Spritz":["Refrescante","Piscina","Baixo álcool"],"Italian Buck":["Refrescante"],"Strega Coffee Flip":["Digestivo","Inesperados"],"Strega Highball":["Descomplicado","Refrescante"],"Giardino Giallo":["Refrescante","Piscina"],"Zafferano Tonic":["Inesperados","Refrescante"],"Ervas & Casca":["Inesperados"],"Campo Noturno":["Digestivo","Introspectivo"],"Ouro & Fumaça":["Introspectivo","Inesperados"],"Freddo di Benevento":["Introspectivo","Descomplicado"],"Fruto Secreto":["Introspectivo"],"Golden Orchard":["Refrescante","Piscina"],"Noite em Benevento":["Digestivo","Reconfortante"],"Citrus Incantation":["Refrescante"],"Campo Alto":["Refrescante","Piscina"],"Tropical Esotérico":["Inesperados","Festa","Tropical"],"Strega & Tonic Verde":["Refrescante","Piscina"],"Golden Orange Fizz":["Refrescante","Descomplicado"],"Floral Witch":["Refrescante","Piscina"],"Bitter Sunshine":["Refrescante","Inesperados","Baixo álcool"],
+  "Bamboo":["Introspectivo","Inesperados","Baixo álcool"],"Adonis":["Introspectivo","Inesperados","Baixo álcool"],"Sherry Cobbler":["Clássicos","Refrescante","Baixo álcool"],"Rebujito":["Refrescante","Festa","Baixo álcool"],"Tío Pepe & Tônica":["Refrescante","Descomplicado","Baixo álcool"],"Sherry Highball":["Refrescante","Descomplicado","Baixo álcool"],"Sherry Sour":["Introspectivo","Baixo álcool"],"East India Sour":["Digestivo","Inesperados"],"Sherry Old Fashioned":["Introspectivo","Inesperados"],"Coronation Cocktail":["Inesperados"],
+  "Bosco Notturno":["Reconfortante","Introspectivo"],"Caramello Spritz":["Refrescante","Inesperados","Baixo álcool"],"Nero Fizz":["Inesperados"],"Sicilian Orchard":["Digestivo","Reconfortante"],"Amaro Tonic Café":["Inesperados","Refrescante"],"Dark Tropic":["Inesperados","Tropical"],
+  "Jardim Noturno":["Inesperados","Introspectivo"],"Maçã Verde Elétrica":["Refrescante","Inesperados"],"Fennel Tonic":["Inesperados","Introspectivo"],"Solar Verde":["Refrescante","Inesperados"],"Vinha Fantasma":["Inesperados"],"Mate Verde":["Inesperados","Refrescante"],"Abacaxi Anisado":["Inesperados","Refrescante"],"Green Shandy":["Inesperados","Churrasco"],
+  "Fernet & Coke":["Descomplicado","Churrasco"],"Fernet Sour":["Introspectivo"],"Fernet Ginger Highball":["Refrescante","Churrasco"],"Fernet Spritz":["Refrescante","Inesperados"],
+  "Porto Tônico Tinto":["Refrescante","Piscina","Baixo álcool"],"Porto Flip":["Digestivo","Inesperados"],"Porto Negroni":["Introspectivo","Inesperados"],"Porto Branco & Tônica":["Refrescante","Piscina","Baixo álcool"],"Porto Branco Sour":["Refrescante","Baixo álcool"],"Porto Branco Spritz":["Refrescante","Piscina","Baixo álcool"],
+  "Lillet Vive":["Refrescante","Piscina","Baixo álcool"],"Lillet Berry":["Refrescante","A dois","Baixo álcool"],"Lillet & Gim Highball":["Refrescante"],"Lillet Honey Lemon":["Refrescante"],"White Negroni Tropical":["Introspectivo","Inesperados"],"Lillet Garden Spritz":["Refrescante","Piscina","Baixo álcool"],"Cynar Sunset Highball":["Refrescante","Baixo álcool"],"French Aviation (hack)":["Refrescante","Introspectivo"],"Lillet Orchard":["Introspectivo","Baixo álcool"],"Almost Martini":["Introspectivo"],"Horta & Laranja Queimada":["Introspectivo","Inesperados"],"Lillet Gold Rush":["Reconfortante"],"Solar Highball":["Refrescante","Piscina","Baixo álcool"],"Lillet Spritz":["Refrescante","Piscina","Baixo álcool"],"Lillet & Tônica":["Refrescante","Descomplicado","Baixo álcool"],"Jasmine":["Inesperados","Introspectivo"],"Lillet Rosé Spritz":["Refrescante","A dois","Baixo álcool"],
+  "Americano":["Clássicos","Refrescante","Baixo álcool"],"Cynar Tônica":["Refrescante","Descomplicado","Baixo álcool"],"Cynar Spritz":["Refrescante","Piscina","Baixo álcool"],"Cynar & Soda Salina":["Inesperados"],"Bitter Milk Punch":["Inesperados","Complexo"],"Vinho Fantasma":["Reconfortante","Inesperados"],"Rubor Picante":["Inesperados"],"Espresso Amaro Highball":["Inesperados"],"Casca & Fumaça":["Introspectivo","Inesperados"],"Campari Lemon Tonic":["Refrescante"],"Laranja & Sal":["Refrescante","Descomplicado"],"Highball Picante":["Refrescante","Inesperados"],"Uva Amarga":["Inesperados"],"Bitter Ginger Highball":["Refrescante","Churrasco"],"Verde & Amargo":["Refrescante","Inesperados"],"Tomate Highball":["Inesperados"],
+  "Mimosa":["Clássicos","Festa","Baixo álcool"],"Bellini":["Clássicos","Festa","A dois","Baixo álcool"],"Rossini":["Festa","A dois","Baixo álcool"],"Tintoretto":["A dois","Baixo álcool"],"Puccini":["A dois","Baixo álcool"],"Kir Royale":["Clássicos","A dois","Baixo álcool"],"Champagne Cocktail":["Clássicos","A dois"],"Spritz de Toranja":["Refrescante","Piscina","Baixo álcool"],
+  "Sangria":["Festa","Churrasco","Baixo álcool"],
+  "Virgin Mojito":["Refrescante","Piscina"],"Shirley Temple":["Festa","Piscina"],"Arnold Palmer":["Refrescante","Piscina"],"Hibiscus Fizz":["Refrescante","Piscina"],"Cucumber Cooler":["Refrescante","Piscina"],"Água de Coco Spritz":["Refrescante","Piscina","Tropical"],"Virgin Margarita":["Refrescante","Piscina"],"Ginger Lemonade":["Refrescante","Piscina"],"Shrub de Frutas Vermelhas":["Refrescante","Inesperados"],
+  "CRF Sour":["Refrescante"],"CRF Old Fashioned":["Reconfortante","Introspectivo"],"CRF com St‑Germain":["Refrescante"],
+  "Pimm's Cup":["Clássicos","Festa","Piscina"],"Grasshopper":["Digestivo","Inesperados"],"Golden Dream":["Digestivo"],"Cachanchara":["Inesperados"],"Bronx Cocktail":["Clássicos","Inesperados"],
+};
 
 const FAMILY_DESC = {
   "Sour":           "Equilíbrio clássico entre destilado, cítrico e adoçante. O frescor do limão encontra a doçura do xarope, criando drinks vibrantes e bem estruturados. Podem levar clara de ovo, que traz textura aveludada. É a base de famílias como Collins e Fizz — a principal diferença está no uso de gás e na textura final.",
   "Highball":       "Simplicidade que nunca sai de moda. Um destilado combinado com um mixer gelado — água tônica, refrigerante ou soda — servido num copo alto com bastante gelo. Direto e refrescante, com foco no equilíbrio e na diluição ao longo do tempo.",
   "Collins":        "Um Sour alongado com soda, servido num copo alto. Leve, cítrico e efervescente, perfeito para quem busca frescor com um pouco mais de volume.",
-  "Spritz":         "Drinks com vinho espumante ou prosecco como base, completados com um licor amargo ou aperitivo e uma splash de soda. Cor vibrante, amargor elegante e muitas bolhas. Uma alternativa sofisticada aos Highballs para quem prefere algo mais aromático e menos alcoólico.",
+  "Sparkling":      "Drinks construídos diretamente sobre espumante, champagne ou prosecco — sem adição de soda. Estrutura simples: o espumante encontra um suco, purê ou licor e é servido em flute ou coupe, sem gelo. A carbonatação natural é protagonista. Mimosa, Bellini e Champagne Cocktail são os exemplos mais clássicos.",
+  "Spritz":         "Drinks com vinho espumante ou prosecco como base, completados com um licor amargo ou aperitivo e uma splash de soda. Cor vibrante, amargor elegante e muitas bolhas. Servidos com bastante gelo em taça grande. Uma alternativa sofisticada aos Highballs para quem prefere algo mais aromático e menos alcoólico.",
   "Fizz":           "Compartilha o DNA do Sour e do Collins — destilado, cítrico e adoçante — mas é batido no shaker antes de receber a soda, criando uma textura mais leve, aerada e espumosa. Um clássico das tardes quentes.",
   "Sling":          "Destilado, adoçante, cítrico e água — uma das estruturas mais antigas da coquetelaria. Mais simples que um Sour e menos efervescente que um Collins, o Sling carrega uma elegância histórica que deu origem a muitos clássicos modernos.",
   "Buck":           "Espirituoso, suco de limão e ginger beer ou ginger ale. A picância do gengibre faz todo o trabalho aqui — diferente do Highball, que usa mixers neutros, o Buck tem personalidade própria e inconfundível. O Moscow Mule é o exemplo mais famoso da família.",
   "Beer Highballs": "Cerveja como mixer principal — combinada com destilados ou licores para drinks longos, refrescantes e com caráter.",
   "Smash":          "Ervas frescas e frutas amassadas diretamente no copo ou shaker, misturadas com destilado e gelo quebrado. Mais rústico e aromático que um Sour, mais cheio de frescor que um Built. O processo de macerar os ingredientes é o que define o caráter do drink.",
   "Hot":            "Para os dias frios ou momentos de aconchego. Drinks servidos quentes — com chá, café, leite ou água quente — que aquecem por dentro e encantam pelos aromas. Enquanto Shaken e Stirred trabalham o frio e a diluição, os Hot drinks jogam com o calor para liberar camadas de sabor.",
+  "Frozen":         "Drinks preparados no liquidificador com gelo triturado, resultando em texturas cremosas a meio caminho entre bebida e sobremesa. Temperatura e proporção de gelo definem a consistência — cremoso é o acerto, aguado é o erro.",
+  "Tiki":           "Coquetelaria tropical criada nos EUA dos anos 1930, inspirada no Pacífico Sul. Rums em camadas, frutas exóticas, xaropes especiados e apresentações exuberantes. Don Beach e Trader Vic são os fundadores do estilo — extravagante, complexo e sem desculpas.",
+  "Blended":        "Drinks batidos no liquidificador — podem ser congelados ou não. A textura é o elemento principal: cremosa, aerada ou granulada. Abrangem desde daiquiris frozen até coladas e drinks com sorvete.",
   "Não alcóolicos": "Todo o sabor, zero álcool. Drinks elaborados com xaropes artesanais, sucos, ervas e água tônica — tão complexos e bem construídos quanto qualquer Sour, Spritz ou Collins da carta. A técnica é a mesma; o que muda é a base.",
   "Stirred":        "Mexidos delicadamente com gelo até atingir a temperatura e diluição ideais. Sem shaker, sem barulho — só textura sedosa e sabor concentrado. O oposto do Shaken: aqui a aeração não é bem-vinda, e os destilados falam por si mesmos.",
   "Shaken":         "Agitados vigorosamente no shaker para misturar, resfriar e aerar de uma vez. O oposto do Stirred: resultam em drinks mais frios, levemente diluídos e com textura viva. É a técnica certa para receitas com cítrico, clara de ovo ou sucos — como a maioria dos Sours e Fizzes.",
@@ -60,7 +96,7 @@ const FAMILY_GLASS = {
   "Highball":"highball","Buck":"highball","Beer Highballs":"highball","Não alcóolicos":"highball",
   "Collins":"collins","Fizz":"collins","Sling":"collins",
   "Stirred":"rocks","Built":"rocks","Smash":"rocks",
-  "Spritz":"wine","Hot":"irish","_default":"rocks",
+  "Sparkling":"coupe","Spritz":"wine","Hot":"irish","Frozen":"collins","Tiki":"highball","Blended":"collins","_default":"rocks",
 };
 
 function GlassIcon({ categories=[], color="#C8A96E", size=40, opacity=1 }) {
@@ -133,40 +169,40 @@ function GlassIcon({ categories=[], color="#C8A96E", size=40, opacity=1 }) {
 
 // ─── RECEITAS ─────────────────────────────────────────────────────────────────
 const BASE_RECIPES = [
-  {name:"Aperol Spritz",categories:["Espumante","Highball","Built"],ingredients:["150 ml prosecco","100 ml Aperol","50 ml água com gás","5 cubos gelo","1 rodela laranja"],steps:["Coloque os ingredientes em um copo largo","Obedeça à proporção 3:2:1 — prosecco, Aperol e água com gás"],notes:"",rating:0,servings:"",custom:false},
+  {name:"Aperol Spritz",categories:["Espumante","Spritz","Built"],ingredients:["150 ml prosecco","100 ml Aperol","50 ml água com gás","5 cubos gelo","1 rodela laranja"],steps:["Coloque os ingredientes em um copo largo","Obedeça à proporção 3:2:1 — prosecco, Aperol e água com gás"],notes:"",rating:0,servings:"",custom:false},
   {name:"Aviation",categories:["Gim","Luxardo Maraschino","Licor","Sour","Shaken"],ingredients:["45 ml gim","15 ml Luxardo Maraschino","15 ml suco de limão","(opcional) 5 ml creme de violeta"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe duplo em coupe gelada.","Decore com cereja marrasquino."],notes:"Floral e levemente ácido. O creme de violeta é opcional mas dá a cor roxa característica.",rating:0,servings:"",custom:false},
   {name:"Beirão & Maracujá",categories:["Collins","Licor Beirão","Built"],ingredients:["40 ml Licor Beirão","30 ml suco de maracujá","10 ml limão","soda"],steps:["Combine Beirão, maracujá e limão com gelo num copo alto.","Complete com soda gelada.","Mexa suavemente e decore."],notes:"Tropical e refrescante. O maracujá equilibra o amargor do Beirão.",rating:0,servings:"",custom:false},
   {name:"Beirão + Campari",categories:["Campari","Licor Beirão","Stirred"],ingredients:["30 ml Beirão","30 ml Campari","gelo","casca de laranja"],steps:["Adicione Beirão e Campari num copo com gelo.","Mexa suavemente.","Expresse a casca de laranja sobre o drink e decore."],notes:"Dois amargos que se completam. Intenso e sem açúcar.",rating:0,servings:"",custom:false},
   {name:"Beirão Lemon",categories:["Collins","Licor Beirão","Built"],ingredients:["50 ml Licor Beirão","20 ml limão","soda ou água com gás","gelo"],steps:["Combine Beirão e limão num copo com gelo.","Complete com soda gelada.","Mexa uma vez e sirva."],notes:"Simples e refrescante. A versão mais acessível do Beirão.",rating:0,servings:"",custom:false},
-  {name:"Beirão Spritz",categories:["Espumante","Highball","Licor Beirão","Built"],ingredients:["40 ml Licor Beirão","80 ml espumante","40 ml água com gás","casca de laranja"],steps:["Adicione gelo e Beirão numa taça de vinho.","Complete com espumante e água com gás.","Expresse a casca de laranja e decore."],notes:"O Aperol Spritz com personalidade portuguesa.",rating:0,servings:"",custom:false},
-  {name:"Beirão, Mel & Alecrim",categories:["Licor Beirão","Stirred"],ingredients:["50 ml Licor Beirão","15 ml mel","15 ml suco de limão","1 ramo de alecrim","gelo"],steps:["Misture mel e limão primeiro.","Adicione o Beirão e gelo.","Mexa e finalize com alecrim."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Belle Époque (Casa do Porco)",categories:["Gim","Shaken"],ingredients:["Gim com infusão de flor de hibisco","Calda de gengibre","Limão Siciliano","Cidre Charlotte Corday"],steps:["Infuse o gim com flor de hibisco por 2h.","Combine gim, calda de gengibre e limão na coqueteleira com gelo.","Agite e coe em coupe. Complete com cidre."],notes:"Receita assinatura do Casa do Porco, SP. Floral, ácido e elegante.",rating:0,servings:"",custom:false},
-  {name:"Bourbon, laranja e gengibre",categories:["Whisky","Built"],ingredients:["60 ml bourbon","30 ml Triple Sec","3 col. sopa xarope de gengibre","90 ml suco de laranja","gelo esmagado"],steps:["Prepare o xarope de gengibre: ferva gengibre, açúcar e água por 15 min.","Combine o bourbon, triple sec, xarope e suco de laranja.","Encha com gelo esmagado."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Bramble",categories:["Gim","Sour","Shaken"],ingredients:["1½ dose gim","1 dose suco de limão siciliano","1 col. chá açúcar","1 dose rasa licor de amora"],steps:["Bata o gim, limão e açúcar com gelo e coe num copo cheio de gelo.","Despeje o licor de amora por cima.","Decore com amora, limão e hortelã."],notes:"Servir em Double old-fashioned",rating:0,servings:"1",custom:false},
-  {name:"Cantaloupe Martini sem álcool",categories:["Não alcóolicos","Shaken"],ingredients:["15 ml xarope de manjericão","240 ml suco de melão cantaloupe","10 ml suco de limão","Sal marinho","Gelo"],steps:["Bata tudo e sirva"],notes:"",rating:0,servings:"",custom:false},
+  {name:"Beirão Spritz",categories:["Espumante","Spritz","Licor Beirão","Built"],ingredients:["40 ml Licor Beirão","80 ml espumante","40 ml água com gás","casca de laranja"],steps:["Adicione gelo e Beirão numa taça de vinho.","Complete com espumante e água com gás.","Expresse a casca de laranja e decore."],notes:"O Aperol Spritz com personalidade portuguesa.",rating:0,servings:"",custom:false},
+  {name:"Beirão, Mel & Alecrim",categories:["Licor Beirão","Sour","Shaken"],ingredients:["50 ml Licor Beirão","15 ml mel diluído 1:1","15 ml suco de limão","1 ramo pequeno de alecrim","gelo"],steps:["Bata todos os ingredientes com gelo por 10–12 segundos.","Faça dupla coagem para rocks com gelo fresco.","Bata levemente o alecrim na mão para liberar aroma e finalize."],notes:"Herbal, cítrico e quente ao mesmo tempo. O alecrim aproxima os aromas do Beirão das notas de mel e especiarias.",rating:0,servings:"1",custom:false},
+  {name:"Bourbon, laranja e gengibre",categories:["Whisky","Built"],ingredients:["60 ml bourbon","15 ml Triple Sec","15 ml xarope de gengibre","60 ml suco de laranja","gelo esmagado"],steps:["Combine tudo num copo alto com gelo esmagado.","Mexa suavemente e sirva."],notes:"",rating:0,servings:"1",custom:false},
+  {name:"Bramble",categories:["Gim","Sour","Shaken"],ingredients:["45 ml gin","30 ml suco de limão siciliano","1 col. chá açúcar","20 ml licor de amora"],steps:["Bata o gim, limão e açúcar com gelo e coe num copo cheio de gelo.","Despeje o licor de amora por cima.","Decore com amora, limão e hortelã."],notes:"Servir em Double old-fashioned",rating:0,servings:"1",custom:false},
+  {name:"Cantaloupe Martini sem álcool",categories:["Não alcóolicos","Shaken"],ingredients:["15 ml xarope de manjericão","120 ml suco de melão cantaloupe","10 ml suco de limão","pitada de sal marinho","gelo"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em taça coupe."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Citrus Martini",categories:["Aperol","Vodka","Sour","Shaken"],ingredients:["30 ml aperol","50 ml vodka","10 ml suco de limão","1 col. sopa açúcar"],steps:["Gele a taça. Combine tudo na coqueteleira com gelo. Bata bem e faça dupla coagem."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Coco e tônica",categories:["Não alcóolicos","Built"],ingredients:["100 ml água de coco","70 ml água tônica","2 col. sopa açúcar","1 lima da pérsia"],steps:["Macere a lima com açúcar. Adicione gelo, água de coco e complete com tônica."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Coco e tônica",categories:["Não alcóolicos","Built"],ingredients:["100 ml água de coco","80 ml água tônica","15 ml suco de limão"],steps:["Coloque gelo em copo alto.","Adicione a água de coco e o suco de limão.","Complete com a tônica. Mexa delicadamente."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Cynar Ginger Spritz",categories:["Cynar","Spritz","Built"],ingredients:["40 ml Cynar","60 ml espumante brut","40 ml tônica de gengibre","Gelo","Casca de laranja"],steps:["Adicione gelo e Cynar numa taça.","Complete com tônica de gengibre e espumante.","Expresse a casca de laranja e decore."],notes:"Amargo, efervescente e refrescante. O gengibre potencializa o Cynar.",rating:0,servings:"",custom:false},
   {name:"Daiquiri Parisiense",categories:["Rum Branco","St‑Germain","Sour","Shaken"],ingredients:["40 ml rum branco","20 ml St-Germain","20 ml suco de limão","1 col. chá açúcar"],steps:["Dissolva o açúcar no limão.","Adicione rum e St-Germain com gelo.","Bata e coe em coupe gelada."],notes:"O St-Germain florifica o Daiquiri clássico. Mais elegante e menos direto.",rating:0,servings:"",custom:false},
   {name:"Dark 'n' Stormy",categories:["Rum Envelhecido","Highball","Buck","Built"],ingredients:["60 ml rum escuro","120 ml cerveja de gengibre","15 ml suco de limão"],steps:["Encha o copo com gelo.","Adicione o limão e a ginger beer.","Despeje o rum por cima — ele flutua criando a cor escura."],notes:"Marca registrada da Gosling's. O rum por cima é parte da apresentação.",rating:0,servings:"",custom:false},
-  {name:"drink de xarope de manjericão com gim",categories:["Gim","Smash","Shaken"],ingredients:["60 ml gim","50 ml xarope de manjericão","suco de 1 limão","suco de 2 pepinos japoneses","Manjericão para decorar"],steps:["Prepare o xarope: água + açúcar (1:1), fervente, desligue e infuse manjericão.","Bata o pepino, coe e reserve.","Combine tudo com gelo e sirva."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Garden Gim",categories:["Gim","Smash","Shaken"],ingredients:["60 ml gim","50 ml xarope de manjericão","30 ml suco de limão","60 ml suco de pepino","manjericão fresco para decorar"],steps:["Prepare o xarope: água + açúcar 1:1, fervente, desligue e infuse manjericão por 30 min.","Combine gim, xarope, limão e suco de pepino na coqueteleira com gelo.","Agite bem e coe. Decore com manjericão."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Dry Martini",categories:["Gim","Vermute seco","Stirred"],ingredients:["2½ partes Gim","½ parte Vermute seco","1 dash licor amargo de laranja","casca de limão"],steps:["Encher copo misturador com gelo.","Adicionar ingredientes e mexer.","Coar em taça gelada. Decorar com limão."],notes:"",rating:0,servings:"",custom:false},
   {name:"Elderflower Aviation",categories:["Gim","Luxardo Maraschino","St‑Germain","Sour","Shaken"],ingredients:["45 ml gim","10 ml St-Germain","10 ml Luxardo Maraschino","20 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente e coe duplo em coupe."],notes:"O St-Germain substitui parte do Maraschino — fica mais floral e menos doce que o Aviation clássico.",rating:0,servings:"",custom:false},
   {name:"Elderflower Daiquiri",categories:["Luxardo Maraschino","Rum Branco","St‑Germain","Sour","Shaken"],ingredients:["60 ml rum branco","15 ml St-Germain","5 ml Maraschino","20 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em coupe gelada."],notes:"Fresco, floral e com fundo elegante de amêndoa. Mais complexo que o Daiquiri clássico.",rating:0,servings:"",custom:false},
   {name:"Fermentação selvagem (Ginger Bug)",categories:["Ginger Bug","Preparos Caseiros"],ingredients:["8 cm gengibre fresco","2 xícaras açúcar branco","2 limões","Água sem cloro"],steps:["Adicione gengibre ralado e açúcar em 250 ml água.","Cubra e guarde em local escuro.","Alimente diariamente até borbulhar (2–7 dias)."],notes:"Fermentação selvagem",rating:0,servings:"4L",custom:false},
-  {name:"Flor de Cerejeira Fizz",categories:["Espumante","Fizz","Luxardo Maraschino","Spritz","St‑Germain","Built"],ingredients:["20 ml Luxardo","20 ml St-Germain","10 ml limão","completar com água com gás ou espumante"],steps:["Combine Luxardo, St-Germain e limão com gelo.","Complete com água com gás ou espumante gelado.","Decore com casca de limão ou flor comestível."],notes:"Floral, leve e muito perfumado. Baixo teor alcoólico.",rating:0,servings:"",custom:false},
-  {name:"French 75",categories:["Espumante","Fizz","Gim","Shaken"],ingredients:["30 ml gim","15 ml suco de limão","15 ml xarope simples","prosecco para completar"],steps:["Combine gim, limão e xarope na coqueteleira com gelo.","Agite e coe em taça flute.","Complete com prosecco."],notes:"Cítrico, seco e sofisticado.",rating:0,servings:"",custom:false},
+  {name:"Flor de Cerejeira Fizz",categories:["Fizz","Luxardo Maraschino","St‑Germain","Built"],ingredients:["20 ml Luxardo","20 ml St-Germain","10 ml suco de limão","água com gás para completar"],steps:["Combine Luxardo, St-Germain e limão com gelo.","Complete com água com gás gelada.","Decore com casca de limão ou flor comestível."],notes:"Floral, leve e muito perfumado. Baixo teor alcoólico.",rating:0,servings:"1",custom:false},
+  {name:"Flor de Cerejeira Spritz",categories:["Espumante","Spritz","Luxardo Maraschino","St‑Germain","Built"],ingredients:["20 ml Luxardo","20 ml St-Germain","10 ml suco de limão","espumante brut para completar"],steps:["Combine Luxardo, St-Germain e limão com gelo.","Complete com espumante brut gelado.","Decore com casca de limão ou flor comestível."],notes:"Versão com espumante — mais estruturada e levemente seca. Floral e elegante.",rating:0,servings:"1",custom:false},
+  {name:"French 75",categories:["Espumante","Fizz","Gim","Shaken"],ingredients:["30 ml gim","15 ml suco de limão","15 ml xarope simples","champagne para completar"],steps:["Combine gim, limão e xarope na coqueteleira com gelo.","Agite e coe em taça flute.","Complete com champagne."],notes:"Cítrico, seco e sofisticado. Prosecco funciona e resulta num perfil mais frutado — champagne traz mais mineralidade e acidez fina.",rating:0,servings:"1",custom:false},
   {name:"Garden Spritz",categories:["Espumante","Luxardo Maraschino","Spritz","St‑Germain","Built"],ingredients:["25 ml St-Germain","10 ml Maraschino","80 ml prosecco","splash de soda"],steps:["Adicione gelo numa taça de vinho.","Coloque St-Germain e Maraschino.","Complete com prosecco e um splash de soda."],notes:"Leve, perfumado e delicado. Perfeito para aperitivo.",rating:0,servings:"",custom:false},
   {name:"Gim Fizz",categories:["Gim","Fizz","Shaken"],ingredients:["60 ml Gim","30 ml suco de lima","22 ml xarope simples","Água com gás","1 fatia limão"],steps:["Agite gim, limão e xarope com gelo.","Coe em copo alto.","Complete com água com gás."],notes:"",rating:0,servings:"",custom:false},
   {name:"Gim Tônica",categories:["Gim","Highball","Built"],ingredients:["50 ml Gim","150 ml Tônica","fatia de limão"],steps:["Encha taça balão com gelo.","Adicione o gim.","Complete com tônica pela lateral. Mexa uma vez."],notes:"",rating:0,servings:"",custom:false},
   {name:"Gim Tônica de Bergamota",categories:["Gim","Highball","Built"],ingredients:["50 ml Gim","150 ml Tônica","4 gomos de bergamota","2 gotas Angostura"],steps:["Esprema os gomos de bergamota no fundo da taça balão.","Encha com gelo. Adicione o gim.","Complete com tônica pela lateral. Pingue o Angostura."],notes:"Cítrico, levemente floral e com fundo amargo. Variação elegante do G&T clássico.",rating:0,servings:"",custom:false},
   {name:"Ginger beer (caseira)",categories:["Ginger Beer","Preparos Caseiros"],ingredients:["100g gengibre","200g açúcar","1 limão","1,5L água","6g fermento"],steps:["Ferva a água com gengibre e limão fatiados. Adicione açúcar e cozinhe 15 min.","Coe e transfira para balde fermentador com o fermento dissolvido.","Após 4 dias, transfira com 8g açúcar/litro. Aguarde 2 semanas."],notes:"",rating:0,servings:"",custom:false},
   {name:"Grenadine Ginger Margarita",categories:["Triple Sec","Tequila","Sour","Shaken"],ingredients:["60 ml tequila","30 ml suco de limão","15 ml Cointreau","15 ml grenadine","60 ml ginger beer"],steps:["Combine tequila, limão, Cointreau e grenadine na coqueteleira com gelo.","Agite por 10s e coe em copo de margarita ou rocks com gelo.","Complete com ginger beer e sirva."],notes:"",rating:0,servings:"1",custom:false},
-  {name:"Hemingway Daiquiri Cordial",categories:["Luxardo Maraschino","Rum Branco","Sour","Shaken"],ingredients:["60 ml rum branco","10 ml Luxardo Maraschino","20 ml suco de limão","10–15 ml cordial de toranja (no lugar do suco)"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 15s.","Coe em taça de coquetel gelada."],notes:"Variação com cordial de toranja no lugar do suco — mais concentrado e com os óleos da casca. Luxardo reduzido para 10 ml para preservar o caráter seco. Quer mais seco: reduza mais o Luxardo. Quer mais cítrico: aumente o limão, não o cordial.",rating:0,servings:"1",custom:false},
+  {name:"Hemingway Daiquiri Cordial",categories:["Luxardo Maraschino","Rum Branco","Sour","Shaken","Cordial"],ingredients:["60 ml rum branco","10 ml Luxardo Maraschino","20 ml suco de limão","10–15 ml cordial de toranja (no lugar do suco)"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 15s.","Coe em taça de coquetel gelada."],notes:"Variação com cordial de toranja no lugar do suco — mais concentrado e com os óleos da casca. Luxardo reduzido para 10 ml para preservar o caráter seco. Quer mais seco: reduza mais o Luxardo. Quer mais cítrico: aumente o limão, não o cordial.",rating:0,servings:"1",custom:false},
   {name:"Hemingway Daiquiri",categories:["Luxardo Maraschino","Rum Branco","Sour","Shaken"],ingredients:["60 ml rum branco","15 ml Luxardo Maraschino","20 ml suco de limão","15 ml suco de grapefruit"],steps:["Agite rum, Maraschino, limão e grapefruit com gelo por 15s.","Coe em taça de coquetel gelada."],notes:"Criado para Ernest Hemingway, que preferia drinks menos doces. Seco, cítrico e com fundo floral.",rating:0,servings:"",custom:false},
   {name:"Highball de Luxardo",categories:["Highball","Luxardo Maraschino","Built"],ingredients:["30 ml Luxardo","10 ml limão Tahiti","água com gás para completar","gelo"],steps:["Esprema o limão no copo. Encha com gelo.","Adicione o Luxardo.","Complete com água com gás. Mexa suavemente."],notes:"Super leve, quase um refrigerante adulto. Perfeito pra calor.",rating:0,servings:"",custom:false},
-  {name:"Hurricane",categories:["Rum Envelhecido","Sling","Shaken"],ingredients:["60 ml rum escuro da Jamaica","30 ml xarope de maracujá","15 ml suco de limão","cereja para decorar"],steps:["Agite tudo com gelo.","Coe em copo alto com gelo picado.","Decore com limão e cereja."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Jamaica Ginger",categories:["Rum Envelhecido","Shaken"],ingredients:["2 partes Rum escuro da Jamaica","1 parte groselha","3 dashes Curaçao de laranja","1 dash bitter"],steps:["Agite com gelo e coe em taça de coquetel."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Hurricane",categories:["Rum Envelhecido","Tiki","Sling","Shaken"],ingredients:["60 ml rum jamaicano","30 ml purê ou xarope de maracujá","15 ml suco de limão","15 ml suco de laranja","10 ml xarope simples"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em copo alto com gelo picado.","Decore com rodela de laranja e cereja."],notes:"",rating:0,servings:"1",custom:false},
+  {name:"Jamaica Rouge",categories:["Rum Envelhecido","Shaken"],ingredients:["2 partes rum escuro da Jamaica","1 parte groselha","3 dashes Curaçao de laranja","1 dash bitter"],steps:["Agite com gelo e coe em taça de coquetel."],notes:"",rating:0,servings:"",custom:false},
   {name:"Jasmine (Casa do Porco)",categories:["Campari","Triple Sec","Gim","Sour","Shaken"],ingredients:["45 ml Gim","15 ml Campari","15 ml Cointreau","20 ml suco de limão"],steps:["Agite todos os ingredientes com gelo por 15s.","Coe em taça de coquetel gelada.","Decore com casca de limão."],notes:"Cítrico, amargo e seco. Um sour sofisticado com alma italiana.",rating:0,servings:"1",custom:false},
   {name:"Jus dinger",categories:["Não alcóolicos","Highball","Built"],ingredients:["500g gengibre","3 polpas maracujá","2 polpas seriguela","2 polpas cajá","Açúcar orgânico","1 ramo hortelã","⅓ noz-moscada","flor de laranjeira"],steps:["Bata o gengibre com água e peneire.","Misture com as polpas e açúcar.","Adicione noz-moscada e flor de laranjeira."],notes:"",rating:0,servings:"6",custom:false},
   {name:"Lavender Gim Sour",categories:["Gim","Sour","Shaken"],ingredients:["50 ml Gim","20 ml xarope de lavanda","25 ml suco de limão","7,5 ml creme de leite fresco","7,5 ml xarope de violeta","1 clara de ovo"],steps:["Dry shake por 15s.","Adicione gelo e agite por mais 15s.","Coe em taça coupe."],notes:"",rating:0,servings:"",custom:false},
@@ -180,7 +216,7 @@ const BASE_RECIPES = [
   {name:"Martinez",categories:["Gim","Luxardo Maraschino","Vermute Rosso","Stirred"],ingredients:["45 ml gim","45 ml Vermute rosso","5 ml Luxardo Maraschino","2 dashes Angostura"],steps:["Mexa com gelo e coe."],notes:"O ancestral direto do Martini.",rating:0,servings:"",custom:false},
   {name:"Mojito",categories:["Rum Branco","Smash","Built"],ingredients:["40 ml rum","30 ml suco de limão","2 col. sobremesa açúcar","10 folhas hortelã","água com gás","Gelo"],steps:["Macere hortelã, açúcar e limão no copo.","Adicione gelo e rum.","Complete com água gaseificada."],notes:"",rating:0,servings:"",custom:false},
   {name:"Mojito Amendoado",categories:["Rum Branco","Smash","Built"],ingredients:["50 ml rum branco","10 folhas hortelã","20 ml limão taiti","20 ml xarope de amêndoa","Tônica de gengibre Britvic"],steps:["Bata tudo exceto a tônica.","Adicione a tônica ao final."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Mojito de framboesa",categories:["Rum Branco","Smash","Built"],ingredients:["½ limão","5-6 framboesas","10-12 folhas hortelã","1 col. açúcar","2 doses rum claro","club soda"],steps:["Macere limão, framboesa, hortelã e açúcar.","Adicione gelo e rum. Complete com soda."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Mojito de framboesa",categories:["Rum Branco","Smash","Built"],ingredients:["½ limão","5-6 framboesas","10-12 folhas hortelã","1 col. açúcar","60 ml rum claro","club soda"],steps:["Macere limão, framboesa, hortelã e açúcar.","Adicione gelo e rum. Complete com soda."],notes:"",rating:0,servings:"",custom:false},
   {name:"Moscow Mule",categories:["Vodka","Highball","Buck","Built"],ingredients:["60 ml Vodka","20 ml suco de limão","90 ml cerveja de gengibre","1 rodela limão"],steps:["Encha o caneco com gelo.","Adicione vodka e limão.","Complete com ginger beer. Decore."],notes:"Copo de cobre",rating:0,servings:"",custom:false},
   {name:"Mr. Grinch",categories:["Tequila","Sour","Shaken"],ingredients:["60 ml tequila ou mezcal","30 ml suco de pepino","15 ml xarope de jalapeño","10 ml suco de limão"],steps:["Bata tudo com gelo. Sirva com hortelã."],notes:"",rating:0,servings:"",custom:false},
   {name:"Negroni",categories:["Campari","Gim","Vermute Rosso","Stirred"],ingredients:["30 ml Gim","30 ml Campari","30 ml Vermute tinto"],steps:["Adicione gelo no copo.","Adicione os três ingredientes em partes iguais.","Mexa e decore com casca de laranja."],notes:"",rating:0,servings:"1",custom:false},
@@ -200,9 +236,9 @@ const BASE_RECIPES = [
   {name:"Pisco Terroso",categories:["Pisco","Shaken"],ingredients:["50 ml pisco","20 ml suco de cenoura","10 ml suco de limão","5 ml mel","pitada de gengibre"],steps:["Shake e sirva."],notes:"Vegetal, fresco e surpreendentemente elegante.",rating:0,servings:"",custom:false},
   {name:"Sazerac",categories:["Conhaque","Stirred"],ingredients:["60 ml Conhaque","5 ml xarope simples","3 dashes Absinto","2 dashes Peychaud's bitters","casca de limão"],steps:["Passe o absinto no copo e descarte o excesso.","Adicione conhaque, xarope e bitters com gelo. Mexa.","Coe no copo preparado. Decore com limão."],notes:"",rating:0,servings:"",custom:false},
   {name:"SAZERAC por Kennedy Nascimento",categories:["Conhaque","Whisky","Stirred"],ingredients:["30 ml cognac VSOP","30 ml bourbon ou centeio","1 torrão açúcar","Spray de Absinto","4 dashes Peychaud's","2 dashes angostura","Zest limão siciliano"],steps:["Suje o copo com absinto e reserve com gelo.","Macere açúcar com bitters no mixing glass. Adicione cognac e mexa.","Retire o gelo, verta o drink. Decore com zest."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Sevilla Sour",categories:["Gim","St‑Germain","Sour","Shaken"],ingredients:["50 ml Flor de Sevilla","20 ml St-Germain","25 ml limão siciliano","10 ml xarope simples","clara de ovo (opcional)"],steps:["Dry shake todos os ingredientes por 10s sem gelo.","Adicione gelo e agite por mais 15s.","Coe em taça coupe."],notes:"Cítrico, floral e levemente amargo. O gim Flor de Sevilla traz laranja e complexidade naturais.",rating:0,servings:"",custom:false},
-  {name:"Shanksjillo",categories:["Triple Sec","Whisky","Shaken"],ingredients:["1 dose Shanky's","1 dose Cointreau","1 xícara café expresso"],steps:["Combine Shanky's, Cointreau e café expresso gelado na coqueteleira com gelo.","Agite vigorosamente por 15s até espumar.","Coe duplo em taça de coquetel gelada."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Smoked Apple Whiskey Tonic",categories:["Whisky","Highball","Built"],ingredients:["60 ml Apple Whiskey (Jack Daniel's)","120 ml suco de maçã","Água Tônica","Canela e alecrim"],steps:["Defume o copo com canela por 1-2 min.","Adicione gelo, whiskey, suco de maçã e tônica."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Sevilla Sour",categories:["Gim","St‑Germain","Sour","Shaken"],ingredients:["50 ml gin Flor de Sevilla","20 ml St-Germain","25 ml limão siciliano","10 ml xarope simples","clara de ovo (opcional)"],steps:["Dry shake todos os ingredientes por 10s sem gelo.","Adicione gelo e agite por mais 15s.","Coe em taça coupe."],notes:"Cítrico, floral e levemente amargo. O gim Flor de Sevilla traz laranja e complexidade naturais.",rating:0,servings:"",custom:false},
+  {name:"Shanksjillo",categories:["Triple Sec","Whisky","Shaken"],ingredients:["30 ml Shanky's","30 ml Cointreau","30 ml espresso"],steps:["Prepare o espresso e deixe esfriar brevemente.","Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 15s até espumar.","Coe duplo em taça de coquetel gelada."],notes:"",rating:0,servings:"1",custom:false},
+  {name:"Smoked Apple Whiskey Tonic",categories:["Whisky","Highball","Built"],ingredients:["60 ml Apple Whiskey (Jack Daniel's)","120 ml ginger ale ou ginger beer","canela em pau","ramo de alecrim"],steps:["Defume o copo com canela por 1–2 min.","Adicione gelo e o whiskey.","Complete com ginger ale ou ginger beer.","Decore com alecrim."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Smokey Martini",categories:["Gim","Stirred"],ingredients:["60 ml Gim","toque de whisky defumado","raspa de limão"],steps:["Mexa gim e whisky defumado com gelo em copo misturador por 30s.","Coe em taça de coquetel gelada.","Expresse a raspa de limão sobre a taça e descarte."],notes:"Seco, aromático e com fundo esfumaçado. Um Martini com personalidade.",rating:0,servings:"",custom:false},
   {name:"Spring Martini",categories:["Gim","Luxardo Maraschino","St‑Germain","Stirred"],ingredients:["60 ml gim","10 ml St-Germain","5 ml Maraschino"],steps:["Mexa gim, St-Germain e Maraschino com gelo em copo misturador por 30s.","Coe em taça de coquetel gelada.","Decore com casca de limão siciliano."],notes:"Seco com notas florais de sabugueiro e amêndoa. Um Martini de primavera.",rating:0,servings:"",custom:false},
   {name:"St‑Germain Hugo Spritz",categories:["St‑Germain","Spritz","Espumante","Built"],ingredients:["40 ml St‑Germain","60 ml espumante","60 ml água com gás","8-10 folhas hortelã","1 fatia limão taiti"],steps:["Adicione as folhas de hortelã ao copo e cubra com gelo.","Adicione o St-Germain.","Complete com espumante e água com gás. Mexa suavemente.","Decore com fatia de limão."],notes:"Floral, refrescante e levemente herbáceo. O aperitivo italiano feito para dias quentes.",rating:0,servings:"",custom:false},
@@ -211,7 +247,7 @@ const BASE_RECIPES = [
   {name:"Tom Collins (20's B)",categories:["Gim","Collins","Vermute Bianco","Built"],ingredients:["45 ml gim","15 ml Vermute branco","20 ml suco de limão","5 ml xarope simples (opcional)","2 dashes Angostura","1 fatia de pepino (opcional)","soda para completar"],steps:["Combine gim, Vermute branco, limão e xarope com gelo.","Complete com soda.","Adicione Angostura e decore com pepino."],notes:"Uma versão dos anos 20 do Collins — o Vermute branco no lugar do açúcar puro dá mais profundidade e menos doce.",rating:0,servings:"1",custom:false},
   {name:"Whiskey Mule de Romã",categories:["Whisky","Highball","Buck","Built"],ingredients:["60 ml whiskey","15 ml suco de limão","15 ml grenadine de romã","3 gotas bitter de laranja","cerveja de gengibre"],steps:["Misture tudo e complete com ginger beer."],notes:"",rating:0,servings:"",custom:false},
   {name:"Whiskey Sour",categories:["Whisky","Sour","Shaken"],ingredients:["60 ml whisky","30 ml suco de lima","22 ml xarope simples","1 clara de ovo","alecrim tostado"],steps:["Agite com gelo. Coe em rocks cheio de gelo.","Decore com cereja."],notes:"",rating:0,servings:"",custom:false},
-  {name:"White Russian de abóbora",categories:["Vodka","Licor","Built"],ingredients:["60 ml vodka","60 ml Kahlúa","30 ml creme de leite batido com geleia de abóbora"],steps:["Coloque gelo num copo rocks.","Despeje a vodka e o Kahlúa sobre o gelo.","Bata levemente o creme com a geleia de abóbora e despeje por cima, deixando flutuante."],notes:"",rating:0,servings:"",custom:false},
+  {name:"White Russian de abóbora",categories:["Vodka","Licor","Built"],ingredients:["45 ml vodka","30 ml Kahlúa","30 ml creme de leite batido com geleia de abóbora"],steps:["Coloque gelo num copo rocks.","Despeje a vodka e o Kahlúa sobre o gelo.","Bata levemente o creme com a geleia de abóbora e despeje por cima, deixando flutuante."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Daiquiri",categories:["Rum Branco","Sour","Shaken"],ingredients:["60 ml rum branco","30 ml suco de limão fresco","22 ml xarope simples"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 15s.","Coe em taça coupe gelada."],notes:"Simples e brilhante. A qualidade do rum faz toda a diferença.",rating:0,servings:"1",custom:false},
   {name:"Cosmopolitan",categories:["Vodka","Triple Sec","Sour","Shaken"],ingredients:["45 ml vodka","15 ml Cointreau","30 ml suco de cranberry","15 ml suco de limão"],steps:["Combine tudo com gelo.","Agite e coe em taça. Decore com casca de laranja."],notes:"",rating:0,servings:"",custom:false},
   {name:"Gimlet",categories:["Gim","Sour","Shaken"],ingredients:["60 ml gim","20 ml cordial de limão","10 ml suco de limão fresco"],steps:["Combine na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Com cordial Rose's fica mais doce. Com suco fresco fica mais vivo.",rating:0,servings:"",custom:false},
@@ -225,27 +261,30 @@ const BASE_RECIPES = [
   {name:"Sidecar",categories:["Conhaque","Triple Sec","Sour","Shaken"],ingredients:["50 ml conhaque","25 ml Cointreau","25 ml suco de limão siciliano","açúcar na borda (opcional)"],steps:["Prepare a borda da taça com açúcar.","Combine tudo com gelo e agite.","Coe em taça coupe."],notes:"Proporção clásica 2:1:1. Com mais limão fica mais seco.",rating:0,servings:"1",custom:false},
   {name:"Bee's Knees",categories:["Gim","Sour","Shaken"],ingredients:["60 ml gim","25 ml suco de limão","22 ml xarope de mel"],steps:["Combine tudo com gelo e agite bem.","Coe em taça coupe gelada.","Decore com casca de limão."],notes:"O xarope de mel: dissolva mel em água quente na proporção 1:1.",rating:0,servings:"1",custom:false},
   {name:"Last Word",categories:["Gim","Luxardo Maraschino","Licor","Sour","Shaken"],ingredients:["22 ml gim","22 ml Green Chartreuse","22 ml Luxardo Maraschino","22 ml suco de limão"],steps:["Combine em partes iguais com gelo.","Agite e coe em taça coupe."],notes:"Partes iguais. Um dos drinks mais equilibrados da história.",rating:0,servings:"1",custom:false},
-  {name:"Penicillin",categories:["Whisky","Sour","Shaken"],ingredients:["60 ml blended scotch","22 ml suco de limão","22 ml xarope de mel e gengibre","float de scotch defumado (Islay)"],steps:["Agite o scotch, limão e xarope com gelo.","Coe em rocks com gelo.","Despeje o scotch defumado por cima no dorso de uma colher.","Decore com gengibre cristalizado."],notes:"O xarope: ferva mel, gengibre fatiado e água. O float defumado é o ponto.",rating:0,servings:"1",custom:false},
+  {name:"Penicillin",categories:["Whisky","Sour","Shaken"],ingredients:["60 ml scotch whisky","22 ml suco de limão","20 ml mel","gengibre fresco, 3 fatias","7 ml whisky defumado Islay (float)"],steps:["Macere levemente o gengibre com o mel na coqueteleira.","Adicione o scotch, o limão e gelo.","Agite bem e faça dupla coagem para um copo baixo com gelo fresco.","Finalize com o whisky defumado por cima."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Gold Rush",categories:["Whisky","Sour","Shaken"],ingredients:["60 ml bourbon","22 ml suco de limão","22 ml xarope de mel"],steps:["Combine tudo com gelo e agite.","Coe em rocks com gelo grande."],notes:"Primo do Bee's Knees. O mel suaviza o bourbon perfeitamente.",rating:0,servings:"1",custom:false},
   {name:"Cuba Libre",categories:["Rum Branco","Highball","Built"],ingredients:["50 ml rum branco ou dourado","150 ml cola","15 ml suco de limão","fatia de limão"],steps:["Encha o copo com gelo.","Adicione o rum e o limão.","Complete com cola pela lateral. Mexa uma vez. Decore."],notes:"A diferença para o rum com cola é o limão — não pule.",rating:0,servings:"1",custom:false},
   {name:"Paper Plane",categories:["Whisky","Aperol","Sour","Shaken"],ingredients:["22 ml bourbon","22 ml Aperol","22 ml Amaro Nonino","22 ml suco de limão"],steps:["Combine em partes iguais com gelo.","Agite e coe em taça coupe."],notes:"Partes iguais. Moderno clássico de Sam Ross (2008).",rating:0,servings:"1",custom:false},
   {name:"Singapore Sling",categories:["Gim","Triple Sec","Sling","Shaken"],ingredients:["45 ml gim","15 ml Cherry Heering","7 ml Cointreau","7 ml Bénédictine","120 ml suco de abacaxi","15 ml suco de limão","10 ml grenadine","1 dash Angostura"],steps:["Combine tudo com gelo e agite.","Coe em copo Collins com gelo.","Decore com cereja e fatia de abacaxi."],notes:"Criado no Raffles Hotel, Singapura, c. 1915.",rating:0,servings:"1",custom:false},
-  {name:"Mimosa",categories:["Espumante","Spritz","Built"],ingredients:["75 ml espumante brut gelado","75 ml suco de laranja fresco"],steps:["Despeje o suco na flute.","Complete com espumante gelado. Não mexa."],notes:"Proporção 1:1. O suco de laranja fresco é essencial.",rating:0,servings:"1",custom:false},
-  {name:"Bellini",categories:["Espumante","Spritz","Built"],ingredients:["100 ml prosecco gelado","50 ml purê de pêssego fresco"],steps:["Coloque o purê na flute.","Complete com prosecco gelado devagar. Mexa suavemente."],notes:"Original do Harry's Bar, Veneza. Com pêssego branco fica mais elegante.",rating:0,servings:"1",custom:false},
-  {name:"Kir Royale",categories:["Espumante","Licor","Spritz","Built"],ingredients:["120 ml champagne ou espumante brut","15 ml crème de cassis"],steps:["Coloque o cassis na flute.","Complete com champagne gelado."],notes:"Com vinho branco tranquilo vira Kir simples. O cassis deve ser de qualidade.",rating:0,servings:"1",custom:false},
+  {name:"Mimosa",categories:["Espumante","Sparkling","Built"],ingredients:["100 ml espumante brut gelado","50 ml suco de laranja fresco coado"],steps:["Despeje o suco na flute.","Complete com espumante gelado. Não mexa demais."],notes:"O suco de laranja fresco é essencial.",rating:0,servings:"1",custom:false},
+  {name:"Bellini",categories:["Espumante","Sparkling","Built"],ingredients:["100 ml prosecco gelado","50 ml purê de pêssego branco fresco"],steps:["Coloque o purê na flute.","Complete com prosecco gelado devagar. Mexa suavemente."],notes:"Original do Harry's Bar, Veneza. Com pêssego branco fica mais elegante.",rating:0,servings:"1",custom:false},
+  {name:"Rossini",categories:["Espumante","Sparkling","Built"],ingredients:["100 ml prosecco gelado","50 ml purê de morango fresco"],steps:["Coloque o purê na flute.","Complete com prosecco gelado devagar. Mexa suavemente."],notes:"Se o morango estiver ácido, ajuste com 5–10 ml de xarope simples.",rating:0,servings:"1",custom:false},
+  {name:"Tintoretto",categories:["Espumante","Sparkling","Built"],ingredients:["100 ml prosecco gelado","50 ml suco de romã"],steps:["Despeje o suco de romã na flute.","Complete com prosecco. Mexa levemente."],notes:"Mais elegante e levemente tânico. A romã traz cor intensa.",rating:0,servings:"1",custom:false},
+  {name:"Puccini",categories:["Espumante","Sparkling","Built"],ingredients:["100 ml prosecco gelado","50 ml suco de tangerina fresco"],steps:["Despeje o suco na flute.","Complete com prosecco. Não mexa demais."],notes:"Cítrico mais perfumado que o Mimosa.",rating:0,servings:"1",custom:false},
+  {name:"Kir Royale",categories:["Espumante","Licor","Sparkling","Built"],ingredients:["120 ml champagne ou espumante brut","15 ml crème de cassis"],steps:["Coloque o cassis na flute.","Complete com champagne gelado."],notes:"Com vinho branco tranquilo vira Kir simples. O cassis deve ser de qualidade.",rating:0,servings:"1",custom:false},
   {name:"Tommy's Margarita",categories:["Tequila","Sour","Shaken"],ingredients:["60 ml tequila 100% agave","30 ml suco de limão","15 ml xarope de agave"],steps:["Combine tudo com gelo e agite.","Coe em rocks com gelo. Borda de sal opcional."],notes:"Criado por Julio Bermejo. Sem triple sec — o agave deixa a tequila brilhar.",rating:0,servings:"1",custom:false},
   {name:"Caipiroska",categories:["Vodka","Smash","Built"],ingredients:["60 ml vodka","1 limão taiti","2 col. chá açúcar","gelo picado"],steps:["Corte o limão em 4 e macere com açúcar no copo.","Adicione gelo picado e a vodka.","Mexa vigorosamente."],notes:"A versão vodka da caipirinha. Mais suave e neutra.",rating:0,servings:"1",custom:false},
   {name:"White Russian",categories:["Vodka","Licor","Built"],ingredients:["50 ml vodka","25 ml Kahlúa","25 ml creme de leite fresco"],steps:["Coloque gelo em rocks.","Adicione vodka e Kahlúa.","Despeje o creme por cima devagar — sem mexer para criar camada."],notes:"Sem creme vira Black Russian.",rating:0,servings:"1",custom:false},
-  {name:"Frozen Daiquiri",categories:["Rum Branco","Sour","Shaken"],ingredients:["60 ml rum branco","30 ml suco de limão","22 ml xarope simples","1 xícara gelo picado"],steps:["Bata tudo no liquidificador até ficar homogêneo.","Sirva em taça de coquetel gelada."],notes:"A consistência certa é cremosa, não aguada. Ajuste o gelo.",rating:0,servings:"1",custom:false},
-  {name:"Frozen Margarita",categories:["Tequila","Triple Sec","Sour","Shaken"],ingredients:["60 ml tequila","30 ml Cointreau","30 ml suco de limão","1 xícara gelo picado","sal na borda"],steps:["Prepare a borda com sal.","Bata tudo no liquidificador até ficar cremoso.","Sirva na taça preparada."],notes:"",rating:0,servings:"1",custom:false},
+  {name:"Frozen Daiquiri",categories:["Rum Branco","Sour","Frozen","Blended"],ingredients:["60 ml rum branco","30 ml suco de limão","22 ml xarope simples","1 xícara gelo picado"],steps:["Bata tudo no liquidificador até ficar homogêneo.","Sirva em taça de coquetel gelada."],notes:"A consistência certa é cremosa, não aguada. Ajuste o gelo.",rating:0,servings:"1",custom:false},
+  {name:"Frozen Margarita",categories:["Tequila","Triple Sec","Sour","Frozen","Blended"],ingredients:["60 ml tequila","30 ml Cointreau","30 ml suco de limão","1 xícara gelo picado","sal na borda"],steps:["Prepare a borda com sal.","Bata tudo no liquidificador até ficar cremoso.","Sirva na taça preparada."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Mezcal Negroni",categories:["Mezcal","Campari","Vermute Rosso","Stirred"],ingredients:["30 ml mezcal","30 ml Campari","30 ml vermute tinto doce"],steps:["Mexa tudo com gelo por 30s.","Coe em rocks. Decore com casca de laranja."],notes:"O mezcal defumado transforma o Negroni. Use um mezcal com presença mas sem dominar.",rating:0,servings:"1",custom:false},
   {name:"Oaxacan Old Fashioned",categories:["Mezcal","Tequila","Stirred"],ingredients:["45 ml tequila reposado","15 ml mezcal","15 ml xarope de agave","2 dashes mole bitters (ou Angostura)","casca de laranja"],steps:["Combine tudo com gelo e mexa por 30s.","Coe em rocks com gelo grande.","Flambe a casca de laranja por cima. Decore."],notes:"Criado por Phil Ward no Death & Co, NYC. O equilíbrio tequila/mezcal é o ponto.",rating:0,servings:"1",custom:false},
-  {name:"Paloma Cordial",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","35 ml cordial de toranja","15 ml suco de limão taiti","pitada de sal","gotas de pimenta a gosto","água com gás para completar"],steps:["Coloque gelo em copo alto.","Adicione a tequila, o cordial de toranja e o suco de limão.","Tempere com sal e gotas de pimenta.","Complete com água com gás e mexa suavemente."],notes:"Versão com cordial caseiro de toranja no lugar do suco — mais concentrado e com os óleos da casca. A pimenta aparece no final.",rating:0,servings:"1",custom:false},
+  {name:"Paloma Cordial",categories:["Tequila","Highball","Built","Cordial"],ingredients:["60 ml tequila","35 ml cordial de toranja","15 ml suco de limão taiti","pitada de sal","gotas de pimenta a gosto","água com gás para completar"],steps:["Coloque gelo em copo alto.","Adicione a tequila, o cordial de toranja e o suco de limão.","Tempere com sal e gotas de pimenta.","Complete com água com gás e mexa suavemente."],notes:"Versão com cordial caseiro de toranja no lugar do suco — mais concentrado e com os óleos da casca. A pimenta aparece no final.",rating:0,servings:"1",custom:false},
   {name:"Paloma",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","15 ml suco de limão","suco de toranja para completar","sal na borda (opcional)"],steps:["Prepare a borda com sal.","Adicione gelo, tequila e limão.","Complete com suco de toranja. Decore."],notes:"No México é mais popular que a Margarita.",rating:0,servings:"",custom:false},
   {name:"Tequila Sunrise",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","120 ml suco de laranja","15 ml grenadine"],steps:["Encha com gelo. Adicione tequila e suco de laranja.","Despeje a grenadine devagar pela lateral — ela afunda criando o degradê."],notes:"Não mexa depois da grenadine — o efeito é o ponto.",rating:0,servings:"",custom:false},
-  {name:"Piña Colada",categories:["Rum Branco","Shaken"],ingredients:["60 ml rum branco","90 ml suco de abacaxi","45 ml creme de coco"],steps:["Agite tudo com gelo e coe.","Ou bata no liquidificador para a versão frozen.","Decore com abacaxi e cereja."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Mai Tai",categories:["Rum Envelhecido","Sour","Shaken"],ingredients:["60 ml rum envelhecido","15 ml curaçao laranja","15 ml orgeat (xarope de amêndoa)","30 ml suco de limão"],steps:["Agite tudo com gelo.","Coe em rocks com gelo. Decore com hortelã e cereja."],notes:"Um clássico tiki. O orgeat é indispensável.",rating:0,servings:"",custom:false},
-  {name:"Jungle Bird",categories:["Rum Envelhecido","Campari","Sour","Shaken"],ingredients:["45 ml rum escuro","22 ml Campari","15 ml Luxardo Maraschino","15 ml suco de limão","45 ml suco de abacaxi"],steps:["Agite tudo com gelo.","Coe em rocks. Decore com abacaxi."],notes:"O único clássico tiki com amaro. Surpreendente.",rating:0,servings:"",custom:false},
+  {name:"Piña Colada",categories:["Rum Branco","Frozen","Tiki","Blended"],ingredients:["60 ml rum branco","90 ml suco de abacaxi","45 ml creme de coco","1 xícara gelo picado"],steps:["Bata tudo no liquidificador até textura cremosa e homogênea.","Sirva em copo alto. Decore com abacaxi e cereja."],notes:"A consistência certa é cremosa, não aguada — ajuste o gelo.",rating:0,servings:"1",custom:false},
+  {name:"Mai Tai",categories:["Rum Envelhecido","Tiki","Sour","Shaken"],ingredients:["60 ml rum envelhecido","15 ml curaçao laranja","15 ml orgeat (xarope de amêndoa)","30 ml suco de limão"],steps:["Agite tudo com gelo.","Coe em rocks com gelo. Decore com hortelã e cereja."],notes:"Um clássico tiki. O orgeat é indispensável.",rating:0,servings:"",custom:false},
+  {name:"Jungle Bird",categories:["Rum Envelhecido","Campari","Tiki","Sour","Shaken"],ingredients:["45 ml rum jamaicano escuro","22 ml Campari","45 ml suco de abacaxi","15 ml suco de limão","15 ml xarope demerara"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 12s.","Coe em rocks. Decore com abacaxi."],notes:"O único clássico tiki com amaro. Surpreendente.",rating:0,servings:"1",custom:false},
   {name:"Irish Coffee",categories:["Whisky","Hot"],ingredients:["40 ml Irish whiskey","120 ml café quente","15 ml xarope simples","creme de leite levemente batido"],steps:["Aqueça a taça. Adicione whiskey e xarope.","Complete com café quente e mexa.","Despeje o creme por cima passando pelo dorso de uma colher."],notes:"O creme deve flutuar. Beba o café através do creme.",rating:0,servings:"",custom:false},
   {name:"Hot Toddy",categories:["Whisky","Hot"],ingredients:["60 ml whisky","25 ml mel","25 ml suco de limão","150 ml água quente","pau de canela","cravos"],steps:["Coloque mel, limão e especiarias na caneca.","Adicione o whisky.","Complete com água quente e mexa."],notes:"Perfeito para dias frios.",rating:0,servings:"",custom:false},
   {name:"Black Russian",categories:["Vodka","Licor","Stirred"],ingredients:["50 ml vodka","25 ml Kahlúa"],steps:["Coloque gelo em rocks.","Adicione vodka e Kahlúa. Mexa."],notes:"Com creme de leite vira White Russian.",rating:0,servings:"",custom:false},
@@ -255,7 +294,7 @@ const BASE_RECIPES = [
   {name:"Caipirinha",categories:["Cachaça","Smash","Built"],ingredients:["60 ml cachaça","1 limão taiti","2 col. chá açúcar","gelo picado"],steps:["Corte o limão em 4 pedaços e macere com açúcar no copo.","Adicione gelo picado e a cachaça.","Mexa vigorosamente."],notes:"A proporção do limão e açúcar é o segredo.",rating:0,servings:"",custom:false},
 
   // ── CACHAÇA ──
-  {name:"Batida de Coco",categories:["Cachaça","Shaken"],ingredients:["60 ml cachaça","100 ml leite de coco","30 ml leite condensado","gelo"],steps:["Bata tudo na coqueteleira ou liquidificador.","Sirva em copo alto com gelo."],notes:"Pode usar coco fresco ralado para decorar.",rating:0,servings:"",custom:false},
+  {name:"Batida de Coco",categories:["Cachaça","Blended","Shaken"],ingredients:["60 ml cachaça","100 ml leite de coco","30 ml leite condensado","gelo"],steps:["Bata tudo na coqueteleira ou liquidificador.","Sirva em copo alto com gelo."],notes:"Pode usar coco fresco ralado para decorar.",rating:0,servings:"",custom:false},
   {name:"Batida de Maracujá",categories:["Cachaça","Shaken"],ingredients:["60 ml cachaça","80 ml suco de maracujá","30 ml leite condensado","gelo"],steps:["Bata tudo na coqueteleira.","Sirva em copo alto com gelo."],notes:"",rating:0,servings:"",custom:false},
   {name:"Cachaça Sour",categories:["Cachaça","Sour","Shaken"],ingredients:["60 ml cachaça","25 ml suco de limão","20 ml xarope simples","1 clara de ovo (opcional)"],steps:["Dry shake se usar clara.","Adicione gelo e agite.","Coe em coupe."],notes:"",rating:0,servings:"",custom:false},
   {name:"Quentão",categories:["Cachaça","Hot"],ingredients:["500 ml cachaça","500 ml água","200 g açúcar","5 cravos","3 paus de canela","1 laranja em rodelas","gengibre a gosto"],steps:["Leve tudo ao fogo baixo até dissolver o açúcar.","Deixe ferver levemente por 10 min.","Sirva quente."],notes:"Clássico junino.",rating:0,servings:"6",custom:false},
@@ -295,7 +334,7 @@ const BASE_RECIPES = [
   {name:"Naked and Famous",categories:["Mezcal","Licor","Sour","Shaken"],ingredients:["22 ml mezcal","22 ml Aperol","22 ml Yellow Chartreuse","22 ml suco de limão"],steps:["Bata tudo com gelo.","Coe em coupe."],notes:"Variação do Paper Plane com mezcal.",rating:0,servings:"",custom:false},
   {name:"Mezcal Sour",categories:["Mezcal","Sour","Shaken"],ingredients:["60 ml mezcal","25 ml suco de limão","20 ml xarope de agave","1 clara de ovo"],steps:["Dry shake sem gelo.","Adicione gelo e agite.","Coe em coupe."],notes:"",rating:0,servings:"",custom:false},
   {name:"Matador",categories:["Tequila","Sour","Shaken"],ingredients:["45 ml tequila","90 ml suco de abacaxi","15 ml suco de limão"],steps:["Bata tudo com gelo.","Coe em coupe ou sirva com gelo."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Agave Spritz",categories:["Tequila","Highball","Built"],ingredients:["50 ml tequila blanco","20 ml suco de limão siciliano","15 ml xarope de agave","água com gás para completar","rodela de laranja"],steps:["Adicione gelo em copo alto.","Despeje a tequila, o limão e o xarope de agave.","Complete com água com gás.","Decore com rodela de laranja e mexa levemente."],notes:"Leve, cítrico e refrescante. Mais elegante que parece.",rating:0,servings:"1",custom:false},
+  {name:"Agave Spritz",categories:["Tequila","Spritz","Built"],ingredients:["50 ml tequila blanco","20 ml suco de limão siciliano","15 ml xarope de agave","água com gás para completar","rodela de laranja"],steps:["Adicione gelo em copo alto.","Despeje a tequila, o limão e o xarope de agave.","Complete com água com gás.","Decore com rodela de laranja e mexa levemente."],notes:"Leve, cítrico e refrescante. Mais elegante que parece.",rating:0,servings:"1",custom:false},
   {name:"Verde Brisa",categories:["Tequila","Highball","Built"],ingredients:["50 ml tequila blanco","40 ml suco de abacaxi","20 ml suco de pepino","folhas de coentro a gosto","água com gás para completar"],steps:["Macere levemente o coentro no copo.","Adicione gelo, tequila, suco de abacaxi e pepino.","Complete com água com gás e mexa suave."],notes:"Tropical, herbáceo e surpreendente. O coentro transforma o copo.",rating:0,servings:"1",custom:false},
   {name:"Sol e Sal",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila blanco","60 ml suco de grapefruit (toranja)","15 ml xarope de mel","sal na borda","gelo"],steps:["Prepare a borda com sal.","Adicione gelo no copo alto.","Despeje a tequila, o suco de grapefruit e o xarope de mel.","Mexa levemente."],notes:"Uma Paloma com alma de mel. O sal na borda equilibra o amargo da toranja.",rating:0,servings:"1",custom:false},
   {name:"Sombra na Areia",categories:["Mezcal","Sour","Shaken"],ingredients:["45 ml mezcal","30 ml suco de abacaxi","20 ml suco de limão","sal defumado na borda"],steps:["Prepare a borda com sal defumado.","Bata mezcal, abacaxi e limão com gelo.","Coe em coupe ou rocks com borda preparada."],notes:"Cada gole é um pôr do sol no deserto. O defumado do mezcal casa perfeitamente com o tropical.",rating:0,servings:"1",custom:false},
@@ -315,8 +354,8 @@ const BASE_RECIPES = [
   {name:"El Presidente",categories:["Rum Envelhecido","Triple Sec","Stirred"],ingredients:["60 ml rum dourado","30 ml vermute branco","15 ml Cointreau","1 dash grenadine","casca de laranja"],steps:["Mexa tudo com gelo.","Coe em coupe.","Expresse a casca de laranja."],notes:"Clássico cubano dos anos 1920.",rating:0,servings:"",custom:false},
   {name:"Planter's Punch",categories:["Rum Envelhecido","Highball","Built"],ingredients:["60 ml rum escuro","30 ml suco de limão","20 ml grenadine","soda para completar","dash de Angostura"],steps:["Combine rum, limão e grenadine em copo alto com gelo.","Complete com soda.","Dash de Angostura por cima."],notes:"",rating:0,servings:"",custom:false},
   {name:"Rum Old Fashioned",categories:["Rum Envelhecido","Stirred"],ingredients:["60 ml rum envelhecido","5 ml xarope de açúcar mascavo","2 dash Angostura","casca de laranja"],steps:["Dissolva o xarope com os bitters.","Adicione rum e gelo. Mexa bem.","Expresse a casca de laranja."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Painkiller",categories:["Rum Envelhecido","Shaken"],ingredients:["60 ml rum escuro","120 ml suco de abacaxi","30 ml creme de coco","30 ml suco de laranja","noz-moscada"],steps:["Bata tudo com gelo.","Sirva em copo alto.","Rale noz-moscada por cima."],notes:"",rating:0,servings:"",custom:false},
-  {name:"Mary Pickford",categories:["Rum Branco","Luxardo Maraschino","Shaken"],ingredients:["60 ml rum branco","60 ml suco de abacaxi","15 ml Maraschino","1 dash grenadine"],steps:["Bata tudo com gelo.","Coe em coupe."],notes:"Clássico da Era Proibição, Cuba.",rating:0,servings:"",custom:false},
+  {name:"Painkiller",categories:["Rum Envelhecido","Tiki","Shaken"],ingredients:["60 ml rum escuro","120 ml suco de abacaxi","30 ml creme de coco","30 ml suco de laranja","noz-moscada"],steps:["Bata tudo com gelo.","Sirva em copo alto.","Rale noz-moscada por cima."],notes:"",rating:0,servings:"",custom:false},
+  {name:"Mary Pickford",categories:["Rum Branco","Luxardo Maraschino","Tiki","Shaken"],ingredients:["60 ml rum branco","60 ml suco de abacaxi","15 ml Maraschino","1 dash grenadine"],steps:["Bata tudo com gelo.","Coe em coupe."],notes:"Clássico da Era Proibição, Cuba.",rating:0,servings:"",custom:false},
 
   // ── GIN ──
   {name:"Tom Collins",categories:["Gim","Collins","Built"],ingredients:["60 ml gim","30 ml suco de limão","15 ml xarope simples","soda para completar","rodela de limão e cereja"],steps:["Combine gim, limão e xarope em copo Collins com gelo.","Complete com soda.","Decore."],notes:"",rating:0,servings:"",custom:false},
@@ -339,7 +378,7 @@ const BASE_RECIPES = [
   {name:"Autumn Smoke",categories:["Drambuie","Whisky","Stirred"],ingredients:["30 ml Drambuie","30 ml whisky levemente turfado","10 ml xarope de maple","2 dashes bitters de chocolate","casca de laranja"],steps:["Mexa tudo com gelo.","Coe em rocks com gelo grande.","Expresse a casca de laranja."],notes:"Mel + fumaça + madeira = lareira líquida.",rating:0,servings:"1",custom:false},
   {name:"Bitter Hive",categories:["Drambuie","Campari","Sour","Shaken"],ingredients:["30 ml Drambuie","30 ml Campari","30 ml suco de laranja fresca","1 pitada de sal"],steps:["Bata tudo com gelo.","Coe em rocks com gelo."],notes:"Doce-amargo com final longo. O sal liga as duas partes sem fazer armistício.",rating:0,servings:"1",custom:false},
   {name:"Spiced Nightcap",categories:["Drambuie","Conhaque","Stirred"],ingredients:["40 ml Drambuie","20 ml conhaque","10 ml creme de cacau","1 dash bitters"],steps:["Mexa tudo com gelo.","Sirva em taça pequena ou coupe."],notes:"Meio bombom adulto derretido, meio digestivo elegante. Para terminar a noite.",rating:0,servings:"1",custom:false},
-  {name:"Barley Highball",categories:["Drambuie","Highball","Built"],ingredients:["40 ml Drambuie","60 ml chá de cevada frio (ou chá preto leve)","água com gás","limão ou ervas para decorar"],steps:["Coloque gelo num copo alto.","Adicione Drambuie e chá frio.","Complete com água com gás e decore."],notes:"Seco, elegante, quase japonês. A cevada conversa diretamente com o malte do Drambuie.",rating:0,servings:"1",custom:false},
+  {name:"Barley Highball",categories:["Drambuie","Highball","Built"],ingredients:["40 ml Drambuie","60 ml chá de cevada gelado (substitua por chá preto leve se preferir)","água com gás"],steps:["Coloque gelo num copo alto.","Adicione Drambuie e chá frio.","Complete com água com gás e decore."],notes:"Seco, elegante, quase japonês. A cevada conversa diretamente com o malte do Drambuie.",rating:0,servings:"1",custom:false},
   {name:"Tropical Heather",categories:["Drambuie","Sour","Shaken"],ingredients:["40 ml Drambuie","40 ml suco de abacaxi","10 ml suco de limão","2 dashes bitters aromático"],steps:["Bata tudo com gelo.","Coe em coupe ou rocks com gelo."],notes:"Abacaxi segura o mel e deixa as ervas mais exóticas. Inusitado, mas funciona.",rating:0,servings:"1",custom:false},
 
   // ── ST-GERMAIN ──
@@ -493,14 +532,14 @@ const BASE_RECIPES = [
   {name:"CRF com St‑Germain",categories:["CRF","St‑Germain","Fizz"],ingredients:["40 ml CRF","20 ml St‑Germain","20 ml suco de limão siciliano","60 ml água com gás"],steps:["Combine CRF, St-Germain e limão na coqueteleira com gelo.","Agite e coe em copo com gelo.","Complete com água com gás e mexa suavemente."],notes:"",rating:0,servings:"",custom:false},
 
   // ── CORDIAL COCKTAILS ──
-  {name:"Solar Fizz",categories:["Vodka","Highball","Built"],ingredients:["50 ml vodka","35 ml cordial cítrico clarificado","soda para completar","gelo"],steps:["Coloque gelo num copo alto.","Adicione vodka e cordial.","Complete com soda bem gelada."],notes:"Parece água com gás... até não ser. A clarificação deixa o cordial cristalino e a acidez polida.",rating:0,servings:"1",custom:false},
-  {name:"Jardim Alto",categories:["Gim","Collins","Built"],ingredients:["50 ml gin","30 ml cordial verde (hortelã + manjericão)","10 ml suco de limão","água com gás para completar"],steps:["Coloque gelo num copo alto.","Adicione gin, cordial e limão.","Complete com água com gás e mexa suavemente."],notes:"Cheiro de horta depois da chuva. O cordial verde faz todo o trabalho aromático.",rating:0,servings:"1",custom:false},
-  {name:"Trópico Seco",categories:["Rum Envelhecido","Stirred"],ingredients:["50 ml rum ouro","35 ml cordial de abacaxi especiado","2 dashes Angostura","gelo grande"],steps:["Combine rum, cordial e bitters no copo com gelo grande.","Mexa suavemente por 20s.","Sirva no mesmo copo."],notes:"Lembra tiki... mas de camisa social. As especiarias do cordial ancoram o abacaxi.",rating:0,servings:"1",custom:false},
-  {name:"Rubi Tônico",categories:["Gim","Highball","Built"],ingredients:["45 ml gin","30 ml cordial de frutas vermelhas","água tônica para completar"],steps:["Coloque gelo num copo alto.","Adicione gin e cordial.","Complete com tônica e mexa suavemente."],notes:"Tipo um vinho que virou highball. O cordial dá cor e acidez sem perder elegância.",rating:0,servings:"1",custom:false},
-  {name:"Linha Clara",categories:["Tequila","Stirred"],ingredients:["50 ml tequila","30 ml cordial clarificado","5 ml solução salina (0,9%)","gelo grande"],steps:["Combine tequila, cordial e sal num copo baixo com gelo grande.","Mexa suavemente.","Sirva sem filtrar."],notes:"Parece água. Engana fácil. A clarificação apaga a cor mas não o sabor.",rating:0,servings:"1",custom:false},
-  {name:"Flor de Pressa",categories:["Vodka","Espumante","Spritz","Built"],ingredients:["40 ml vodka","25 ml cordial floral (sabugueiro ou base floral)","espumante para completar"],steps:["Coloque gelo numa taça de vinho.","Adicione vodka e cordial.","Complete com espumante gelado e sirva."],notes:"Perigoso de descer rápido. Floral + bolhas = bebível demais.",rating:0,servings:"1",custom:false},
-  {name:"Dourado Frio",categories:["Whisky","Stirred"],ingredients:["50 ml bourbon","25 ml cordial de mel e limão","gelo grande"],steps:["Coloque o gelo num copo baixo.","Adicione bourbon e cordial.","Mexa suavemente e sirva."],notes:"Conforto líquido sem pesar. O cordial integra mel e ácido de forma que o bourbon absorve melhor.",rating:0,servings:"1",custom:false},
-  {name:"Névoa Verde",categories:["Gim","Sour","Shaken"],ingredients:["45 ml gin","30 ml cordial de pera e ervas","10 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Bata bem.","Coe em coupe."],notes:"Aquele drink que você não entende, mas quer outro. Pera + ervas do gin + limão = sutileza em camadas.",rating:0,servings:"1",custom:false},
+  {name:"Solar Fizz",categories:["Vodka","Highball","Built","Cordial"],ingredients:["50 ml vodka","35 ml cordial cítrico clarificado","soda para completar","gelo"],steps:["Coloque gelo num copo alto.","Adicione vodka e cordial.","Complete com soda bem gelada."],notes:"Parece água com gás... até não ser. A clarificação deixa o cordial cristalino e a acidez polida.",rating:0,servings:"1",custom:false},
+  {name:"Jardim Alto",categories:["Gim","Collins","Built","Cordial"],ingredients:["50 ml gin","30 ml cordial verde (hortelã + manjericão)","10 ml suco de limão","água com gás para completar"],steps:["Coloque gelo num copo alto.","Adicione gin, cordial e limão.","Complete com água com gás e mexa suavemente."],notes:"Cheiro de horta depois da chuva. O cordial verde faz todo o trabalho aromático.",rating:0,servings:"1",custom:false},
+  {name:"Trópico Seco",categories:["Rum Envelhecido","Stirred","Cordial"],ingredients:["50 ml rum ouro","35 ml cordial de abacaxi especiado","2 dashes Angostura","gelo grande"],steps:["Combine rum, cordial e bitters no copo com gelo grande.","Mexa suavemente por 20s.","Sirva no mesmo copo."],notes:"Lembra tiki... mas de camisa social. As especiarias do cordial ancoram o abacaxi.",rating:0,servings:"1",custom:false},
+  {name:"Rubi Tônico",categories:["Gim","Highball","Built","Cordial"],ingredients:["45 ml gin","30 ml cordial de frutas vermelhas","água tônica para completar"],steps:["Coloque gelo num copo alto.","Adicione gin e cordial.","Complete com tônica e mexa suavemente."],notes:"Tipo um vinho que virou highball. O cordial dá cor e acidez sem perder elegância.",rating:0,servings:"1",custom:false},
+  {name:"Linha Clara",categories:["Tequila","Stirred","Cordial"],ingredients:["50 ml tequila","30 ml cordial clarificado","5 ml solução salina (0,9%)","gelo grande"],steps:["Combine tequila, cordial e sal num copo baixo com gelo grande.","Mexa suavemente.","Sirva sem filtrar."],notes:"Parece água. Engana fácil. A clarificação apaga a cor mas não o sabor.",rating:0,servings:"1",custom:false},
+  {name:"Flor de Pressa",categories:["Vodka","Espumante","Spritz","Built","Cordial"],ingredients:["40 ml vodka","25 ml cordial floral (sabugueiro ou base floral)","espumante para completar"],steps:["Coloque gelo numa taça de vinho.","Adicione vodka e cordial.","Complete com espumante gelado e sirva."],notes:"Perigoso de descer rápido. Floral + bolhas = bebível demais.",rating:0,servings:"1",custom:false},
+  {name:"Dourado Frio",categories:["Whisky","Stirred","Cordial"],ingredients:["50 ml bourbon","25 ml cordial de mel e limão","gelo grande"],steps:["Coloque o gelo num copo baixo.","Adicione bourbon e cordial.","Mexa suavemente e sirva."],notes:"Conforto líquido sem pesar. O cordial integra mel e ácido de forma que o bourbon absorve melhor.",rating:0,servings:"1",custom:false},
+  {name:"Névoa Verde",categories:["Gim","Sour","Shaken","Cordial"],ingredients:["45 ml gin","30 ml Cordial de Pêra Assada","10 ml suco de limão"],steps:["Combine tudo na coqueteleira com gelo.","Bata bem.","Coe em coupe."],notes:"Aquele drink que você não entende, mas quer outro. Pera assada + ervas do gin + limão = sutileza em camadas.",rating:0,servings:"1",custom:false},
 
   // ── PREPAROS CASEIROS — XAROPES BASE ──
   {name:"Xarope Simples",categories:["Preparos Caseiros"],ingredients:["200g açúcar refinado","200 ml água filtrada"],steps:["Leve água e açúcar ao fogo médio.","Mexa até dissolver — não deixe ferver.","Retire, deixe esfriar e transfira para frasco."],notes:"Proporção 1:1. A base de quase todo drink. Dura 2 semanas na geladeira. Adicione 1 colher de vodka para conservar por mais tempo.",rating:0,servings:"400 ml",custom:false},
@@ -518,15 +557,16 @@ const BASE_RECIPES = [
   {name:"Xarope de Hortelã",categories:["Preparos Caseiros"],ingredients:["1 maço grande de hortelã fresca","200g açúcar","200 ml água"],steps:["Ferva água e açúcar até dissolver.","Retire do fogo e mergulhe a hortelã.","Infuse por 30 minutos tampado.","Coe sem espremer e armazene."],notes:"Não esprema a hortelã na coagem — amarga. Eleva qualquer Mojito e serve de base para coquetéis gelados de verão.",rating:0,servings:"350 ml",custom:false},
 
   // ── PREPAROS CASEIROS — CORDIAIS ──
-  {name:"Cordial de Limão",categories:["Preparos Caseiros"],ingredients:["Casca de 4 limões sicilianos (só a parte amarela)","200g açúcar","200 ml água","60 ml suco de limão siciliano fresco"],steps:["Faça xarope simples com água e açúcar.","Retire do fogo e adicione as cascas de limão.","Infuse por 2 horas tampado.","Coe e misture com o suco de limão fresco."],notes:"Mais rico que o Rose's industrializado. Essencial para o Gimlet clássico. Dura 2 semanas na geladeira.",rating:0,servings:"350 ml",custom:false},
-  {name:"Cordial de Toranja",categories:["Preparos Caseiros"],ingredients:["Zest de 2 grapefruits (aprox 20g)","Suco de 2 grapefruits (aprox 180 ml)","200g açúcar"],steps:["Coloque o zest, o suco e o açúcar no liquidificador.","Bata por 1 minuto até o açúcar dissolver e a casca liberar os óleos.","Coe bem em peneira fina ou pano.","Armazene em frasco na geladeira."],notes:"O zest processado junto libera óleos essenciais que o suco sozinho não tem — é o que diferencia este cordial. Cítrico, amargo e profundo. Casa com gim, tequila e mezcal.",rating:0,servings:"300 ml",custom:false},
-  {name:"Cordial de Sabugueiro",categories:["Preparos Caseiros"],ingredients:["10g flores de sabugueiro secas (ou 20 cachos frescos)","400g açúcar","400 ml água","Casca e suco de 2 limões sicilianos","2g ácido cítrico"],steps:["Prepare xarope simples com água e açúcar.","Retire do fogo e adicione as flores e a casca de limão.","Infuse por 24 horas em temperatura ambiente.","Coe, adicione o suco de limão e o ácido cítrico.","Armazene em frasco escuro."],notes:"Alternativa caseira ao St-Germain — mais fresco e menos adocicado. Flores frescas dão resultado superior. Dura 2 semanas na geladeira.",rating:0,servings:"600 ml",custom:false},
-  {name:"Cordial de Framboesa",categories:["Preparos Caseiros"],ingredients:["250g framboesas frescas ou congeladas","200g açúcar","150 ml água","15 ml suco de limão"],steps:["Leve framboesas, açúcar e água ao fogo médio.","Amasse levemente com colher enquanto aquece.","Assim que ferver, retire do fogo e coe sem espremer.","Adicione o suco de limão e armazene."],notes:"Mais intenso que grenadine, com acidez real de fruta. Base do Kir, Russian Spring Punch e Mule de Framboesa.",rating:0,servings:"350 ml",custom:false},
+  {name:"Cordial de Limão",categories:["Preparos Caseiros","Cordial"],ingredients:["Casca de 4 limões sicilianos (só a parte amarela)","200g açúcar","200 ml água","60 ml suco de limão siciliano fresco"],steps:["Faça xarope simples com água e açúcar.","Retire do fogo e adicione as cascas de limão.","Infuse por 2 horas tampado.","Coe e misture com o suco de limão fresco."],notes:"Mais rico que o Rose's industrializado. Essencial para o Gimlet clássico. Dura 2 semanas na geladeira.",rating:0,servings:"350 ml",custom:false},
+  {name:"Cordial de Toranja",categories:["Preparos Caseiros","Cordial"],ingredients:["Zest de 2 grapefruits (aprox 20g)","Suco de 2 grapefruits (aprox 180 ml)","200g açúcar"],steps:["Coloque o zest, o suco e o açúcar no liquidificador.","Bata por 1 minuto até o açúcar dissolver e a casca liberar os óleos.","Coe bem em peneira fina ou pano.","Armazene em frasco na geladeira."],notes:"O zest processado junto libera óleos essenciais que o suco sozinho não tem — é o que diferencia este cordial. Cítrico, amargo e profundo. Casa com gim, tequila e mezcal.",rating:0,servings:"300 ml",custom:false},
+  {name:"Cordial de Sabugueiro",categories:["Preparos Caseiros","Cordial"],ingredients:["10g flores de sabugueiro secas (ou 20 cachos frescos)","400g açúcar","400 ml água","Casca e suco de 2 limões sicilianos","2g ácido cítrico"],steps:["Prepare xarope simples com água e açúcar.","Retire do fogo e adicione as flores e a casca de limão.","Infuse por 24 horas em temperatura ambiente.","Coe, adicione o suco de limão e o ácido cítrico.","Armazene em frasco escuro."],notes:"Alternativa caseira ao St-Germain — mais fresco e menos adocicado. Flores frescas dão resultado superior. Dura 2 semanas na geladeira.",rating:0,servings:"600 ml",custom:false},
+  {name:"Cordial de Framboesa",categories:["Preparos Caseiros","Cordial"],ingredients:["250g framboesas frescas ou congeladas","200g açúcar","150 ml água","15 ml suco de limão"],steps:["Leve framboesas, açúcar e água ao fogo médio.","Amasse levemente com colher enquanto aquece.","Assim que ferver, retire do fogo e coe sem espremer.","Adicione o suco de limão e armazene."],notes:"Mais intenso que grenadine, com acidez real de fruta. Base do Kir, Russian Spring Punch e Mule de Framboesa.",rating:0,servings:"350 ml",custom:false},
 
-  {name:"Cordial de Cítricos Clarificado",categories:["Preparos Caseiros"],ingredients:["200 ml suco de limão (tahiti ou siciliano)","150 g açúcar","2 g ácido cítrico","1 g ácido málico","100 ml água","50 ml leite integral"],steps:["Misture tudo menos o leite.","Aqueça levemente (sem ferver).","Adicione o leite frio — vai talhar (é o plano).","Aguarde 10 min e coe lentamente por filtro de café ou pano.","Armazene na geladeira."],notes:"Clarificação com leite: o ácido coagula as proteínas do leite que arrastam os taninos e partículas. Resultado: líquido cristalino com acidez polida. Parece suco, mas se comporta como um drink inteiro.",rating:0,servings:"400 ml",custom:false},
-  {name:"Cordial de Frutas Vermelhas com Chá",categories:["Preparos Caseiros"],ingredients:["200 g frutas vermelhas (mistas ou só framboesa)","150 g açúcar","150 ml chá de hibisco (ou chá preto forte)","1 colher suco de limão"],steps:["Amasse as frutas com o açúcar até dissolver.","Adicione o chá (frio ou morno).","Deixe descansar por 12h na geladeira.","Coe sem apertar muito.","Adicione o limão e armazene."],notes:"O chá dá estrutura tânica tipo vinho leve. Fica mais complexo que um cordial de fruta simples.",rating:0,servings:"450 ml",custom:false},
-  {name:"Cordial Verde",categories:["Preparos Caseiros"],ingredients:["1 maço hortelã","1 maço manjericão","200 g açúcar","200 ml água","50 ml suco de limão"],steps:["Dissolva o açúcar na água morna até virar xarope simples. Esfrie.","Bata hortelã e manjericão no xarope frio por 20s.","Coe imediatamente por pano fino.","Adicione o limão e armazene na geladeira."],notes:"Para cor vibrante: branqueie as folhas em água quente por 10s antes de bater. Usar frio preserva os óleos essenciais.",rating:0,servings:"400 ml",custom:false},
-  {name:"Cordial de Abacaxi com Especiarias",categories:["Preparos Caseiros"],ingredients:["300 g abacaxi picado","200 g açúcar","200 ml água","1 pau de canela","2 cravos","30 ml suco de limão"],steps:["Leve abacaxi, açúcar, água, canela e cravo ao fogo médio.","Cozinhe por 15 min em fogo baixo.","Retire do fogo e deixe esfriar completamente.","Adicione o limão e coe.","Armazene na geladeira."],notes:"Fica quase um tiki shortcut. A canela e o cravo sustentam o doce do abacaxi. Combina com rum, bourbon e gin.",rating:0,servings:"500 ml",custom:false},
+  {name:"Cordial de Cítricos Clarificado",categories:["Preparos Caseiros","Cordial"],ingredients:["200 ml suco de limão (tahiti ou siciliano)","150 g açúcar","2 g ácido cítrico","1 g ácido málico","100 ml água","50 ml leite integral"],steps:["Misture tudo menos o leite.","Aqueça levemente (sem ferver).","Adicione o leite frio — vai talhar (é o plano).","Aguarde 10 min e coe lentamente por filtro de café ou pano.","Armazene na geladeira."],notes:"Clarificação com leite: o ácido coagula as proteínas do leite que arrastam os taninos e partículas. Resultado: líquido cristalino com acidez polida. Parece suco, mas se comporta como um drink inteiro.",rating:0,servings:"400 ml",custom:false},
+  {name:"Cordial de Frutas Vermelhas com Chá",categories:["Preparos Caseiros","Cordial"],ingredients:["200 g frutas vermelhas (mistas ou só framboesa)","150 g açúcar","150 ml chá de hibisco (ou chá preto forte)","1 colher suco de limão"],steps:["Amasse as frutas com o açúcar até dissolver.","Adicione o chá (frio ou morno).","Deixe descansar por 12h na geladeira.","Coe sem apertar muito.","Adicione o limão e armazene."],notes:"O chá dá estrutura tânica tipo vinho leve. Fica mais complexo que um cordial de fruta simples.",rating:0,servings:"450 ml",custom:false},
+  {name:"Cordial Verde",categories:["Preparos Caseiros","Cordial"],ingredients:["1 maço hortelã","1 maço manjericão","200 g açúcar","200 ml água","50 ml suco de limão"],steps:["Dissolva o açúcar na água morna até virar xarope simples. Esfrie.","Bata hortelã e manjericão no xarope frio por 20s.","Coe imediatamente por pano fino.","Adicione o limão e armazene na geladeira."],notes:"Para cor vibrante: branqueie as folhas em água quente por 10s antes de bater. Usar frio preserva os óleos essenciais.",rating:0,servings:"400 ml",custom:false},
+  {name:"Cordial de Abacaxi com Especiarias",categories:["Preparos Caseiros","Cordial"],ingredients:["300 g abacaxi picado","200 g açúcar","200 ml água","1 pau de canela","2 cravos","30 ml suco de limão"],steps:["Leve abacaxi, açúcar, água, canela e cravo ao fogo médio.","Cozinhe por 15 min em fogo baixo.","Retire do fogo e deixe esfriar completamente.","Adicione o limão e coe.","Armazene na geladeira."],notes:"Fica quase um tiki shortcut. A canela e o cravo sustentam o doce do abacaxi. Combina com rum, bourbon e gin.",rating:0,servings:"500 ml",custom:false},
+  {name:"Cordial de Pêra Assada",categories:["Preparos Caseiros","Cordial"],ingredients:["4 peras maduras","300 g açúcar","250 ml água quente","80–120 ml suco de limão","pitada de sal","pequeno pedaço de canela","pequena casca de laranja"],steps:["Asse as peras a 200°C até caramelizar levemente.","No liquidificador, bata pera assada, água quente, açúcar, sal, canela e casca de laranja. Bata bastante.","Coe em peneira fina ou voal/filtro de café — deixar um pouco de corpo intensifica o resultado.","Adicione o limão aos poucos (80–120 ml). O ponto certo é quando ainda parece pera mas ganha brilho e comprimento."],notes:"Opcional: 1 ml de extrato natural de baunilha ou meia fava infusionada rapidamente eleva o resultado com CRF, bourbon ou rum envelhecido — mas não exagere, a baunilha domina a pera com facilidade.",rating:0,servings:"~500 ml",custom:false},
 
   // ── PREPAROS CASEIROS — MODIFICADORES COMPLEXOS ──
   {name:"Grenadine Caseira",categories:["Preparos Caseiros"],ingredients:["250 ml suco de romã puro (ou 4 romãs espremidas)","250g açúcar","10 ml suco de limão","splash de água de flor de laranjeira (opcional)"],steps:["Misture suco de romã e açúcar em fogo baixo.","Mexa até dissolver — não ferva (perde a cor).","Adicione limão e flor de laranjeira.","Deixe esfriar e armazene."],notes:"A grenadine industrial é corante e xarope de milho. A caseira tem cor e profundidade reais. Dura 3 semanas na geladeira.",rating:0,servings:"400 ml",custom:false},
@@ -534,7 +574,7 @@ const BASE_RECIPES = [
   {name:"Falernum Caseiro",categories:["Preparos Caseiros"],ingredients:["500 ml cachaça ou rum branco","60g amêndoas fatiadas","Casca de 5 limas","5 cravos-da-índia","1 col. chá extrato de baunilha","1 col. chá extrato de amêndoa","Suco de 2 limas","300g açúcar","200 ml água"],steps:["Infuse a cachaça com amêndoas, casca de lima e cravos por 24h.","Coe a infusão descartando os sólidos.","Prepare xarope simples com açúcar e água.","Misture a infusão com o xarope, suco de lima e extratos.","Armazene em frasco escuro."],notes:"Licor caribenho de cravo, amêndoa e lima. Essencial no Zombie e no Illegal Sour. Versão sem álcool: substitua a cachaça por água e infuse por 48h.",rating:0,servings:"750 ml",custom:false},
 
   // ── CLÁSSICOS IBA & OUTROS (adicionados dos PDFs) ──
-  {name:"Champagne Cocktail",categories:["Conhaque","Espumante","Built"],ingredients:["90 ml champagne ou espumante brut gelado","20 ml conhaque","1 cubo de açúcar","2 dashes Angostura Bitters"],steps:["Embeba o cubo de açúcar com Angostura e coloque no fundo da taça.","Adicione o conhaque.","Complete devagar com o champagne gelado."],notes:"Um dos primeiros coquetéis documentados (1862). O cubo dissolve enquanto você bebe.",rating:0,servings:"1",custom:false},
+  {name:"Champagne Cocktail",categories:["Conhaque","Espumante","Sparkling","Built"],ingredients:["90 ml champagne ou espumante brut gelado","20 ml conhaque","1 cubo de açúcar","2 dashes Angostura Bitters"],steps:["Embeba o cubo de açúcar com Angostura e coloque no fundo da taça.","Adicione o conhaque.","Complete devagar com o champagne gelado."],notes:"Um dos primeiros coquetéis documentados (1862). O cubo dissolve enquanto você bebe.",rating:0,servings:"1",custom:false},
   {name:"Mint Julep",categories:["Whisky","Smash","Built"],ingredients:["60 ml bourbon","4 ramos de hortelã fresca","10 ml xarope simples","gelo triturado"],steps:["Macere suavemente a hortelã com o xarope no fundo do copo.","Encha com gelo triturado.","Despeje o bourbon por cima.","Mexa suavemente e decore com ramo de hortelã."],notes:"Obrigatório no Kentucky Derby. O copo metálico gelado é parte do ritual.",rating:0,servings:"1",custom:false},
   {name:"Rusty Nail",categories:["Whisky","Licor","Stirred"],ingredients:["45 ml Scotch whisky","25 ml Drambuie","casca de limão"],steps:["Coloque gelo em rocks.","Adicione o Scotch e o Drambuie.","Mexa suavemente.","Expresse a casca de limão e decore."],notes:"Drambuie é um licor de mel e ervas feito com base em Scotch — complementares por natureza.",rating:0,servings:"1",custom:false},
   {name:"French Martini",categories:["Vodka","Shaken"],ingredients:["45 ml vodka","15 ml Chambord ou licor de framboesa","30 ml suco de abacaxi fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente — o abacaxi cria espuma natural.","Coe em taça coupe gelada."],notes:"IBA official. A espuma de abacaxi é a assinatura visual. Agite com força.",rating:0,servings:"1",custom:false},
@@ -545,26 +585,26 @@ const BASE_RECIPES = [
   {name:"Casino",categories:["Gim","Luxardo Maraschino","Sour","Shaken"],ingredients:["40 ml gim (Old Tom ou London Dry)","10 ml Luxardo Maraschino","10 ml suco de limão","2 dashes Orange Bitters"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em taça coupe."],notes:"IBA classic. Com Old Tom Gim (levemente adocicado) fica mais equilibrado.",rating:0,servings:"1",custom:false},
   {name:"Paradise",categories:["Gim","Sour","Shaken"],ingredients:["30 ml gim","20 ml apricot brandy (licor de damasco)","15 ml suco de laranja fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"IBA classic. Proporção 3:2:1,5. Floral, frutado e direto.",rating:0,servings:"1",custom:false},
   {name:"Old Cuban",categories:["Rum Envelhecido","Espumante","Fizz","Shaken"],ingredients:["45 ml rum envelhecido","22 ml suco de lima","22 ml xarope simples","6 folhas de hortelã","2 dashes Angostura Bitters","60 ml champagne ou prosecco brut"],steps:["Macere levemente a hortelã na coqueteleira.","Agite rum, lima, xarope, hortelã e Angostura com gelo.","Coe em taça. Complete com espumante gelado.","Decore com folha de hortelã."],notes:"Criado por Audrey Saunders, c. 2001. Um Mojito elevado ao território do champagne.",rating:0,servings:"1",custom:false},
-  {name:"Yellow Bird",categories:["Rum Branco","Triple Sec","Licor","Sour","Shaken"],ingredients:["30 ml rum branco","15 ml Galliano","15 ml Cointreau","15 ml suco de lima"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Drink caribenho dos anos 1950. O Galliano herbal é o segredo da personalidade.",rating:0,servings:"1",custom:false},
+  {name:"Yellow Bird",categories:["Rum Branco","Triple Sec","Tiki","Licor","Sour","Shaken"],ingredients:["30 ml rum branco","15 ml Galliano","15 ml Cointreau","15 ml suco de lima"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Drink caribenho dos anos 1950. O Galliano herbal é o segredo da personalidade.",rating:0,servings:"1",custom:false},
   {name:"Trinidad Sour",categories:["Whisky","Sour","Shaken"],ingredients:["45 ml Angostura Bitters","30 ml orgeat (xarope de amêndoa)","22 ml suco de limão","15 ml whisky de centeio"],steps:["Mexa tudo com gelo no copo misturador.","Coe em coupe."],notes:"O Angostura como espírito base — não como acento. O orgeat doma o amargor. Surpreende a todos.",rating:0,servings:"1",custom:false},
   {name:"Barracuda",categories:["Rum Envelhecido","Espumante","Licor","Highball","Shaken"],ingredients:["45 ml rum dourado","15 ml Galliano","60 ml suco de abacaxi fresco","10 ml suco de lima","prosecco para completar"],steps:["Agite rum, Galliano, abacaxi e lima com gelo.","Coe em copo alto.","Complete com prosecco gelado."],notes:"IBA official. Galliano + abacaxi + prosecco: tropical e elegante ao mesmo tempo.",rating:0,servings:"1",custom:false},
   {name:"Tipperary",categories:["Whisky","Vermute Rosso","Licor","Stirred"],ingredients:["50 ml Irish whiskey","25 ml vermute tinto doce","15 ml Green Chartreuse","2 dashes Angostura"],steps:["Mexa tudo com gelo no copo misturador.","Coe em taça coupe."],notes:"Um Manhattan com Green Chartreuse no lugar do Maraschino. A erva transforma tudo.",rating:0,servings:"1",custom:false},
   {name:"Suffering Bastard",categories:["Conhaque","Gim","Ginger Beer","Highball","Shaken"],ingredients:["30 ml conhaque","30 ml gim","15 ml suco de lima","2 dashes Angostura","cerveja de gengibre para completar"],steps:["Agite conhaque, gim, lima e Angostura com gelo.","Coe em copo alto.","Complete com ginger beer."],notes:"Criado no Cairo, 1942, como 'remédio' pós-festa. IBA official.",rating:0,servings:"1",custom:false},
-  {name:"Illegal Sour",categories:["Mezcal","Rum Branco","Luxardo Maraschino","Sour","Shaken"],ingredients:["30 ml mezcal","15 ml rum branco jamaicano","15 ml falernum","5 ml Luxardo Maraschino","22 ml suco de lima","15 ml xarope simples","30 ml clara de ovo (opcional)"],steps:["Dry shake com clara por 10s.","Adicione gelo e agite mais 15s.","Coe duplo em coupe."],notes:"IBA official. Mezcal defumado + rum + falernum (cravo, amêndoa, gengibre). Complexo e surpreendente.",rating:0,servings:"1",custom:false},
+  {name:"Illegal Sour",categories:["Mezcal","Rum Branco","Luxardo Maraschino","Tiki","Sour","Shaken"],ingredients:["30 ml mezcal","15 ml rum branco jamaicano","15 ml falernum","5 ml Luxardo Maraschino","22 ml suco de lima","15 ml xarope simples","30 ml clara de ovo (opcional)"],steps:["Dry shake com clara por 10s.","Adicione gelo e agite mais 15s.","Coe duplo em coupe."],notes:"IBA official. Mezcal defumado + rum + falernum (cravo, amêndoa, gengibre). Complexo e surpreendente.",rating:0,servings:"1",custom:false},
   {name:"Russian Spring Punch",categories:["Vodka","Espumante","Licor","Fizz","Shaken"],ingredients:["25 ml vodka","25 ml suco de limão","15 ml crème de cassis","10 ml xarope simples","espumante brut para completar"],steps:["Agite vodka, limão, cassis e xarope com gelo.","Coe em flute.","Complete com espumante gelado.","Decore com framboesa."],notes:"Criado por Dick Bradsell, anos 1980. Leve, fresco e com cor roxa sedutora.",rating:0,servings:"1",custom:false},
   {name:"El Diablo",categories:["Tequila","Ginger Beer","Highball","Built"],ingredients:["45 ml tequila blanco","20 ml crème de cassis","15 ml suco de lima","cerveja de gengibre para completar"],steps:["Adicione gelo em copo alto.","Coloque tequila, cassis e lima.","Complete com ginger beer. Mexa uma vez.","Decore com rodela de lima."],notes:"O cassis no fundo cria um degradê vermelho tentador. Refrescante e com profundidade.",rating:0,servings:"1",custom:false},
   {name:"Bloody Maria",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","120 ml suco de tomate","15 ml suco de limão","2 dashes molho inglês","2 dashes Tabasco","sal de aipo","pimenta-do-reino"],steps:["Combine tudo em copo alto com gelo.","Role o copo (não mexa) para misturar.","Decore com aipo e limão."],notes:"A Bloody Mary com tequila. A tequila traz terroir que a vodka não tem.",rating:0,servings:"1",custom:false},
   {name:"Salty Dog",categories:["Vodka","Highball","Built"],ingredients:["60 ml vodka","120 ml suco de grapefruit fresco","sal na borda"],steps:["Prepare a borda com sal grosso.","Encha com gelo.","Adicione vodka e suco de grapefruit. Mexa."],notes:"Sem sal na borda vira Greyhound. Com gim, é a versão clássica britânica.",rating:0,servings:"1",custom:false},
   {name:"Bronx Cocktail",categories:["Gim","Vermute Bianco","Vermute Rosso","Sour","Shaken"],ingredients:["45 ml gim","22 ml vermute tinto doce","22 ml vermute seco","30 ml suco de laranja fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Clássico nova-iorquino de 1906. O suco de laranja suaviza o duplo vermute.",rating:0,servings:"1",custom:false},
   {name:"Pimm's Cup",categories:["Licor","Collins","Highball","Built"],ingredients:["60 ml Pimm's No. 1","30 ml suco de limão","limonada ou ginger ale para completar","rodelas de pepino","morangos fatiados","hortelã fresca"],steps:["Encha copo alto com gelo.","Adicione Pimm's e suco de limão.","Complete com limonada.","Decore generosamente com pepino, morango e hortelã."],notes:"O drink do verão inglês. Obrigatório em Wimbledon.",rating:0,servings:"1",custom:false},
-  {name:"Zombie",categories:["Rum Envelhecido","Rum Branco","Shaken"],ingredients:["45 ml rum jamaicano escuro","45 ml rum dourado","30 ml rum Demerara","22 ml suco de lima","15 ml falernum","15 ml suco de grapefruit","10 ml xarope de canela","5 ml grenadine","1 dash Angostura","6 gotas absinto"],steps:["Combine tudo com 170g de gelo triturado no liquidificador.","Bata rapidamente (pulse, não contínuo).","Despeje em copo alto e decore com hortelã e frutas."],notes:"Criado por Donn Beach, c. 1934. Limite de 2 por pessoa — não é brincadeira.",rating:0,servings:"1",custom:false},
+  {name:"Zombie",categories:["Rum Envelhecido","Rum Branco","Tiki","Blended","Shaken"],ingredients:["45 ml rum jamaicano","30 ml rum Demerara","30 ml rum branco envelhecido ou gold rum","22 ml suco de lima","22 ml suco de grapefruit","15 ml falernum","15 ml xarope de canela","5 ml grenadine","1 dash Angostura"],steps:["Combine tudo com 170g de gelo triturado no liquidificador.","Bata rapidamente (pulse, não contínuo).","Despeje em copo alto e decore com hortelã e frutas."],notes:"Criado por Donn Beach, c. 1934. Limite de 2 por pessoa — não é brincadeira.",rating:0,servings:"1",custom:false},
   {name:"Grasshopper",categories:["Licor","Shaken"],ingredients:["20 ml crème de menthe verde","20 ml crème de cacao branco","20 ml creme de leite fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em taça coupe."],notes:"Clássico americano pós-Proibição. Verde, cremoso e mentolado — sobremesa líquida.",rating:0,servings:"1",custom:false},
   {name:"Golden Dream",categories:["Triple Sec","Licor","Shaken"],ingredients:["20 ml Galliano","20 ml Cointreau","20 ml suco de laranja fresco","20 ml creme de leite fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite bem e coe em taça coupe."],notes:"IBA official after-dinner. Partes iguais — Galliano herbal + creme + laranja + Cointreau.",rating:0,servings:"1",custom:false},
   {name:"Cachanchara",categories:["Rum Branco","Built"],ingredients:["60 ml aguardente de cana cubana ou cachaça","15 ml mel cru","15 ml suco de lima","50 ml água"],steps:["Misture mel e água no copo para diluir.","Adicione o suco de lima.","Coloque gelo e o destilado.","Mexa com energia."],notes:"Drink tradicional cubano — considerado precursor do Mojito. Simples e honesto.",rating:0,servings:"1",custom:false},
-  {name:"Collins de Toranja com Ervas",categories:["Gim","Collins","Built"],ingredients:["50 ml gim","25 ml Cordial de Toranja","água com gás para completar","ramo de alecrim ou manjericão"],steps:["Encha copo alto com gelo.","Adicione o gim e o cordial de toranja.","Complete com água com gás e mexa suavemente.","Adicione alecrim ou manjericão para perfumar."],notes:"O cordial entra como camada aromática extra. A erva fresca amplifica as notas florais do gim.",rating:0,servings:"1",custom:false},
-  {name:"Grapefruit Gimlet",categories:["Gim","Sour","Shaken"],ingredients:["50 ml gim","25 ml Cordial de Toranja"],steps:["Combine gim e cordial na coqueteleira com gelo.","Mexa bem por 20s.","Coe em taça de coquetel gelada."],notes:"Releitura elegante do Gimlet com cordial caseiro. Minimalista e afiado — os óleos da casca dão profundidade que o suco sozinho não tem.",rating:0,servings:"1",custom:false},
-  {name:"Spritz de Toranja",categories:["Espumante","Spritz","Built"],ingredients:["40 ml Cordial de Toranja","60 ml espumante brut","40 ml água com gás"],steps:["Encha taça de vinho com gelo.","Adicione o cordial de toranja.","Complete com espumante e água com gás. Mexa suavemente."],notes:"Aperitivo leve com amargor natural da toranja. Bitter sem precisar de bitter.",rating:0,servings:"1",custom:false},
-  {name:"Highball de Toranja e Bourbon",categories:["Whisky","Highball","Built"],ingredients:["50 ml bourbon","20 ml Cordial de Toranja","água com gás para completar"],steps:["Encha copo alto com gelo.","Adicione o bourbon e o cordial de toranja.","Complete com água com gás e mexa suavemente."],notes:"Refrescante, levemente amargo e equilibrado. Funciona muito bem com bourbon mais doce, como Buffalo Trace.",rating:0,servings:"1",custom:false},
+  {name:"Collins de Toranja com Ervas",categories:["Gim","Collins","Built","Cordial"],ingredients:["50 ml gim","25 ml Cordial de Toranja","água com gás para completar","ramo de alecrim ou manjericão"],steps:["Encha copo alto com gelo.","Adicione o gim e o cordial de toranja.","Complete com água com gás e mexa suavemente.","Adicione alecrim ou manjericão para perfumar."],notes:"O cordial entra como camada aromática extra. A erva fresca amplifica as notas florais do gim.",rating:0,servings:"1",custom:false},
+  {name:"Grapefruit Gimlet",categories:["Gim","Sour","Shaken","Cordial"],ingredients:["50 ml gim","25 ml Cordial de Toranja"],steps:["Combine gim e cordial na coqueteleira com gelo.","Mexa bem por 20s.","Coe em taça de coquetel gelada."],notes:"Releitura elegante do Gimlet com cordial caseiro. Minimalista e afiado — os óleos da casca dão profundidade que o suco sozinho não tem.",rating:0,servings:"1",custom:false},
+  {name:"Spritz de Toranja",categories:["Espumante","Spritz","Built","Cordial"],ingredients:["40 ml Cordial de Toranja","60 ml espumante brut","40 ml água com gás"],steps:["Encha taça de vinho com gelo.","Adicione o cordial de toranja.","Complete com espumante e água com gás. Mexa suavemente."],notes:"Aperitivo leve com amargor natural da toranja. Bitter sem precisar de bitter.",rating:0,servings:"1",custom:false},
+  {name:"Highball de Toranja e Bourbon",categories:["Whisky","Highball","Built","Cordial"],ingredients:["50 ml bourbon","20 ml Cordial de Toranja","água com gás para completar"],steps:["Encha copo alto com gelo.","Adicione o bourbon e o cordial de toranja.","Complete com água com gás e mexa suavemente."],notes:"Refrescante, levemente amargo e equilibrado. Funciona muito bem com bourbon mais doce, como Buffalo Trace.",rating:0,servings:"1",custom:false},
   {name:"Margarita Laranja Sanguínea e Aperol",categories:["Tequila","Sour","Shaken"],ingredients:["60 ml tequila","15 ml Aperol","30 ml suco de laranja sanguínea","30 ml suco de limão taiti","30 ml xarope simples"],steps:["Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"O Aperol substitui o licor de laranja — traz amargor e cor sem doçura extra. A laranja sanguínea aprofunda o perfil cítrico.",rating:0,servings:"1",custom:false},
   {name:"Key Lime Pie Margarita",categories:["Triple Sec","Tequila","Sour","Shaken"],ingredients:["60 ml tequila","15 ml licor de laranja","30 ml suco de limão taiti","15 ml xarope de baunilha","2 barspoons iogurte de limão","biscoito graham cracker triturado para a borda"],steps:["Prepare a borda com biscoito triturado.","Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"Releitura da torta em drinque. O iogurte traz cremosidade e acidez láctica — a baunilha amarra o conjunto.",rating:0,servings:"1",custom:false},
   {name:"Margarita Ancho Chili e Toranja",categories:["Triple Sec","Tequila","Sour","Shaken"],ingredients:["45 ml tequila","15 ml licor de laranja","30 ml suco de limão taiti","30 ml suco de grapefruit","15 ml xarope de pimenta ancho","borda de ancho chili, sal e raspas de limão"],steps:["Prepare a borda com ancho chili, sal e raspas de limão.","Combine tudo na coqueteleira com gelo.","Agite por 15s.","Coe em rocks com gelo."],notes:"Xarope de ancho chili: ferva 1 xícara de água + 1 xícara de açúcar + 2 col. sopa de pimenta ancho moída. Coe e esfrie. Defumado, cítrico e com calor progressivo.",rating:0,servings:"1",custom:false},
@@ -576,6 +616,14 @@ const BASE_RECIPES = [
   {name:"Cynar Spritz",categories:["Cynar","Spritz","Built"],ingredients:["60 ml Cynar","90 ml espumante brut (ou prosecco)","água com gás a gosto","gelo","1 rodela de laranja"],steps:["Encha um copo largo com gelo.","Adicione o Cynar, depois o espumante.","Complete com água com gás.","Mexa suavemente e decore com rodela de laranja."],notes:"Aperol Spritz com mais personalidade e amargura herbal. Vai embora mais rápido do que deveria.",rating:0,servings:"1",custom:false},
   {name:"Pegu Club",categories:["Gim","Triple Sec","Sour","Shaken"],ingredients:["50 ml gim","20 ml curaçao de laranja","15 ml suco de limão","1 dash Angostura","1 dash orange bitters"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em coupe.","Decore com casca de limão."],notes:"Criado no Pegu Club de Rangoon (atual Yangon), c. 1920. Um Sour mais sofisticado e seco.",rating:0,servings:"1",custom:false},
   {name:"Remember the Maine",categories:["Whisky","Luxardo Maraschino","Vermute Rosso","Stirred"],ingredients:["50 ml whisky de centeio ou bourbon","20 ml vermute tinto","1 bar spoon Luxardo Maraschino","rinse de absinto"],steps:["Enxague a taça de coquetel com absinto e descarte o excesso.","Mexa o whisky, vermute e Maraschino com gelo em copo misturador por 30s.","Coe na taça preparada.","Decore com cereja."],notes:"Um Manhattan mais profundo e levemente misterioso. O absinto é sutil mas transforma o drink.",rating:0,servings:"1",custom:false},
+
+  // ── NOVAS RECEITAS ──
+  {name:"Jungle Bird Maraschino",categories:["Rum Envelhecido","Campari","Luxardo Maraschino","Tiki","Sour","Shaken"],ingredients:["45 ml rum jamaicano escuro","20 ml Campari","10 ml Luxardo Maraschino","45 ml suco de abacaxi","15 ml suco de limão Tahiti","10 ml xarope demerara 2:1"],steps:["Combine tudo na coqueteleira com bastante gelo.","Agite vigorosamente por 12–15 segundos.","Coe para rocks com gelo fresco ou gelo triturado parcial.","Decore com folha de abacaxi, cereja Luxardo e casca de laranja."],notes:"O Luxardo aprofunda o Campari sem apagar o rum. Mais elegante que o clássico.",rating:0,servings:"1",custom:false},
+  {name:"Highball de Amburana & Sal",categories:["Cachaça Envelhecida","Highball","Built"],ingredients:["50 ml cachaça envelhecida em amburana","5 ml solução salina","100 ml soda ultra gelada","twist de laranja"],steps:["Coloque gelo alto num copo highball.","Adicione a cachaça e a solução salina.","Complete com soda ultra gelada.","Expresse o twist de laranja e sirva."],notes:"Seco. Adulto. Estranho no bom sentido.",rating:0,servings:"1",custom:false},
+  {name:"Cachaça & Jerez",categories:["Cachaça Envelhecida","Jerez","Stirred"],ingredients:["45 ml cachaça envelhecida","25 ml fino sherry","1 dash bitter de laranja"],steps:["Mexa tudo com gelo em copo misturador por 30s.","Coe em coupe gelada.","Decore com casca de laranja."],notes:"",rating:0,servings:"1",custom:false},
+  {name:"Mezcal & Cenoura Queimada",categories:["Mezcal","Sour","Shaken"],ingredients:["45 ml mezcal","20 ml suco de cenoura assada","10 ml mel queimado","10 ml suco de limão","pitada de sal"],steps:["Combine tudo na coqueteleira com gelo.","Agite por 12s.","Coe em coupe."],notes:"Vegetal, defumado e surpreendente. O mel queimado ancora o mezcal.",rating:0,servings:"1",custom:false},
+  {name:"Cynar & Soda Salina",categories:["Cynar","Highball","Built"],ingredients:["45 ml Cynar","10 ml vinho branco seco","2 gotas solução salina","soda para completar"],steps:["Coloque gelo num copo alto.","Adicione Cynar, vinho e solução salina.","Complete com soda e mexa suavemente."],notes:"Minimalista. Italiano. Moderno.",rating:0,servings:"1",custom:false},
+  {name:"Kingston Mineral",categories:["Rum Envelhecido","Stirred"],ingredients:["45 ml rum jamaicano","15 ml chá preto frio","5 ml xarope demerara","2 gotas solução salina"],steps:["Combine tudo no copo misturador com gelo.","Mexa por 25s.","Coe em rocks com gelo grande."],notes:"",rating:0,servings:"1",custom:false},
 ];
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -593,16 +641,16 @@ const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], notes:"", rating:0, 
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
 const addBtnSt = { marginTop:4, padding:"5px 12px", borderRadius:3, background:"none", border:"1px solid rgba(240,235,225,0.1)", color:"rgba(240,235,225,0.58)", cursor:"pointer", fontSize:11, letterSpacing:.5, fontFamily:"Archivo,sans-serif" };
 
-function RecipeForm({ initial, onSave, onClose }) {
+function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=null }) {
   const [form, setForm] = useState(initial || EMPTY_FORM);
   const [suggesting, setSuggesting] = useState(false);
   const [suggErr, setSuggErr] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [scanErr, setScanErr] = useState(null);
-  const [previewImg, setPreviewImg] = useState(null);
+  const [previewImgs, setPreviewImgs] = useState([]);
   const photoRef = useRef();
 
-  useEffect(() => { return () => { if (previewImg) URL.revokeObjectURL(previewImg); }; }, [previewImg]);
+  useEffect(() => { return () => { previewImgs.forEach(u=>URL.revokeObjectURL(u)); }; }, [previewImgs]);
 
   const setField = (k,v) => setForm(f=>({...f,[k]:v}));
   const setListItem = (k,i,v) => setForm(f=>({...f,[k]:f[k].map((x,j)=>j===i?v:x)}));
@@ -610,9 +658,11 @@ function RecipeForm({ initial, onSave, onClose }) {
   const removeListItem = (k,i) => setForm(f=>({...f,[k]:f[k].filter((_,j)=>j!==i)}));
   const toggleCat = c => setField("categories", form.categories.includes(c) ? form.categories.filter(x=>x!==c) : [...form.categories, c]);
 
-  const scanPhoto = useCallback(async (file) => {
-    if (!file) return;
-    // Rate limit: 10 leituras de imagem por dia por usuário
+  useEffect(()=>{if(sharedFiles?.length>0)scanPhoto(sharedFiles);},[]);// eslint-disable-line
+
+  const scanPhoto = useCallback(async (files) => {
+    const fileArr = Array.from(files||[]).filter(Boolean);
+    if (!fileArr.length) return;
     const uid = auth.currentUser?.uid || "anon";
     const today = new Date().toISOString().slice(0, 10);
     const rlKey = `otr_scan_${uid}_${today}`;
@@ -623,13 +673,15 @@ function RecipeForm({ initial, onSave, onClose }) {
     }
     localStorage.setItem(rlKey, String(used + 1));
     setScanning(true); setScanErr(null);
-    const preview = URL.createObjectURL(file);
-    setPreviewImg(preview);
+    setPreviewImgs(fileArr.map(f=>URL.createObjectURL(f)));
     try {
-      const base64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.onerror = rej; r.readAsDataURL(file); });
+      const imageContents = await Promise.all(fileArr.map(async file=>{
+        const base64 = await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=rej;r.readAsDataURL(file);});
+        return {type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}};
+      }));
       const response = await fetch("/api/anthropic", {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink da imagem e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml)\n- "steps": array de strings em português, descrevendo o preparo\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}},{type:"text",text:"Extraia a receita desta imagem e retorne o JSON."}]}] }),
+        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink ${fileArr.length>1?"das imagens (podem ser partes diferentes de uma mesma receita longa)":"da imagem"} e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml). IMPORTANTE: preserve nomes de marcas, siglas e destilados EXATAMENTE como aparecem na imagem — não substitua, não adicione alternativas entre parênteses, não tente explicar o ingrediente.\n- "steps": array de strings em português, descrevendo o preparo\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[...imageContents,{type:"text",text:`Extraia a receita ${fileArr.length>1?"destas imagens":"desta imagem"} e retorne o JSON.`}]}] }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -674,22 +726,32 @@ function RecipeForm({ initial, onSave, onClose }) {
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.93)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:500,padding:20,backdropFilter:"blur(12px)"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0A0A",border:"1px solid rgba(240,235,225,0.08)",borderRadius:6,width:"100%",maxWidth:620,maxHeight:"92vh",overflowY:"auto"}}>
         <div style={{padding:"24px 28px 30px"}}>
-          <input ref={photoRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{if(e.target.files?.[0])scanPhoto(e.target.files[0]);e.target.value="";}}/>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+          <input ref={photoRef} type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>{if(e.target.files?.length)scanPhoto(e.target.files);e.target.value="";}}/>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:initial?22:16}}>
             <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,fontWeight:600,color:"#F0EBE1"}}>{initial?"Editar receita":"Nova receita"}</h2>
-            <div style={{display:"flex",gap:8,alignItems:"center"}}>
-              <button onClick={()=>photoRef.current?.click()} disabled={scanning} style={{padding:"6px 14px",borderRadius:3,background:"rgba(240,235,225,0.05)",border:"1px solid rgba(240,235,225,0.1)",color:scanning?"#C8A96E":"rgba(240,235,225,0.45)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>
-                {scanning?"⏳ lendo…":"📷 importar foto"}
-              </button>
-              <button onClick={onClose} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:"50%",width:30,height:30,color:"rgba(240,235,225,0.4)",fontSize:16,cursor:"pointer"}}>×</button>
-            </div>
+            <button onClick={onClose} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:"50%",width:30,height:30,color:"rgba(240,235,225,0.4)",fontSize:16,cursor:"pointer"}}>×</button>
           </div>
+          {!initial&&!previewImgs.length&&!scanning&&(
+            <button onClick={()=>photoRef.current?.click()} style={{display:"flex",alignItems:"center",gap:13,width:"100%",marginBottom:20,padding:"13px 16px",borderRadius:4,background:"rgba(200,169,110,0.05)",border:"1px dashed rgba(200,169,110,0.22)",cursor:"pointer",textAlign:"left",transition:"border-color .15s",boxSizing:"border-box"}} onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(200,169,110,0.48)"} onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(200,169,110,0.22)"}>
+              <span style={{fontSize:22,flexShrink:0,lineHeight:1}}>📷</span>
+              <div>
+                <div style={{fontSize:12,color:"#C8A96E",fontFamily:"Archivo,sans-serif",fontWeight:600,letterSpacing:.3,marginBottom:3}}>Importar da foto</div>
+                <div style={{fontSize:11,color:"rgba(240,235,225,0.38)",fontFamily:"Archivo,sans-serif",lineHeight:1.45}}>Selecione um ou mais prints — o app transcreve todos automaticamente</div>
+              </div>
+            </button>
+          )}
 
-          {previewImg&&(
-            <div style={{marginBottom:16,borderRadius:5,overflow:"hidden",border:"1px solid rgba(240,235,225,0.07)",position:"relative"}}>
-              <img src={previewImg} alt="receita" style={{width:"100%",maxHeight:200,objectFit:"cover",display:"block",opacity:scanning?.5:1}}/>
-              {scanning&&<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:10}}><div style={{fontSize:28}}>🔍</div><div style={{fontSize:12,color:"#C8A96E",letterSpacing:1.5,textTransform:"uppercase"}}>Analisando…</div></div>}
-              {!scanning&&<button onClick={()=>setPreviewImg(null)} style={{position:"absolute",top:8,right:8,background:"rgba(0,0,0,0.65)",border:"none",borderRadius:"50%",width:24,height:24,color:"rgba(240,235,225,0.7)",fontSize:13,cursor:"pointer"}}>×</button>}
+          {previewImgs.length>0&&(
+            <div style={{marginBottom:16,position:"relative"}}>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {previewImgs.map((url,i)=>(
+                  <div key={i} style={{flex:"1 1 calc(50% - 3px)",minWidth:100,borderRadius:5,overflow:"hidden",border:"1px solid rgba(240,235,225,0.07)"}}>
+                    <img src={url} alt={`print ${i+1}`} style={{width:"100%",height:110,objectFit:"cover",display:"block",opacity:scanning?.5:1}}/>
+                  </div>
+                ))}
+              </div>
+              {scanning&&<div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.6)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:10,borderRadius:5}}><div style={{fontSize:28}}>🔍</div><div style={{fontSize:12,color:"#C8A96E",letterSpacing:1.5,textTransform:"uppercase"}}>Analisando{previewImgs.length>1?` ${previewImgs.length} fotos`:""}…</div></div>}
+              {!scanning&&<button onClick={()=>setPreviewImgs([])} style={{position:"absolute",top:6,right:6,background:"rgba(0,0,0,0.65)",border:"none",borderRadius:"50%",width:24,height:24,color:"rgba(240,235,225,0.7)",fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>}
             </div>
           )}
           {scanErr&&<div style={{marginBottom:14,padding:"9px 13px",borderRadius:3,background:"rgba(239,68,68,0.07)",border:"1px solid rgba(239,68,68,0.2)",color:"#F87171",fontSize:12}}>{scanErr}</div>}
@@ -721,7 +783,7 @@ function RecipeForm({ initial, onSave, onClose }) {
             </div>
             <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",marginBottom:6}}>Spirits / Ingredientes principais</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-              {ALL_SPIRIT_OPTIONS.map(s=>{const on=form.categories.includes(s);return <button key={s} onClick={()=>toggleCat(s)} style={{padding:"3px 10px",borderRadius:20,fontSize:11,background:on?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",border:`1px solid ${on?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)"}`,color:on?"#A0785A":"rgba(240,235,225,0.28)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s}</button>;})}
+              {[...new Set([...ALL_SPIRIT_OPTIONS,...customSpirits])].sort().map(s=>{const on=form.categories.includes(s);return <button key={s} onClick={()=>toggleCat(s)} style={{padding:"3px 10px",borderRadius:20,fontSize:11,background:on?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",border:`1px solid ${on?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)"}`,color:on?"#A0785A":"rgba(240,235,225,0.28)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s}</button>;})}
             </div>
           </div>
 
@@ -758,6 +820,22 @@ function RecipeForm({ initial, onSave, onClose }) {
               {initial?"Salvar alterações":"Adicionar receita"}
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── CONFIRM DIALOG ───────────────────────────────────────────────────────────
+function ConfirmDialog({ message, onConfirm, onCancel, danger=false }) {
+  const dismiss = onCancel ?? onConfirm;
+  return (
+    <div onClick={dismiss} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.78)",zIndex:9000,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#0F0D0A",border:`1px solid ${danger?"rgba(239,68,68,0.14)":"rgba(240,235,225,0.08)"}`,borderRadius:8,padding:"28px 22px 22px",maxWidth:300,width:"100%",boxShadow:"0 24px 60px rgba(0,0,0,0.9)",textAlign:"center"}}>
+        <div style={{fontSize:13,color:"rgba(240,235,225,0.68)",fontFamily:"Archivo,sans-serif",lineHeight:1.65,marginBottom:24}}>{message}</div>
+        <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+          {onCancel&&<button onClick={onCancel} style={{padding:"8px 20px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.38)",fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.3}}>cancelar</button>}
+          <button onClick={onConfirm} style={{padding:"8px 20px",borderRadius:3,background:danger?"rgba(239,68,68,0.12)":"rgba(160,120,90,0.12)",border:`1px solid ${danger?"rgba(239,68,68,0.3)":"rgba(160,120,90,0.3)"}`,color:danger?"#F87171":"#A0785A",fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",fontWeight:600,letterSpacing:.3}}>{onCancel?"confirmar":"ok"}</button>
         </div>
       </div>
     </div>
@@ -801,17 +879,20 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
         <GlassIcon categories={recipe.categories} color={theme.accent} size={145}/>
       </div>
 
+      {/* fita autoral */}
+      {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:18,right:-55,width:200,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
+
       {/* linha de topo — gradiente sutil */}
       <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,${theme.accent}88,${theme.accent}22,transparent)`,opacity:hov?.8:.3,transition:"opacity .2s"}}/>
 
       {/* fav + comanda */}
-      <button onClick={e=>{e.stopPropagation();onFav();}} style={{position:"absolute",top:8,right:8,background:"none",border:"none",cursor:"pointer",padding:4,transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.15)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <button onClick={e=>{e.stopPropagation();onFav();}} style={{position:"absolute",top:8,right:8,background:"none",border:"none",cursor:"pointer",padding:4,transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.15)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>
         {isFav
           ?<svg width="15" height="12" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
           :<svg width="15" height="12" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
         }
       </button>
-      <button onClick={e=>{e.stopPropagation();onComanda();}} style={{position:"absolute",top:8,right:30,background:"none",border:"none",fontSize:12,color:isComanda?"#C8A96E":"rgba(255,255,255,0.1)",cursor:"pointer",padding:4,transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none"}}>
+      <button onClick={e=>{e.stopPropagation();onComanda();}} style={{position:"absolute",top:8,right:30,background:"none",border:"none",fontSize:12,color:isComanda?"#C8A96E":"rgba(255,255,255,0.1)",cursor:"pointer",padding:4,transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none",zIndex:2}}>
         {isComanda?"◫":"◻"}
       </button>
 
@@ -819,7 +900,6 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10,flexWrap:"wrap"}}>
         {styleTag&&<span style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent}}>{styleTag}</span>}
         {spiritTag&&<><span style={{fontSize:8,color:theme.accent,opacity:.3}}>·</span><span style={{fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.52)"}}>{spiritTag}</span></>}
-        {recipe.custom&&<><span style={{fontSize:8,color:"rgba(160,120,90,.3)"}}>·</span><span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:"rgba(160,120,90,0.6)"}}>minha</span></>}
       </div>
 
       {/* nome */}
@@ -872,7 +952,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
             {isFav?"Desfavoritar":"Favoritar"}
           </button>
           {onDelete&&(
-            <button onClick={e=>{e.stopPropagation();if(window.confirm("Excluir esta receita?"))onDelete();setQuickActions(false);}}
+            <button onClick={e=>{e.stopPropagation();onDelete();setQuickActions(false);}}
               style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
                 background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>
               Deletar
@@ -885,7 +965,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete}){
+function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo}){
   const theme=getTheme(recipe.categories);
   const [steps,setSteps]=useState(recipe.steps);
   const [generating,setGenerating]=useState(false);
@@ -949,10 +1029,13 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
   return(
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:400,padding:20,backdropFilter:"blur(12px)"}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:`linear-gradient(160deg,${theme.bg} 0%,#080808 50%)`,border:`1px solid ${theme.border}33`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowY:"auto",boxShadow:`0 0 80px ${theme.accent}08`,position:"relative"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:`linear-gradient(160deg,${theme.bg} 0%,#080808 50%)`,border:`1px solid ${theme.border}33`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 0 80px ${theme.accent}08`,position:"relative"}}>
 
         {/* botão fechar */}
         <button onClick={onClose} style={{position:"absolute",top:14,right:14,width:28,height:28,borderRadius:3,border:`1px solid ${theme.border}33`,background:"rgba(0,0,0,0.5)",color:"rgba(240,235,225,0.4)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
+
+        {/* fita autoral */}
+        {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:24,right:-70,width:260,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:9,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none",zIndex:5}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
 
         <div style={{padding:"28px 28px 32px"}}>
 
@@ -971,7 +1054,6 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:12}}>
                 {styleTags.map(c=><button key={c} onClick={()=>onFilter("style",c)} style={{padding:"2px 10px",borderRadius:2,fontSize:10,letterSpacing:1,background:(TYPE_THEME[c]?.accent||"#888")+"16",border:`1px solid ${(TYPE_THEME[c]?.border||"#888")+"44"}`,color:TYPE_THEME[c]?.label||"rgba(240,235,225,0.5)",fontWeight:700,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{c}</button>)}
                 {spiritTags.map(c=><button key={c} onClick={()=>onFilter("spirit",c)} style={{padding:"2px 10px",borderRadius:2,fontSize:10,letterSpacing:.5,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.22)",color:"rgba(160,120,90,0.85)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{c}</button>)}
-                {recipe.custom&&<span style={{padding:"2px 10px",borderRadius:2,fontSize:10,background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",color:"rgba(160,120,90,0.6)"}}>✦ sua receita</span>}
               </div>
 
               {/* nome */}
@@ -1086,24 +1168,26 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             )}
           </div>
 
-          {recipe.custom&&(
-            <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)"}}>
-              {!confirmDelete?(
-                <button onClick={()=>setConfirmDelete(true)} style={{background:"none",border:"1px solid rgba(239,68,68,0.2)",borderRadius:3,padding:"6px 14px",color:"rgba(239,68,68,0.5)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>excluir receita</button>
-              ):(
-                <div style={{display:"flex",alignItems:"center",gap:10}}>
-                  <span style={{fontSize:12,color:"rgba(240,235,225,0.4)"}}>Tem certeza?</span>
-                  <button onClick={onDelete} style={{background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",borderRadius:3,padding:"5px 14px",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>sim, excluir</button>
-                  <button onClick={()=>setConfirmDelete(false)} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 12px",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
-                </div>
-              )}
-            </div>
-          )}
+          <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",flexDirection:"column",gap:8}}>
+            {onRepo&&(
+              <button onClick={onRepo} style={{background:"none",border:"1px solid rgba(160,120,90,0.25)",borderRadius:3,padding:"4px 12px",color:"rgba(160,120,90,0.7)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",alignSelf:"flex-start"}}>↺ Repor ao original</button>
+            )}
+            {!confirmDelete?(
+              <button onClick={()=>setConfirmDelete(true)} style={{background:"none",border:"1px solid rgba(239,68,68,0.2)",borderRadius:3,padding:"4px 12px",color:"rgba(239,68,68,0.5)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",alignSelf:"flex-start"}}>excluir receita</button>
+            ):(
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{fontSize:12,color:"rgba(240,235,225,0.4)"}}>Tem certeza?</span>
+                <button onClick={onDelete} style={{background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",borderRadius:3,padding:"5px 14px",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>sim, excluir</button>
+                <button onClick={()=>setConfirmDelete(false)} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 12px",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* card oculto para captura de imagem */}
-      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:400,background:`linear-gradient(145deg,${theme.bg} 0%,#080808 100%)`,border:`1px solid ${theme.border}55`,borderRadius:12,padding:"28px 30px",fontFamily:"Archivo,sans-serif"}}>
+      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:400,background:`linear-gradient(145deg,${theme.bg} 0%,#080808 100%)`,border:`1px solid ${theme.border}55`,borderRadius:12,padding:"28px 30px",fontFamily:"Archivo,sans-serif",overflow:"hidden"}}>
+        {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:24,right:-70,width:260,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:9,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none",zIndex:5}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
         <div style={{fontSize:8,letterSpacing:5,textTransform:"uppercase",color:"rgba(240,235,225,0.52)",marginBottom:16}}>ON THE ROCKS</div>
         <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:14}}>
           {recipe.categories.filter(c=>STYLE_CATS.has(c)).map(c=><span key={c} style={{padding:"2px 9px",borderRadius:2,fontSize:9,letterSpacing:1,background:(TYPE_THEME[c]?.accent||"#888")+"18",border:`1px solid ${(TYPE_THEME[c]?.border||"#888")+"55"}`,color:TYPE_THEME[c]?.label||"rgba(240,235,225,0.5)",fontWeight:700}}>{c}</span>)}
@@ -1118,7 +1202,20 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             </div>
           ))}
         </div>
-        {noteVal&&<div style={{borderLeft:`2px solid ${theme.accent}44`,paddingLeft:12,marginTop:4}}>
+        {steps.length>0&&(
+          <>
+            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6,marginBottom:10}}>Modo de preparo</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+              {steps.map((s,i)=>(
+                <div key={i} style={{display:"grid",gridTemplateColumns:"18px 1fr",gap:8,alignItems:"start"}}>
+                  <div style={{width:18,height:18,borderRadius:2,border:`1px solid ${theme.border}`,color:theme.label,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
+                  <div style={{fontSize:11,color:"rgba(240,235,225,0.62)",lineHeight:1.6}}>{s}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {noteVal&&<div style={{borderLeft:`2px solid ${theme.accent}44`,paddingLeft:12,marginTop:4,marginBottom:16}}>
           <div style={{fontSize:11,color:"rgba(240,235,225,0.58)",fontStyle:"italic",lineHeight:1.6}}>{noteVal}</div>
         </div>}
         <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1131,7 +1228,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 }
 
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
-function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab}){
+function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,activeOccasions,toggleOccasion,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab}){
   const [newSpirit,setNewSpirit]=useState("");
   return(
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
@@ -1178,6 +1275,18 @@ function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActi
                 </button>
               );
             })}
+          </div>
+          <div style={{marginBottom:18}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6,paddingLeft:2}}>
+              <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>Ocasião</div>
+              {activeOccasions.length>0&&<button onClick={()=>{setMobileTab&&setMobileTab("explorar");clearAll();}} style={{fontSize:8,color:"rgba(240,235,225,0.28)",background:"none",border:"none",cursor:"pointer",letterSpacing:1,fontFamily:"Archivo,sans-serif",padding:0}}>limpar ×</button>}
+            </div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+              {OCCASION_LIST.map(tag=>{
+                const active=activeOccasions.includes(tag);
+                return(<button key={tag} onClick={()=>{toggleOccasion(tag);if(setMobileTab)setMobileTab("explorar");}} style={{padding:"4px 10px",borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+              })}
+            </div>
           </div>
         </div>
       ):(
@@ -1270,7 +1379,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
   const prevPct = Math.max(0,Math.min(1,activeDrag/THRESH));
 
   return(
-    <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0 16px",userSelect:"none"}}>
+    <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 16px 56px 16px",userSelect:"none"}}>
 
       {/* wrapper entrada */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:360,
@@ -1296,7 +1405,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
           {/* área clicável */}
           <div onClick={()=>onOpen(recipe)} style={{cursor:"pointer",position:"relative"}}>
-            <div style={{position:"relative",height:230,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{position:"relative",height:"clamp(150px, 28vh, 230px)",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${theme.accent}28 0%, ${theme.accent}09 58%, transparent 100%)`}}/>
               <div style={{filter:`drop-shadow(0 0 36px ${theme.accent}bb) drop-shadow(0 0 90px ${theme.accent}55)`,position:"relative",zIndex:1}}>
                 <GlassIcon categories={recipe.categories} color={theme.accent} size={175} opacity={0.52}/>
@@ -1356,12 +1465,6 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
         </div>
       </div>
 
-      {/* dica swipe */}
-      <div style={{marginTop:16,display:"flex",gap:18,alignItems:"center",opacity:Math.max(0,1-Math.abs(drag)/25),transition:"opacity .1s"}}>
-        <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.2)"}}>← próximo</span>
-        <div style={{display:"flex",gap:5}}>{[0,1,2].map(i=><div key={i} style={{width:3,height:3,borderRadius:"50%",background:i===1?`${theme.accent}77`:"rgba(240,235,225,0.1)"}}/>)}</div>
-        <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:hasPrev?`${theme.accent}55`:"rgba(240,235,225,0.1)"}}>voltar →</span>
-      </div>
     </div>
   );
 }
@@ -1413,11 +1516,83 @@ function MobileNav({ tab, setTab, favCount, onSameTab }) {
   );
 }
 
+// ─── TUTORIAL ─────────────────────────────────────────────────────────────────
+const TUTORIAL_STEPS = [
+  { icon:null,  label:null,        tab:null,            desc:"Seu caderno de bar. Receitas clássicas, técnicas e tudo que você precisa para montar um drink de verdade." },
+  { icon:"◈",   label:"Descobrir", tab:"descobrir",     desc:"Deixe o acaso trabalhar. Passe o dedo para descobrir um drink aleatório — ou volte para rever o anterior." },
+  { icon:"⊞",   label:"Explorar",  tab:"explorar",      desc:"Todas as receitas em um lugar. Filtre por família — Sour, Spritz, Collins — ou busque direto pelo nome ou ingrediente." },
+  { icon:"⊙",   label:"Bar",       tab:"ingredientes",  desc:"Diga o que tem em casa. O app mostra os drinks que você já pode preparar agora, sem falta de ingrediente." },
+  { icon:"◫",   label:"Comanda",   tab:"comanda",       desc:"Adicione drinks e veja tudo numa lista — útil pra um jantar ou uma mesa de amigos." },
+  { icon:"⊛",   label:"Perfil",    tab:"perfil",        desc:"Acompanhe o que já provou, seus favoritos e avaliações. Aqui também fica o backup dos seus dados." },
+];
+function Tutorial({ onClose, onTabChange }) {
+  const [step,setStep]=useState(0);
+  const cur=TUTORIAL_STEPS[step];
+  const isLast=step===TUTORIAL_STEPS.length-1;
+  const isWelcome=step===0;
+  useEffect(()=>{onTabChange("descobrir");window.scrollTo(0,0);},[]);
+  const goTo=s=>{setStep(s);window.scrollTo(0,0);onTabChange(TUTORIAL_STEPS[s].tab||"descobrir");};
+  return(
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.1)",zIndex:10000,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0 24px 100px"}}>
+      <div style={{width:"100%",maxWidth:380,background:"rgba(8,9,6,0.92)",border:"3px solid rgba(200,169,110,0.45)",borderRadius:10,padding:"24px 24px 20px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",gap:18,boxShadow:"0 -8px 40px rgba(0,0,0,0.4)"}}>
+
+        {/* dots */}
+        <div style={{display:"flex",gap:6}}>
+          {TUTORIAL_STEPS.map((_,i)=>(
+            <div key={i} style={{width:i===step?22:6,height:6,borderRadius:3,background:i===step?"#C8A96E":i<step?"rgba(200,169,110,0.3)":"rgba(240,235,225,0.1)",transition:"all .3s"}}/>
+          ))}
+        </div>
+
+        {/* ícone ou logo */}
+        {isWelcome?(
+          <div style={{marginTop:8}}>
+            <div style={{fontFamily:"Archivo,sans-serif",fontSize:10,letterSpacing:7,fontWeight:900,color:"#C8A96E",textTransform:"uppercase"}}>ON THE ROCKS</div>
+            <div style={{height:1,background:"linear-gradient(90deg,transparent,rgba(200,169,110,0.4),transparent)",marginTop:12}}/>
+          </div>
+        ):(
+          <div style={{width:76,height:76,borderRadius:18,background:"rgba(200,169,110,0.07)",border:"1px solid rgba(200,169,110,0.18)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,marginTop:8}}>
+            <span style={{fontSize:30,color:"#C8A96E",lineHeight:1}}>{cur.icon}</span>
+            <span style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.65)",fontFamily:"Archivo,sans-serif",fontWeight:700}}>{cur.label}</span>
+          </div>
+        )}
+
+        {/* texto */}
+        <p style={{fontFamily:"'Cormorant Garamond',serif",fontSize:isWelcome?22:19,color:"#F0EBE1",lineHeight:1.6,margin:0,fontWeight:400,maxWidth:300}}>{cur.desc}</p>
+
+        {/* botões */}
+        <div style={{display:"flex",flexDirection:"column",gap:10,width:"100%",marginTop:4}}>
+          <div style={{display:"flex",gap:8,width:"100%"}}>
+            {!isWelcome&&(
+              <button onClick={()=>goTo(step-1)}
+                style={{padding:"14px",borderRadius:4,background:"rgba(240,235,225,0.05)",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.4)",fontSize:13,fontFamily:"Archivo,sans-serif",cursor:"pointer",flexShrink:0}}>
+                ←
+              </button>
+            )}
+            <button onClick={()=>isLast?onClose():goTo(step+1)}
+              style={{flex:1,padding:"14px",borderRadius:4,background:"rgba(200,169,110,0.12)",border:"1px solid rgba(200,169,110,0.38)",color:"#C8A96E",fontSize:13,letterSpacing:1.5,fontFamily:"Archivo,sans-serif",cursor:"pointer",fontWeight:700,textTransform:"uppercase"}}>
+              {isLast?"Começar":"Próximo"}
+            </button>
+          </div>
+          {!isLast&&(
+            <button onClick={onClose}
+              style={{padding:"10px",borderRadius:4,background:"none",border:"none",color:"rgba(240,235,225,0.22)",fontSize:12,fontFamily:"Archivo,sans-serif",cursor:"pointer"}}>
+              Pular tour
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestore, onAddRecipe }) {
+function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial }) {
   const topRated = [...allRecipes].filter(r=>r.rating>0&&!r.categories.includes("Preparos Caseiros")).sort((a,b)=>b.rating-a.rating).slice(0,5);
   const btnSt = {padding:"12px 16px",borderRadius:3,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",color:"rgba(240,235,225,0.5)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:10};
   const [authError,setAuthError]=useState(null);
+  const [restoreConfirm,setRestoreConfirm]=useState(null);
+  const [versionTaps,setVersionTaps]=useState(0);
+  const handleVersionTap=()=>{const n=versionTaps+1;setVersionTaps(n);if(n>=5){setVersionTaps(0);onTutorial();}};
   const [authLoading,setAuthLoading]=useState(false);
   const handleSignIn=async()=>{
     setAuthError(null);setAuthLoading(true);
@@ -1430,7 +1605,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
     setAuthLoading(false);
   };
   return (
-    <div style={{padding:"20px 20px 100px"}}>
+    <div style={{padding:"20px 20px 20px"}}>
 
       {/* login / usuario */}
       {user ? (
@@ -1491,27 +1666,36 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
       )}
 
 
-      {/* minhas receitas */}
-      <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>Minhas receitas</div>
-      <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:28}}>
-        <button onClick={onAddRecipe} style={{...btnSt,color:"#A0785A",borderColor:"rgba(160,120,90,0.3)",background:"rgba(160,120,90,0.08)"}}><span style={{fontSize:18,lineHeight:1}}>+</span> Nova receita</button>
-        {customRecipes.map(r=>{const th=getTheme(r.categories);return(
-          <button key={r.name} onClick={()=>onOpenRecipe(r)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:4,background:"rgba(240,235,225,0.02)",border:`1px solid ${th.border}22`,cursor:"pointer",textAlign:"left",width:"100%",fontFamily:"Archivo,sans-serif",transition:"border-color .15s"}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor=th.border+"55"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor=th.border+"22"}>
-            <div style={{width:5,height:5,borderRadius:1,background:th.accent,flexShrink:0,opacity:.6}}/>
-            <span style={{flex:1,fontSize:13,color:"rgba(240,235,225,0.7)",fontFamily:"'Cormorant Garamond',serif",fontWeight:600}}>{r.name}</span>
-            {r.rating>0&&<Stars n={r.rating} color={th.accent}/>}
-          </button>
-        );})}
-      </div>
-
       {/* dados */}
       <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>Dados</div>
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        <button onClick={onAddRecipe} style={{...btnSt,color:"#A0785A",borderColor:"rgba(160,120,90,0.3)",background:"rgba(160,120,90,0.08)"}}><span style={{fontSize:18,lineHeight:1}}>+</span> Nova receita</button>
         <button onClick={exportJSON} style={btnSt}><span style={{fontSize:16}}>↓</span> Exportar backup</button>
         <button onClick={()=>importRef.current?.click()} style={btnSt}><span style={{fontSize:16}}>↑</span> Importar backup</button>
-        <button onClick={onRestore} style={{...btnSt,color:"rgba(239,68,68,0.7)",borderColor:"rgba(239,68,68,0.15)"}}><span style={{fontSize:16}}>↺</span> Restaurar receitas originais</button>
+
+        {restoreConfirm==="recipes"?(
+          <div style={{padding:"14px",borderRadius:3,background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.18)"}}>
+            <p style={{margin:"0 0 10px",fontSize:12,color:"rgba(240,235,225,0.6)",lineHeight:1.6}}>As receitas originais voltam ao padrão. Suas receitas criadas e avaliações são mantidas.</p>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{onRestoreRecipes();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:3,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
+              <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
+            </div>
+          </div>
+        ):(
+          <button onClick={()=>setRestoreConfirm("recipes")} style={{...btnSt,color:"rgba(239,68,68,0.7)",borderColor:"rgba(239,68,68,0.15)"}}><span style={{fontSize:16}}>↺</span> Restaurar receitas originais</button>
+        )}
+
+        {restoreConfirm==="all"?(
+          <div style={{padding:"14px",borderRadius:3,background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.18)"}}>
+            <p style={{margin:"0 0 10px",fontSize:12,color:"rgba(240,235,225,0.6)",lineHeight:1.6}}>Esta ação vai redefinir toda a experiência — receitas originais voltam ao padrão e as suas receitas criadas serão apagadas. Não dá pra desfazer.</p>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{onRestoreAll();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:3,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
+              <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
+            </div>
+          </div>
+        ):(
+          <button onClick={()=>setRestoreConfirm("all")} style={{...btnSt,color:"rgba(239,68,68,0.7)",borderColor:"rgba(239,68,68,0.15)"}}><span style={{fontSize:16}}>⊗</span> Restaurar app original</button>
+        )}
       </div>
 
       {/* sobre */}
@@ -1520,7 +1704,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         <div style={{background:"rgba(240,235,225,0.02)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:5,padding:"16px 16px",display:"flex",flexDirection:"column",gap:10}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
             <span style={{fontFamily:"Archivo,sans-serif",fontSize:13,fontWeight:900,letterSpacing:4,textTransform:"uppercase",color:"#F0EBE1"}}>ON THE ROCKS</span>
-            <span style={{fontSize:10,color:"rgba(240,235,225,0.42)",letterSpacing:1}}>v1.0</span>
+            <span onClick={handleVersionTap} style={{fontSize:10,color:"rgba(240,235,225,0.42)",letterSpacing:1,cursor:"default",userSelect:"none"}}>v1.0</span>
           </div>
           <p style={{fontSize:11,color:"rgba(240,235,225,0.45)",lineHeight:1.6,margin:0}}>Desenvolvido por Marcelo Parducci</p>
           <div style={{paddingTop:10,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
@@ -1553,9 +1737,13 @@ export default function OnTheRocks(){
   const [user,setUser]=useState(null);
   const [syncing,setSyncing]=useState(false);
 
+  const [showTutorial,setShowTutorial]=useState(()=>!localStorage.getItem("otr_tutorial_done"));
+  const closeTutorial=useCallback(()=>{localStorage.setItem("otr_tutorial_done","1");setShowTutorial(false);},[]);
+
   const [customRecipes,setCustomRecipes]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom")||"[]");}catch{return[];}});
   const [favs,setFavs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_favs")||"[]");}catch{return[];}});
   const [comanda,setComanda]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_comanda")||"[]");}catch{return[];}});
+  const [comandaReorder,setComandaReorder]=useState(false);
   const [owned,setOwned]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_owned")||"[]");}catch{return[];}});
   const [tried,setTried]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_tried")||"[]");}catch{return[];}});
   const [customSpirits,setCustomSpirits]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_spirits")||"[]");}catch{return[];}});
@@ -1600,6 +1788,7 @@ export default function OnTheRocks(){
             if(d.tried)     setTried(d.tried);
             if(d.spirits)   setCustomSpirits(d.spirits);
             if(d.overrides) setOverrides(d.overrides);
+            if(d.comanda)   setComanda(d.comanda);
           }
         }catch(e){console.error(e);}
         setSyncing(false);
@@ -1616,7 +1805,7 @@ export default function OnTheRocks(){
 
   useEffect(()=>{try{localStorage.setItem("otr_custom",JSON.stringify(customRecipes));}catch{}; syncToFirestore({custom:customRecipes});},[customRecipes]);
   useEffect(()=>{try{localStorage.setItem("otr_favs",JSON.stringify(favs));}catch{}; syncToFirestore({favs});},[favs]);
-  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{};},[comanda]);
+  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{}; syncToFirestore({comanda});},[comanda]);
   useEffect(()=>{try{localStorage.setItem("otr_owned",JSON.stringify(owned));}catch{}; syncToFirestore({owned});},[owned]);
   useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
@@ -1632,7 +1821,7 @@ export default function OnTheRocks(){
     return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
   },[]);
 
-  const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r),...customRecipes],[customRecipes,overrides]);
+  const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r).filter(r=>!r.deleted),...customRecipes],[customRecipes,overrides]);
 
   const [activeStyle,setActiveStyle]=useState(null);
   const [activeSpirits,setActiveSpirits]=useState([]);
@@ -1641,24 +1830,59 @@ export default function OnTheRocks(){
   const [open,setOpen]=useState(null);
   const [editing,setEditing]=useState(null);
   const [showForm,setShowForm]=useState(false);
+  const [sharedFiles,setSharedFiles]=useState(null);
+
+  useEffect(()=>{
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("share")==="pending"){
+      window.history.replaceState({},"","/");
+      (async()=>{
+        try{
+          const cache=await caches.open("otr-share-target");
+          const countRes=await cache.match("/shared-count");
+          if(!countRes)return;
+          const count=parseInt(await countRes.text());
+          const files=await Promise.all(Array.from({length:count},async(_,i)=>{
+            const res=await cache.match(`/shared-image-${i}`);
+            if(!res)return null;
+            const blob=await res.blob();
+            const type=res.headers.get("Content-Type")||"image/jpeg";
+            return new File([blob],`shared-${i}.jpg`,{type});
+          }));
+          await cache.delete("/shared-count");
+          for(let i=0;i<count;i++)await cache.delete(`/shared-image-${i}`);
+          const valid=files.filter(Boolean);
+          if(valid.length>0){setSharedFiles(valid);setShowForm(true);}
+        }catch(e){console.error("share retrieve error",e);}
+      })();
+    }
+  },[]);
   const [sort,setSort]=useState("nome");
   const [filterMode,setFilterMode]=useState("tudo");
   const [filterAnd,setFilterAnd]=useState(false);
+  const [activeOccasions,setActiveOccasions]=useState([]);
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState("descobrir");
+  const prevTabRef=useRef("descobrir");
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
-  const [swipeHistory,setSwipeHistory]=useState([]);
+  const [confirmDialog,setConfirmDialog]=useState(null);
+  const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
+  const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
+
+  const [swipeHistory,setSwipeHistory]=useState(()=>{const pool=BASE_RECIPES.filter(r=>!r.categories.includes("Preparos Caseiros"));const first=pool[Math.floor(Math.random()*pool.length)];return first?[first.name]:[];});
   const [swipeHistIdx,setSwipeHistIdx]=useState(0);
+  const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
 
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
 
   const [ratingPopup,setRatingPopup]=useState(null);
 
-  const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(30);}catch{}};
+  const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(100);}catch{}};
   const toggleFav=n=>{haptic();setFavs(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
   const toggleComanda=n=>{haptic();setComanda(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
+  const moveComanda=(name,dir)=>setComanda(prev=>{const idx=prev.indexOf(name);if(idx<0)return prev;const next=idx+dir;if(next<0||next>=prev.length)return prev;const arr=[...prev];[arr[idx],arr[next]]=[arr[next],arr[idx]];return arr;});
   const toggleOwned=s=>setOwned(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
   const toggleTried=n=>setTried(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
   const handleTried=useCallback(name=>{
@@ -1672,13 +1896,14 @@ export default function OnTheRocks(){
     });
   },[allRecipes]);
   const toggleSpirit=s=>setActiveSpirits(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
-  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");};
-  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo");
+  const toggleOccasion=t=>setActiveOccasions(p=>p.includes(t)?p.filter(x=>x!==t):[...p,t]);
+  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);};
+  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0);
 
   // ── Back button — navega dentro do app ──
   const backRef=useRef({});
   const searchInputRef=useRef(null);
-  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode};
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
     push();
@@ -1686,9 +1911,9 @@ export default function OnTheRocks(){
       const s=backRef.current;
       if(s.open){setOpen(null);push();return;}
       if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
-      if(s.mobileTab!=="descobrir"){setMobileTab("descobrir");push();return;}
-      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"){
-        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");push();return;
+      if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
+      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length){
+        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);push();return;
       }
     };
     window.addEventListener("popstate",onPop);
@@ -1710,7 +1935,7 @@ export default function OnTheRocks(){
     if(!recipe.custom){
       // receita base: salva como override para não criar duplicata
       const {name,...fields}=recipe;
-      setOverrides(p=>({...p,[name]:{...(p[name]||{}),...fields}}));
+      setOverrides(p=>({...p,[name]:{...(p[name]||{}),...fields,adjusted:true}}));
     } else {
       setCustomRecipes(p=>{const idx=p.findIndex(r=>r.id===recipe.id);if(idx>=0){const n=[...p];n[idx]=recipe;return n;}return[...p,recipe];});
     }
@@ -1718,6 +1943,10 @@ export default function OnTheRocks(){
   },[]);
 
   const deleteRecipe=useCallback(recipe=>{setCustomRecipes(p=>p.filter(r=>r.id!==recipe.id));setOpen(null);},[]);
+  const deleteBaseRecipe=useCallback(recipe=>{setOverrides(p=>({...p,[recipe.name]:{...(p[recipe.name]||{}),deleted:true}}));setOpen(null);},[]);
+  const repoRecipe=useCallback(name=>{setOverrides(p=>{const n={...p};delete n[name];return n;});setOpen(null);},[]);
+  const restoreAll=useCallback(()=>{setOverrides({});setCustomRecipes([]);setFavs([]);setTried([]);setComanda([]);},[]);
+  const restoreRecipes=useCallback(()=>setOverrides({}),[]);
 
   const noteRecipe=useCallback((recipe,notes)=>{
     if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,notes}:r));}
@@ -1731,16 +1960,19 @@ export default function OnTheRocks(){
   },[]);
 
   const exportJSON=()=>{
-    const data=JSON.stringify({custom:customRecipes,favs,owned},null,2);
+    const data=JSON.stringify({custom:customRecipes},null,2);
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=`onthеrocks_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
   };
 
   const importJSON=e=>{
     const file=e.target.files?.[0];if(!file)return;
-    if(!window.confirm("Importar vai sobrescrever suas receitas, favoritos e ingredientes. Continuar?")){e.target.value="";return;}
-    const r=new FileReader();
-    r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.custom)setCustomRecipes(d.custom);if(d.favs)setFavs(d.favs);if(d.owned)setOwned(d.owned);}catch{alert("Arquivo inválido.");}};
-    r.readAsText(file);e.target.value="";
+    e.target.value="";
+    const doImport=()=>{
+      const r=new FileReader();
+      r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.custom)setCustomRecipes(d.custom);if(d.favs)setFavs(d.favs);if(d.owned)setOwned(d.owned);}catch{showConfirm("Arquivo inválido ou corrompido.",null,false);}};
+      r.readAsText(file);
+    };
+    showConfirm("Importar vai substituir suas receitas personalizadas. Continuar?",doImport,true);
   };
 
   // filtro efetivo para mobile favoritos
@@ -1756,19 +1988,22 @@ export default function OnTheRocks(){
       if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!activeSpirits.every(s=>r.categories.includes(s)))return false;
+      if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
       if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+r.ingredients.map(norm).join(" ")+" "+r.categories.map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
     if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
     else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
+    else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
-  const swipeFiltered=useMemo(()=>hasFilters?filtered:null,[hasFilters,filtered]);
+  const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
 
   const drinkRecipes=useMemo(()=>allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[allRecipes]);
+  const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
 
   // inicializa histórico quando receitas carregam
   useEffect(()=>{
@@ -1790,11 +2025,11 @@ export default function OnTheRocks(){
 
   const pickDifferentFamily=useCallback((currentRecipe)=>{
     const currentFamily=currentRecipe?.categories.find(c=>STYLE_CATS.has(c));
-    const pool=drinkRecipes.filter(r=>r.name!==currentRecipe?.name&&r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
-    const src=pool.length?pool:drinkRecipes.filter(r=>r.name!==currentRecipe?.name);
+    const pool=swipePool.filter(r=>r.name!==currentRecipe?.name&&r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
+    const src=pool.length?pool:swipePool.filter(r=>r.name!==currentRecipe?.name);
     if(!src.length)return currentRecipe;
     return src[Math.floor(Math.random()*src.length)];
-  },[drinkRecipes]);
+  },[swipePool]);
 
   const nextSwipeRecipe=useCallback(()=>{
     if(swipeFiltered){
@@ -1814,7 +2049,7 @@ export default function OnTheRocks(){
   },[]);
 
   // reset idx ao mudar filtros
-  useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,filterMode,search]);
+  useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,activeOccasions,filterMode,search]);
 
   useEffect(()=>{
     if(mobileTab==="descobrir"){
@@ -1825,7 +2060,7 @@ export default function OnTheRocks(){
     return()=>{document.documentElement.style.overflow="";};
   },[mobileTab]);
 
-  const sidebarProps={sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab};
+  const sidebarProps={sidebarTab,setSidebarTab,allRecipes,activeStyle,setActiveStyle,allSpirits,visibleSpirits,owned,toggleOwned,filterMode,setFilterMode,activeSpirits,toggleSpirit,activeOccasions,toggleOccasion,spiritSearch,setSpiritSearch,hasFilters,clearAll,customSpirits,setCustomSpirits,setMobileTab};
 
   return(
     <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1",overflowX:"hidden"}}>
@@ -1862,9 +2097,11 @@ export default function OnTheRocks(){
         </button>
 
         <div style={{display:"flex",flexDirection:"column",gap:1,marginRight:4}}>
-          <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>{drinkRecipes.length} receitas</span>
+          <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif"}}>
+            <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:filterMode==="tudo"&&mobileTab==="explorar"?"rgba(240,235,225,0.7)":"rgba(240,235,225,0.4)",fontWeight:700}}>{drinkRecipes.length} receitas</span>
+          </button>
           <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif"}}>
-            <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:filterMode==="provados"?"#4ADE80":"#4ADE80",fontWeight:700,opacity:filterMode==="provados"?1:.8,textDecoration:filterMode==="provados"?"underline":"none"}}>{tried.length} provados</span>
+            <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#4ADE80",fontWeight:700,opacity:filterMode==="provados"?1:.8,textDecoration:filterMode==="provados"?"underline":"none"}}>{tried.length} provados</span>
           </button>
         </div>
 
@@ -1908,7 +2145,16 @@ export default function OnTheRocks(){
                   <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent,opacity:.55}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
                 </div>}
               </>);})()}
-              <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>handleTried(swipeRecipe.name)} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
+              <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
+              {/* toggle não provados */}
+              <div style={{position:"absolute",bottom:12,left:0,right:0,display:"flex",justifyContent:"center"}}>
+                <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
+                  <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                    <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
+                  </div>
+                  Apenas não provados
+                </button>
+              </div>
             </div>
           ) : mobileTab==="ingredientes" ? (
             <div style={{paddingBottom:100,display:"flex",flexDirection:"column",gap:0}}>
@@ -1959,7 +2205,16 @@ export default function OnTheRocks(){
                   <button onClick={()=>{if(spiritSearch.trim()){setCustomSpirits(p=>[...new Set([...p,spiritSearch.trim()])]);setSpiritSearch("");}}}
                     style={{padding:"10px 16px",borderRadius:6,background:"rgba(160,120,90,0.12)",border:"1px solid rgba(160,120,90,0.3)",color:"#A0785A",fontSize:16,cursor:"pointer"}}>+</button>
                 </div>
-                {customSpirits.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:10}}>{customSpirits.map(s=><button key={s} onClick={()=>setCustomSpirits(p=>p.filter(x=>x!==s))} style={{padding:"5px 10px",borderRadius:20,fontSize:11,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.2)",color:"rgba(160,120,90,0.6)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s} ×</button>)}</div>}
+                {customSpirits.length>0&&(
+                  <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
+                    <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontWeight:700,marginBottom:10}}>Bebidas adicionadas</div>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {customSpirits.map(s=>(
+                        <button key={s} onClick={()=>showConfirm(`Remover "${s}" do seu bar?`,()=>setCustomSpirits(p=>p.filter(x=>x!==s)),false)} style={{padding:"5px 10px",borderRadius:20,fontSize:11,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.2)",color:"rgba(160,120,90,0.6)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s} ×</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               {/* receitas possíveis inline */}
               {owned.length>0&&(()=>{
@@ -1979,7 +2234,7 @@ export default function OnTheRocks(){
                       </button>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                      {possiveis.slice(0,8).map(r=>{
+                      {possiveis.map(r=>{
                         const th=getTheme(r.categories);
                         return(
                           <button key={r.name} onClick={()=>setOpen(r)}
@@ -1996,12 +2251,6 @@ export default function OnTheRocks(){
                           </button>
                         );
                       })}
-                      {possiveis.length>8&&(
-                        <button onClick={()=>{if(filterAnd&&owned.length>1){setActiveSpirits(owned);setFilterMode("tudo");}else{setFilterMode("tenho");}setMobileTab("explorar");}}
-                          style={{padding:"10px",borderRadius:8,background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.3)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:1}}>
-                          +{possiveis.length-8} receitas
-                        </button>
-                      )}
                     </div>
                   </div>
                 );
@@ -2012,9 +2261,14 @@ export default function OnTheRocks(){
               <div style={{marginBottom:20}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
                   <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>Comanda</div>
-                  {comanda.length>0&&(
-                    <button onClick={()=>setComanda([])} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>limpar</button>
-                  )}
+                  <div style={{display:"flex",gap:6}}>
+                    {comanda.length>1&&(
+                      <button onClick={()=>setComandaReorder(r=>!r)} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:comandaReorder?"rgba(160,120,90,0.12)":"none",border:`1px solid ${comandaReorder?"rgba(160,120,90,0.4)":"rgba(240,235,225,0.1)"}`,color:comandaReorder?"#C8A96E":"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>{comandaReorder?"concluir":"⇅ ordenar"}</button>
+                    )}
+                    {comanda.length>0&&!comandaReorder&&(
+                      <button onClick={()=>setComanda([])} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>limpar</button>
+                    )}
+                  </div>
                 </div>
                 <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Os drinks que você quer pedir na próxima noite.</div>
               </div>
@@ -2026,7 +2280,7 @@ export default function OnTheRocks(){
                 </div>
               ):(
                 <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                  {allRecipes.filter(r=>comanda.includes(r.name)).map(r=>{
+                  {comanda.map(name=>allRecipes.find(r=>r.name===name)).filter(Boolean).map(r=>{
                     const th=getTheme(r.categories);
                     const styleTag=r.categories.find(c=>STYLE_CATS.has(c));
                     const spiritTag=r.categories.find(c=>SPIRIT_CATS.has(c));
@@ -2043,8 +2297,15 @@ export default function OnTheRocks(){
                             {spiritTag&&<span style={{fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)"}}>{spiritTag}</span>}
                           </div>
                         </div>
-                        <button onClick={e=>{e.stopPropagation();toggleComanda(r.name);}}
-                          style={{background:"none",border:"none",fontSize:18,color:"rgba(160,120,90,0.6)",cursor:"pointer",padding:"4px 6px",flexShrink:0}}>×</button>
+                        {comandaReorder?(
+                          <div style={{display:"flex",flexDirection:"column",gap:3,flexShrink:0}}>
+                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.45)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
+                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.45)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
+                          </div>
+                        ):(
+                          <button onClick={e=>{e.stopPropagation();toggleComanda(r.name);}}
+                            style={{background:"none",border:"none",fontSize:16,color:"rgba(160,120,90,0.5)",cursor:"pointer",padding:"4px 6px",flexShrink:0}}>×</button>
+                        )}
                       </div>
                     );
                   })}
@@ -2052,7 +2313,7 @@ export default function OnTheRocks(){
               )}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestore={()=>{if(window.confirm("Restaurar todas as receitas base para o original? Suas notas e avaliações também serão apagadas."))setOverrides({});}} onAddRecipe={()=>setShowForm(true)}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}}/>
           ) : (
             <>
               {/* mobile: botões família + spirit + filtros */}
@@ -2073,9 +2334,13 @@ export default function OnTheRocks(){
                     color:activeSpirits.length?"#C8A96E":"rgba(240,235,225,0.5)"}}>
                   {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
                 </button>
-                {/* barra aberta */}
-                <button onClick={()=>{if(filterMode==="tenho"){setFilterMode("tudo");}else{setFilterMode("tenho");setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterSheet(null);}}} style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",background:filterMode==="tenho"?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.04)",border:`1px solid ${filterMode==="tenho"?"rgba(74,222,128,0.45)":"rgba(240,235,225,0.09)"}`,color:filterMode==="tenho"?"#4ADE80":"rgba(240,235,225,0.5)"}}>
-                  {filterMode==="tenho"?"✓ Barra":"⊙ Barra"}
+                {/* ocasião */}
+                <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
+                  style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                    background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                    border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                    color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                  {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                 </button>
                 {/* filtros rápidos */}
                 {[["favs","♥"],["naoprovei","Não provei"]].map(([v,l])=>(
@@ -2086,7 +2351,7 @@ export default function OnTheRocks(){
                     {l}
                   </button>
                 ))}
-                {(activeStyle||activeSpirits.length||filterMode!=="tudo")&&(
+                {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0)&&(
                   <button onClick={clearAll} style={{padding:"9px 16px",borderRadius:20,fontSize:13,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",background:"none",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.3)"}}>limpar</button>
                 )}
               </div>
@@ -2119,6 +2384,22 @@ export default function OnTheRocks(){
                   </div>
                 </div>
               )}
+              {/* sheet ocasião */}
+              {filterSheet==="ocasiao"&&(
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"14px 14px 10px",marginBottom:12,gap:8}}>
+                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:4}}>Ocasião</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {OCCASION_LIST.map(tag=>{
+                      const active=activeOccasions.includes(tag);
+                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
+                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                    })}
+                  </div>
+                  {activeOccasions.length>0&&<button onClick={()=>setActiveOccasions([])} style={{marginTop:4,fontSize:9,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",letterSpacing:1,fontFamily:"Archivo,sans-serif",textAlign:"left"}}>limpar ocasião ×</button>}
+                </div>
+              )}
               {/* family description */}
               {activeStyle&&FAMILY_DESC[activeStyle]&&(
                 <div className="mnv" style={{marginBottom:14,padding:"12px 14px",borderRadius:6,background:`${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg}cc`,border:`1px solid ${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border}44`}}>
@@ -2136,7 +2417,7 @@ export default function OnTheRocks(){
                   {activeStyle&&` · ${activeStyle}`}
                 </span>
                 <div style={{display:"flex",gap:5}}>
-                  {[["nome","A–Z"],["rating","★ Rating"]].map(([v,l])=>(
+                  {[["nome","A–Z"],["rating","★ Rating"],["recentes","Recentes"]].map(([v,l])=>(
                     <button key={v} onClick={()=>setSort(v)} style={{padding:"4px 10px",borderRadius:3,fontSize:10,letterSpacing:.5,background:sort===v?"rgba(160,120,90,0.1)":"transparent",border:`1px solid ${sort===v?"rgba(160,120,90,0.35)":"rgba(240,235,225,0.07)"}`,color:sort===v?"#A0785A":"rgba(240,235,225,0.26)",transition:"all .12s"}}>{l}</button>
                   ))}
                 </div>
@@ -2150,7 +2431,7 @@ export default function OnTheRocks(){
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={r.custom?()=>deleteRecipe(r):undefined}/>)}
+                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={r.custom?()=>showConfirm("Excluir esta receita?",()=>deleteRecipe(r),true):undefined}/>)}
                 </div>
               )}
             </>
@@ -2171,12 +2452,14 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav tab={mobileTab} setTab={t=>{window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>deleteRecipe(open)}/>}
-      {(showForm||editing)&&<RecipeForm initial={editing} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);}}/>}
+      {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined}/>}
+      {(showForm||editing)&&<RecipeForm initial={editing} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
+      {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
+      {confirmDialog&&<ConfirmDialog message={confirmDialog.message} danger={confirmDialog.danger} onConfirm={()=>{confirmDialog.onConfirm?.();closeConfirm();}} onCancel={confirmDialog.onConfirm?closeConfirm:null}/>}
     </div>
   );
 }
