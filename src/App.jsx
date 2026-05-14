@@ -2375,25 +2375,25 @@ export default function OnTheRocks(){
                 {/* família */}
                 <button onClick={()=>activeStyle?setActiveStyle(null):setFilterSheet(filterSheet==="familia"?null:"familia")}
                   style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
-                    background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":"rgba(240,235,225,0.09)"}`,
-                    color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:"rgba(240,235,225,0.5)"}}>
+                    background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:filterSheet==="familia"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                    border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":filterSheet==="familia"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                    color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:filterSheet==="familia"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
                   {activeStyle||"Família"}{activeStyle?" ×":""}
                 </button>
                 {/* spirit */}
                 <button onClick={()=>setFilterSheet(filterSheet==="spirit"?null:"spirit")}
                   style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
-                    background:activeSpirits.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeSpirits.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeSpirits.length?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    background:activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                    border:`1px solid ${activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                    color:activeSpirits.length||filterSheet==="spirit"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
                   {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
                 </button>
                 {/* ocasião */}
                 <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                   style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
-                    background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    background:activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                    border:`1px solid ${activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                    color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
                   {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                 </button>
                 {/* filtros rápidos */}
@@ -2411,7 +2411,7 @@ export default function OnTheRocks(){
               </div>
               {/* sheet família */}
               {filterSheet==="familia"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
                       const active=activeStyle===s;
@@ -2426,7 +2426,7 @@ export default function OnTheRocks(){
               )}
               {/* sheet spirit */}
               {filterSheet==="spirit"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {allSpirits.map(s=>{
                       const active=activeSpirits.includes(s);
@@ -2438,7 +2438,7 @@ export default function OnTheRocks(){
               )}
               {/* sheet ocasião */}
               {filterSheet==="ocasiao"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {OCCASION_LIST.map(tag=>{
                       const active=activeOccasions.includes(tag);
