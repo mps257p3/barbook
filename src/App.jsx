@@ -2058,6 +2058,8 @@ export default function OnTheRocks(){
   useEffect(()=>{
     if(mobileTab==="descobrir"){
       document.documentElement.style.overflow="hidden";
+      setActiveOccasions([]);
+      setFilterSheet(null);
     } else {
       document.documentElement.style.overflow="";
     }
@@ -2187,7 +2189,6 @@ export default function OnTheRocks(){
                         color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
                     })}
                   </div>
-                  {activeOccasions.length>0&&<button onClick={()=>setActiveOccasions([])} style={{marginTop:8,fontSize:9,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",letterSpacing:1,fontFamily:"Archivo,sans-serif"}}>limpar ×</button>}
                 </div>
               )}
               {/* controles bottom */}
