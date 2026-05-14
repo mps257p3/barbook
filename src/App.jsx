@@ -1400,30 +1400,24 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
           {/* área clicável */}
           <div onClick={()=>onOpen(recipe)} style={{cursor:"pointer",position:"relative"}}>
-            <div style={{position:"relative",height:"clamp(110px,18vh,155px)",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{position:"relative",padding:"14px 0 6px",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${theme.accent}28 0%, ${theme.accent}09 58%, transparent 100%)`}}/>
-              <div style={{filter:`drop-shadow(0 0 36px ${theme.accent}bb) drop-shadow(0 0 90px ${theme.accent}55)`,position:"relative",zIndex:1}}>
-                <GlassIcon categories={recipe.categories} color={theme.accent} size={140} opacity={0.52}/>
+              <div style={{filter:`drop-shadow(0 0 28px ${theme.accent}bb) drop-shadow(0 0 70px ${theme.accent}55)`,position:"relative",zIndex:1}}>
+                <GlassIcon categories={recipe.categories} color={theme.accent} size={110} opacity={0.52}/>
               </div>
-              <div style={{position:"absolute",bottom:0,left:0,right:0,height:60,background:`linear-gradient(transparent,${theme.bg})`}}/>
+              <div style={{position:"absolute",bottom:0,left:0,right:0,height:50,background:`linear-gradient(transparent,${theme.bg})`}}/>
             </div>
-            <div style={{padding:"0 18px 18px"}}>
-              <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
+            <div style={{padding:"8px 18px 16px"}}>
+              <div style={{display:"flex",gap:5,marginBottom:8,flexWrap:"wrap"}}>
                 {[styleTag,spiritTag].filter(Boolean).filter((t,i,a)=>a.indexOf(t)===i).map(t=>(
                   <span key={t} style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:theme.accent,background:`${theme.accent}18`,border:`1px solid ${theme.accent}40`,borderRadius:2,padding:"3px 8px"}}>{t}</span>
                 ))}
               </div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:28,fontWeight:700,color:"#F0EBE1",lineHeight:1.05,letterSpacing:.3,marginBottom:6}}>{recipe.name}</div>
-              {recipe.rating>0&&<div style={{marginBottom:10}}><Stars n={recipe.rating} color={theme.accent}/></div>}
-              <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}55,transparent)`,marginBottom:12}}/>
-              <div style={{display:"flex",flexWrap:"wrap",gap:"5px 8px"}}>
-                {recipe.ingredients.slice(0,5).map((ing,i)=>(
-                  <span key={i} style={{fontSize:10,color:i===0?"rgba(240,235,225,0.62)":"rgba(240,235,225,0.36)",letterSpacing:.3}}>
-                    {i>0&&<span style={{marginRight:7,color:"rgba(240,235,225,0.16)"}}>·</span>}
-                    {(s=>s.charAt(0).toUpperCase()+s.slice(1))(ing.replace(/^\d+[\d/\s]*(ml|cl|oz|dash|colher|parte|partes|pitada|fatia|rodela|folha|folhas|ramo|aros|twist)?\.?\s*/i,""))}
-                  </span>
-                ))}
-                {recipe.ingredients.length>5&&<span style={{fontSize:10,color:"rgba(240,235,225,0.26)"}}>+{recipe.ingredients.length-5}</span>}
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,fontWeight:700,color:"#F0EBE1",lineHeight:1.1,letterSpacing:.3,marginBottom:8,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
+              {recipe.rating>0&&<div style={{marginBottom:8}}><Stars n={recipe.rating} color={theme.accent}/></div>}
+              <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}55,transparent)`,marginBottom:10}}/>
+              <div style={{fontSize:11,color:"rgba(240,235,225,0.42)",lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
+                {recipe.ingredients.slice(0,6).map((ing,i)=>{const c=ing.replace(/^\d+[\d.,/\s]*(ml|cl|oz|dash|colher|parte|partes|pitada|fatia|rodela|folha|folhas|ramo|aros|twist)?\.?\s*/i,"");return(i>0?" · ":"")+(c.charAt(0).toUpperCase()+c.slice(1));}).join("")}
               </div>
             </div>
           </div>
@@ -2183,8 +2177,7 @@ export default function OnTheRocks(){
               <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
               {/* sheet ocasião (descobrir) */}
               {filterSheet==="ocasiao"&&(
-                <div style={{position:"absolute",bottom:88,left:12,right:12,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"14px 14px 12px",zIndex:20}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:10}}>Ocasião</div>
+                <div style={{position:"absolute",bottom:88,left:12,right:12,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px 12px",zIndex:20}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {OCCASION_LIST.map(tag=>{
                       const active=activeOccasions.includes(tag);
@@ -2417,8 +2410,7 @@ export default function OnTheRocks(){
               </div>
               {/* sheet família */}
               {filterSheet==="familia"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"14px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:4}}>Família & Técnica</div>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
                       const active=activeStyle===s;
@@ -2433,8 +2425,7 @@ export default function OnTheRocks(){
               )}
               {/* sheet spirit */}
               {filterSheet==="spirit"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"14px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:4}}>Spirit</div>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {allSpirits.map(s=>{
                       const active=activeSpirits.includes(s);
@@ -2446,8 +2437,7 @@ export default function OnTheRocks(){
               )}
               {/* sheet ocasião */}
               {filterSheet==="ocasiao"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"14px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:4}}>Ocasião</div>
+                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(15,13,10,0.98)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                     {OCCASION_LIST.map(tag=>{
                       const active=activeOccasions.includes(tag);
