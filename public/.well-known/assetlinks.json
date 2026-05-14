@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.ontheroocks.app",
-    "sha256_cert_fingerprints": ["55:17:8C:BE:4C:95:2B:ED:84:A1:2E:33:42:96:AB:75:D8:64:BB:B2:5E:21:BF:A9:0E:4B:88:1C:42:89:26:88"]
+    "sha256_cert_fingerprints": ["62:0E:00:3A:60:54:28:39:54:C9:E0:A3:E3:D7:83:1D:60:61:54:D8:FA:6A:39:FE:77:CD:A1:E8:D5:FA:F2:47"]
   }
 }]
