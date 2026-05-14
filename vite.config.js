@@ -35,7 +35,8 @@ export default defineConfig(({ mode }) => {
       workbox: {
         skipWaiting: true,
         clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        globIgnores: ['bg/**'],
         navigateFallbackDenylist: [/^\/\.well-known\//, /^\/api\//],
         runtimeCaching: [
           {
@@ -46,6 +47,11 @@ export default defineConfig(({ mode }) => {
           {
             urlPattern: /\/\.well-known\//,
             handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /\/bg\//,
+            handler: 'CacheFirst',
+            options: { cacheName: 'bg-images', expiration: { maxEntries: 15, maxAgeSeconds: 60*60*24*30 } }
           }
         ]
       }
