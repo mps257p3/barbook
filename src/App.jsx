@@ -1377,7 +1377,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
     <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 16px 56px 16px",userSelect:"none"}}>
 
       {/* wrapper entrada */}
-      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:360,
+      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:270,
         opacity:entered?1:0,
         transform:entered?"translateY(0) scale(1)":"translateY(44px) scale(0.93)",
         transition:"opacity .32s ease, transform .42s cubic-bezier(.34,1.56,.64,1)"}}>
@@ -2043,6 +2043,21 @@ export default function OnTheRocks(){
     setSwipeHistIdx(i=>Math.max(0,i-1));
   },[]);
 
+  const prevPeekRecipe=useMemo(()=>{
+    if(swipeHistIdx<=0)return null;
+    if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
+    const name=swipeHistory[swipeHistIdx-1];
+    return drinkRecipes.find(r=>r.name===name)||null;
+  },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered]);
+
+  const nextPeekRecipe=useMemo(()=>{
+    if(!swipeRecipe||!swipePool.length)return null;
+    const pool=swipePool.filter(r=>r.name!==swipeRecipe.name);
+    if(!pool.length)return null;
+    const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+    return pool[seed%pool.length];
+  },[swipeRecipe,swipePool]);
+
   // reset idx ao mudar filtros
   useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,activeOccasions,filterMode,search]);
 
@@ -2140,6 +2155,31 @@ export default function OnTheRocks(){
                   <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent,opacity:.55}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
                 </div>}
               </>);})()}
+              {/* peek cards */}
+              {[
+                {pr:prevPeekRecipe,dx:-215,rot:-6},
+                {pr:nextPeekRecipe,dx:215,rot:6},
+              ].map(({pr,dx,rot})=>{
+                if(!pr)return null;
+                const th=getTheme(pr.categories);
+                return(
+                  <div key={dx} style={{
+                    position:"absolute",left:"50%",top:"50%",width:270,
+                    transform:`translate(calc(-50% + ${dx}px),calc(-50% - 28px)) rotate(${rot}deg) scale(0.88)`,
+                    borderRadius:12,background:th.bg,border:`1px solid ${th.border}44`,
+                    overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.55,
+                    boxShadow:"0 16px 40px rgba(0,0,0,0.5)",
+                  }}>
+                    <div style={{position:"relative",height:"clamp(120px,22vh,180px)",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+                      <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${th.accent}20 0%, transparent 100%)`}}/>
+                      <GlassIcon categories={pr.categories} color={th.accent} size={120} opacity={0.35}/>
+                    </div>
+                    <div style={{padding:"6px 16px 20px",textAlign:"center"}}>
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"rgba(240,235,225,0.5)",lineHeight:1.1,letterSpacing:.3}}>{pr.name}</div>
+                    </div>
+                  </div>
+                );
+              })}
               <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
               {/* toggle não provados */}
               <div style={{position:"absolute",bottom:12,left:0,right:0,display:"flex",justifyContent:"center"}}>
