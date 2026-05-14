@@ -2166,16 +2166,16 @@ export default function OnTheRocks(){
                   <div key={dx} style={{
                     position:"absolute",left:"50%",top:"50%",width:270,
                     transform:`translate(calc(-50% + ${dx}px),calc(-50% - 28px)) rotate(${rot}deg) scale(0.88)`,
-                    borderRadius:12,background:th.bg,border:`1px solid ${th.border}44`,
-                    overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.55,
-                    boxShadow:"0 16px 40px rgba(0,0,0,0.5)",
+                    borderRadius:12,background:th.bg,border:`1px solid ${th.border}88`,
+                    overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
+                    boxShadow:`0 16px 40px rgba(0,0,0,0.5), 0 0 30px ${th.accent}18`,
                   }}>
                     <div style={{position:"relative",height:"clamp(120px,22vh,180px)",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-                      <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${th.accent}20 0%, transparent 100%)`}}/>
-                      <GlassIcon categories={pr.categories} color={th.accent} size={120} opacity={0.35}/>
+                      <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${th.accent}30 0%, transparent 100%)`}}/>
+                      <GlassIcon categories={pr.categories} color={th.accent} size={120} opacity={0.55}/>
                     </div>
                     <div style={{padding:"6px 16px 20px",textAlign:"center"}}>
-                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"rgba(240,235,225,0.5)",lineHeight:1.1,letterSpacing:.3}}>{pr.name}</div>
+                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"rgba(240,235,225,0.75)",lineHeight:1.1,letterSpacing:.3}}>{pr.name}</div>
                     </div>
                   </div>
                 );
