@@ -1157,8 +1157,9 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo}){
+function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile}){
   const theme=getTheme(recipe.categories);
+  const visual=getCardVisual(recipe);
   const [steps,setSteps]=useState(recipe.steps);
   const [generating,setGenerating]=useState(false);
   const [genErr,setGenErr]=useState(null);
@@ -1221,71 +1222,70 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
   return(
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:400,padding:20,backdropFilter:"blur(12px)"}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:`linear-gradient(160deg,${theme.bg} 0%,#080808 50%)`,border:`1px solid ${theme.border}33`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 0 80px ${theme.accent}08`,position:"relative"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
-        {/* botão fechar */}
-        <button onClick={onClose} style={{position:"absolute",top:14,right:14,width:28,height:28,borderRadius:3,border:`1px solid ${theme.border}33`,background:"rgba(0,0,0,0.5)",color:"rgba(240,235,225,0.4)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
-
-        {/* fita autoral */}
-        {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:24,right:-70,width:260,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:9,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none",zIndex:5}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
-
-        <div style={{padding:"28px 28px 32px"}}>
-
-          {/* ── CABEÇALHO: 2 colunas ── */}
-          <div style={{display:"flex",alignItems:"stretch",gap:0,marginBottom:24}}>
-
-            {/* coluna esquerda */}
-            <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"space-between",position:"relative",zIndex:1}}>
-              {/* ambient glow detrás do nome */}
-              <div style={{position:"absolute",top:-10,left:-28,width:240,height:130,background:theme.accent,opacity:0.09,borderRadius:"50%",filter:"blur(48px)",pointerEvents:"none"}}/>
-
-              {/* linha acento */}
-              <div style={{height:1,background:`linear-gradient(90deg,${theme.accent},${theme.accent}00)`,marginBottom:16,width:"60%",position:"relative"}}/>
-
-              {/* tags */}
-              <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:12}}>
-                {styleTags.map(c=><button key={c} onClick={()=>onFilter("style",c)} style={{padding:"2px 10px",borderRadius:2,fontSize:10,letterSpacing:1,background:(TYPE_THEME[c]?.accent||"#888")+"16",border:`1px solid ${(TYPE_THEME[c]?.border||"#888")+"44"}`,color:TYPE_THEME[c]?.label||"rgba(240,235,225,0.5)",fontWeight:700,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{c}</button>)}
-                {spiritTags.map(c=><button key={c} onClick={()=>onFilter("spirit",c)} style={{padding:"2px 10px",borderRadius:2,fontSize:10,letterSpacing:.5,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.22)",color:"rgba(160,120,90,0.85)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{c}</button>)}
-              </div>
-
-              {/* nome */}
-              <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:700,lineHeight:1.05,color:"#F0EBE1",margin:"0 0 14px",letterSpacing:.3}}>{recipe.name}</h2>
-
-              {/* estrelas */}
-              <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:14,alignItems:"center"}}>
-                {[1,2,3,4,5].map(n=>(
-                  <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
-                ))}
-              </div>
-              {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:14}}>como você avaliaria?</div>}
-
-              {/* ações */}
-              <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-                <button onClick={onTried} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isTried?"rgba(74,222,128,0.08)":"rgba(240,235,225,0.04)",border:`1px solid ${isTried?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.09)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>
-                  {isTried?"Já provei":"Marcar provado"}
-                </button>
-                <button onClick={onFav} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:isFav?theme.accent:"rgba(255,255,255,0.14)",filter:isFav?`drop-shadow(0 0 8px ${theme.accent})`:"none",transition:"all .2s",padding:"4px 6px",display:"flex",alignItems:"center"}}>
-                  {isFav
-                    ?<svg width="20" height="16" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
-                    :<svg width="20" height="16" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
-                  }
-                </button>
-                <button onClick={onComanda} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isComanda?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${isComanda?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.09)"}`,color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>
-                  {isComanda?"Na comanda":"+ Comanda"}
-                </button>
-                <button onClick={shareAsImage} disabled={sharing} title="Compartilhar" style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:sharing?"rgba(240,235,225,0.2)":"rgba(240,235,225,0.4)",cursor:sharing?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                  {sharing?"…":<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>}
-                </button>
-                <button onClick={onEdit} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:"rgba(240,235,225,0.4)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>editar</button>
-              </div>
+        {/* ── HERO ── */}
+        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(visual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 65%, rgba(6,4,2,0.97) 100%)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
+          <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
+          <div style={{position:"absolute",top:16,left:18,right:48,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            {styleTags[0]&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.7)",fontWeight:500}}>
+              <svg width="11" height="13" viewBox="0 0 10 12" fill="none" style={{opacity:0.75}}><path d="M1 1h8l-1.5 7H2.5L1 1z" stroke={theme.accent} strokeWidth="1" fill="none"/><path d="M2.5 8v3M7.5 8v3M1.5 11h7" stroke={theme.accent} strokeWidth="1" strokeLinecap="round"/></svg>
+              {styleTags[0]}
+            </span>}
+            {spiritTags[0]&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
+              <span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85}}/>
+              {spiritTags[0]}
+            </span>}
+          </div>
+          {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
+            <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
+            <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
+          </div>}
+          <div style={{position:"absolute",bottom:16,left:18,right:18}}>
+            <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+              <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
+              <div style={{width:7,height:7,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
             </div>
+            {profile?.flavors&&<div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase",marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
+          </div>
+        </div>
 
-            {/* coluna direita — copo */}
-            <div style={{flexShrink:0,width:130,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
-              <div style={{filter:`drop-shadow(0 0 20px ${theme.accent}cc) drop-shadow(0 0 50px ${theme.accent}77) drop-shadow(0 0 90px ${theme.accent}44)`}}>
-                <GlassIcon categories={recipe.categories} color={theme.accent} size={110} opacity={0.35}/>
-              </div>
-            </div>
+        {/* profile row */}
+        {profile?.perfil&&(
+          <div style={{display:"flex",justifyContent:"space-between",padding:"10px 18px",borderBottom:`1px solid rgba(240,235,225,0.05)`}}>
+            {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
+              <React.Fragment key={i}>
+                {i>0&&<div style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
+                  <span style={{fontSize:12,color:theme.accent,lineHeight:1}}>{item[0]}</span>
+                  <span style={{fontSize:8,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
+                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+
+        <div style={{padding:"16px 18px 32px"}}>
+
+          {/* estrelas + ações */}
+          <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:12,alignItems:"center"}}>
+            {[1,2,3,4,5].map(n=>(
+              <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
+            ))}
+          </div>
+          {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:12}}>como você avaliaria?</div>}
+          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:18}}>
+            <button onClick={onTried} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isTried?"rgba(74,222,128,0.08)":"rgba(240,235,225,0.04)",border:`1px solid ${isTried?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.09)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>{isTried?"Já provei":"Marcar provado"}</button>
+            <button onClick={onFav} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:isFav?theme.accent:"rgba(255,255,255,0.14)",filter:isFav?`drop-shadow(0 0 8px ${theme.accent})`:"none",transition:"all .2s",padding:"4px 6px",display:"flex",alignItems:"center"}}>
+              {isFav?<svg width="20" height="16" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>:<svg width="20" height="16" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>}
+            </button>
+            <button onClick={onComanda} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isComanda?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${isComanda?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.09)"}`,color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>{isComanda?"Na comanda":"+ Comanda"}</button>
+            <button onClick={shareAsImage} disabled={sharing} title="Compartilhar" style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:sharing?"rgba(240,235,225,0.2)":"rgba(240,235,225,0.4)",cursor:sharing?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{sharing?"…":<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>}</button>
+            <button onClick={onEdit} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:"rgba(240,235,225,0.4)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>editar</button>
           </div>
 
           {/* divisor */}
@@ -2829,7 +2829,7 @@ export default function OnTheRocks(){
       <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined}/>}
+      {open&&<Modal recipe={open} profile={recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
