@@ -1606,14 +1606,14 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
             {/* top row */}
             <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500}}>
-                <svg width="10" height="12" viewBox="0 0 10 12" fill="none" style={{opacity:0.8}}>
+              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:7,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500}}>
+                <svg width="13" height="15" viewBox="0 0 10 12" fill="none" style={{opacity:0.8}}>
                   <path d="M1 1h8l-1.5 7H2.5L1 1z" stroke={theme.accent} strokeWidth="1" fill="none"/>
                   <path d="M2.5 8v3M7.5 8v3M1.5 11h7" stroke={theme.accent} strokeWidth="1" strokeLinecap="round"/>
                 </svg>
                 {styleTag}
               </span>}
-              {spiritTag&&<span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
+              {spiritTag&&<span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
                 <span style={{color:theme.accent,marginRight:4}}>•</span>{spiritTag}
               </span>}
             </div>
@@ -1639,7 +1639,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               {/* divider */}
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
-                <div style={{width:4,height:4,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
+                <div style={{width:7,height:7,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
               </div>
 
               {/* flavor tags — cor da família */}
