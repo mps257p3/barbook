@@ -2368,22 +2368,22 @@ export default function OnTheRocks(){
         </button>
 
         <div style={{display:"flex",alignItems:"center",gap:10,marginRight:4}}>
-          <div style={{display:"flex",flexDirection:"column",gap:5}}>
-            <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+          <div style={{display:"flex",flexDirection:"column",gap:5,alignItems:"flex-end"}}>
+            <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",flexDirection:"row-reverse",gap:6}}>
               <svg width="10" height="11" viewBox="0 0 10 11" fill="none" style={{opacity:0.35,flexShrink:0}}>
                 <rect x="0.5" y="0.5" width="9" height="10" rx="1.5" stroke="currentColor" strokeWidth="1" fill="none"/>
                 <path d="M2.5 3.5h5M2.5 5.5h5M2.5 7.5h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
               </svg>
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{drinkRecipes.length} receitas</span>
             </button>
-            <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+            <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",flexDirection:"row-reverse",gap:6}}>
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{flexShrink:0}}>
                 <circle cx="5" cy="5" r="4" stroke="rgba(74,222,128,0.65)" strokeWidth="1" fill="none"/>
                 <path d="M3 5l1.5 1.5 2.5-2.5" stroke="rgba(74,222,128,0.65)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provados</span>
             </button>
-            <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+            <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",flexDirection:"row-reverse",gap:6}}>
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{flexShrink:0}}>
                 <path d="M5 1l1 2.2 2.4.35-1.75 1.7.41 2.4L5 6.5l-2.06 1.15.41-2.4L1.6 3.55l2.4-.35z" stroke="rgba(200,169,110,0.5)" strokeWidth="1" fill="none" strokeLinejoin="round"/>
               </svg>
