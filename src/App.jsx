@@ -2368,7 +2368,7 @@ export default function OnTheRocks(){
         </button>
 
         <div style={{display:"flex",alignItems:"center",gap:10,marginRight:4}}>
-          <div style={{display:"flex",flexDirection:"column",gap:3,alignItems:"flex-end"}}>
+          <div style={{display:"flex",flexDirection:"column",gap:1,alignItems:"flex-end"}}>
             <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{drinkRecipes.length} receitas</span>
             </button>
@@ -2431,39 +2431,6 @@ export default function OnTheRocks(){
                   <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent,opacity:.55}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
                 </div>}
               </>);})()}
-              {/* filtros topo */}
-              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:18,paddingBottom:4}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
-                      background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                      border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
-                      color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
-                    {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
-                  </button>
-                  <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
-                    <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
-                      <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
-                    </div>
-                    Apenas não provados
-                  </button>
-                </div>
-              </div>
-              {/* sheet ocasião — abre abaixo dos botões */}
-              {filterSheet==="ocasiao"&&(
-                <div style={{flexShrink:0,width:"calc(100% - 24px)",background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",marginBottom:8,zIndex:20}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {OCCASION_LIST.map(tag=>{
-                      const active=activeOccasions.includes(tag);
-                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
-                    })}
-                  </div>
-                </div>
-              )}
               <div style={{flex:"1 1 auto",width:"100%",minHeight:0,position:"relative"}}>
                 {/* peek cards — dentro do flex:1 para alinhar com o card central */}
                 {[
@@ -2535,6 +2502,39 @@ export default function OnTheRocks(){
                     </button>
                     );})()}
                   </div>
+                </div>
+              </div>
+              {/* sheet ocasião — abre acima dos botões */}
+              {filterSheet==="ocasiao"&&(
+                <div style={{flexShrink:0,width:"calc(100% - 24px)",background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",marginBottom:6,zIndex:20}}>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {OCCASION_LIST.map(tag=>{
+                      const active=activeOccasions.includes(tag);
+                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
+                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                    })}
+                  </div>
+                </div>
+              )}
+              {/* controles bottom */}
+              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:6,paddingBottom:14}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
+                      background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
+                      color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
+                    {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
+                  </button>
+                  <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
+                    <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                      <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
+                    </div>
+                    Apenas não provados
+                  </button>
                 </div>
               </div>
             </div>
