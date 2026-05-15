@@ -1257,14 +1257,14 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
         {profile?.perfil&&(
           <div style={{display:"flex",justifyContent:"space-between",padding:"10px 18px",borderBottom:`1px solid rgba(240,235,225,0.05)`}}>
             {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
-              <React.Fragment key={i}>
+              <div key={i} style={{display:"contents"}}>
                 {i>0&&<div style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
                   <span style={{fontSize:12,color:theme.accent,lineHeight:1}}>{item[0]}</span>
                   <span style={{fontSize:8,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
                   <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
                 </div>
-              </React.Fragment>
+              </div>
             ))}
           </div>
         )}
