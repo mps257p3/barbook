@@ -2472,8 +2472,8 @@ export default function OnTheRocks(){
                 {/* sombra central entre os peek cards */}
                 <div style={{position:"absolute",left:"50%",top:"44%",transform:"translate(-50%,-50%)",width:56,height:"calc(93% - 112px)",background:"linear-gradient(to right, transparent 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.97) 50%, rgba(0,0,0,0.75) 65%, transparent 100%)",pointerEvents:"none",zIndex:1}}/>
                 <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]}/>
-                {/* botões de ação — straddling bottom edge of card */}
-                <div style={{position:"absolute",bottom:-60,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
+                {/* botões de ação — sobre o card */}
+                <div style={{position:"absolute",bottom:16,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
                   <div style={{display:"flex",justifyContent:"center",pointerEvents:"none"}}>
                     <button onClick={()=>{const wasTried=isTried;handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}}
