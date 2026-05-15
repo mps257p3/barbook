@@ -2501,11 +2501,11 @@ export default function OnTheRocks(){
                 })}
                 <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]}/>
                 {/* botões de ação — sobre o card */}
-                <div style={{position:"absolute",bottom:0,left:0,right:0,zIndex:10,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
+                <div style={{position:"absolute",bottom:16,left:0,right:0,zIndex:10,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
                   <div style={{display:"flex",alignItems:"center",gap:0,width:"100%",maxWidth:320,pointerEvents:"all"}}>
                     {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
                     <button onClick={()=>{const wasTried=isTried;handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}}
-                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                         width:45,height:45,borderRadius:"50%",
                         background:isTried?"rgba(20,184,166,0.22)":"rgba(240,235,225,0.08)",
@@ -2523,7 +2523,7 @@ export default function OnTheRocks(){
                     </div>
                     {(()=>{const isComanda=comanda.includes(swipeRecipe.name);return(
                     <button onClick={()=>toggleComanda(swipeRecipe.name)}
-                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                         width:45,height:45,borderRadius:"50%",
                         background:isComanda?"rgba(160,120,90,0.25)":"rgba(240,235,225,0.08)",
