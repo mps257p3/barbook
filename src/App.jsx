@@ -1591,7 +1591,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           {/* gradient overlay — cinematic */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)",pointerEvents:"none",zIndex:1}}/>
           {/* vinheta — escurece bordas e laterais */}
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 75% 80% at 50% 50%, transparent 42%, rgba(0,0,0,0.55) 100%)",pointerEvents:"none",zIndex:2}}/>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none",zIndex:2}}/>
           {/* luz atmosférica no topo — efeito vidro */}
           <div style={{position:"absolute",top:0,left:0,right:0,height:"45%",background:"radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)",pointerEvents:"none",zIndex:3}}/>
 
