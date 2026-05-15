@@ -1616,7 +1616,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                 {styleTag}
               </span>}
               {spiritTag&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
-                <span style={{display:"inline-block",width:7,height:7,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0}}/>
+                <span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0}}/>
                 {spiritTag}
               </span>}
             </div>
@@ -2472,8 +2472,8 @@ export default function OnTheRocks(){
                 {/* sombra central entre os peek cards */}
                 <div style={{position:"absolute",left:"50%",top:"44%",transform:"translate(-50%,-50%)",width:56,height:"calc(93% - 112px)",background:"linear-gradient(to right, transparent 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.97) 50%, rgba(0,0,0,0.75) 65%, transparent 100%)",pointerEvents:"none",zIndex:1}}/>
                 <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]}/>
-                {/* botões de ação — sobre o card */}
-                <div style={{position:"absolute",bottom:16,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
+                {/* botões de ação — straddling bottom edge of card */}
+                <div style={{position:"absolute",bottom:-60,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
                   <div style={{display:"flex",justifyContent:"center",pointerEvents:"all"}}>
                     <button onClick={()=>{const wasTried=isTried;handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}}
@@ -2521,7 +2521,7 @@ export default function OnTheRocks(){
                 </div>
               )}
               {/* controles bottom */}
-              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14}}>
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:66,paddingBottom:14}}>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
