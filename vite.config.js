@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
+  cacheDir: 'C:/Users/marce/.vite-cache/on-the-rocks',
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
@@ -50,8 +51,8 @@ export default defineConfig(({ mode }) => {
           },
           {
             urlPattern: /\/bg\//,
-            handler: 'CacheFirst',
-            options: { cacheName: 'bg-images', expiration: { maxEntries: 15, maxAgeSeconds: 60*60*24*30 } }
+            handler: 'NetworkFirst',
+            options: { cacheName: 'bg-images', expiration: { maxEntries: 15, maxAgeSeconds: 60*60*24*7 } }
           }
         ]
       }
