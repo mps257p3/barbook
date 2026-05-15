@@ -1583,7 +1583,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             cursor:dragging?"grabbing":"grab",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 40px 80px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
+            boxShadow:`0 1px 3px rgba(0,0,0,1), 0 6px 10px rgba(0,0,0,0.98), 0 18px 32px rgba(0,0,0,0.92), 0 40px 80px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
             border:`1.5px solid ${theme.accent}50`,
             touchAction:"none",
           }}>
