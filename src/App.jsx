@@ -1644,7 +1644,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
               {/* flavor tags — cor da família */}
               {p?.flavors&&(
-                <div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase"}}>
+                <div style={{fontSize:8,letterSpacing:1.8,color:theme.accent,opacity:0.7,textTransform:"uppercase"}}>
                   {p.flavors.replace(/·/g,"•")}
                 </div>
               )}
