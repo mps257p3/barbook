@@ -1633,7 +1633,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             {/* bottom content - clickable */}
             <div onClick={()=>onOpen(recipe)} style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left",cursor:"pointer"}}>
               <div style={{fontFamily:"'Gloock',serif",
-                fontSize:recipe.name.length>18?34:recipe.name.length>13?41:recipe.name.length>8?48:55,
+                fontSize:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>11?36:recipe.name.length>7?48:55,
                 fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
                 overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:2}}>{recipe.name}</div>
 
@@ -2533,7 +2533,7 @@ export default function OnTheRocks(){
                     <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
                       <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
                     </div>
-                    Apenas não provados
+                    Não provados
                   </button>
                 </div>
               </div>
