@@ -2521,8 +2521,8 @@ export default function OnTheRocks(){
                 </div>
               )}
               {/* controles bottom */}
-              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:6,paddingBottom:14}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14}}>
+                <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
                       background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
@@ -2530,6 +2530,8 @@ export default function OnTheRocks(){
                       color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
                     {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
                   </button>
+                </div>
+                <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
                     <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
