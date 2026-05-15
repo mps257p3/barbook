@@ -2392,7 +2392,7 @@ export default function OnTheRocks(){
           </div>
           {/* botão adicionar receita — ao lado dos contadores */}
           <button onClick={()=>setShowForm(true)}
-            style={{width:36,height:36,borderRadius:"50%",flexShrink:0,
+            style={{width:36,height:36,borderRadius:6,flexShrink:0,
               background:"rgba(100,72,38,0.12)",border:"1px solid rgba(180,140,80,0.22)",
               color:"rgba(210,170,100,0.7)",fontSize:20,fontWeight:300,lineHeight:1,
               boxShadow:"0 0 14px rgba(140,100,50,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
