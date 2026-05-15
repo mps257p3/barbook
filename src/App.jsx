@@ -2443,7 +2443,7 @@ export default function OnTheRocks(){
                 </div>}
               </>);})()}
               {/* filtros topo */}
-              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:10,paddingBottom:6}}>
+              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:18,paddingBottom:4}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
