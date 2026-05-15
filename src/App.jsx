@@ -1578,6 +1578,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
           style={{
             width:"100%",height:"100%",
+            backgroundColor:"#0A0906",
             ...buildCardBgEditorial(visual),
             borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"grab",
@@ -2447,7 +2448,7 @@ export default function OnTheRocks(){
                       position:"absolute",left:"50%",top:"44%",width:260,
                       height:"calc(93% - 112px)",
                       transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
-                      borderRadius:16,...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
+                      borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
                       overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                       boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
                       clipPath:dx<0?"inset(0 50% 0 0 round 16px 0 0 16px)":"inset(0 0 0 50% round 0 16px 16px 0)",
