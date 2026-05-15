@@ -680,18 +680,18 @@ const BASE_RECIPES = [
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 // ─── SISTEMA DE BACKGROUND DE CARD (DESCOBRIR) ────────────────────────────────
 const CARD_BG_FILES = {
-  velvet_aperitivo: "/bg/velvet-aperitivo.png",
-  midnight_citrus:  "/bg/midnight-citrus.png",
-  tropical_static:  "/bg/tropical-static.png",
-  smoked_amber:     "/bg/smoked-amber.png",
-  frost_tide:       "/bg/frost-tide.png",
-  silk_cream:       "/bg/silk-cream.png",
-  herbal_noir:      "/bg/herbal-noir.png",
-  electric_tiki:    "/bg/electric-tiki.png",
-  vintage_soda:     "/bg/vintage-soda.png",
-  espresso_void:    "/bg/espresso-void.png",
-  rose_static:      "/bg/rose-static.png",
-  polar_minimal:    "/bg/polar-minimal.png",
+  velvet_aperitivo: "/bg/velvet-aperitivo-v2.png",
+  midnight_citrus:  "/bg/midnight-citrus-v2.png",
+  tropical_static:  "/bg/tropical-static-v2.png",
+  smoked_amber:     "/bg/smoked-amber-v2.png",
+  frost_tide:       "/bg/frost-tide-v2.png",
+  silk_cream:       "/bg/silk-cream-v2.png",
+  herbal_noir:      "/bg/herbal-noir-v2.png",
+  electric_tiki:    "/bg/electric-tiki-v2.png",
+  vintage_soda:     "/bg/vintage-soda-v2.png",
+  espresso_void:    "/bg/espresso-void-v2.png",
+  rose_static:      "/bg/rose-static-v2.png",
+  polar_minimal:    "/bg/polar-minimal-v2.png",
 };
 const CARD_SPIRIT_TINTS = {
   "Gim":                 "rgba(70,130,90,0.22)",
