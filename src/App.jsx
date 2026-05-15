@@ -2450,6 +2450,7 @@ export default function OnTheRocks(){
                       borderRadius:16,...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
                       overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                       boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
+                      clipPath:dx<0?"inset(0 50% 0 0 round 16px 0 0 16px)":"inset(0 0 0 50% round 0 16px 16px 0)",
                     }}>
                       {/* overlay base — leve */}
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.12) 0%, rgba(3,1,0,0.0) 30%, rgba(3,1,0,0.42) 70%, rgba(3,1,0,0.88) 100%)"}}/>
