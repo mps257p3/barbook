@@ -1583,8 +1583,8 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             cursor:dragging?"grabbing":"grab",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 1px 3px rgba(0,0,0,1), 0 6px 10px rgba(0,0,0,0.98), 0 18px 32px rgba(0,0,0,0.92), 0 40px 80px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
-            border:`1.5px solid ${theme.accent}50`,
+            boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 28px 48px 6px rgba(0,0,0,0.92), 0 50px 90px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
+            border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
 
@@ -2447,7 +2447,7 @@ export default function OnTheRocks(){
                       position:"absolute",left:"50%",top:"44%",width:260,
                       height:"calc(93% - 112px)",
                       transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
-                      borderRadius:16,...buildCardBgEditorial(pv),border:"1px solid rgba(255,255,255,0.05)",
+                      borderRadius:16,...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
                       overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                       boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
                     }}>
