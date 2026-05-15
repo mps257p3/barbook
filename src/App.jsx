@@ -1613,8 +1613,9 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                 </svg>
                 {styleTag}
               </span>}
-              {spiritTag&&<span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
-                <span style={{color:theme.accent,marginRight:4}}>•</span>{spiritTag}
+              {spiritTag&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
+                <span style={{display:"inline-block",width:9,height:9,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0}}/>
+                {spiritTag}
               </span>}
             </div>
 
