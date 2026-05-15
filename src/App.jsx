@@ -2475,9 +2475,9 @@ export default function OnTheRocks(){
                 {/* botões de ação — straddling bottom edge of card */}
                 <div style={{position:"absolute",bottom:-60,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
-                  <div style={{display:"flex",justifyContent:"center",pointerEvents:"all"}}>
+                  <div style={{display:"flex",justifyContent:"center",pointerEvents:"none"}}>
                     <button onClick={()=>{const wasTried=isTried;handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}}
-                      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s",pointerEvents:"auto"}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                         width:45,height:45,borderRadius:"50%",
                         background:isTried?"rgba(20,184,166,0.22)":"rgba(240,235,225,0.08)",
@@ -2490,9 +2490,9 @@ export default function OnTheRocks(){
                   </div>
                   );})()}
                   {(()=>{const isComanda=comanda.includes(swipeRecipe.name);return(
-                  <div style={{display:"flex",justifyContent:"center",pointerEvents:"all"}}>
+                  <div style={{display:"flex",justifyContent:"center",pointerEvents:"none"}}>
                     <button onClick={()=>toggleComanda(swipeRecipe.name)}
-                      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s",pointerEvents:"auto"}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"center",
                         width:45,height:45,borderRadius:"50%",
                         background:isComanda?"rgba(160,120,90,0.25)":"rgba(240,235,225,0.08)",
@@ -2521,7 +2521,7 @@ export default function OnTheRocks(){
                 </div>
               )}
               {/* controles bottom */}
-              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:66,paddingBottom:14}}>
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14}}>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
