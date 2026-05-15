@@ -803,6 +803,22 @@ function buildCardBg(visual) {
   };
 }
 
+function buildCardBgEditorial(visual) {
+  const layers = [
+    visual.familyGrad,
+    visual.spiritTint ? `linear-gradient(${visual.spiritTint}, ${visual.spiritTint})` : null,
+    "linear-gradient(rgba(6,4,2,0.32), rgba(6,4,2,0.32))",
+    `url('${visual.bgImage}')`,
+  ].filter(Boolean);
+  const sizes = layers.slice(0,-1).map(()=>"100% 100%").concat("cover").join(", ");
+  return {
+    backgroundImage: layers.join(", "),
+    backgroundSize:  sizes,
+    backgroundPosition: layers.map(()=>"center").join(", "),
+    backgroundRepeat: "no-repeat",
+  };
+}
+
 function getTheme(cats=[]) {
   for (const s of STYLE_PRIORITY) if (cats.includes(s)) return TYPE_THEME[s];
   return TYPE_THEME["_default"];
@@ -1514,14 +1530,14 @@ function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActi
 }
 
 // ─── SWIPE CARD ───────────────────────────────────────────────────────────────
-function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen}){
+function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe);
   const styleTag=recipe.categories.find(c=>STYLE_CATS.has(c));
   const spiritTag=recipe.categories.find(c=>SPIRIT_CATS.has(c));
   const [drag,setDrag]=useState(0);
   const [dragging,setDragging]=useState(false);
-  const [gone,setGone]=useState(null); // "left"=próximo | "right"=voltar
+  const [gone,setGone]=useState(null);
   const [entered,setEntered]=useState(false);
   const startX=useRef(0);
   const cardRef=useRef();
@@ -1532,112 +1548,128 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
   },[]);
 
   const THRESH=38;
-
   const onPointerDown=e=>{startX.current=e.clientX;setDragging(true);cardRef.current?.setPointerCapture(e.pointerId);};
   const onPointerMove=e=>{if(!dragging)return;setDrag(e.clientX-startX.current);};
   const onPointerUp=()=>{
     if(!dragging)return;
     setDragging(false);
-    if(drag<-THRESH){
-      setGone("left");
-      setTimeout(()=>{onNext();setGone(null);setDrag(0);},300);
-    } else if(drag>THRESH&&hasPrev){
-      setGone("right");
-      setTimeout(()=>{onPrev();setGone(null);setDrag(0);},300);
-    } else {
-      setDrag(0);
-    }
+    if(drag<-THRESH){setGone("left");setTimeout(()=>{onNext();setGone(null);setDrag(0);},300);}
+    else if(drag>THRESH&&hasPrev){setGone("right");setTimeout(()=>{onPrev();setGone(null);setDrag(0);},300);}
+    else{setDrag(0);}
   };
 
-  const activeDrag = gone==="left"?-420 : gone==="right"?420 : drag;
-  const rotate = activeDrag/13;
-  const scale = dragging ? Math.max(0.97,1-Math.abs(drag)*0.0003) : 1;
-  const nextPct = Math.max(0,Math.min(1,-activeDrag/THRESH));
-  const prevPct = Math.max(0,Math.min(1,activeDrag/THRESH));
+  const activeDrag=gone==="left"?-420:gone==="right"?420:drag;
+  const rotate=activeDrag/13;
+  const scale=dragging?Math.max(0.97,1-Math.abs(drag)*0.0003):1;
+  const nextPct=Math.max(0,Math.min(1,-activeDrag/THRESH));
+  const prevPct=Math.max(0,Math.min(1,activeDrag/THRESH));
+  const p=profile&&typeof profile==="object"?profile:null;
 
   return(
-    <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 16px 56px 16px",userSelect:"none"}}>
+    <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"7% 16px 112px",userSelect:"none"}}>
 
-      {/* wrapper entrada */}
-      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:270,
+      {/* card */}
+      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:entered?1:0,
         transform:entered?"translateY(0) scale(1)":"translateY(44px) scale(0.93)",
         transition:"opacity .32s ease, transform .42s cubic-bezier(.34,1.56,.64,1)"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
-          style={{width:"100%",...buildCardBg(visual),borderRadius:12,
-            border:`1px solid ${theme.border}33`,
+          style={{
+            width:"100%",height:"100%",
+            ...buildCardBgEditorial(visual),
+            borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"grab",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 28px 70px rgba(0,0,0,.75), 0 0 50px ${theme.accent}1a`,
-            overflow:"hidden",touchAction:"none",position:"relative"}}>
+            boxShadow:`0 40px 80px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
+            border:`1.5px solid ${theme.accent}50`,
+            touchAction:"none",
+          }}>
 
-          {/* partículas por ingrediente */}
-          {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:2}}/>}
+          {/* gradient overlay — cinematic */}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)",pointerEvents:"none",zIndex:1}}/>
+          {/* luz atmosférica no topo — efeito vidro */}
+          <div style={{position:"absolute",top:0,left:0,right:0,height:"45%",background:"radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)",pointerEvents:"none",zIndex:2}}/>
 
-          {/* overlay esquerda — próximo */}
-          <div style={{position:"absolute",inset:0,borderRadius:12,background:"linear-gradient(to right,rgba(240,235,225,0.07),transparent)",opacity:nextPct,pointerEvents:"none",zIndex:10}}/>
+          {/* particles */}
+          {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:3}}/>}
 
-          {/* overlay direita — voltar */}
-          {hasPrev&&<div style={{position:"absolute",inset:0,borderRadius:12,background:`linear-gradient(to left,${theme.accent}1a,transparent)`,opacity:prevPct,pointerEvents:"none",zIndex:10}}/>}
+          {/* drag overlay: next */}
+          <div style={{position:"absolute",inset:0,borderRadius:16,background:"linear-gradient(to right,rgba(240,235,225,0.07),transparent)",opacity:nextPct,pointerEvents:"none",zIndex:10}}/>
+          {/* drag overlay: prev */}
+          {hasPrev&&<div style={{position:"absolute",inset:0,borderRadius:16,background:`linear-gradient(to left,${theme.accent}1a,transparent)`,opacity:prevPct,pointerEvents:"none",zIndex:10}}/>}
 
-          {/* área clicável */}
-          <div onClick={()=>onOpen(recipe)} style={{cursor:"pointer",position:"relative"}}>
-            <div style={{position:"relative",padding:"14px 0 6px",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${theme.accent}28 0%, ${theme.accent}09 58%, transparent 100%)`}}/>
-              <div style={{filter:`drop-shadow(0 0 28px ${theme.accent}bb) drop-shadow(0 0 70px ${theme.accent}55)`,position:"relative",zIndex:1}}>
-                <GlassIcon categories={recipe.categories} color={theme.accent} size={110} opacity={0.52}/>
-              </div>
-              <div style={{position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(4,2,1,0.88))"}}/>
+          {/* content */}
+          <div style={{position:"absolute",inset:0,zIndex:5,userSelect:"none"}}>
+
+            {/* top row */}
+            <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500}}>
+                <svg width="10" height="12" viewBox="0 0 10 12" fill="none" style={{opacity:0.8}}>
+                  <path d="M1 1h8l-1.5 7H2.5L1 1z" stroke={theme.accent} strokeWidth="1" fill="none"/>
+                  <path d="M2.5 8v3M7.5 8v3M1.5 11h7" stroke={theme.accent} strokeWidth="1" strokeLinecap="round"/>
+                </svg>
+                {styleTag}
+              </span>}
+              {spiritTag&&<span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
+                <span style={{color:theme.accent,marginRight:4}}>•</span>{spiritTag}
+              </span>}
             </div>
-            <div style={{padding:"8px 18px 16px"}}>
-              <div style={{display:"flex",gap:5,marginBottom:8,flexWrap:"wrap"}}>
-                {[styleTag,spiritTag].filter(Boolean).filter((t,i,a)=>a.indexOf(t)===i).map(t=>(
-                  <span key={t} style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:theme.accent,background:`${theme.accent}18`,border:`1px solid ${theme.accent}40`,borderRadius:2,padding:"3px 8px"}}>{t}</span>
-                ))}
+
+            {/* autoral seal */}
+            {recipe.custom&&(
+              <div style={{position:"absolute",top:48,left:20,display:"inline-flex",alignItems:"center",gap:5,
+                padding:"3px 10px 3px 8px",borderRadius:20,
+                background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",
+                boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
+                <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
+                <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
               </div>
-              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:26,fontWeight:700,color:"#F0EBE1",lineHeight:1.1,letterSpacing:.3,marginBottom:8,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
-              {recipe.rating>0&&<div style={{marginBottom:8}}><Stars n={recipe.rating} color={theme.accent}/></div>}
-              <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}55,transparent)`,marginBottom:10}}/>
-              <div style={{fontSize:11,color:"rgba(240,235,225,0.42)",lineHeight:1.5,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>
-                {recipe.ingredients.slice(0,6).map((ing,i)=>{const c=ing.replace(/^\d+[\d.,/\s]*(ml|cl|oz|dash|colher|parte|partes|pitada|fatia|rodela|folha|folhas|ramo|aros|twist)?\.?\s*/i,"");return(i>0?" · ":"")+(c.charAt(0).toUpperCase()+c.slice(1));}).join("")}
+            )}
+
+            {/* bottom content - clickable */}
+            <div onClick={()=>onOpen(recipe)} style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left",cursor:"pointer"}}>
+              <div style={{fontFamily:"'Gloock',serif",
+                fontSize:recipe.name.length>18?34:recipe.name.length>13?41:recipe.name.length>8?48:55,
+                fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
+                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:2}}>{recipe.name}</div>
+
+              {/* divider */}
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
+                <div style={{width:4,height:4,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
               </div>
+
+              {/* flavor tags — cor da família */}
+              {p?.flavors&&(
+                <div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase"}}>
+                  {p.flavors.replace(/·/g,"•")}
+                </div>
+              )}
+
+              {/* profile row — com separadores verticais */}
+              {p?.perfil&&(
+                <div style={{display:"flex",justifyContent:"space-between",paddingTop:10,borderTop:`1.5px solid ${theme.accent}30`}}>
+                  {[["◈","Perfil",p.perfil,p.perfil_desc],["❋","Sensação",p.sensacao,p.sensacao_desc],["✦","Ocasião",p.ocasiao,p.ocasiao_desc]].map((item,i)=>(
+                    <>
+                      {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
+                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,flex:1}}>
+                        <span style={{fontSize:14,color:theme.accent,lineHeight:1}}>{item[0]}</span>
+                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
+                        <span style={{fontSize:11,letterSpacing:0.8,color:"rgba(231,224,205,0.92)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
+                      </div>
+                    </>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* rodapé — tried e comanda centralizados */}
-          <div style={{padding:"10px 20px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:28,borderTop:`1px solid ${theme.border}22`}}>
-            <button onClick={e=>{e.stopPropagation();onTried();}}
-              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,
-                background:"none",border:"none",cursor:"pointer",
-                color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",
-                transition:"all .15s"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"center",
-                background:isTried?"rgba(74,222,128,0.09)":"none",
-                border:`1px solid ${isTried?"rgba(74,222,128,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:44,height:44,fontSize:18,
-                filter:isTried?"drop-shadow(0 0 6px rgba(74,222,128,0.4))":"none",
-                transition:"all .15s"}}>✓</div>
-              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>já provei</span>
-            </button>
-            <button onClick={e=>{e.stopPropagation();onComanda();}}
-              style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,
-                background:"none",border:"none",cursor:"pointer",
-                color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",
-                transition:"all .15s"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"center",
-                background:isComanda?"rgba(200,169,110,0.12)":"none",
-                border:`1px solid ${isComanda?"rgba(200,169,110,0.5)":"rgba(240,235,225,0.14)"}`,
-                borderRadius:50,width:44,height:44,fontSize:20,
-                filter:isComanda?"drop-shadow(0 0 8px rgba(200,169,110,0.6))":"none",
-                transition:"all .15s"}}>{isComanda?"◫":"◻"}</div>
-              <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>adicionar à comanda</span>
-            </button>
-          </div>
         </div>
       </div>
+
 
     </div>
   );
@@ -1988,11 +2020,18 @@ export default function OnTheRocks(){
   useEffect(()=>{
     if(!("wakeLock" in navigator))return;
     let lock=null;
-    const request=async()=>{try{lock=await navigator.wakeLock.request("screen");}catch{}};
-    const onVisible=()=>{if(document.visibilityState==="visible")request();};
-    request();
+    let timer=null;
+    const TIMEOUT=3*60*1000;
+    const release=()=>{lock?.release();lock=null;};
+    const request=async()=>{if(lock)return;try{lock=await navigator.wakeLock.request("screen");}catch{}};
+    const resetTimer=()=>{clearTimeout(timer);if(!lock)request();timer=setTimeout(release,TIMEOUT);};
+    const onVisible=()=>{if(document.visibilityState==="visible"){request();resetTimer();}};
+    const events=["touchstart","click","mousemove","keydown","scroll"];
+    events.forEach(e=>document.addEventListener(e,resetTimer,{passive:true}));
     document.addEventListener("visibilitychange",onVisible);
-    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
+    request();
+    timer=setTimeout(release,TIMEOUT);
+    return()=>{clearTimeout(timer);events.forEach(e=>document.removeEventListener(e,resetTimer));document.removeEventListener("visibilitychange",onVisible);lock?.release();};
   },[]);
 
   const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r).filter(r=>!r.deleted),...customRecipes],[customRecipes,overrides]);
@@ -2044,9 +2083,10 @@ export default function OnTheRocks(){
   const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
   const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
 
-  const [swipeHistory,setSwipeHistory]=useState(()=>{const pool=BASE_RECIPES.filter(r=>!r.categories.includes("Preparos Caseiros"));const first=pool[Math.floor(Math.random()*pool.length)];return first?[first.name]:[];});
+  const [swipeHistory,setSwipeHistory]=useState(()=>["Uva Amarga"]); // temp: fixado para revisão de design
   const [swipeHistIdx,setSwipeHistIdx]=useState(0);
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
+  const [recipeProfiles,setRecipeProfiles]=useState({"Uva Amarga":{flavors:"AMARGO • VÍNICO • EFERVESCENTE",perfil:"Intenso",perfil_desc:"amargo e vínico",sensacao:"Refrescante",sensacao_desc:"vibrante e leve",ocasiao:"Apéro",ocasiao_desc:"início de noite"}});
 
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
@@ -2223,11 +2263,18 @@ export default function OnTheRocks(){
   },[]);
 
   const prevPeekRecipe=useMemo(()=>{
-    if(swipeHistIdx<=0)return null;
-    if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
-    const name=swipeHistory[swipeHistIdx-1];
-    return drinkRecipes.find(r=>r.name===name)||null;
-  },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered]);
+    if(swipeHistIdx>0){
+      if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
+      const name=swipeHistory[swipeHistIdx-1];
+      return drinkRecipes.find(r=>r.name===name)||null;
+    }
+    // sem histórico — mostra card decorativo para sensação de profundidade
+    if(!swipeRecipe||!swipePool.length)return null;
+    const pool=swipePool.filter(r=>r.name!==swipeRecipe.name);
+    if(!pool.length)return null;
+    const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+    return pool[(seed+3)%pool.length];
+  },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered,swipeRecipe,swipePool]);
 
   const nextPeekRecipe=useMemo(()=>{
     if(!swipeRecipe||!swipePool.length)return null;
@@ -2236,6 +2283,38 @@ export default function OnTheRocks(){
     const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
     return pool[seed%pool.length];
   },[swipeRecipe,swipePool]);
+
+  // ── profile generation ──
+  const profileLoadingRef=useRef(new Set());
+  const loadProfile=useCallback(async(recipe)=>{
+    if(!recipe)return;
+    const name=recipe.name;
+    if(profileLoadingRef.current.has(name))return;
+    const cacheKey="otr_prof_"+name;
+    const cached=localStorage.getItem(cacheKey);
+    if(cached){try{const p=JSON.parse(cached);setRecipeProfiles(prev=>({...prev,[name]:p}));return;}catch{}}
+    profileLoadingRef.current.add(name);
+    try{
+      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"claude-haiku-4-5-20251001",max_tokens:280,
+          system:"Sommelier de coquetéis. Responda APENAS com JSON válido, sem texto adicional.",
+          messages:[{role:"user",content:`Drink: "${name}"\nIngredientes: ${recipe.ingredients.slice(0,6).join(", ")}\n\nGere perfil em português:\n{"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","perfil_desc":"frase curta sensorial (2-3 palavras)","sensacao":"UmaPalavra","sensacao_desc":"frase curta sensorial (2-3 palavras)","ocasiao":"UmaPalavraCurta","ocasiao_desc":"frase curta de contexto (2-3 palavras)"}`}]
+        })
+      });
+      const data=await res.json();
+      const text=(data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim();
+      const prof=JSON.parse(text);
+      localStorage.setItem(cacheKey,JSON.stringify(prof));
+      setRecipeProfiles(prev=>({...prev,[name]:prof}));
+    }catch{
+      // fail silently
+    }finally{
+      profileLoadingRef.current.delete(name);
+    }
+  },[]);
+
+  useEffect(()=>{if(swipeRecipe)loadProfile(swipeRecipe);},[swipeRecipe?.name,loadProfile]);
 
   // reset idx ao mudar filtros
   useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,activeOccasions,filterMode,search]);
@@ -2287,12 +2366,38 @@ export default function OnTheRocks(){
           <span style={{fontSize:7,letterSpacing:4,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",display:"block",marginTop:3,fontWeight:400}}>COCKTAIL RECIPES</span>
         </button>
 
-        <div style={{display:"flex",flexDirection:"column",gap:1,marginRight:4}}>
-          <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif"}}>
-            <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:filterMode==="tudo"&&mobileTab==="explorar"?"rgba(240,235,225,0.7)":"rgba(240,235,225,0.4)",fontWeight:700}}>{drinkRecipes.length} receitas</span>
-          </button>
-          <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif"}}>
-            <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#4ADE80",fontWeight:700,opacity:filterMode==="provados"?1:.8,textDecoration:filterMode==="provados"?"underline":"none"}}>{tried.length} provados</span>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginRight:4}}>
+          <div style={{display:"flex",flexDirection:"column",gap:5}}>
+            <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+              <svg width="10" height="11" viewBox="0 0 10 11" fill="none" style={{opacity:0.35,flexShrink:0}}>
+                <rect x="0.5" y="0.5" width="9" height="10" rx="1.5" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <path d="M2.5 3.5h5M2.5 5.5h5M2.5 7.5h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+              </svg>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{drinkRecipes.length} receitas</span>
+            </button>
+            <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{flexShrink:0}}>
+                <circle cx="5" cy="5" r="4" stroke="rgba(74,222,128,0.65)" strokeWidth="1" fill="none"/>
+                <path d="M3 5l1.5 1.5 2.5-2.5" stroke="rgba(74,222,128,0.65)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provados</span>
+            </button>
+            <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"left",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:6}}>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{flexShrink:0}}>
+                <path d="M5 1l1 2.2 2.4.35-1.75 1.7.41 2.4L5 6.5l-2.06 1.15.41-2.4L1.6 3.55l2.4-.35z" stroke="rgba(200,169,110,0.5)" strokeWidth="1" fill="none" strokeLinejoin="round"/>
+              </svg>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favs.length} favoritos</span>
+            </button>
+          </div>
+          {/* botão adicionar receita — ao lado dos contadores */}
+          <button onClick={()=>setShowForm(true)}
+            style={{width:36,height:36,borderRadius:"50%",flexShrink:0,
+              background:"rgba(100,72,38,0.12)",border:"1px solid rgba(180,140,80,0.22)",
+              color:"rgba(210,170,100,0.7)",fontSize:20,fontWeight:300,lineHeight:1,
+              boxShadow:"0 0 14px rgba(140,100,50,0.22), inset 0 1px 0 rgba(255,255,255,0.05)",
+              cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
+              backdropFilter:"blur(8px)"}}>
+            +
           </button>
         </div>
 
@@ -2326,7 +2431,7 @@ export default function OnTheRocks(){
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",touchAction:"none"}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background .6s ease"}}/>
@@ -2336,33 +2441,79 @@ export default function OnTheRocks(){
                   <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent,opacity:.55}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
                 </div>}
               </>);})()}
-              {/* peek cards */}
-              {[
-                {pr:prevPeekRecipe,dx:-215,rot:-6},
-                {pr:nextPeekRecipe,dx:215,rot:6},
-              ].map(({pr,dx,rot})=>{
-                if(!pr)return null;
-                const th=getTheme(pr.categories);
-                const pv=getCardVisual(pr);
-                return(
-                  <div key={dx} style={{
-                    position:"absolute",left:"50%",top:"50%",width:270,
-                    transform:`translate(calc(-50% + ${dx}px),calc(-50% - 28px)) rotate(${rot}deg) scale(0.88)`,
-                    borderRadius:12,...buildCardBg(pv),border:`1px solid ${th.border}88`,
-                    overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
-                    boxShadow:`0 16px 40px rgba(0,0,0,0.5), 0 0 30px ${th.accent}18`,
-                  }}>
-                    <div style={{position:"relative",height:"clamp(110px,18vh,155px)",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-                      <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 72% 65% at 50% 30%, ${th.accent}30 0%, transparent 100%)`}}/>
-                      <GlassIcon categories={pr.categories} color={th.accent} size={110} opacity={0.55}/>
+              <div style={{flex:"1 1 auto",width:"100%",minHeight:0,position:"relative"}}>
+                {/* peek cards — dentro do flex:1 para alinhar com o card central */}
+                {[
+                  {pr:prevPeekRecipe,dx:-60,rot:0},
+                  {pr:nextPeekRecipe,dx:60,rot:0},
+                ].map(({pr,dx,rot})=>{
+                  if(!pr)return null;
+                  const th=getTheme(pr.categories);
+                  const pv=getCardVisual(pr);
+                  return(
+                    <div key={dx} style={{
+                      position:"absolute",left:"50%",top:"44%",width:260,
+                      height:"calc(93% - 112px)",
+                      transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
+                      borderRadius:16,...buildCardBgEditorial(pv),border:"1px solid rgba(255,255,255,0.05)",
+                      overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
+                      boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
+                    }}>
+                      {/* overlay base — leve */}
+                      <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.12) 0%, rgba(3,1,0,0.0) 30%, rgba(3,1,0,0.42) 70%, rgba(3,1,0,0.88) 100%)"}}/>
+                      {/* sombra do card central — localizada na borda interna */}
+                      <div style={{position:"absolute",inset:0,
+                        background:dx<0
+                          ?"linear-gradient(to right, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.0) 18%, rgba(0,0,0,0.72) 40%, rgba(0,0,0,0.95) 58%, rgba(0,0,0,1.0) 100%)"
+                          :"linear-gradient(to left, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.0) 18%, rgba(0,0,0,0.72) 40%, rgba(0,0,0,0.95) 58%, rgba(0,0,0,1.0) 100%)"
+                      }}/>
+                      <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"18px 18px 24px"}}>
+                        <div style={{fontFamily:"'Gloock',serif",
+                          fontSize:pr.name.length>18?26:pr.name.length>13?32:pr.name.length>8?38:44,
+                          fontWeight:400,lineHeight:1.1,color:"rgba(231,224,205,0.75)",letterSpacing:"-0.5px",
+                          overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{pr.name}</div>
+                      </div>
                     </div>
-                    <div style={{padding:"6px 16px 20px",textAlign:"center"}}>
-                      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:700,color:"rgba(240,235,225,0.75)",lineHeight:1.1,letterSpacing:.3}}>{pr.name}</div>
+                  );
+                })}
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]}/>
+                {/* botões de ação — sobre o card */}
+                <div style={{position:"absolute",bottom:0,left:0,right:0,zIndex:10,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:0,width:"100%",maxWidth:320,pointerEvents:"all"}}>
+                    {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
+                    <button onClick={()=>{const wasTried=isTried;handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}}
+                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",
+                        width:45,height:45,borderRadius:"50%",
+                        background:isTried?"rgba(20,184,166,0.22)":"rgba(240,235,225,0.08)",
+                        border:`1.5px solid ${isTried?"rgba(20,184,166,0.7)":"rgba(240,235,225,0.22)"}`,
+                        boxShadow:isTried?"0 0 28px rgba(20,184,166,0.55), 0 0 56px rgba(20,184,166,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
+                        fontSize:26,color:isTried?"#4ADE80":"rgba(240,235,225,0.6)",
+                        transition:"all .25s"}}>✓</div>
+                      <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,fontFamily:"Archivo,sans-serif",color:isTried?"#4ADE80":"rgba(240,235,225,0.55)"}}>já provei</span>
+                    </button>
+                    );})()}
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,padding:"0 4px",flexShrink:0}}>
+                      <div style={{width:1,height:24,background:"rgba(255,255,255,0.07)"}}/>
+                      <span style={{fontSize:10,color:"rgba(231,224,205,0.15)"}}>◇</span>
+                      <div style={{width:1,height:24,background:"rgba(255,255,255,0.07)"}}/>
                     </div>
+                    {(()=>{const isComanda=comanda.includes(swipeRecipe.name);return(
+                    <button onClick={()=>toggleComanda(swipeRecipe.name)}
+                      style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6,background:"none",border:"none",cursor:"pointer",padding:"8px 0",transition:"all .2s"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",
+                        width:45,height:45,borderRadius:"50%",
+                        background:isComanda?"rgba(160,120,90,0.25)":"rgba(240,235,225,0.08)",
+                        border:`1.5px solid ${isComanda?"rgba(200,169,110,0.7)":"rgba(240,235,225,0.22)"}`,
+                        boxShadow:isComanda?"0 0 28px rgba(160,120,90,0.55), 0 0 56px rgba(160,120,90,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
+                        fontSize:isComanda?20:22,color:isComanda?"#E5C99E":"rgba(240,235,225,0.6)",
+                        transition:"all .25s"}}>{isComanda?"◫":"🍸"}</div>
+                      <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,fontFamily:"Archivo,sans-serif",color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
+                    </button>
+                    );})()}
                   </div>
-                );
-              })}
-              <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)}/>
+                </div>
+              </div>
               {/* sheet ocasião (descobrir) */}
               {filterSheet==="ocasiao"&&(
                 <div style={{position:"absolute",bottom:88,left:12,right:12,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px 12px",zIndex:20}}>
@@ -2377,23 +2528,25 @@ export default function OnTheRocks(){
                   </div>
                 </div>
               )}
-              {/* controles bottom */}
-              <div style={{position:"absolute",bottom:12,left:0,right:0,display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
-                {/* botão ocasião */}
-                <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                  style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
-                    background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
-                    color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
-                  {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
-                </button>
-                {/* toggle não provados */}
-                <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}} style={{display:"flex",alignItems:"center",gap:7,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
-                  <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
-                    <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
-                  </div>
-                  Apenas não provados
-                </button>
+              {/* controles bottom — apenas filtros */}
+              <div style={{flexShrink:0,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",gap:10,paddingBottom:14,paddingTop:6}}>
+                {/* filtros secundários */}
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
+                      background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
+                      color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
+                    {activeOccasions.length?"◈ "+activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"◈ Ocasião"}
+                  </button>
+                  <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
+                    <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                      <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
+                    </div>
+                    Apenas não provados
+                  </button>
+                </div>
               </div>
             </div>
           ) : mobileTab==="ingredientes" ? (
@@ -2676,17 +2829,7 @@ export default function OnTheRocks(){
         </main>
       </div>
 
-      {/* ── FAB + RECEITA (mobile, Explorar) ── */}
-      {(mobileTab==="explorar"||mobileTab==="descobrir")&&(
-        <button className="mnv" onClick={()=>setShowForm(true)}
-          style={{position:"fixed",right:18,bottom:76,width:46,height:46,borderRadius:"50%",
-            background:"rgba(160,120,90,0.92)",border:"1px solid rgba(200,169,110,0.5)",
-            color:"#0A0906",fontSize:26,fontWeight:300,lineHeight:1,
-            boxShadow:"0 4px 20px rgba(0,0,0,0.5)",cursor:"pointer",zIndex:90,
-            display:"flex",alignItems:"center",justifyContent:"center"}}>
-          +
-        </button>
-      )}
+
 
       {/* ── MOBILE NAV ── */}
       <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
