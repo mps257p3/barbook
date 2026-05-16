@@ -93,6 +93,19 @@ const FAMILY_DESC = {
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 
+// ─── TIPOGRAFIA DO CARD (aba Descobrir) ───────────────────────────────────────
+// Estilos centralizados. Altere aqui para afetar todos os cards de uma vez.
+const CARD_TYPO = {
+  // Tag superior — família (Highball) e base (Fernet) compartilham o mesmo estilo
+  tag:      { fontSize:8, letterSpacing:2, textTransform:"uppercase", color:"rgba(231,224,205,0.48)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.9)" },
+  // Linha de flavors (Cítrico • Frutado • Herbal) — cor vem do tema
+  flavor:   { fontSize:8.5, letterSpacing:2.5, textTransform:"uppercase", fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.8)", opacity:0.75 },
+  // Rótulo da assinatura (PERFIL / SENSAÇÃO / OCASIÃO)
+  sigLabel: { fontSize:7.5, letterSpacing:1.5, textTransform:"uppercase", color:"rgba(231,224,205,0.32)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.6 },
+  // Valor da assinatura (Elegante / Aveludado / Aperitivo) — fontSize varia por comprimento
+  sigValue: { letterSpacing:0.5, textTransform:"uppercase", color:"rgba(231,224,205,0.82)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.5, textAlign:"center" },
+};
+
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
 const FAMILY_GLASS = {
   "Sour":"coupe","Shaken":"coupe",
@@ -2162,15 +2175,11 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
             {/* top row */}
             <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-              {styleTag&&<span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.50)",fontWeight:600,flexShrink:0,lineHeight:1,fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>
-                {styleTag}
-              </span>}
-              {spiritTag&&(()=>{const sl=spiritTag.length;const sfs=sl>16?8:sl>11?9:10;const sls=sl>16?1:sl>11?1.5:2;return(
-              <span style={{display:"flex",alignItems:"center",gap:5,fontSize:sfs,letterSpacing:sls,textTransform:"uppercase",color:"rgba(231,224,205,0.38)",flexShrink:1,minWidth:0,lineHeight:1,fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>
+              {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
+              {spiritTag&&<span style={{...CARD_TYPO.tag,display:"flex",alignItems:"center",gap:5,flexShrink:1,minWidth:0}}>
                 <span style={{width:4,height:4,borderRadius:"50%",background:theme.accent,flexShrink:0,display:"inline-block"}}/>
                 <span style={{whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{spiritTag}</span>
-              </span>
-              );})()}
+              </span>}
             </div>
 
 
@@ -2201,7 +2210,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
               {/* flavor tags — cor da família */}
               {p?.flavors&&(
-                <div style={{fontSize:8.5,letterSpacing:2.5,color:theme.accent,opacity:0.75,textTransform:"uppercase",fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.8)"}}>
+                <div style={{...CARD_TYPO.flavor,color:theme.accent}}>
                   {p.flavors.replace(/·/g,"•")}
                 </div>
               )}
@@ -2214,8 +2223,8 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
                       <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
                         <span style={{fontSize:12,color:theme.accent,lineHeight:1.2,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
-                        <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.32)",textTransform:"uppercase",fontWeight:600,lineHeight:1.6,fontFamily:"Archivo,sans-serif"}}>{item[1]}</span>
-                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.5,color:"rgba(231,224,205,0.82)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5,fontFamily:"Archivo,sans-serif"}}>{item[2]}</span>
+                        <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                        <span style={{...CARD_TYPO.sigValue,fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
@@ -2844,6 +2853,15 @@ export default function OnTheRocks(){
     setSwipeHistIdx(i=>Math.max(0,i-1));
   },[]);
 
+  // Pré-popula o próximo item no histórico para que peek e navegação mostrem o mesmo card
+  useEffect(()=>{
+    if(swipeFiltered||!swipeRecipe||!swipePool.length)return;
+    if(swipeHistIdx>=swipeHistory.length-1){
+      const next=pickDifferentFamily(swipeRecipe);
+      if(next)setSwipeHistory(h=>[...h,next.name]);
+    }
+  },[swipeRecipe?.name,swipeHistIdx,swipeFiltered]);// eslint-disable-line
+
   const prevPeekRecipe=useMemo(()=>{
     if(swipeHistIdx>0){
       if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
@@ -2859,12 +2877,12 @@ export default function OnTheRocks(){
   },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered,swipeRecipe,swipePool]);
 
   const nextPeekRecipe=useMemo(()=>{
-    if(!swipeRecipe||!swipePool.length)return null;
-    const pool=swipePool.filter(r=>r.name!==swipeRecipe.name);
-    if(!pool.length)return null;
-    const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-    return pool[seed%pool.length];
-  },[swipeRecipe,swipePool]);
+    if(swipeFiltered)return swipeFiltered[swipeHistIdx+1]||null;
+    if(!swipeHistory.length||!drinkRecipes.length)return null;
+    const name=swipeHistory[swipeHistIdx+1];
+    if(!name)return null;
+    return drinkRecipes.find(r=>r.name===name)||null;
+  },[swipeFiltered,swipeHistIdx,swipeHistory,drinkRecipes]);
 
   // ── background preload ──
   const preloadedBgs=useRef(new Set());
