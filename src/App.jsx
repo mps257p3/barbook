@@ -3674,7 +3674,7 @@ const RECIPE_PROFILES = {
                 <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Marque o que você tem em casa e descubra o que pode fazer.</div>
               </div>
               {/* spirits em grid */}
-              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
                 {allSpirits.map(s=>{
                   const has=owned.includes(s);
                   return(
