@@ -30,7 +30,7 @@ const TYPE_THEME = {
 
 const STYLE_PRIORITY = ["Não alcóolicos","Sour","Highball","Collins","Sparkling","Spritz","Fizz","Buck","Beer Highballs","Smash","Sling","Hot","Frozen","Tiki","Blended","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
-const SPIRIT_CATS = new Set(["Gim","Rum Branco","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Averna","Drambuie","Absinto","Amaretto","St‑Germain","Licor","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Bianco","Vermute Rosso","Vermute seco","Ginger Beer","Cachaça","Cachaça Envelhecida","Fernet","Licor Strega","Jerez","Porto","Lillet","Vinho","Cordial"]);
+const SPIRIT_CATS = new Set(["Gim","Rum Branco","Rum Envelhecido","Vodka","Whisky","Bourbon","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Averna","Drambuie","Absinto","Amaretto","St‑Germain","Licor","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Bianco","Vermute Rosso","Vermute seco","Ginger Beer","Cachaça","Cachaça Envelhecida","Fernet","Licor Strega","Jerez","Porto","Lillet","Vinho","Cordial"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 const FAMILY_GROUPS = [
   { label:"Família", items:["Sour","Highball","Collins","Sparkling","Spritz","Fizz","Sling","Buck","Beer Highballs","Smash","Hot","Frozen","Tiki","Blended","Não alcóolicos"] },
@@ -319,22 +319,22 @@ const BASE_RECIPES = [
 
   // ── CAJU (outras bases) ──
   {name:"Caju & Oak",categories:["Bourbon","Sour","Shaken"],ingredients:["50 ml bourbon","25 ml suco fresco de caju","15 ml limão tahiti","10 ml xarope demerara","2 dashes Angostura"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake vigoroso.","Coe duplo em coupe."],notes:"Quase um Whiskey Sour brasileiro — o caju traz acidez tropical e o demerara amplifica o lado amadeirado do bourbon.",rating:0,servings:"1",custom:false},
-  {name:"Jardim de Caju",categories:["Gin","Sour","Shaken"],ingredients:["50 ml gin","30 ml suco fresco de caju","15 ml limão siciliano","10 ml xarope simples","1 folha pequena de manjericão"],steps:["Macere levemente o manjericão no shaker.","Adicione os demais ingredientes e gelo.","Shake e coe duplo em coupe."],notes:"Herbal, fresco e muito gastronômico. O manjericão amplia a complexidade verde do gin.",rating:0,servings:"1",custom:false},
+  {name:"Jardim de Caju",categories:["Gim","Sour","Shaken"],ingredients:["50 ml gin","30 ml suco fresco de caju","15 ml limão siciliano","10 ml xarope simples","1 folha pequena de manjericão"],steps:["Macere levemente o manjericão no shaker.","Adicione os demais ingredientes e gelo.","Shake e coe duplo em coupe."],notes:"Herbal, fresco e muito gastronômico. O manjericão amplia a complexidade verde do gin.",rating:0,servings:"1",custom:false},
   {name:"Caju Escuro",categories:["Rum Envelhecido","Sour","Shaken"],ingredients:["50 ml rum envelhecido","25 ml suco fresco de caju","10 ml limão-cravo","7 ml mel diluído","2 gotas de salina"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe duplo em coupe."],notes:"Tropical, macio e profundo. O mel e a salina arredondam o conjunto — quase um tiki sofisticado.",rating:0,servings:"1",custom:false},
-  {name:"Caju Bianco",categories:["Gin","Sour","Shaken"],ingredients:["40 ml gin suave (ou vodka)","20 ml vermute branco seco","25 ml suco fresco de caju","10 ml limão siciliano"],steps:["Combine no shaker com gelo.","Shake leve e coe em coupe."],notes:"Vínico, herbal e delicado. O vermute seco e o caju criam uma combinação quase europeia.",rating:0,servings:"1",custom:false},
+  {name:"Caju Bianco",categories:["Gim","Sour","Shaken"],ingredients:["40 ml gin suave (ou vodka)","20 ml vermute branco seco","25 ml suco fresco de caju","10 ml limão siciliano"],steps:["Combine no shaker com gelo.","Shake leve e coe em coupe."],notes:"Vínico, herbal e delicado. O vermute seco e o caju criam uma combinação quase europeia.",rating:0,servings:"1",custom:false},
   {name:"Fumaça Tropical",categories:["Mezcal","Sour","Shaken"],ingredients:["40 ml mezcal","20 ml suco fresco de caju","10 ml limão tahiti","10 ml xarope de mel","pitada mínima de sal"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe duplo em coupe."],notes:"O caju segura muito bem o defumado. Salino, terroso e tropical seco — quase culinário.",rating:0,servings:"1",custom:false},
   {name:"Caju Spritz",categories:["Campari","Spritz"],ingredients:["30 ml Aperol","20 ml suco fresco de caju","60 ml espumante brut","20 ml soda","casca de laranja"],steps:["Monte diretamente na taça com bastante gelo.","Adicione Aperol, caju e espumante.","Complete com soda.","Expresse a casca de laranja sobre o drink."],notes:"Amargo leve, efervescente e tropical elegante. Verão brasileiro sofisticado.",rating:0,servings:"1",custom:false},
   {name:"Caju Noturno",categories:["Rum Envelhecido","Shaken"],ingredients:["40 ml rum envelhecido","20 ml café frio forte","20 ml suco fresco de caju","5 ml xarope demerara"],steps:["Combine no shaker com gelo.","Shake e coe duplo em coupe ou copo baixo."],notes:"Seco, tostado e exótico. Mais interessante que um espresso martini tropical — o caju ilumina o café.",rating:0,servings:"1",custom:false},
   {name:"Caju Verde",categories:["Tequila","Sour","Shaken"],ingredients:["50 ml tequila blanco","25 ml suco fresco de caju","15 ml limão tahiti","10 ml xarope de agave","coentro ou capim-santo"],steps:["Macere levemente a erva no shaker.","Adicione os demais ingredientes com gelo.","Shake e coe duplo em coupe."],notes:"Verde, cítrico e vibrante. A acidez vegetal da tequila e do caju se complementam de forma inesperada.",rating:0,servings:"1",custom:false},
 
   // ── MARACUJÁ ──
-  {name:"Maracujá Tônico",categories:["Gin","Highball"],ingredients:["50 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","10 ml xarope simples","água tônica"],steps:["Combine gin, maracujá, limão e xarope no shaker com gelo.","Shake e coe em copo highball com gelo.","Complete com água tônica."],notes:"Cítrico, seco e aromático. Refrescante sem parecer sobremesa.",rating:0,servings:"1",custom:false},
+  {name:"Maracujá Tônico",categories:["Gim","Highball"],ingredients:["50 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","10 ml xarope simples","água tônica"],steps:["Combine gin, maracujá, limão e xarope no shaker com gelo.","Shake e coe em copo highball com gelo.","Complete com água tônica."],notes:"Cítrico, seco e aromático. Refrescante sem parecer sobremesa.",rating:0,servings:"1",custom:false},
   {name:"Gold Passion",categories:["Bourbon","Sour","Shaken"],ingredients:["50 ml bourbon","15 ml polpa de maracujá","10 ml limão tahiti","7 ml mel diluído","2 dashes Angostura"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake vigoroso e coe duplo em coupe."],notes:"O maracujá combina muito com baunilha e madeira. Quente, ácido e profundo — tropical adulto.",rating:0,servings:"1",custom:false},
   {name:"Passo Solar",categories:["Tequila","Sour","Shaken"],ingredients:["50 ml tequila blanco","15 ml polpa de maracujá","15 ml limão tahiti","5 ml xarope de agave","pitada mínima de sal"],steps:["Combine no shaker com gelo.","Shake e coe duplo em coupe."],notes:"Vibrante, cítrico e salivante. Muito melhor que versões congeladas açucaradas.",rating:0,servings:"1",custom:false},
   {name:"Maracujá Amargo",categories:["Campari","Highball"],ingredients:["30 ml Campari","30 ml gin","15 ml polpa de maracujá","soda"],steps:["Combine Campari, gin e maracujá no copo com gelo.","Complete com soda.","Mexa suavemente."],notes:"Bitter tropical, refrescante e adulto. Quase italiano-brasileiro.",rating:0,servings:"1",custom:false},
   {name:"Linha do Equador",categories:["Rum Branco","Shaken"],ingredients:["40 ml rum branco","10 ml rum de coco","15 ml polpa de maracujá","10 ml limão tahiti","2 gotas de salina"],steps:["Combine no shaker com gelo.","Shake e coe duplo em coupe."],notes:"Muito mais seco e elegante que piña colada. O rum de coco dá profundidade sem pesar.",rating:0,servings:"1",custom:false},
   {name:"Pornstar Martini",categories:["Vodka","Shaken"],ingredients:["45 ml vodka","15 ml licor de baunilha","15 ml polpa de maracujá","15 ml xarope simples","15 ml limão tahiti","shot de espumante (ao lado)"],steps:["Combine vodka, licor, maracujá, xarope e limão no shaker com gelo.","Dry shake, depois shake com gelo.","Coe duplo em coupe.","Sirva o shot de espumante separado."],notes:"Puxado com menos baunilha e espumante mais seco, vira quase um sour tropical elegante.",rating:0,servings:"1",custom:false},
-  {name:"Saturn",categories:["Gin","Tiki","Shaken"],ingredients:["45 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","15 ml orgeat","7 ml falernum"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico cult de tiki. Herbal, tropical e complexo — um dos drinks de maracujá mais sofisticados já feitos.",rating:0,servings:"1",custom:false},
+  {name:"Saturn",categories:["Gim","Tiki","Shaken"],ingredients:["45 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","15 ml orgeat","7 ml falernum"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico cult de tiki. Herbal, tropical e complexo — um dos drinks de maracujá mais sofisticados já feitos.",rating:0,servings:"1",custom:false},
   {name:"Hurricane",categories:["Rum Envelhecido","Tiki","Shaken"],ingredients:["60 ml rum escuro","30 ml polpa de maracujá","20 ml limão tahiti","10 ml xarope simples"],steps:["Combine no shaker com gelo.","Shake vigoroso e coe em copo Hurricane ou highball com gelo."],notes:"Clássico de New Orleans. A receita original, mais seca, é muito melhor que versões açucaradas.",rating:0,servings:"1",custom:false},
   {name:"Cobra's Fang",categories:["Rum Envelhecido","Tiki","Shaken"],ingredients:["45 ml rum envelhecido","15 ml rum overproof","20 ml polpa de maracujá","20 ml limão tahiti","15 ml falernum","1 dash absinto","1 dash Angostura"],steps:["Combine no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico Tiki. O absinto e o falernum criam camadas complexas — muito mais profundo do que parece.",rating:0,servings:"1",custom:false},
   {name:"Passion Fruit Margarita",categories:["Tequila","Sour","Shaken"],ingredients:["50 ml tequila blanco","20 ml polpa de maracujá","20 ml limão tahiti","10 ml xarope de agave","5 ml Cointreau (opcional)","pitada mínima de sal"],steps:["Combine no shaker com gelo.","Shake vigoroso e coe em rocks com gelo ou coupe."],notes:"Moderno praticamente obrigatório. O maracujá traz acidez tropical sem peso de sobremesa.",rating:0,servings:"1",custom:false},
@@ -342,7 +342,7 @@ const BASE_RECIPES = [
 
   // ── CAJUÍNA ──
   {name:"Highball de Cajuína",categories:["Bourbon","Highball"],ingredients:["45 ml bourbon ou whisky leve","90 ml cajuína gelada","2 gotas de salina","gelo grande"],steps:["Monte direto no copo com gelo.","Adicione o bourbon e complete com a cajuína.","Mexa suavemente."],notes:"Sofisticado e quase chá gelado alcoólico. A cajuína amplifica a baunilha e o caramelo do bourbon.",rating:0,servings:"1",custom:false},
-  {name:"Gin & Cajuína",categories:["Gin","Highball"],ingredients:["50 ml gin","80 ml cajuína gelada","10 ml limão siciliano","gelo","casca de limão"],steps:["Monte no copo highball com gelo.","Adicione gin e limão, complete com cajuína.","Expresse a casca sobre o drink."],notes:"Herbal, cítrico e extremamente refrescante. Primo brasileiro do Tom Collins minimalista.",rating:0,servings:"1",custom:false},
+  {name:"Gin & Cajuína",categories:["Gim","Highball"],ingredients:["50 ml gin","80 ml cajuína gelada","10 ml limão siciliano","gelo","casca de limão"],steps:["Monte no copo highball com gelo.","Adicione gin e limão, complete com cajuína.","Expresse a casca sobre o drink."],notes:"Herbal, cítrico e extremamente refrescante. Primo brasileiro do Tom Collins minimalista.",rating:0,servings:"1",custom:false},
   {name:"Rabo de Galo com Cajuína",categories:["Cachaça Envelhecida","Stirred","Built"],ingredients:["45 ml cachaça envelhecida","20 ml vermute rosso","30 ml cajuína","1 dash Angostura"],steps:["Combine todos os ingredientes em copo mixing com gelo.","Mexa até atingir temperatura e diluição ideais.","Coe em rocks com gelo grande."],notes:"Vínico, brasileiro e sofisticado. Quase um Manhattan nordestino.",rating:0,servings:"1",custom:false},
   {name:"Cajuína & Mezcal",categories:["Mezcal","Highball"],ingredients:["35 ml mezcal","70 ml cajuína gelada","10 ml limão-cravo","pitada mínima de sal"],steps:["Monte no copo com gelo grande.","Adicione mezcal e limão, complete com cajuína.","Mexa suavemente."],notes:"O lado tostado da cajuína conversa muito bem com a fumaça. Defumado, salino e contemplativo.",rating:0,servings:"1",custom:false},
   {name:"Cajuína Old Fashioned",categories:["Bourbon","Stirred","Built"],ingredients:["50 ml bourbon","20 ml cajuína","2 dashes Angostura"],steps:["Combine em copo rocks com gelo grande.","Mexa até integrar."],notes:"A cajuína entra quase como açúcar, fruta e textura ao mesmo tempo — suaviza e adiciona profundidade.",rating:0,servings:"1",custom:false},
@@ -680,18 +680,18 @@ const BASE_RECIPES = [
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 // ─── SISTEMA DE BACKGROUND DE CARD (DESCOBRIR) ────────────────────────────────
 const CARD_BG_FILES = {
-  velvet_aperitivo: "/bg/velvet-aperitivo-v2.png",
-  midnight_citrus:  "/bg/midnight-citrus-v2.png",
-  tropical_static:  "/bg/tropical-static-v2.png",
-  smoked_amber:     "/bg/smoked-amber-v2.png",
-  frost_tide:       "/bg/frost-tide-v2.png",
-  silk_cream:       "/bg/silk-cream-v2.png",
-  herbal_noir:      "/bg/herbal-noir-v2.png",
-  electric_tiki:    "/bg/electric-tiki-v2.png",
-  vintage_soda:     "/bg/vintage-soda-v2.png",
-  espresso_void:    "/bg/espresso-void-v2.png",
-  rose_static:      "/bg/rose-static-v2.png",
-  polar_minimal:    "/bg/polar-minimal-v2.png",
+  velvet_aperitivo: "/bg/velvet-aperitivo-v2.webp",
+  midnight_citrus:  "/bg/midnight-citrus-v2.webp",
+  tropical_static:  "/bg/tropical-static-v2.webp",
+  smoked_amber:     "/bg/smoked-amber-v2.webp",
+  frost_tide:       "/bg/frost-tide-v2.webp",
+  silk_cream:       "/bg/silk-cream-v2.webp",
+  herbal_noir:      "/bg/herbal-noir-v2.webp",
+  electric_tiki:    "/bg/electric-tiki-v2.webp",
+  vintage_soda:     "/bg/vintage-soda-v2.webp",
+  espresso_void:    "/bg/espresso-void-v2.webp",
+  rose_static:      "/bg/rose-static-v2.webp",
+  polar_minimal:    "/bg/polar-minimal-v2.webp",
 };
 const CARD_SPIRIT_TINTS = {
   "Gim":                 "rgba(70,130,90,0.22)",
@@ -736,6 +736,444 @@ const CARD_FAMILY_OVERLAYS = {
   "Hot":       "linear-gradient(180deg, rgba(255,90,0,0.10) 0%, transparent 65%)",
   "Smash":     "linear-gradient(135deg, rgba(80,180,80,0.08) 0%, transparent 55%)",
 };
+const RECIPE_MOODS = {
+  "Aperol Spritz": "frost_tide",
+  "Aviation": "midnight_citrus",
+  "Beirão & Maracujá": "tropical_static",
+  "Beirão + Campari": "velvet_aperitivo",
+  "Beirão Lemon": "frost_tide",
+  "Beirão Spritz": "frost_tide",
+  "Beirão, Mel & Alecrim": "frost_tide",
+  "Bourbon, laranja e gengibre": "smoked_amber",
+  "Bramble": "midnight_citrus",
+  "Cantaloupe Martini sem álcool": "frost_tide",
+  "Citrus Martini": "velvet_aperitivo",
+  "Coco e tônica": "frost_tide",
+  "Cynar Ginger Spritz": "frost_tide",
+  "Daiquiri Parisiense": "rose_static",
+  "Dark 'n' Stormy": "frost_tide",
+  "Garden Gim": "midnight_citrus",
+  "Dry Martini": "polar_minimal",
+  "Elderflower Aviation": "rose_static",
+  "Elderflower Daiquiri": "rose_static",
+  "Fermentação selvagem (Ginger Bug)": "frost_tide",
+  "Flor de Cerejeira Fizz": "rose_static",
+  "Flor de Cerejeira Spritz": "rose_static",
+  "French 75": "midnight_citrus",
+  "Garden Spritz": "rose_static",
+  "Gim Fizz": "midnight_citrus",
+  "Gim Tônica": "frost_tide",
+  "Gim Tônica de Bergamota": "frost_tide",
+  "Ginger beer (caseira)": "frost_tide",
+  "Grenadine Ginger Margarita": "midnight_citrus",
+  "Hemingway Daiquiri Cordial": "tropical_static",
+  "Hemingway Daiquiri": "tropical_static",
+  "Highball de Luxardo": "frost_tide",
+  "Hurricane": "tropical_static",
+  "Jamaica Rouge": "tropical_static",
+  "Jasmine (Casa do Porco)": "velvet_aperitivo",
+  "Jus dinger": "tropical_static",
+  "Lavender Gim Sour": "midnight_citrus",
+  "Licor Beirão Sour": "frost_tide",
+  "Manhattan": "smoked_amber",
+  "Manhattan (Perfect)": "smoked_amber",
+  "Highball de Luxardo com Whisky": "frost_tide",
+  "Improved Whiskey Cocktail": "smoked_amber",
+  "Maraschino Spritz": "frost_tide",
+  "Margarita": "midnight_citrus",
+  "Martinez": "polar_minimal",
+  "Mojito": "vintage_soda",
+  "Mojito Amendoado": "vintage_soda",
+  "Mojito de framboesa": "vintage_soda",
+  "Moscow Mule": "frost_tide",
+  "Mr. Grinch": "midnight_citrus",
+  "Negroni": "velvet_aperitivo",
+  "Negroni Sbagliato": "frost_tide",
+  "Old Fashioned": "smoked_amber",
+  "Pisco Elderflower Sour": "rose_static",
+  "Pisco Sour": "frost_tide",
+  "Andes Highball": "frost_tide",
+  "Uva & Sal": "frost_tide",
+  "Flor de Pedra": "rose_static",
+  "Campo Seco": "velvet_aperitivo",
+  "Pisco & Coco Tostado": "frost_tide",
+  "Verde Urbano": "frost_tide",
+  "Noite em Lima": "espresso_void",
+  "Pisco com Cerveja Branca": "frost_tide",
+  "Seco de Maçã": "frost_tide",
+  "Pisco Terroso": "frost_tide",
+  "Sazerac": "smoked_amber",
+  "SAZERAC por Kennedy Nascimento": "smoked_amber",
+  "Sevilla Sour": "rose_static",
+  "Shanksjillo": "espresso_void",
+  "Smoked Apple Whiskey Tonic": "frost_tide",
+  "Smokey Martini": "polar_minimal",
+  "Spring Martini": "rose_static",
+  "St‑Germain Hugo Spritz": "rose_static",
+  "St‑Germain Spritz": "rose_static",
+  "The Clover Club": "midnight_citrus",
+  "Tom Collins (20's B)": "midnight_citrus",
+  "Whiskey Mule de Romã": "frost_tide",
+  "Whiskey Sour": "smoked_amber",
+  "White Russian de abóbora": "frost_tide",
+  "Daiquiri": "tropical_static",
+  "Cosmopolitan": "frost_tide",
+  "Gimlet": "midnight_citrus",
+  "Americano": "frost_tide",
+  "Boulevardier": "velvet_aperitivo",
+  "Rob Roy": "smoked_amber",
+  "Vieux Carré": "smoked_amber",
+  "Amaretto Sour": "frost_tide",
+  "New York Sour": "smoked_amber",
+  "Espresso Martini": "espresso_void",
+  "Sidecar": "smoked_amber",
+  "Bee's Knees": "midnight_citrus",
+  "Last Word": "midnight_citrus",
+  "Penicillin": "smoked_amber",
+  "Gold Rush": "smoked_amber",
+  "Cuba Libre": "frost_tide",
+  "Paper Plane": "velvet_aperitivo",
+  "Singapore Sling": "tropical_static",
+  "Mimosa": "frost_tide",
+  "Bellini": "frost_tide",
+  "Rossini": "frost_tide",
+  "Tintoretto": "frost_tide",
+  "Puccini": "frost_tide",
+  "Kir Royale": "frost_tide",
+  "Tommy's Margarita": "midnight_citrus",
+  "Caipiroska": "frost_tide",
+  "White Russian": "frost_tide",
+  "Frozen Daiquiri": "silk_cream",
+  "Frozen Margarita": "silk_cream",
+  "Mezcal Negroni": "velvet_aperitivo",
+  "Oaxacan Old Fashioned": "smoked_amber",
+  "Paloma Cordial": "frost_tide",
+  "Paloma": "frost_tide",
+  "Tequila Sunrise": "frost_tide",
+  "Piña Colada": "tropical_static",
+  "Mai Tai": "electric_tiki",
+  "Jungle Bird": "tropical_static",
+  "Irish Coffee": "espresso_void",
+  "Hot Toddy": "smoked_amber",
+  "Black Russian": "polar_minimal",
+  "Godfather": "smoked_amber",
+  "Ramos Gim Fizz": "midnight_citrus",
+  "Vodka Tônica": "frost_tide",
+  "Caipirinha Clássica": "vintage_soda",
+  "Caipirinha com Rapadura": "vintage_soda",
+  "Caipirinha de Limão-Cravo": "vintage_soda",
+  "Caipirinha de Três Limões": "vintage_soda",
+  "Caipirinha de Maracujá e Limão": "tropical_static",
+  "Caipirinha de Abacaxi Tostado": "tropical_static",
+  "Caipirinha de Cambuci": "vintage_soda",
+  "Caipirinha de Limão-Siciliano e Capim-Santo": "vintage_soda",
+  "Caipirinha de Tangerina Verde e Salina": "vintage_soda",
+  "Caipirinha de Caju e Mel": "tropical_static",
+  "Caipirinha de Maracujá e Kaffir": "tropical_static",
+  "Caipirinha de Uva Verde": "vintage_soda",
+  "Caipirinha de Caju Clássica": "tropical_static",
+  "Caju com Limão-Cravo": "tropical_static",
+  "Caju, Salina e Pimenta-Rosa": "tropical_static",
+  "Caju Tostado": "tropical_static",
+  "Caju e Louro": "tropical_static",
+  "Caju e Coco Seco": "tropical_static",
+  "Caju Vínico": "tropical_static",
+  "Caipirinha de Caju com Rum de Coco": "tropical_static",
+  "Caju & Oak": "smoked_amber",
+  "Jardim de Caju": "tropical_static",
+  "Caju Escuro": "tropical_static",
+  "Caju Bianco": "tropical_static",
+  "Fumaça Tropical": "tropical_static",
+  "Caju Spritz": "frost_tide",
+  "Caju Noturno": "espresso_void",
+  "Caju Verde": "tropical_static",
+  "Maracujá Tônico": "tropical_static",
+  "Gold Passion": "tropical_static",
+  "Passo Solar": "tropical_static",
+  "Maracujá Amargo": "frost_tide",
+  "Linha do Equador": "tropical_static",
+  "Pornstar Martini": "tropical_static",
+  "Saturn": "electric_tiki",
+  "Cobra's Fang": "electric_tiki",
+  "Passion Fruit Margarita": "tropical_static",
+  "Whiskey Sour de Maracujá": "tropical_static",
+  "Highball de Cajuína": "frost_tide",
+  "Gin & Cajuína": "tropical_static",
+  "Rabo de Galo com Cajuína": "tropical_static",
+  "Cajuína & Mezcal": "tropical_static",
+  "Cajuína Old Fashioned": "smoked_amber",
+  "Tequila & Cajuína": "tropical_static",
+  "Batida de Coco": "silk_cream",
+  "Batida de Maracujá": "tropical_static",
+  "Cachaça Sour": "vintage_soda",
+  "Quentão": "vintage_soda",
+  "Rabo de Galo": "vintage_soda",
+  "Leite de Onça": "vintage_soda",
+  "Caju Amigo": "tropical_static",
+  "Macunaíma": "velvet_aperitivo",
+  "Gabriela": "vintage_soda",
+  "Cachaça Collins": "frost_tide",
+  "Highball de Cachaça": "frost_tide",
+  "Old Fashioned de Cachaça": "vintage_soda",
+  "Caipirinha Envelhecida": "vintage_soda",
+  "Honey & Wood": "vintage_soda",
+  "Julep Brasileiro": "vintage_soda",
+  "Amaro Tropical": "vintage_soda",
+  "Madeira & Abacaxi": "tropical_static",
+  "Café com Cachaça": "espresso_void",
+  "Orchard Brasileiro": "vintage_soda",
+  "Cachaça Manhattan": "vintage_soda",
+  "Spiced Cane": "vintage_soda",
+  "Rabo de Galo Envelhecido": "velvet_aperitivo",
+  "Sazerac Brasileiro": "herbal_noir",
+  "Tropical Old Fashioned": "tropical_static",
+  "Brandy Alexander": "smoked_amber",
+  "Between the Sheets": "tropical_static",
+  "Stinger": "smoked_amber",
+  "French Connection": "smoked_amber",
+  "Spicy Margarita": "midnight_citrus",
+  "Ranch Water": "frost_tide",
+  "Batanga": "frost_tide",
+  "Naked and Famous": "smoked_amber",
+  "Mezcal Sour": "smoked_amber",
+  "Matador": "tropical_static",
+  "Agave Spritz": "frost_tide",
+  "Verde Brisa": "frost_tide",
+  "Sol e Sal": "frost_tide",
+  "Sombra na Areia": "tropical_static",
+  "Cacto Poético": "midnight_citrus",
+  "Bruma de Agave": "smoked_amber",
+  "Fumaça de Frutas": "tropical_static",
+  "Vesper": "rose_static",
+  "Bloody Mary": "frost_tide",
+  "Harvey Wallbanger": "frost_tide",
+  "Sex on the Beach": "frost_tide",
+  "Lemon Drop": "frost_tide",
+  "Mule de Framboesa": "frost_tide",
+  "El Presidente": "vintage_soda",
+  "Planter's Punch": "frost_tide",
+  "Rum Old Fashioned": "vintage_soda",
+  "Painkiller": "tropical_static",
+  "Mary Pickford": "tropical_static",
+  "Tom Collins": "midnight_citrus",
+  "Corpse Reviver #2": "rose_static",
+  "White Lady": "midnight_citrus",
+  "Hanky Panky": "velvet_aperitivo",
+  "Southside": "midnight_citrus",
+  "20th Century": "rose_static",
+  "Black Manhattan": "smoked_amber",
+  "Toronto": "velvet_aperitivo",
+  "Blood and Sand": "smoked_amber",
+  "Horse's Neck": "frost_tide",
+  "Highland Orchard": "frost_tide",
+  "Honey & Heather": "frost_tide",
+  "Golden Citrus Fizz": "frost_tide",
+  "Autumn Smoke": "smoked_amber",
+  "Bitter Hive": "velvet_aperitivo",
+  "Spiced Nightcap": "smoked_amber",
+  "Barley Highball": "frost_tide",
+  "Tropical Heather": "tropical_static",
+  "Elder Fashion": "rose_static",
+  "French Gimlet": "rose_static",
+  "St-Germain Sour": "rose_static",
+  "The Harvest": "rose_static",
+  "Jardim Elétrico": "rose_static",
+  "Pera & Fumaça": "rose_static",
+  "Citrus Cloud": "rose_static",
+  "Vinho de Jardim": "rose_static",
+  "Chá da Tarde": "rose_static",
+  "Dourado Amargo": "rose_static",
+  "Estufa": "rose_static",
+  "Flor Rubra": "rose_static",
+  "Floral Mule Leve": "rose_static",
+  "Tuxedo": "herbal_noir",
+  "Rose": "rose_static",
+  "Strega Sour": "herbal_noir",
+  "Strega Spritz": "frost_tide",
+  "Italian Buck": "frost_tide",
+  "Witch's Kiss": "herbal_noir",
+  "Benevento Old Fashioned": "herbal_noir",
+  "Golden Bee": "herbal_noir",
+  "Strega Martini": "herbal_noir",
+  "Strega Coffee Flip": "espresso_void",
+  "Strega Highball": "frost_tide",
+  "Giardino Giallo": "herbal_noir",
+  "Zafferano Tonic": "frost_tide",
+  "Ervas & Casca": "herbal_noir",
+  "Campo Noturno": "herbal_noir",
+  "Ouro & Fumaça": "herbal_noir",
+  "Freddo di Benevento": "herbal_noir",
+  "Fruto Secreto": "herbal_noir",
+  "Golden Orchard": "herbal_noir",
+  "Noite em Benevento": "espresso_void",
+  "Citrus Incantation": "herbal_noir",
+  "Campo Alto": "herbal_noir",
+  "Tropical Esotérico": "herbal_noir",
+  "Strega & Tonic Verde": "frost_tide",
+  "Golden Orange Fizz": "frost_tide",
+  "Alpine Highball": "frost_tide",
+  "Floral Witch": "rose_static",
+  "Bitter Sunshine": "frost_tide",
+  "Bamboo": "velvet_aperitivo",
+  "Adonis": "velvet_aperitivo",
+  "Sherry Cobbler": "velvet_aperitivo",
+  "Rebujito": "frost_tide",
+  "Tío Pepe & Tônica": "frost_tide",
+  "Sherry Highball": "frost_tide",
+  "Sherry Sour": "velvet_aperitivo",
+  "East India Sour": "velvet_aperitivo",
+  "Sherry Old Fashioned": "velvet_aperitivo",
+  "Coronation Cocktail": "velvet_aperitivo",
+  "Bosco Notturno": "frost_tide",
+  "Caramello Spritz": "frost_tide",
+  "Nero Fizz": "velvet_aperitivo",
+  "Sicilian Orchard": "velvet_aperitivo",
+  "Amaro Tonic Café": "espresso_void",
+  "Dark Tropic": "velvet_aperitivo",
+  "Jardim Noturno": "rose_static",
+  "Maçã Verde Elétrica": "frost_tide",
+  "Fennel Tonic": "frost_tide",
+  "Solar Verde": "frost_tide",
+  "Vinha Fantasma": "frost_tide",
+  "Mate Verde": "frost_tide",
+  "Abacaxi Anisado": "frost_tide",
+  "Green Shandy": "herbal_noir",
+  "Fernet & Coke": "frost_tide",
+  "Industry Sour": "velvet_aperitivo",
+  "Porto Tônico Tinto": "frost_tide",
+  "Porto Flip": "velvet_aperitivo",
+  "Porto Negroni": "velvet_aperitivo",
+  "Porto Branco & Tônica": "frost_tide",
+  "Porto Branco Sour": "velvet_aperitivo",
+  "Porto Branco Spritz": "frost_tide",
+  "Lillet Vive": "rose_static",
+  "Lillet Berry": "rose_static",
+  "Lillet & Gim Highball": "rose_static",
+  "Lillet Honey Lemon": "rose_static",
+  "White Negroni Tropical": "rose_static",
+  "Lillet Garden Spritz": "rose_static",
+  "Cynar Sunset Highball": "rose_static",
+  "French Aviation (hack)": "rose_static",
+  "Lillet Orchard": "rose_static",
+  "Almost Martini": "rose_static",
+  "Horta & Laranja Queimada": "rose_static",
+  "Lillet Gold Rush": "rose_static",
+  "White Orchard Martini": "rose_static",
+  "Solar Highball": "rose_static",
+  "Lillet Spritz": "rose_static",
+  "French Pearl": "rose_static",
+  "Lillet & Tônica": "rose_static",
+  "Jasmine": "rose_static",
+  "Lillet Rosé Spritz": "rose_static",
+  "Cynar Tônica": "frost_tide",
+  "Black Negroni": "velvet_aperitivo",
+  "Fernet Sour": "velvet_aperitivo",
+  "Fernet Ginger Highball": "frost_tide",
+  "Fernet Spritz": "frost_tide",
+  "Jardim Suspenso": "velvet_aperitivo",
+  "Bitter Milk Punch": "velvet_aperitivo",
+  "Vinho Fantasma": "velvet_aperitivo",
+  "Rubor Picante": "velvet_aperitivo",
+  "Espresso Amaro Highball": "espresso_void",
+  "Casca & Fumaça": "velvet_aperitivo",
+  "Bitter & Melão": "velvet_aperitivo",
+  "Campari Lemon Tonic": "frost_tide",
+  "Laranja & Sal": "frost_tide",
+  "Highball Picante": "frost_tide",
+  "Uva Amarga": "frost_tide",
+  "Bitter Ginger Highball": "velvet_aperitivo",
+  "Verde & Amargo": "frost_tide",
+  "Tomate Highball": "frost_tide",
+  "Sangria": "velvet_aperitivo",
+  "Virgin Mojito": "frost_tide",
+  "Shirley Temple": "frost_tide",
+  "Arnold Palmer": "frost_tide",
+  "Hibiscus Fizz": "frost_tide",
+  "Cucumber Cooler": "frost_tide",
+  "Água de Coco Spritz": "frost_tide",
+  "Virgin Margarita": "frost_tide",
+  "Ginger Lemonade": "frost_tide",
+  "Shrub de Frutas Vermelhas": "frost_tide",
+  "Solar Fizz": "frost_tide",
+  "Jardim Alto": "midnight_citrus",
+  "Trópico Seco": "tropical_static",
+  "Rubi Tônico": "frost_tide",
+  "Linha Clara": "frost_tide",
+  "Flor de Pressa": "frost_tide",
+  "Dourado Frio": "smoked_amber",
+  "Névoa Verde": "midnight_citrus",
+  "Xarope Simples": "frost_tide",
+  "Xarope Rico": "frost_tide",
+  "Xarope Demerara": "frost_tide",
+  "Xarope de Agave": "frost_tide",
+  "Xarope de Mel": "frost_tide",
+  "Xarope de Gengibre": "frost_tide",
+  "Xarope de Canela": "frost_tide",
+  "Xarope de Cardamomo": "frost_tide",
+  "Xarope de Lavanda": "frost_tide",
+  "Xarope de Hibisco": "frost_tide",
+  "Xarope de Hortelã": "frost_tide",
+  "Cordial de Limão": "frost_tide",
+  "Cordial de Toranja": "frost_tide",
+  "Cordial de Sabugueiro": "frost_tide",
+  "Cordial de Framboesa": "frost_tide",
+  "Cordial de Cítricos Clarificado": "frost_tide",
+  "Cordial de Frutas Vermelhas com Chá": "frost_tide",
+  "Cordial Verde": "frost_tide",
+  "Cordial de Abacaxi com Especiarias": "tropical_static",
+  "Cordial de Pêra Assada": "frost_tide",
+  "Grenadine Caseira": "frost_tide",
+  "Orgeat (Xarope de Amêndoa)": "frost_tide",
+  "Falernum Caseiro": "frost_tide",
+  "Champagne Cocktail": "smoked_amber",
+  "Mint Julep": "smoked_amber",
+  "Rusty Nail": "smoked_amber",
+  "French Martini": "tropical_static",
+  "Gibson": "polar_minimal",
+  "Angel Face": "midnight_citrus",
+  "Monkey Gland": "midnight_citrus",
+  "Brandy Crusta": "smoked_amber",
+  "Casino": "midnight_citrus",
+  "Paradise": "midnight_citrus",
+  "Old Cuban": "frost_tide",
+  "Yellow Bird": "tropical_static",
+  "Trinidad Sour": "smoked_amber",
+  "Barracuda": "frost_tide",
+  "Tipperary": "smoked_amber",
+  "Suffering Bastard": "frost_tide",
+  "Illegal Sour": "electric_tiki",
+  "Russian Spring Punch": "frost_tide",
+  "El Diablo": "frost_tide",
+  "Bloody Maria": "frost_tide",
+  "Salty Dog": "frost_tide",
+  "Bronx Cocktail": "midnight_citrus",
+  "Pimm's Cup": "frost_tide",
+  "Zombie": "electric_tiki",
+  "Grasshopper": "frost_tide",
+  "Golden Dream": "frost_tide",
+  "Cachanchara": "vintage_soda",
+  "Collins de Toranja com Ervas": "midnight_citrus",
+  "Grapefruit Gimlet": "midnight_citrus",
+  "Spritz de Toranja": "frost_tide",
+  "Highball de Toranja e Bourbon": "frost_tide",
+  "Margarita Laranja Sanguínea e Aperol": "midnight_citrus",
+  "Key Lime Pie Margarita": "midnight_citrus",
+  "Margarita Ancho Chili e Toranja": "midnight_citrus",
+  "Margarita Picante de Pepino": "midnight_citrus",
+  "Alaska": "polar_minimal",
+  "Bijou": "polar_minimal",
+  "Brown Derby": "smoked_amber",
+  "Champs-Élysées": "smoked_amber",
+  "Cynar Spritz": "frost_tide",
+  "Pegu Club": "midnight_citrus",
+  "Remember the Maine": "smoked_amber",
+  "Jungle Bird Maraschino": "tropical_static",
+  "Highball de Amburana & Sal": "frost_tide",
+  "Cachaça & Jerez": "velvet_aperitivo",
+  "Mezcal & Cenoura Queimada": "smoked_amber",
+  "Cynar & Soda Salina": "frost_tide",
+  "Kingston Mineral": "vintage_soda",
+};
 function getMood(recipe) {
   const cats = recipe.categories || [];
   const ings = (recipe.ingredients || []).join(" ").toLowerCase();
@@ -767,12 +1205,16 @@ function getMood(recipe) {
   if (has("Vodka"))                                                                  return "frost_tide";
   return "frost_tide";
 }
-function getCardVisual(recipe) {
-  const mood         = getMood(recipe);
+function getCardVisual(recipe, spiritCats=SPIRIT_CATS) {
+  const mood         = RECIPE_MOODS[recipe.name] || getMood(recipe);
   const cats         = recipe.categories || [];
   const ings         = (recipe.ingredients || []).join(" ").toLowerCase();
   const spiritCat    = cats.find(c => CARD_SPIRIT_TINTS[c]);
-  const spiritTint   = spiritCat ? CARD_SPIRIT_TINTS[spiritCat] : null;
+  const spiritTint   = spiritCat
+    ? CARD_SPIRIT_TINTS[spiritCat]
+    : cats.find(c => spiritCats.has(c) && !CARD_SPIRIT_TINTS[c])
+      ? "rgba(180,160,130,0.18)"
+      : null;
   const TECH         = ["Stirred","Built","Shaken"];
   const familyCat    = STYLE_PRIORITY.find(s => cats.includes(s))
                     || TECH.find(t => cats.includes(t))
@@ -804,10 +1246,12 @@ function buildCardBg(visual) {
 }
 
 function buildCardBgEditorial(visual) {
+  const dimTint = t => t ? t.replace(/([\d.]+)\)$/, (_, a) => `${(+a * 0.6).toFixed(3)})`) : null;
+  const tint = dimTint(visual.spiritTint);
   const layers = [
     visual.familyGrad,
-    visual.spiritTint ? `linear-gradient(${visual.spiritTint}, ${visual.spiritTint})` : null,
-    "linear-gradient(rgba(6,4,2,0.32), rgba(6,4,2,0.32))",
+    tint ? `linear-gradient(${tint}, ${tint})` : null,
+    // "linear-gradient(rgba(6,4,2,0.32), rgba(6,4,2,0.32))",
     `url('${visual.bgImage}')`,
   ].filter(Boolean);
   const sizes = layers.slice(0,-1).map(()=>"100% 100%").concat("cover").join(", ");
@@ -893,7 +1337,7 @@ function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=nu
     try {
       const res = await fetch("/api/anthropic", {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:400, system:`Você é um bartender especialista. Analise o drink e retorne APENAS um JSON com "styles" e "spirits".\nEstilos: ${STYLE_PRIORITY.join(", ")}\nSpirits: ${[...SPIRIT_CATS].join(", ")}\nExemplo: {"styles":["Sour","Shaken"],"spirits":["Gim"]}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
+        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:400, system:`Você é um bartender especialista. Analise o drink e retorne APENAS um JSON com "styles" e "spirits".\nEstilos: ${STYLE_PRIORITY.join(", ")}\nSpirits: ${[...new Set([...SPIRIT_CATS,...customSpirits])].sort().join(", ")}\nExemplo: {"styles":["Sour","Shaken"],"spirits":["Gim"]}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -1046,10 +1490,10 @@ function NoiseOverlay({opacity=0.038}){
 }
 
 // ─── CARD ─────────────────────────────────────────────────────────────────────
-function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete}){
+function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS}){
   const theme=getTheme(recipe.categories);
   const styleTag=recipe.categories.find(c=>STYLE_CATS.has(c));
-  const spiritTag=recipe.categories.find(c=>SPIRIT_CATS.has(c));
+  const spiritTag=recipe.categories.find(c=>spiritCats.has(c));
   const [hov,setHov]=useState(false);
   const [quickActions,setQuickActions]=useState(false);
   const longPressTimer=useRef();
@@ -1143,13 +1587,11 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
               color:isFav?theme.accent:"rgba(240,235,225,0.75)"}}>
             {isFav?"Desfavoritar":"Favoritar"}
           </button>
-          {onDelete&&(
-            <button onClick={e=>{e.stopPropagation();onDelete();setQuickActions(false);}}
-              style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-                background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>
-              Deletar
-            </button>
-          )}
+          <button onClick={e=>{e.stopPropagation();onDelete?.();setQuickActions(false);}}
+            style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
+              background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>
+            Excluir
+          </button>
         </div>
       )}
     </div>
@@ -1157,9 +1599,10 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile}){
+function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
   const theme=getTheme(recipe.categories);
-  const visual=getCardVisual(recipe);
+  const visual=getCardVisual(recipe,spiritCats);
+  const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
   const [steps,setSteps]=useState(recipe.steps);
   const [generating,setGenerating]=useState(false);
   const [genErr,setGenErr]=useState(null);
@@ -1218,14 +1661,14 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   },[recipe]);
 
   const styleTags=recipe.categories.filter(c=>STYLE_CATS.has(c));
-  const spiritTags=recipe.categories.filter(c=>SPIRIT_CATS.has(c));
+  const spiritTags=recipe.categories.filter(c=>spiritCats.has(c));
 
   return(
-    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:400,padding:20,backdropFilter:"blur(12px)"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO ── */}
-        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(visual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
+        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 65%, rgba(6,4,2,0.97) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
@@ -1247,7 +1690,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
               <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
-              <div style={{width:7,height:7,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
+              <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
             </div>
             {profile?.flavors&&<div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase",marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
           </div>
@@ -1255,18 +1698,21 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
         {/* profile row */}
         {profile?.perfil&&(
-          <div style={{display:"flex",justifyContent:"space-between",padding:"10px 18px",borderBottom:`1px solid rgba(240,235,225,0.05)`}}>
+          <>
+          <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
             {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
               <div key={i} style={{display:"contents"}}>
-                {i>0&&<div style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
-                  <span style={{fontSize:12,color:theme.accent,lineHeight:1}}>{item[0]}</span>
-                  <span style={{fontSize:8,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
-                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
+                {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,flex:1}}>
+                  <span style={{fontSize:12,color:theme.accent,lineHeight:1.1}}>{item[0]}</span>
+                  <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.35)",textTransform:"uppercase",fontWeight:500,lineHeight:1.4}}>{item[1]}</span>
+                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.3}}>{item[2]}</span>
                 </div>
               </div>
             ))}
           </div>
+          <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
+          </>
         )}
 
         <div style={{padding:"16px 18px 32px"}}>
@@ -1278,20 +1724,53 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             ))}
           </div>
           {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:12}}>como você avaliaria?</div>}
-          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:18}}>
-            <button onClick={onTried} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isTried?"rgba(74,222,128,0.08)":"rgba(240,235,225,0.04)",border:`1px solid ${isTried?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.09)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>{isTried?"Já provei":"Marcar provado"}</button>
-            <button onClick={onFav} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:isFav?theme.accent:"rgba(255,255,255,0.14)",filter:isFav?`drop-shadow(0 0 8px ${theme.accent})`:"none",transition:"all .2s",padding:"4px 6px",display:"flex",alignItems:"center"}}>
-              {isFav?<svg width="20" height="16" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>:<svg width="20" height="16" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>}
-            </button>
-            <button onClick={onComanda} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:20,background:isComanda?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${isComanda?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.09)"}`,color:isComanda?"#C8A96E":"rgba(240,235,225,0.32)",fontSize:11,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif"}}>{isComanda?"Na comanda":"+ Comanda"}</button>
-            <button onClick={shareAsImage} disabled={sharing} title="Compartilhar" style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:sharing?"rgba(240,235,225,0.2)":"rgba(240,235,225,0.4)",cursor:sharing?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{sharing?"…":<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>}</button>
-            <button onClick={onEdit} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,padding:"5px 10px",color:"rgba(240,235,225,0.4)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>editar</button>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:18}}>
+            {(()=>{
+              const btnBase={display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,fontSize:10,letterSpacing:0.8,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif",textTransform:"uppercase",fontWeight:600};
+              const dimBorder=`1px solid ${theme.accent}33`;
+              const dimColor=`${theme.accent}66`;
+              return(<>
+                <button onClick={onTried} style={{...btnBase,background:isTried?"rgba(74,222,128,0.08)":"transparent",border:isTried?"1px solid rgba(74,222,128,0.4)":dimBorder,color:isTried?"#4ADE80":dimColor}}>
+                  <svg width="11" height="9" viewBox="0 0 12 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 5 4.5 8.5 11 1.5"/></svg>
+                  já provei
+                </button>
+                <button onClick={onFav} style={{...btnBase,background:isFav?`${theme.accent}14`:"transparent",border:isFav?`1px solid ${theme.accent}`:dimBorder,color:isFav?theme.accent:dimColor}}>
+                  <svg width="11" height="10" viewBox="0 0 20 18" fill={isFav?"currentColor":"none"} stroke="currentColor" strokeWidth="2"><path d="M10 16.5C10 16.5 1 10 1 5C1 2.8 2.8 1 5.5 1C7.5 1 9 2.3 10 4C11 2.3 12.5 1 14.5 1C17.2 1 19 2.8 19 5C19 10 10 16.5 10 16.5z"/></svg>
+                  favorito
+                </button>
+                <button onClick={onComanda} style={{...btnBase,background:isComanda?"rgba(200,169,110,0.12)":"transparent",border:isComanda?"1px solid rgba(200,169,110,0.5)":dimBorder,color:isComanda?"#C8A96E":dimColor}}>
+                  <svg width="10" height="13" viewBox="0 0 16 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 2 L14 2 L8.5 10 L8.5 17"/><line x1="5.5" y1="17" x2="11.5" y2="17"/><circle cx="8.5" cy="5.5" r="1.5" fill="currentColor" opacity="0.7" stroke="none"/></svg>
+                  comanda
+                </button>
+                <button onClick={shareAsImage} disabled={sharing} style={{...btnBase,background:"transparent",border:dimBorder,color:sharing?`${theme.accent}33`:dimColor,cursor:sharing?"default":"pointer"}}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                  compartilhar
+                </button>
+                <button onClick={onEdit} style={{...btnBase,background:"transparent",border:dimBorder,color:dimColor}}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  editar
+                </button>
+                {customBg?(
+                  <button onClick={onClearCustomBg} style={{...btnBase,background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.25)",color:"#F87171"}}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    excluir foto
+                  </button>
+                ):(onSetCustomBg&&(
+                  <label style={{...btnBase,background:"transparent",border:dimBorder,color:dimColor,cursor:"pointer"}}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    trocar foto
+                    <input type="file" accept="image/*" style={{display:"none"}}
+                      onChange={async e=>{const f=e.target.files?.[0];if(f){const url=await resizeImageToDataUrl(f);if(url)onSetCustomBg(url);}e.target.value="";}}/>
+                  </label>
+                ))}
+              </>);
+            })()}
           </div>
 
           {/* divisor */}
           <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}44,transparent)`,marginBottom:22}}/>
 
-          {recipe.servings&&<div style={{fontSize:12,color:"rgba(240,235,225,0.48)",fontStyle:"italic",marginBottom:18}}>rende {recipe.servings}</div>}
+          {recipe.servings&&recipe.servings!=="1"&&<div style={{fontSize:12,color:"rgba(240,235,225,0.48)",fontStyle:"italic",marginBottom:18}}>rende {recipe.servings}</div>}
 
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
             <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6}}>Ingredientes</div>
@@ -1529,23 +2008,38 @@ function SidebarContent({sidebarTab,setSidebarTab,allRecipes,activeStyle,setActi
   );
 }
 
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function resizeImageToDataUrl(file,maxW=800,maxH=1200,quality=0.75){
+  return new Promise(resolve=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      const ratio=Math.min(maxW/w,maxH/h,1);
+      w=Math.round(w*ratio);h=Math.round(h*ratio);
+      const canvas=document.createElement("canvas");
+      canvas.width=w;canvas.height=h;
+      canvas.getContext("2d").drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg",quality));
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};
+    img.src=url;
+  });
+}
+
 // ─── SWIPE CARD ───────────────────────────────────────────────────────────────
-function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile}){
+function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
   const theme=getTheme(recipe.categories);
-  const visual=getCardVisual(recipe);
+  const visual=getCardVisual(recipe,spiritCats);
+  const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
   const styleTag=recipe.categories.find(c=>STYLE_CATS.has(c));
-  const spiritTag=recipe.categories.find(c=>SPIRIT_CATS.has(c));
+  const spiritTag=recipe.categories.find(c=>spiritCats.has(c));
   const [drag,setDrag]=useState(0);
   const [dragging,setDragging]=useState(false);
   const [gone,setGone]=useState(null);
-  const [entered,setEntered]=useState(false);
   const startX=useRef(0);
   const cardRef=useRef();
-
-  useEffect(()=>{
-    const id=requestAnimationFrame(()=>setEntered(true));
-    return()=>cancelAnimationFrame(id);
-  },[]);
 
   const THRESH=38;
   const onPointerDown=e=>{startX.current=e.clientX;setDragging(true);cardRef.current?.setPointerCapture(e.pointerId);};
@@ -1570,21 +2064,20 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
-        opacity:entered?1:0,
-        transform:entered?"translateY(0) scale(1)":"translateY(44px) scale(0.93)",
-        transition:"opacity .16s ease, transform .22s cubic-bezier(.34,1.56,.64,1)"}}>
+        opacity:1,
+        transition:"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
           style={{
             width:"100%",height:"100%",
             backgroundColor:"#0A0906",
-            ...buildCardBgEditorial(visual),
+            ...buildCardBgEditorial(displayVisual),
             borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"grab",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 28px 48px 6px rgba(0,0,0,0.92), 0 50px 90px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
+            boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 28px 48px 6px rgba(0,0,0,0.92), 0 50px 90px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22`,
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
@@ -1595,6 +2088,10 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none",zIndex:2}}/>
           {/* luz atmosférica no topo — efeito vidro */}
           <div style={{position:"absolute",top:0,left:0,right:0,height:"45%",background:"radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)",pointerEvents:"none",zIndex:3}}/>
+          {/* neon edge — canto inferior esquerdo */}
+          <div style={{position:"absolute",inset:0,borderRadius:16,pointerEvents:"none",zIndex:4,mixBlendMode:"screen",
+            background:`radial-gradient(ellipse 75% 42% at -10% 105%, ${theme.accent} 0%, ${theme.accent}aa 5%, ${theme.accent}55 21%, ${theme.accent}1c 45%, ${theme.accent}07 60%, transparent 72%)`
+          }}/>
 
           {/* particles */}
           {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none",zIndex:3}}/>}
@@ -1608,28 +2105,53 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           <div style={{position:"absolute",inset:0,zIndex:5,userSelect:"none"}}>
 
             {/* top row */}
-            <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:7,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500}}>
-                <svg width="13" height="15" viewBox="0 0 10 12" fill="none" style={{opacity:0.8}}>
-                  <path d="M1 1h8l-1.5 7H2.5L1 1z" stroke={theme.accent} strokeWidth="1" fill="none"/>
-                  <path d="M2.5 8v3M7.5 8v3M1.5 11h7" stroke={theme.accent} strokeWidth="1" strokeLinecap="round"/>
-                </svg>
+            <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:7,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500,flexShrink:0,lineHeight:1}}>
+                <GlassIcon categories={recipe.categories} color={theme.accent} size={14} opacity={0.8}/>
                 {styleTag}
               </span>}
-              {spiritTag&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
-                <span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0}}/>
-                {spiritTag}
-              </span>}
+              {spiritTag&&(()=>{const sl=spiritTag.length;const sfs=sl>16?9:sl>11?10:11;const sls=sl>16?1:sl>11?1.5:2;return(
+              <span style={{display:"flex",alignItems:"center",gap:5,fontSize:sfs,letterSpacing:sls,textTransform:"uppercase",color:"rgba(231,224,205,0.45)",flexShrink:1,minWidth:0,lineHeight:1}}>
+                <span style={{width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0,display:"inline-block"}}/>
+                <span style={{whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{spiritTag}</span>
+              </span>
+              );})()}
             </div>
+
+            {/* trocar foto */}
+            {(onSetCustomBg||onClearCustomBg)&&(
+              <div onPointerDown={e=>e.stopPropagation()} onPointerMove={e=>e.stopPropagation()} onPointerUp={e=>e.stopPropagation()}
+                style={{position:"absolute",top:48,right:14,zIndex:20}}>
+                {customBg?(
+                  <button onClick={e=>{e.stopPropagation();onClearCustomBg?.();}}
+                    style={{display:"flex",alignItems:"center",gap:3,padding:"4px 9px",borderRadius:12,
+                      background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.3)",
+                      cursor:"pointer",fontSize:8,letterSpacing:1,textTransform:"uppercase",
+                      color:"#F87171",fontFamily:"Archivo,sans-serif",lineHeight:1}}>
+                    ✕ excluir foto
+                  </button>
+                ):(
+                  <label onClick={e=>e.stopPropagation()}
+                    style={{display:"flex",alignItems:"center",gap:3,padding:"4px 9px",borderRadius:12,
+                      background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.12)",
+                      cursor:"pointer",fontSize:8,letterSpacing:1,textTransform:"uppercase",
+                      color:"rgba(231,224,205,0.6)",fontFamily:"Archivo,sans-serif",lineHeight:1}}>
+                    ◉ foto
+                    <input type="file" accept="image/*" style={{display:"none"}}
+                      onChange={async e=>{const f=e.target.files?.[0];if(f){const url=await resizeImageToDataUrl(f);if(url)onSetCustomBg?.(url);}e.target.value="";}}/>
+                  </label>
+                )}
+              </div>
+            )}
 
             {/* autoral seal */}
             {recipe.custom&&(
               <div style={{position:"absolute",top:48,left:20,display:"inline-flex",alignItems:"center",gap:5,
                 padding:"3px 10px 3px 8px",borderRadius:20,
-                background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",
-                boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
-                <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
-                <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
+                background:"rgba(120,85,40,0.22)",border:"1px solid rgba(200,160,90,0.45)",
+                filter:"drop-shadow(0 0 8px rgba(200,160,90,0.55)) drop-shadow(0 1px 3px rgba(0,0,0,0.7))"}}>
+                <span style={{fontSize:8,color:"#C8A96E",lineHeight:1}}>◆</span>
+                <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.92)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
               </div>
             )}
 
@@ -1638,12 +2160,13 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               <div style={{fontFamily:"'Gloock',serif",
                 fontSize:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>11?36:recipe.name.length>7?48:55,
                 fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
-                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:2}}>{recipe.name}</div>
+                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:2,
+                textShadow:"0 1px 4px rgba(0,0,0,0.7), 0 2px 12px rgba(0,0,0,0.5)"}}>{recipe.name}</div>
 
               {/* divider */}
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
-                <div style={{width:7,height:7,borderRadius:"50%",background:theme.accent,opacity:0.9}}/>
+                <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
               </div>
 
               {/* flavor tags — cor da família */}
@@ -1662,7 +2185,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                       <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
                         <span style={{fontSize:14,color:theme.accent,lineHeight:1}}>{item[0]}</span>
                         <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
-                        <span style={{fontSize:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
+                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
@@ -1716,10 +2239,10 @@ function MobileNav({ tab, setTab, favCount, onSameTab }) {
   return (
     <nav className="mnv" style={{position:"fixed",bottom:0,left:0,right:0,background:"#080808",borderTop:"1px solid rgba(240,235,225,0.07)",zIndex:9999,paddingBottom:"env(safe-area-inset-bottom,8px)"}}>
       {items.map(t=>(
-        <button key={t.id} onClick={()=>tab===t.id ? onSameTab?.(t.id) : setTab(t.id)} style={{flex:1,padding:"10px 4px 6px",background:"none",border:"none",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",color:tab===t.id?"#A0785A":"rgba(240,235,225,0.26)",transition:"color .15s",fontFamily:"Archivo,sans-serif"}}>
+        <button key={t.id} onClick={()=>tab===t.id ? onSameTab?.(t.id) : setTab(t.id)} style={{flex:1,padding:"10px 4px 6px",background:"none",border:"none",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",color:tab===t.id?"#F0A030":"rgba(240,235,225,0.26)",transition:"color .15s",fontFamily:"Archivo,sans-serif",filter:tab===t.id?"drop-shadow(0 0 6px #F0A03088)":"none"}}>
           <span style={{fontSize:17,lineHeight:1}}>{t.icon}</span>
           <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700}}>{t.label}</span>
-          <div style={{height:2,width:tab===t.id?18:0,borderRadius:1,background:"#A0785A",boxShadow:tab===t.id?"0 0 8px #A0785Acc":"none",transition:"width .25s ease, box-shadow .25s ease",marginTop:2}}/>
+          <div style={{height:2,width:tab===t.id?18:0,borderRadius:1,background:"#F0A030",boxShadow:tab===t.id?"0 0 10px #F0A030cc, 0 0 4px #F0A030":"none",transition:"width .25s ease, box-shadow .25s ease",marginTop:2}}/>
         </button>
       ))}
     </nav>
@@ -1958,10 +2481,19 @@ export default function OnTheRocks(){
   const [tried,setTried]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_tried")||"[]");}catch{return[];}});
   const [customSpirits,setCustomSpirits]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_spirits")||"[]");}catch{return[];}});
   const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
+  const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
 
   // ── Captura redirect do Google (mobile) ──
   useEffect(()=>{
     getRedirectResult(auth).catch(()=>{});
+  },[]);
+
+  // ── Trava orientação em portrait ──
+  useEffect(()=>{
+    const lock=async()=>{try{await screen.orientation?.lock?.('portrait');}catch{}};
+    lock();
+    window.addEventListener('orientationchange',lock);
+    return()=>window.removeEventListener('orientationchange',lock);
   },[]);
 
   // ── Altura real do viewport no mobile (fix para browser chrome) ──
@@ -2020,6 +2552,7 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
+  useEffect(()=>{try{localStorage.setItem("otr_custom_bgs",JSON.stringify(customBgs));}catch{}},[customBgs]);
 
   useEffect(()=>{
     if(!("wakeLock" in navigator))return;
@@ -2087,12 +2620,13 @@ export default function OnTheRocks(){
   const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
   const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
 
-  const [swipeHistory,setSwipeHistory]=useState(()=>["Uva Amarga"]); // temp: fixado para revisão de design
+  const [swipeHistory,setSwipeHistory]=useState([]);
   const [swipeHistIdx,setSwipeHistIdx]=useState(0);
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
-  const [recipeProfiles,setRecipeProfiles]=useState({"Uva Amarga":{flavors:"AMARGO • VÍNICO • EFERVESCENTE",perfil:"Intenso",perfil_desc:"amargo e vínico",sensacao:"Refrescante",sensacao_desc:"vibrante e leve",ocasiao:"Apéro",ocasiao_desc:"início de noite"}});
+  const [recipeProfiles,setRecipeProfiles]=useState({});
 
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
+  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...customSpirits]),[customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
 
   const [ratingPopup,setRatingPopup]=useState(null);
@@ -2205,17 +2739,17 @@ export default function OnTheRocks(){
       if(effectiveFilterMode==="naoprovei"&&tried.includes(r.name))return false;
       if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
-      if(activeSpirits.length>0&&!activeSpirits.every(s=>r.categories.includes(s)))return false;
+      if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
       if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
       if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+r.ingredients.map(norm).join(" ")+" "+r.categories.map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
-    if(sort==="rating")list=[...list].sort((a,b)=>b.rating-a.rating);
+    if(sort==="rating")list=[...list].sort((a,b)=>{if(!a.rating&&!b.rating)return 0;if(!a.rating)return 1;if(!b.rating)return -1;return b.rating-a.rating;});
     else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
@@ -2288,12 +2822,484 @@ export default function OnTheRocks(){
     return pool[seed%pool.length];
   },[swipeRecipe,swipePool]);
 
+  // ── background preload ──
+  const preloadedBgs=useRef(new Set());
+  useEffect(()=>{
+    if(!swipeRecipe)return;
+    const urls=new Set();
+    const addBg=r=>{if(!r)return;const mood=RECIPE_MOODS[r.name]||getMood(r);urls.add(CARD_BG_FILES[mood]||CARD_BG_FILES.frost_tide);};
+    if(swipeFiltered){
+      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+9,swipeFiltered.length);i++)addBg(swipeFiltered[i]);
+    } else {
+      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+4,swipeHistory.length);i++){
+        const r=drinkRecipes.find(r=>r.name===swipeHistory[i]);addBg(r);
+      }
+      let prev=swipeRecipe;
+      for(let i=0;i<7;i++){
+        const pool=swipePool.filter(r=>r.name!==prev?.name);
+        if(!pool.length)break;
+        const fam=prev?.categories.find(c=>STYLE_CATS.has(c));
+        const src=pool.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==fam);
+        const candidates=src.length?src:pool;
+        const seed=(prev?.name||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+        prev=candidates[(seed+i*13)%candidates.length];
+        addBg(prev);
+      }
+    }
+    urls.forEach(url=>{
+      if(preloadedBgs.current.has(url))return;
+      preloadedBgs.current.add(url);
+      const img=new Image();img.src=url;
+    });
+  },[swipeRecipe?.name,swipeHistIdx]);// eslint-disable-line
+
+const RECIPE_PROFILES = {
+  "Aperol Spritz":{"flavors":"Amargo • Cítrico • Floral","perfil":"Refrescante","perfil_desc":"Leve e espumante","sensacao":"Efervescente","sensacao_desc":"Bolhas frescas","ocasiao":"Aperitivo","ocasiao_desc":"Início de celebração"},
+  "Aviation":{"flavors":"floral • cítrico • amargado","perfil":"Delicado","perfil_desc":"elegância aromática leve","sensacao":"Refrescante","sensacao_desc":"toque fresco e seco","ocasiao":"Noite","ocasiao_desc":"coquetel sofisticado clássico"},
+  "Beirão & Maracujá":{"flavors":"Frutado • Cítrico • Herbáceo","perfil":"Refrescante","perfil_desc":"Leve e descontraído","sensacao":"Efervescente","sensacao_desc":"Bolhas vibrantes","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Beirão + Campari":{"flavors":"Amargo • Herbal • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância amarga e complexa","sensacao":"Refrescante","sensacao_desc":"Fresco e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Beirão Lemon":{"flavors":"Cítrico • Herbal • Refrescante","perfil":"Equilibrado","perfil_desc":"Doce e ácido harmonioso","sensacao":"Efervescente","sensacao_desc":"Leve e vivificante","ocasiao":"Social","ocasiao_desc":"Tarde ou aperitivo"},
+  "Beirão Spritz":{"flavors":"Cítrico • Herbal • Efervescente","perfil":"Refrescante","perfil_desc":"Leve e vivaz","sensacao":"Espumante","sensacao_desc":"Burbujas dançantes","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Beirão, Mel & Alecrim":{"flavors":"Herbáceo • Melado • Cítrico","perfil":"Aromático","perfil_desc":"floral e resinoso","sensacao":"Reconfortante","sensacao_desc":"morna e envolvente","ocasiao":"Apéritivo","ocasiao_desc":"tardes contemplativas"},
+  "Bourbon, laranja e gengibre":{"flavors":"Quente • Cítrico • Doce","perfil":"Aromático","perfil_desc":"Especiado e refrescante","sensacao":"Revigorante","sensacao_desc":"Picante e energizante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Bramble":{"flavors":"Frutado • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"elegância frutal equilibrada","sensacao":"Refrescante","sensacao_desc":"fresco e envolvente","ocasiao":"Noturna","ocasiao_desc":"momentos contemplativo"},
+  "Cantaloupe Martini sem álcool":{"flavors":"Frutado • Herbáceo • Refrescante","perfil":"Sofisticado","perfil_desc":"elegância sem álcool","sensacao":"Leveza","sensacao_desc":"toque cremoso e leve","ocasiao":"Verão","ocasiao_desc":"tarde ensolarada"},
+  "Citrus Martini":{"flavors":"Cítrico • Doce • Aperitivo","perfil":"Refrescante","perfil_desc":"Leve e vibrante","sensacao":"Efervescente","sensacao_desc":"Picante na língua","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Coco e tônica":{"flavors":"Tropical • Cítrico • Refrescante","perfil":"Leve","perfil_desc":"Suave e equilibrado","sensacao":"Efervescente","sensacao_desc":"Burbujanante na boca","ocasiao":"Praia","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Cynar Ginger Spritz":{"flavors":"Amargo • Refrescante • Especiado","perfil":"Sofisticado","perfil_desc":"elegância amarga e borbulhante","sensacao":"Vivificante","sensacao_desc":"picância ginger na garganta","ocasiao":"Aperitivo","ocasiao_desc":"pré-jantar estimulante"},
+  "Daiquiri Parisiense":{"flavors":"Floral • Cítrico • Suave","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momento chique e descontraído"},
+  "Dark 'n' Stormy":{"flavors":"Picante • Amadeirado • Cítrico","perfil":"Robusto","perfil_desc":"intenso e envolvente","sensacao":"Ardente","sensacao_desc":"queimação refrescante","ocasiao":"Noturna","ocasiao_desc":"clima tempestuoso"},
+  "Garden Gim":{"flavors":"Herbal • Cítrico • Refrescante","perfil":"Botânico","perfil_desc":"Jardim em copo","sensacao":"Revigorante","sensacao_desc":"Frescor penetrante","ocasiao":"Verão","ocasiao_desc":"Tardes luminosas"},
+  "Dry Martini":{"flavors":"Seco • Herbáceo • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância cristalina","sensacao":"Refrescante","sensacao_desc":"frieza penetrante","ocasiao":"Aperitivo","ocasiao_desc":"encontro intelectual"},
+  "Elderflower Aviation":{"flavors":"Floral • Cítrico • Amargo","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Fresco","sensacao_desc":"Leve e efervescente","ocasiao":"Coquetel","ocasiao_desc":"Aperitivo sofisticado"},
+  "Elderflower Daiquiri":{"flavors":"Floral • Cítrico • Delicado","perfil":"Elegante","perfil_desc":"sofisticado e refinado","sensacao":"Refrescante","sensacao_desc":"leve e efervescente","ocasiao":"Primavera","ocasiao_desc":"jardim ao entardecer"},
+  "Fermentação selvagem (Ginger Bug)":{"flavors":"Picante • Cítrico • Fermentado","perfil":"Revigorante","perfil_desc":"Efervescente e energizante","sensacao":"Formigante","sensacao_desc":"Burbujas na língua","ocasiao":"Aperitivo","ocasiao_desc":"Antes de refeições"},
+  "Flor de Cerejeira Fizz":{"flavors":"Floral • Doce • Cítrico","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Efervescente","sensacao_desc":"Leve e refrescante","ocasiao":"Aperitivo","ocasiao_desc":"Momento especial e celebração"},
+  "Flor de Cerejeira Spritz":{"flavors":"Floral • Herbal • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância primaveril","sensacao":"Refrescante","sensacao_desc":"Leve e espumante","ocasiao":"Celebração","ocasiao_desc":"Momentos especiais"},
+  "French 75":{"flavors":"Cítrico • Floral • Efervescente","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Brilhante","sensacao_desc":"Leve e vivaz","ocasiao":"Celebração","ocasiao_desc":"Momentos especiais"},
+  "Garden Spritz":{"flavors":"Floral • Frutado • Herbáceo","perfil":"Refinado","perfil_desc":"Elegante e leve","sensacao":"Efervescente","sensacao_desc":"Fresco e borbulhante","ocasiao":"Aperitivo","ocasiao_desc":"Momento primaveril sofisticado"},
+  "Gim Fizz":{"flavors":"Cítrico • Botânico • Refrescante","perfil":"Clássico","perfil_desc":"Elegância fizz londrino","sensacao":"Efervescente","sensacao_desc":"Borbulhas dançantes","ocasiao":"Aperitivo","ocasiao_desc":"Tarde social ensolarada"},
+  "Gim Tônica":{"flavors":"Cítrico • Botânico • Refrescante","perfil":"Clássico","perfil_desc":"elegância pura e simples","sensacao":"Efervescente","sensacao_desc":"burbujas vibrantes e leves","ocasiao":"Social","ocasiao_desc":"encontros descontraídos"},
+  "Gim Tônica de Bergamota":{"flavors":"Cítrico • Botânico • Refrescante","perfil":"Elegante","perfil_desc":"sofisticado e equilibrado","sensacao":"Leve","sensacao_desc":"fresco e vivificante","ocasiao":"Social","ocasiao_desc":"encontros descontraídos"},
+  "Ginger beer (caseira)":{"flavors":"Picante • Cítrico • Fermentado","perfil":"Refrescante","perfil_desc":"bebida viva e estimulante","sensacao":"Formigante","sensacao_desc":"gengibre queimando na garganta","ocasiao":"Casual","ocasiao_desc":"encontros descontraídos"},
+  "Grenadine Ginger Margarita":{"flavors":"Picante • Cítrico • Doce","perfil":"Vibrante","perfil_desc":"Energético e refrescante","sensacao":"Efervescente","sensacao_desc":"Burbujas picantes na língua","ocasiao":"Festas","ocasiao_desc":"Celebração tropical animada"},
+  "Hemingway Daiquiri Cordial":{"flavors":"Cítrico • Amargo • Floral","perfil":"Elegante","perfil_desc":"refinado e sofisticado","sensacao":"Refrescante","sensacao_desc":"fresco e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Hemingway Daiquiri":{"flavors":"Cítrico • Alcoólico • Amargo","perfil":"Sofisticado","perfil_desc":"elegância tropical clássica","sensacao":"Refrescante","sensacao_desc":"fresco e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"momento de sofisticação"},
+  "Highball de Luxardo":{"flavors":"Amargo • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"Momento social e descontraído"},
+  "Hurricane":{"flavors":"Tropical • Frutado • Encorpado","perfil":"Exuberante","perfil_desc":"Explosão tropical intensa","sensacao":"Envolvente","sensacao_desc":"Calor suave e sedoso","ocasiao":"Festa","ocasiao_desc":"Celebração descontraída"},
+  "Jamaica Rouge":{"flavors":"Encorpado • Frutado • Amargado","perfil":"Clássico","perfil_desc":"tropical e sofisticado","sensacao":"Aquecimento","sensacao_desc":"morno e envolvente","ocasiao":"Noite","ocasiao_desc":"momento contemplativo"},
+  "Jasmine (Casa do Porco)":{"flavors":"Floral • Amargo • Cítrico","perfil":"Equilibrado","perfil_desc":"Harmonioso e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e vibrante","ocasiao":"Aperitivo","ocasiao_desc":"Início da noite"},
+  "Jus dinger":{"flavors":"Picante • Tropical • Refrescante","perfil":"Revigorante","perfil_desc":"Tropical com mordida","sensacao":"Energizante","sensacao_desc":"Formigamento agradável","ocasiao":"Verão","ocasiao_desc":"Dias quentes intensos"},
+  "Lavender Gim Sour":{"flavors":"Floral • Cítrico • Cremoso","perfil":"Sofisticado","perfil_desc":"elegância aromática delicada","sensacao":"Aveludado","sensacao_desc":"textura morna envolvente","ocasiao":"Noite","ocasiao_desc":"momento especial refinado"},
+  "Licor Beirão Sour":{"flavors":"Herbáceo • Cítrico • Cremoso","perfil":"Sofisticado","perfil_desc":"Elegância equilibrada","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momento refinado"},
+  "Manhattan":{"flavors":"Amadeirado • Encorpado • Sofisticado","perfil":"Clássico","perfil_desc":"tradição em copo","sensacao":"Quente","sensacao_desc":"abraço alcoólico","ocasiao":"Noturna","ocasiao_desc":"encontros elegantes"},
+  "Manhattan (Perfect)":{"flavors":"Encorpado • Equilibrado • Sofisticado","perfil":"Clássico","perfil_desc":"Elegância atemporal","sensacao":"Suave","sensacao_desc":"Mornidão envolvente","ocasiao":"Sofisticação","ocasiao_desc":"Noite de charme"},
+  "Highball de Luxardo com Whisky":{"flavors":"Amadeirado • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância refinada","sensacao":"Refrescante","sensacao_desc":"efervescência suave","ocasiao":"Aperitivo","ocasiao_desc":"momento de requinte"},
+  "Improved Whiskey Cocktail":{"flavors":"Amadeirado • Cereja • Cítrico","perfil":"Clássico","perfil_desc":"Elegante e sofisticado","sensacao":"Aquecente","sensacao_desc":"Suave e envolvente","ocasiao":"Noturna","ocasiao_desc":"Para reflexão contemplativa"},
+  "Maraschino Spritz":{"flavors":"Cereja • Floral • Cítrico","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Efervescente","sensacao_desc":"Leve e refrescante","ocasiao":"Aperitivo","ocasiao_desc":"Momentos sofisticados e celebratórios"},
+  "Margarita":{"flavors":"Cítrico • Agave • Refrescante","perfil":"Clássico","perfil_desc":"equilibrado e versátil","sensacao":"Vibrante","sensacao_desc":"fresco e estimulante","ocasiao":"Social","ocasiao_desc":"celebração descontraída"},
+  "Martinez":{"flavors":"Herbáceo • Amargo • Frutado","perfil":"Clássico","perfil_desc":"Sofisticado e equilibrado","sensacao":"Elegante","sensacao_desc":"Seco e encorpado","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Mojito":{"flavors":"Refrescante • Cítrico • Herbáceo","perfil":"Tropical","perfil_desc":"Leve e vivificante","sensacao":"Vibrante","sensacao_desc":"Frescor na boca","ocasiao":"Verão","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Mojito Amendoado":{"flavors":"Frutado • Herbal • Especiado","perfil":"Sofisticado","perfil_desc":"Tropical com toque amêndoa","sensacao":"Refrescante","sensacao_desc":"Menta e gengibre vivificante","ocasiao":"Aperitivo","ocasiao_desc":"Pré-jantar tropical"},
+  "Mojito de framboesa":{"flavors":"Frutado • Refrescante • Herbal","perfil":"Tropical","perfil_desc":"Framboesa doce e mentol","sensacao":"Vivificante","sensacao_desc":"Formigante e leve","ocasiao":"Verão","ocasiao_desc":"Tardezinha festiva"},
+  "Moscow Mule":{"flavors":"Cítrico • Picante • Refrescante","perfil":"Vibrante","perfil_desc":"Energético e descontraído","sensacao":"Formigante","sensacao_desc":"Gengibre na boca","ocasiao":"Social","ocasiao_desc":"Encontros informais"},
+  "Mr. Grinch":{"flavors":"Picante • Refrescante • Terroso","perfil":"Provocador","perfil_desc":"Desafiador e assertivo","sensacao":"Ardente","sensacao_desc":"Queimação agradável","ocasiao":"Festas","ocasiao_desc":"Celebração descontraída"},
+  "Negroni":{"flavors":"Amargo • Herbal • Encorpado","perfil":"Clássico","perfil_desc":"Sofisticado e equilibrado","sensacao":"Seco","sensacao_desc":"Tânico e refrescante","ocasiao":"Aperitivo","ocasiao_desc":"Noite elegante e social"},
+  "Negroni Sbagliato":{"flavors":"Amargo • Floral • Afrutado","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"Borbulhante e refrescante","ocasiao":"Aperitivo","ocasiao_desc":"Momento social descontraído"},
+  "Old Fashioned":{"flavors":"Amadeirado • Amargo • Cítrico","perfil":"Clássico","perfil_desc":"Elegante e atemporal","sensacao":"Aquecente","sensacao_desc":"Suave e envolvente","ocasiao":"Sofisticado","ocasiao_desc":"Noites contemplativas"},
+  "Pisco Elderflower Sour":{"flavors":"Floral • Cítrico • Suave","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Aveludada","sensacao_desc":"Morna e cremosa","ocasiao":"Coquetel","ocasiao_desc":"Aperitivo sofisticado"},
+  "Pisco Sour":{"flavors":"Cítrico • Suave • Encorpado","perfil":"Elegante","perfil_desc":"Sofisticado e equilibrado","sensacao":"Aveludada","sensacao_desc":"Macia na boca","ocasiao":"Aperitivo","ocasiao_desc":"Início refinado"},
+  "Andes Highball":{"flavors":"Anisado • Cítrico • Refrescante","perfil":"Aromático","perfil_desc":"Erva-doce dominante","sensacao":"Efervescente","sensacao_desc":"Leve e vibrante","ocasiao":"Social","ocasiao_desc":"Tarde ensolarada"},
+  "Uva & Sal":{"flavors":"Frutado • Mineral • Terroso","perfil":"Sofisticado","perfil_desc":"Elegância líquida refinada","sensacao":"Refrescante","sensacao_desc":"Frescor mineral vibrante","ocasiao":"Aperitivo","ocasiao_desc":"Momento de elegância descontraída"},
+  "Flor de Pedra":{"flavors":"Floral • Delicado • Melado","perfil":"Sofisticado","perfil_desc":"Elegância aromática e refinada","sensacao":"Sedoso","sensacao_desc":"Macio e envolvente","ocasiao":"Crepúsculo","ocasiao_desc":"Momento contemplativo e romântico"},
+  "Campo Seco":{"flavors":"Amargo • Herbal • Complexo","perfil":"Sofisticado","perfil_desc":"Elegância mineral e aromática","sensacao":"Envolvente","sensacao_desc":"Aquecimento prolongado","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Pisco & Coco Tostado":{"flavors":"Tropical • Cremoso • Tostado","perfil":"Exótico","perfil_desc":"Elegância tropical e quente","sensacao":"Aveludado","sensacao_desc":"Suavidade envolvente","ocasiao":"Crepúsculo","ocasiao_desc":"Momentos de contemplação"},
+  "Verde Urbano":{"flavors":"Cítrico • Herbáceo • Refrescante","perfil":"Sofisticado","perfil_desc":"elegância urbana e modernidade","sensacao":"Energizante","sensacao_desc":"espuma refrescante na língua","ocasiao":"Aperitivo","ocasiao_desc":"encontros noturnos descontraídos"},
+  "Noite em Lima":{"flavors":"Encorpado • Amargo • Chocolatudo","perfil":"Sofisticado","perfil_desc":"Elegância peruana noturna","sensacao":"Envolvente","sensacao_desc":"Calor sedoso e profundo","ocasiao":"Pós-jantar","ocasiao_desc":"Momento contemplativo e luxuoso"},
+  "Pisco com Cerveja Branca":{"flavors":"Cítrico • Cremoso • Refrescante","perfil":"Híbrido","perfil_desc":"Espírito e fermentado","sensacao":"Efervescente","sensacao_desc":"Leve e gasoso","ocasiao":"Social","ocasiao_desc":"Tarde descontraída"},
+  "Seco de Maçã":{"flavors":"Cítrico • Frutado • Seco","perfil":"Refrescante","perfil_desc":"Leve e vivaz","sensacao":"Crispante","sensacao_desc":"Picância agradável","ocasiao":"Aperitivo","ocasiao_desc":"Antes do almoço"},
+  "Pisco Terroso":{"flavors":"Terroso • Picante • Doce","perfil":"Aromático","perfil_desc":"Especiado e reconfortante","sensacao":"Aquecente","sensacao_desc":"Gengibre queimando levemente","ocasiao":"Noite","ocasiao_desc":"Digestivo contemplativo"},
+  "Sazerac":{"flavors":"Herbal • Spiced • Warming","perfil":"Clássico","perfil_desc":"Elegância aperitiva refinada","sensacao":"Intenso","sensacao_desc":"Queimação anisada sedutora","ocasiao":"Noturna","ocasiao_desc":"Coquetel contemplativo sofisticado"},
+  "SAZERAC por Kennedy Nascimento":{"flavors":"Especiado • Amadeirado • Herbal","perfil":"Clássico","perfil_desc":"Sofisticado e equilibrado","sensacao":"Envolvente","sensacao_desc":"Quente e reconfortante","ocasiao":"Noturna","ocasiao_desc":"Contemplação refinada"},
+  "Sevilla Sour":{"flavors":"Floral • Cítrico • Herbal","perfil":"Elegante","perfil_desc":"sofisticado e luminoso","sensacao":"Fresco","sensacao_desc":"refrescante e aveludado","ocasiao":"Aperitivo","ocasiao_desc":"encontros ao entardecer"},
+  "Shanksjillo":{"flavors":"Amargo • Adocicado • Encorpado","perfil":"Sofisticado","perfil_desc":"Elegância escura e refinada","sensacao":"Intenso","sensacao_desc":"Queimado e suave","ocasiao":"Pós-jantar","ocasiao_desc":"Finalização premium"},
+  "Smoked Apple Whiskey Tonic":{"flavors":"Defumado • Especiado • Frutado","perfil":"Sofisticado","perfil_desc":"Whiskey aromático e complexo","sensacao":"Aquecente","sensacao_desc":"Calor suave e envolvente","ocasiao":"Noturna","ocasiao_desc":"Momentos intimistas e reflexivos"},
+  "Smokey Martini":{"flavors":"Defumado • Botânico • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância fumarada","sensacao":"Envolvente","sensacao_desc":"calor defumado","ocasiao":"Noturna","ocasiao_desc":"encontros refinados"},
+  "Spring Martini":{"flavors":"Floral • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"Elegância primaveril leve","sensacao":"Refrescante","sensacao_desc":"Fresco e delicado","ocasiao":"Aperitivo","ocasiao_desc":"Momento elegante e descontraído"},
+  "St‑Germain Hugo Spritz":{"flavors":"Floral • Cítrico • Refrescante","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Espumante","sensacao_desc":"Bolhas refrescantes","ocasiao":"Aperitivo","ocasiao_desc":"Momento social leve"},
+  "St‑Germain Spritz":{"flavors":"Floral • Cítrico • Delicado","perfil":"Refrescante","perfil_desc":"leve e elegante","sensacao":"Efervescente","sensacao_desc":"borbulhante e sofisticada","ocasiao":"Aperitivo","ocasiao_desc":"encontros vespertinos"},
+  "The Clover Club":{"flavors":"Floral • Cítrico • Frutado","perfil":"Elegante","perfil_desc":"Sofisticado e delicado","sensacao":"Espumoso","sensacao_desc":"Aéreo e cremoso","ocasiao":"Coquetel","ocasiao_desc":"Festas e celebrações"},
+  "Tom Collins (20's B)":{"flavors":"Herbáceo • Cítrico • Amargo","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Whiskey Mule de Romã":{"flavors":"Amadeirado • Frutado • Especiado","perfil":"Sofisticado","perfil_desc":"Elegância com aridez","sensacao":"Refrescante","sensacao_desc":"Picância suave prolongada","ocasiao":"Noite","ocasiao_desc":"Momento requintado"},
+  "Whiskey Sour":{"flavors":"Cítrico • Amadeirado • Herbal","perfil":"Clássico","perfil_desc":"elegante e equilibrado","sensacao":"Aveludado","sensacao_desc":"sedoso e refrescante","ocasiao":"Coquetel","ocasiao_desc":"noite sofisticada"},
+  "White Russian de abóbora":{"flavors":"Cremoso • Doce • Especiado","perfil":"Confortável","perfil_desc":"Abraço líquido quente","sensacao":"Aveludada","sensacao_desc":"Macio na boca","ocasiao":"Outono","ocasiao_desc":"Noites aconchegantes"},
+  "Daiquiri":{"flavors":"Cítrico • Doce • Refrescante","perfil":"Clássico","perfil_desc":"Elegância atemporal","sensacao":"Leve","sensacao_desc":"Suave e fluido","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Cosmopolitan":{"flavors":"Cítrico • Frutado • Sofisticado","perfil":"Elegante","perfil_desc":"Refrescante e envolvente","sensacao":"Vibrante","sensacao_desc":"Tangy e equilibrado","ocasiao":"Coquetel","ocasiao_desc":"Noites especiais e celebrações"},
+  "Gimlet":{"flavors":"Cítrico • Refrescante • Herbáceo","perfil":"Clássico","perfil_desc":"elegância destilada","sensacao":"Revigorante","sensacao_desc":"acidez limpa e pura","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Americano":{"flavors":"Amargo • Doce • Cítrico","perfil":"Clássico","perfil_desc":"Sofisticado e equilibrado","sensacao":"Refrescante","sensacao_desc":"Espumante e vibrante","ocasiao":"Aperitivo","ocasiao_desc":"Início de noite"},
+  "Boulevardier":{"flavors":"Amargo • Encorpado • Sofisticado","perfil":"Clássico","perfil_desc":"Elegância atemporal e refinada","sensacao":"Aquecente","sensacao_desc":"Calidez reconfortante e envolvente","ocasiao":"Noite","ocasiao_desc":"Momentos contemplativoss e elegantes"},
+  "Rob Roy":{"flavors":"Amadeirado • Doce • Especiado","perfil":"Clássico","perfil_desc":"Sofisticado e refinado","sensacao":"Aquecente","sensacao_desc":"Envolvente e reconfortante","ocasiao":"Noturna","ocasiao_desc":"Momentos elegantes e introspectivos"},
+  "Vieux Carré":{"flavors":"Encorpado • Herbal • Especiado","perfil":"Clássico","perfil_desc":"Sofisticação alcoólica francesa","sensacao":"Quente","sensacao_desc":"Abraço reconfortante","ocasiao":"Noite","ocasiao_desc":"Reflexão contemplativa"},
+  "Amaretto Sour":{"flavors":"Amendoado • Cítrico • Sedoso","perfil":"Equilibrado","perfil_desc":"doçura com acidez","sensacao":"Aveludado","sensacao_desc":"espuma cremosa","ocasiao":"Aperitivo","ocasiao_desc":"encontro descontraído"},
+  "New York Sour":{"flavors":"Cítrico • Encorpado • Frutado","perfil":"Sofisticado","perfil_desc":"Elegância amadurecida","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Noturna","ocasiao_desc":"Coquetel de celebração"},
+  "Espresso Martini":{"flavors":"Intenso • Amargo • Cremoso","perfil":"Sofisticado","perfil_desc":"elegância e poder","sensacao":"Energizante","sensacao_desc":"desperta e estimula","ocasiao":"Noturno","ocasiao_desc":"antes de festas"},
+  "Sidecar":{"flavors":"Cítrico • Sofisticado • Luminoso","perfil":"Elegante","perfil_desc":"Refinado e equilibrado","sensacao":"Fresco","sensacao_desc":"Efervescente na língua","ocasiao":"Aperitivo","ocasiao_desc":"Noites sofisticadas"},
+  "Bee's Knees":{"flavors":"Cítrico • Floral • Adocicado","perfil":"Clássico","perfil_desc":"elegância atemporal e sofisticação","sensacao":"Refrescante","sensacao_desc":"leveza equilibrada e brilhante","ocasiao":"Aperitivo","ocasiao_desc":"encontros sofisticados e celebrações"},
+  "Last Word":{"flavors":"Herbal • Floral • Cítrico","perfil":"Equilibrado","perfil_desc":"Proporções perfeitas e harmônicas","sensacao":"Refrescante","sensacao_desc":"Vivacidade com amargor elegante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar sofisticado"},
+  "Penicillin":{"flavors":"Picante • Cítrico • Defumado","perfil":"Robusto","perfil_desc":"Complexo e aquecedor","sensacao":"Revigorante","sensacao_desc":"Gengibre ardente","ocasiao":"Noite","ocasiao_desc":"Repouso meditativo"},
+  "Gold Rush":{"flavors":"Quente • Doce • Cítrico","perfil":"Clássico","perfil_desc":"elegância atemporal","sensacao":"Reconfortante","sensacao_desc":"calor envolvente","ocasiao":"Noite","ocasiao_desc":"momentos contemplativs"},
+  "Cuba Libre":{"flavors":"Doce • Cítrico • Refrescante","perfil":"Clássico","perfil_desc":"Tradicional e descomplicado","sensacao":"Refrescante","sensacao_desc":"Gelado e estimulante","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Paper Plane":{"flavors":"Amargo • Cítrico • Herbáceo","perfil":"Sofisticado","perfil_desc":"Elegância equilibrada e refinada","sensacao":"Refrescante","sensacao_desc":"Leve friozinho na boca","ocasiao":"Aperitivo","ocasiao_desc":"Início de noite sofisticado"},
+  "Singapore Sling":{"flavors":"Tropical • Frutado • Floral","perfil":"Exótico","perfil_desc":"Frutas tropicais perfumadas","sensacao":"Refrescante","sensacao_desc":"Leve e vivificante","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Mimosa":{"flavors":"Cítrico • Floral • Refrescante","perfil":"Elegante","perfil_desc":"sofisticação leve e radiante","sensacao":"Efervescente","sensacao_desc":"burbujas dançantes na língua","ocasiao":"Brunch","ocasiao_desc":"manhã celebrativa e luminosa"},
+  "Bellini":{"flavors":"Frutado • Delicado • Refrescante","perfil":"Elegante","perfil_desc":"sofisticação leve e acessível","sensacao":"Efervescente","sensacao_desc":"bolhas suaves na língua","ocasiao":"Brunch","ocasiao_desc":"repouso matinal requintado"},
+  "Rossini":{"flavors":"Frutado • Refrescante • Elegante","perfil":"Feminino","perfil_desc":"Sofisticado e delicado","sensacao":"Efervescente","sensacao_desc":"Fresco na boca","ocasiao":"Brunch","ocasiao_desc":"Momento elegante diurno"},
+  "Tintoretto":{"flavors":"Frutado • Efervescente • Sofisticado","perfil":"Elegante","perfil_desc":"Refrescante e luxuoso","sensacao":"Vibrante","sensacao_desc":"Hormiguante na língua","ocasiao":"Social","ocasiao_desc":"Celebração chic"},
+  "Puccini":{"flavors":"Cítrico • Espumante • Fresco","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"Bolhas delicadas","ocasiao":"Aperitivo","ocasiao_desc":"Momentos refinados"},
+  "Kir Royale":{"flavors":"Frutado • Elegante • Refrescante","perfil":"Sofisticado","perfil_desc":"Requintado e leve","sensacao":"Efervescente","sensacao_desc":"Borbulhante e sedoso","ocasiao":"Celebração","ocasiao_desc":"Momentos especiais e festivos"},
+  "Tommy's Margarita":{"flavors":"Cítrico • Herbáceo • Doce","perfil":"Fresco","perfil_desc":"Limão vivo e puro","sensacao":"Refrescante","sensacao_desc":"Toque suave e envolvente","ocasiao":"Casual","ocasiao_desc":"Encontros descontraídos"},
+  "Caipiroska":{"flavors":"Cítrico • Doce • Refrescante","perfil":"Vibrante","perfil_desc":"Energético e descontraído","sensacao":"Gelado","sensacao_desc":"Fresco na boca","ocasiao":"Social","ocasiao_desc":"Encontros informais"},
+  "White Russian":{"flavors":"Cremoso • Doce • Suave","perfil":"Indulgente","perfil_desc":"Sedoso e reconfortante","sensacao":"Morna","sensacao_desc":"Acetinado na boca","ocasiao":"Noturna","ocasiao_desc":"Após jantar elegante"},
+  "Frozen Daiquiri":{"flavors":"Refrescante • Cítrico • Suave","perfil":"Tropical","perfil_desc":"Doce e gelado","sensacao":"Gelada","sensacao_desc":"Fria e cremosa","ocasiao":"Praia","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Frozen Margarita":{"flavors":"Cítrico • Refrescante • Adocicado","perfil":"Tropical","perfil_desc":"Exótico e gelado","sensacao":"Gelada","sensacao_desc":"Frio intenso","ocasiao":"Verão","ocasiao_desc":"Dias quentes"},
+  "Mezcal Negroni":{"flavors":"Defumado • Amargo • Adocicado","perfil":"Sofisticado","perfil_desc":"Complexo e terroso","sensacao":"Intenso","sensacao_desc":"Queimado e sedoso","ocasiao":"Aperitivo","ocasiao_desc":"Noites refinadas"},
+  "Oaxacan Old Fashioned":{"flavors":"Defumado • Especiado • Amargo","perfil":"Complexo","perfil_desc":"Encorpado e sofisticado","sensacao":"Aquecente","sensacao_desc":"Queimada prolongada","ocasiao":"Noturna","ocasiao_desc":"Reflexão contemplativa"},
+  "Paloma Cordial":{"flavors":"Cítrico • Amargo • Picante","perfil":"Refrescante","perfil_desc":"tropical e vibrante","sensacao":"Estimulante","sensacao_desc":"queimação picante","ocasiao":"Tarde","ocasiao_desc":"drinks descontraídos"},
+  "Paloma":{"flavors":"Cítrico • Refrescante • Salgado","perfil":"Vibrante","perfil_desc":"Alegre e descontraído","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Tequila Sunrise":{"flavors":"Cítrico • Doce • Tropical","perfil":"Radiante","perfil_desc":"Brilho solar líquido","sensacao":"Refrescante","sensacao_desc":"Frieza vibrante e leve","ocasiao":"Tarde","ocasiao_desc":"Momento de celebração"},
+  "Piña Colada":{"flavors":"Tropical • Cremoso • Frutado","perfil":"Exótico","perfil_desc":"Praia e férias","sensacao":"Refrescante","sensacao_desc":"Suave e gelado","ocasiao":"Verão","ocasiao_desc":"Dias quentes e relaxados"},
+  "Mai Tai":{"flavors":"Tropical • Amadeirado • Cítrico","perfil":"Exótico","perfil_desc":"Sofisticado e equilibrado","sensacao":"Refrescante","sensacao_desc":"Suave e envolvente","ocasiao":"Noite","ocasiao_desc":"Encontros elegantes"},
+  "Jungle Bird":{"flavors":"Tropical • Amargo • Suculento","perfil":"Exótico","perfil_desc":"Selva em copo","sensacao":"Refrescante","sensacao_desc":"Picante e tropical","ocasiao":"Festa","ocasiao_desc":"Celebração descontraída"},
+  "Irish Coffee":{"flavors":"Encorpado • Caramelado • Cremoso","perfil":"Reconfortante","perfil_desc":"quente e envolvente","sensacao":"Suave","sensacao_desc":"morno e aveludado","ocasiao":"Noite","ocasiao_desc":"repouso contemplativo"},
+  "Hot Toddy":{"flavors":"Quente • Mel • Especiado","perfil":"Reconfortante","perfil_desc":"Abraço líquido aromático","sensacao":"Envolvente","sensacao_desc":"Calor reconfortante profundo","ocasiao":"Inverno","ocasiao_desc":"Noites frias aconchegantes"},
+  "Black Russian":{"flavors":"Achocolatado • Amargo • Suave","perfil":"Clássico","perfil_desc":"elegância atemporal","sensacao":"Sedoso","sensacao_desc":"macio e envolvente","ocasiao":"Noturna","ocasiao_desc":"pós-jantar relaxante"},
+  "Godfather":{"flavors":"Amêndoa • Fumaça • Caramelo","perfil":"Sofisticado","perfil_desc":"Elegância envolvente","sensacao":"Quentura","sensacao_desc":"Abraço reconfortante","ocasiao":"Noturna","ocasiao_desc":"Momento contemplativo"},
+  "Ramos Gim Fizz":{"flavors":"Cítrico • Cremoso • Floral","perfil":"Luxuoso","perfil_desc":"Sedoso e refinado","sensacao":"Aveludado","sensacao_desc":"Macio na boca","ocasiao":"Brunch","ocasiao_desc":"Celebração matinal elegante"},
+  "Vodka Tônica":{"flavors":"Refrescante • Cítrico • Herbal","perfil":"Clássico","perfil_desc":"Leve e equilibrado","sensacao":"Revigorante","sensacao_desc":"Frescor efervescente","ocasiao":"Casual","ocasiao_desc":"Tarde descontraída"},
+  "Caipirinha Clássica":{"flavors":"Cítrico • Herbal • Refrescante","perfil":"Autêntica","perfil_desc":"Brasileira, descontraída, clássica","sensacao":"Revigorante","sensacao_desc":"Fresca, estimulante, leve","ocasiao":"Social","ocasiao_desc":"Encontros, celebrações, lazer"},
+  "Caipirinha com Rapadura":{"flavors":"Doce • Cítrico • Terroso","perfil":"Rústico","perfil_desc":"Açúcar mascavo envolvente","sensacao":"Refrescante","sensacao_desc":"Acidez com dulçor","ocasiao":"Informal","ocasiao_desc":"Encontros descontraídos"},
+  "Caipirinha de Limão-Cravo":{"flavors":"Especiado • Cítrico • Herbal","perfil":"Exótico","perfil_desc":"Tropical e aromático","sensacao":"Refrescante","sensacao_desc":"Gelado e envolvente","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Caipirinha de Três Limões":{"flavors":"Cítrico • Refrescante • Aromático","perfil":"Vibrante","perfil_desc":"Explosão de cítricos","sensacao":"Energizante","sensacao_desc":"Formigante e leve","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Caipirinha de Maracujá e Limão":{"flavors":"Tropical • Cítrico • Mel","perfil":"Refrescante","perfil_desc":"fresco e vibrante","sensacao":"Equilibrada","sensacao_desc":"suave e envolvente","ocasiao":"Verão","ocasiao_desc":"encontros descontraídos"},
+  "Caipirinha de Abacaxi Tostado":{"flavors":"Tropical • Caramelizado • Cítrico","perfil":"Sofisticado","perfil_desc":"Doce e fumarado","sensacao":"Refrescante","sensacao_desc":"Quente e gelado","ocasiao":"Verão","ocasiao_desc":"Noites ao ar livre"},
+  "Caipirinha de Cambuci":{"flavors":"Frutado • Cítrico • Herbal","perfil":"Refrescante","perfil_desc":"tropical e vivo","sensacao":"Energizante","sensacao_desc":"picante e revigorante","ocasiao":"Verão","ocasiao_desc":"encontros ao ar livre"},
+  "Caipirinha de Limão-Siciliano e Capim-Santo":{"flavors":"Cítrico • Herbáceo • Refrescante","perfil":"Tropical","perfil_desc":"Exótico e aromático","sensacao":"Revigorante","sensacao_desc":"Fresco e estimulante","ocasiao":"Verão","ocasiao_desc":"Tarde ensolarada"},
+  "Caipirinha de Tangerina Verde e Salina":{"flavors":"Cítrico • Mineral • Herbáceo","perfil":"Refrescante","perfil_desc":"Ácido e limpo","sensacao":"Vibrante","sensacao_desc":"Formigante e salino","ocasiao":"Verão","ocasiao_desc":"Tarde tropical ensolarada"},
+  "Caipirinha de Caju e Mel":{"flavors":"Tropical • Melado • Cítrico","perfil":"Sedutora","perfil_desc":"Doce e refrescante","sensacao":"Suave","sensacao_desc":"Morna e envolvente","ocasiao":"Verão","ocasiao_desc":"Encontros ao entardecer"},
+  "Caipirinha de Maracujá e Kaffir":{"flavors":"Tropical • Cítrico • Aromático","perfil":"Refrescante","perfil_desc":"Exótico e vibrante","sensacao":"Envolvente","sensacao_desc":"Suave e perfumada","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Caipirinha de Uva Verde":{"flavors":"Frutado • Cítrico • Suave","perfil":"Refrescante","perfil_desc":"leveza tropical","sensacao":"Sedoso","sensacao_desc":"maciez na boca","ocasiao":"Social","ocasiao_desc":"encontros descontraídos"},
+  "Caipirinha de Caju Clássica":{"flavors":"Tropical • Cítrico • Doce","perfil":"Refrescante","perfil_desc":"Frutal e equilibrado","sensacao":"Revitalizante","sensacao_desc":"Fresco e suave","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Caju com Limão-Cravo":{"flavors":"Tropical • Aromático • Adstringente","perfil":"Exótico","perfil_desc":"Frutas tropicais e especiarias","sensacao":"Refrescante","sensacao_desc":"Quente e gelado","ocasiao":"Noite","ocasiao_desc":"Encontros descontraídos"},
+  "Caju, Salina e Pimenta-Rosa":{"flavors":"Frutado • Salgado • Picante","perfil":"Sofisticado","perfil_desc":"Elegância tropical equilibrada","sensacao":"Refrescante","sensacao_desc":"Fresco com mordida","ocasiao":"Coquetel","ocasiao_desc":"Noite sofisticada"},
+  "Caju Tostado":{"flavors":"Tostado • Cítrico • Amadeirado","perfil":"Sofisticado","perfil_desc":"Elegância tropical moderna","sensacao":"Envolvente","sensacao_desc":"Calor e suavidade","ocasiao":"Noturna","ocasiao_desc":"Conversas contemplativas"},
+  "Caju e Louro":{"flavors":"Frutado • Herbal • Mel","perfil":"Sofisticado","perfil_desc":"tropical com elegância","sensacao":"Aromático","sensacao_desc":"folha e doçura","ocasiao":"Entardecer","ocasiao_desc":"momento contemplativo"},
+  "Caju e Coco Seco":{"flavors":"Tropical • Tostado • Cítrico","perfil":"Encorpado","perfil_desc":"denso e cremoso","sensacao":"Reconfortante","sensacao_desc":"quentura tropical","ocasiao":"Entardecer","ocasiao_desc":"relaxamento ao pôr do sol"},
+  "Caju Vínico":{"flavors":"Frutado • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"elegância tropical amadeirada","sensacao":"Encorpado","sensacao_desc":"morno e aveludado","ocasiao":"Entardecer","ocasiao_desc":"contemplação requintada"},
+  "Caipirinha de Caju com Rum de Coco":{"flavors":"Tropical • Cremoso • Cítrico","perfil":"Exótico","perfil_desc":"Doçura tropical envolvente","sensacao":"Refrescante","sensacao_desc":"Morneguinho confortável","ocasiao":"Verão","ocasiao_desc":"Praia ao entardecer"},
+  "Caju & Oak":{"flavors":"Frutado • Amadeirado • Especiado","perfil":"Sofisticado","perfil_desc":"Tropical com estrutura","sensacao":"Envolvente","sensacao_desc":"Morno e reconfortante","ocasiao":"Entardecer","ocasiao_desc":"Momentos de reflexão"},
+  "Jardim de Caju":{"flavors":"Tropical • Herbáceo • Cítrico","perfil":"Refrescante","perfil_desc":"luz frutal e verde","sensacao":"Suave","sensacao_desc":"toque macio e fluido","ocasiao":"Tarde","ocasiao_desc":"momentos de leveza"},
+  "Caju Escuro":{"flavors":"Tropical • Amadeirado • Picante","perfil":"Sofisticado","perfil_desc":"Elegância frutada envelhecida","sensacao":"Suave","sensacao_desc":"Mornidão aromática envolvente","ocasiao":"Entardecer","ocasiao_desc":"Momento contemplativo aprimorado"},
+  "Caju Bianco":{"flavors":"Frutado • Floral • Cítrico","perfil":"Tropical","perfil_desc":"Exótico e refrescante","sensacao":"Suave","sensacao_desc":"Macio e elegante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Fumaça Tropical":{"flavors":"Fumado • Tropical • Equilibrado","perfil":"Sofisticado","perfil_desc":"Complexidade exótica e refinada","sensacao":"Envolvente","sensacao_desc":"Fumaça morna e sedutora","ocasiao":"Crepúsculo","ocasiao_desc":"Noites de contemplação"},
+  "Caju Spritz":{"flavors":"Frutado • Aperitivo • Efervescente","perfil":"Tropical","perfil_desc":"Fresco e vibrante","sensacao":"Refrescante","sensacao_desc":"Leve e hormigueante","ocasiao":"Aperitivo","ocasiao_desc":"Encontros ao entardecer"},
+  "Caju Noturno":{"flavors":"Amadeirado • Frutado • Amargo","perfil":"Sofisticado","perfil_desc":"Noturno e envolvente","sensacao":"Encorpado","sensacao_desc":"Quente e profundo","ocasiao":"Pós-Jantar","ocasiao_desc":"Encontros contemplativos"},
+  "Caju Verde":{"flavors":"Frutado • Cítrico • Herbáceo","perfil":"Tropical","perfil_desc":"Exótico e refrescante","sensacao":"Vivaz","sensacao_desc":"Leve e estimulante","ocasiao":"Verão","ocasiao_desc":"Tarde ensolarada"},
+  "Maracujá Tônico":{"flavors":"Tropical • Cítrico • Herbal","perfil":"Refrescante","perfil_desc":"Leve e estimulante","sensacao":"Efervescente","sensacao_desc":"Bolhas vibrantes","ocasiao":"Tarde","ocasiao_desc":"Momento descontraído"},
+  "Gold Passion":{"flavors":"Tropical • Amadeirado • Amargo","perfil":"Sofisticado","perfil_desc":"Elegância líquida calorosa","sensacao":"Envolvente","sensacao_desc":"Suavidade com corpo","ocasiao":"Noite","ocasiao_desc":"Momentos contemplados"},
+  "Passo Solar":{"flavors":"Tropical • Cítrico • Mineral","perfil":"Refrescante","perfil_desc":"Solar e vivaz","sensacao":"Energizante","sensacao_desc":"Fresco na boca","ocasiao":"Dia","ocasiao_desc":"Tarde ensolarada"},
+  "Maracujá Amargo":{"flavors":"Amargo • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"elegância com acidez","sensacao":"Refrescante","sensacao_desc":"espuma vibrante","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Linha do Equador":{"flavors":"Tropical • Cítrico • Refrescante","perfil":"Exótico","perfil_desc":"Frutas tropicais vibrantes","sensacao":"Equilibrado","sensacao_desc":"Suave e revitalizante","ocasiao":"Verão","ocasiao_desc":"Drinks de praia"},
+  "Pornstar Martini":{"flavors":"Tropical • Floral • Efervescente","perfil":"Sensual","perfil_desc":"Sofisticado e provocante","sensacao":"Refrescante","sensacao_desc":"Borbulhante e leve","ocasiao":"Noturna","ocasiao_desc":"Celebração elegante"},
+  "Saturn":{"flavors":"Tropical • Almendrado • Cítrico","perfil":"Encantador","perfil_desc":"sofisticado e delicado","sensacao":"Sedoso","sensacao_desc":"macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"momento festivo e elegante"},
+  "Cobra's Fang":{"flavors":"Tropical • Picante • Herbal","perfil":"Exótico","perfil_desc":"Frutas tropicais ardentes","sensacao":"Envolvente","sensacao_desc":"Calor aromático intenso","ocasiao":"Noturno","ocasiao_desc":"Coquetel de celebração"},
+  "Passion Fruit Margarita":{"flavors":"Tropical • Cítrico • Refrescante","perfil":"Vibrante","perfil_desc":"Exuberante e equilibrado","sensacao":"Estimulante","sensacao_desc":"Fresco e revigorante","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Whiskey Sour de Maracujá":{"flavors":"Tropical • Cítrico • Suave","perfil":"Equilibrado","perfil_desc":"Doçura e acidez em harmonia","sensacao":"Cremoso","sensacao_desc":"Textura macia e envolvente","ocasiao":"Sofisticado","ocasiao_desc":"Encontros e celebrações"},
+  "Highball de Cajuína":{"flavors":"Frutado • Suave • Refrescante","perfil":"Tropical","perfil_desc":"Doçura exótica nordestina","sensacao":"Leve","sensacao_desc":"Cremoso e efervescente","ocasiao":"Verão","ocasiao_desc":"Pausa tropical relaxante"},
+  "Gin & Cajuína":{"flavors":"Frutado • Cítrico • Floral","perfil":"Refrescante","perfil_desc":"tropical e elegante","sensacao":"Leve","sensacao_desc":"suave e revigorante","ocasiao":"Tarde","ocasiao_desc":"encontros descontraídos"},
+  "Rabo de Galo com Cajuína":{"flavors":"Frutado • Especiado • Adocicado","perfil":"Clássico","perfil_desc":"Elegante e equilibrado","sensacao":"Suave","sensacao_desc":"Morna e envolvente","ocasiao":"Tarde","ocasiao_desc":"Momentos contemplativoss"},
+  "Cajuína & Mezcal":{"flavors":"Frutado • Defumado • Refrescante","perfil":"Exótico","perfil_desc":"Tropical com fumaça","sensacao":"Envolvente","sensacao_desc":"Quente e gelado","ocasiao":"Noite","ocasiao_desc":"Conversas descontraídas"},
+  "Cajuína Old Fashioned":{"flavors":"Amadeirado • Frutado • Especiado","perfil":"Sofisticado","perfil_desc":"Elegância tropical nordestina","sensacao":"Aquecente","sensacao_desc":"Morno e envolvente","ocasiao":"Noite","ocasiao_desc":"Conversas contemplativas"},
+  "Tequila & Cajuína":{"flavors":"Frutado • Refrescante • Terroso","perfil":"Tropical","perfil_desc":"Exótico e vibrante","sensacao":"Energizante","sensacao_desc":"Fresco e estimulante","ocasiao":"Verão","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Batida de Coco":{"flavors":"Cremoso • Tropical • Suave","perfil":"Envolvente","perfil_desc":"abraço líquido e morno","sensacao":"Sedosa","sensacao_desc":"maciez na língua","ocasiao":"Festas","ocasiao_desc":"celebração descontraída"},
+  "Batida de Maracujá":{"flavors":"Tropical • Cremoso • Suave","perfil":"Refrescante","perfil_desc":"doce e frutado","sensacao":"Sedoso","sensacao_desc":"macio na boca","ocasiao":"Festivo","ocasiao_desc":"celebração descontraída"},
+  "Cachaça Sour":{"flavors":"Cítrico • Herbáceo • Suave","perfil":"Refrescante","perfil_desc":"Equilibrado e revitalizante","sensacao":"Acetinado","sensacao_desc":"Macio na boca","ocasiao":"Aperitivo","ocasiao_desc":"Momentos descontraídos"},
+  "Quentão":{"flavors":"Especiado • Cítrico • Aquecente","perfil":"Reconfortante","perfil_desc":"aconchego líquido","sensacao":"Envolvente","sensacao_desc":"calor abraçador","ocasiao":"Noturna","ocasiao_desc":"encontros de inverno"},
+  "Rabo de Galo":{"flavors":"Herbal • Amargo • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegante e contemplativo","sensacao":"Refrescante","sensacao_desc":"Tônico e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Leite de Onça":{"flavors":"Cremoso • Especiado • Suave","perfil":"Tropical","perfil_desc":"Doçura envolvente","sensacao":"Aterciopelado","sensacao_desc":"Macio e aconchegante","ocasiao":"Sobremesa","ocasiao_desc":"Pós-jantar relaxante"},
+  "Caju Amigo":{"flavors":"Frutado • Tropical • Refrescante","perfil":"Descontraído","perfil_desc":"Leve e jovial","sensacao":"Energizante","sensacao_desc":"Quente e fresco","ocasiao":"Casual","ocasiao_desc":"Encontros despreocupados"},
+  "Macunaíma":{"flavors":"Herbal • Cítrico • Defumado","perfil":"Complexo","perfil_desc":"Tropical com amargura elegante","sensacao":"Provocante","sensacao_desc":"Queimação refrescante intensa","ocasiao":"Noturna","ocasiao_desc":"Coquetel de contemplação"},
+  "Gabriela":{"flavors":"Especiado • Cítrico • Terroso","perfil":"Tradicional","perfil_desc":"Raízes brasileiras autênticas","sensacao":"Aquecente","sensacao_desc":"Abraço reconfortante","ocasiao":"Noturno","ocasiao_desc":"Encontros intimistas"},
+  "Cachaça Collins":{"flavors":"Cítrico • Tropical • Refrescante","perfil":"Vibrante","perfil_desc":"Intenso e alegre","sensacao":"Efervescente","sensacao_desc":"Leve e estimulante","ocasiao":"Social","ocasiao_desc":"Festas e encontros"},
+  "Highball de Cachaça":{"flavors":"Herbáceo • Picante • Refrescante","perfil":"Vibrante","perfil_desc":"Tropical e energético","sensacao":"Efervescente","sensacao_desc":"Formigante na língua","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Old Fashioned de Cachaça":{"flavors":"Amadeirado • Cítrico • Especiado","perfil":"Robusto","perfil_desc":"Encorpado e intenso","sensacao":"Quente","sensacao_desc":"Abraço reconfortante","ocasiao":"Noturna","ocasiao_desc":"Contemplação relaxada"},
+  "Caipirinha Envelhecida":{"flavors":"Amadeirado • Cítrico • Suave","perfil":"Sofisticado","perfil_desc":"Elegância envelhecida","sensacao":"Morno","sensacao_desc":"Calor reconfortante","ocasiao":"Aperitivo","ocasiao_desc":"Encontros refinados"},
+  "Honey & Wood":{"flavors":"Doce • Amadeirado • Cítrico","perfil":"Encorpado","perfil_desc":"Warmth e suavidade","sensacao":"Reconfortante","sensacao_desc":"Abraço líquido","ocasiao":"Noite","ocasiao_desc":"Repouso contemplativo"},
+  "Julep Brasileiro":{"flavors":"Herbáceo • Amadeirado • Refrescante","perfil":"Tropical","perfil_desc":"Autêntico e envolvente","sensacao":"Revigorante","sensacao_desc":"Fresco e aromático","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Amaro Tropical":{"flavors":"Amargo • Cítrico • Amadeirado","perfil":"Sofisticado","perfil_desc":"Tropical e envolvente","sensacao":"Aquecimento","sensacao_desc":"Suave e reconfortante","ocasiao":"Pós-Jantar","ocasiao_desc":"Momento contemplativo"},
+  "Madeira & Abacaxi":{"flavors":"Tropical • Suave • Encorpado","perfil":"Equilibrado","perfil_desc":"Doçura tropical com warmth alcoólico","sensacao":"Refrescante","sensacao_desc":"Leveza cítrica delicada","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada, conversa leve"},
+  "Café com Cachaça":{"flavors":"Amadeirado • Caramelado • Encorpado","perfil":"Elegante","perfil_desc":"sofisticação tropical","sensacao":"Aquecente","sensacao_desc":"calor reconfortante","ocasiao":"Noturna","ocasiao_desc":"após refeição"},
+  "Orchard Brasileiro":{"flavors":"Frutado • Suave • Encorpado","perfil":"Refinado","perfil_desc":"Elegância tropical equilibrada","sensacao":"Sedosa","sensacao_desc":"Morno e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Transição vespertina agradável"},
+  "Cachaça Manhattan":{"flavors":"Madeirado • Amargado • Especiado","perfil":"Sofisticado","perfil_desc":"elegância tropical e aromática","sensacao":"Aquecente","sensacao_desc":"suavidade envolvente","ocasiao":"Noturna","ocasiao_desc":"conversas contemplativas"},
+  "Spiced Cane":{"flavors":"Picante • Cítrico • Amadeirado","perfil":"Tropical","perfil_desc":"quente e refrescante","sensacao":"Vibrante","sensacao_desc":"ardor suave na garganta","ocasiao":"Noturno","ocasiao_desc":"drinks after dark"},
+  "Rabo de Galo Envelhecido":{"flavors":"Amadeirado • Amargo • Herbal","perfil":"Sofisticado","perfil_desc":"Complexo e elegante","sensacao":"Aquecente","sensacao_desc":"Morno e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Sazerac Brasileiro":{"flavors":"Amadeirado • Herbal • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância destilada","sensacao":"Envolvente","sensacao_desc":"Calor aromático","ocasiao":"Noturna","ocasiao_desc":"Contemplação refinada"},
+  "Tropical Old Fashioned":{"flavors":"Tropical • Amadeirado • Especiado","perfil":"Sofisticado","perfil_desc":"Clássico reinventado tropicalmente","sensacao":"Envolvente","sensacao_desc":"Calor e docura equilibrada","ocasiao":"Entardecer","ocasiao_desc":"Momentos contemplativosRequintados"},
+  "Brandy Alexander":{"flavors":"Chocolate • Conhaque • Cremoso","perfil":"Luxuoso","perfil_desc":"Elegância sedutora e sofisticada","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Noite","ocasiao_desc":"Momento de indulgência"},
+  "Between the Sheets":{"flavors":"Cítrico • Sofisticado • Quente","perfil":"Clássico","perfil_desc":"Elegância atemporal","sensacao":"Sedutora","sensacao_desc":"Suave e envolvente","ocasiao":"Noturna","ocasiao_desc":"Momentos intimistas"},
+  "Stinger":{"flavors":"Heráceo • Suave • Aquecido","perfil":"Refrescante","perfil_desc":"Menta cristalina dominante","sensacao":"Envolvente","sensacao_desc":"Frieza mentolada intensa","ocasiao":"Digestivo","ocasiao_desc":"Após refeição elegante"},
+  "French Connection":{"flavors":"Suave • Aromático • Adocicado","perfil":"Elegante","perfil_desc":"sofisticado e equilibrado","sensacao":"Morna","sensacao_desc":"confortável e acariciante","ocasiao":"Digestivo","ocasiao_desc":"pós-refeição relaxante"},
+  "Spicy Margarita":{"flavors":"Picante • Cítrico • Herbal","perfil":"Ousado","perfil_desc":"Refrescante com temperamento","sensacao":"Ardente","sensacao_desc":"Queimação agradável prolongada","ocasiao":"Festivo","ocasiao_desc":"Encontros animados e descontraídos"},
+  "Ranch Water":{"flavors":"Cítrico • Mineral • Refrescante","perfil":"Minimalista","perfil_desc":"simplicidade elegante e limpa","sensacao":"Efervescente","sensacao_desc":"hormiga na língua","ocasiao":"Casual","ocasiao_desc":"tarde de calor intenso"},
+  "Batanga":{"flavors":"Cítrico • Doce • Salgado","perfil":"Refrescante","perfil_desc":"Tropical e estimulante","sensacao":"Efervescente","sensacao_desc":"Borbulhante e vibrante","ocasiao":"Casual","ocasiao_desc":"Encontros descontraídos"},
+  "Naked and Famous":{"flavors":"Herbal • Amargo • Cítrico","perfil":"Sofisticado","perfil_desc":"Complexo e elegante","sensacao":"Refrescante","sensacao_desc":"Fresco e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Mezcal Sour":{"flavors":"Defumado • Cítrico • Terroso","perfil":"Sofisticado","perfil_desc":"Complexo e elegante","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Noite","ocasiao_desc":"Encontros refinados"},
+  "Matador":{"flavors":"Tropical • Cítrico • Suave","perfil":"Refrescante","perfil_desc":"Leve e energizante","sensacao":"Vibrante","sensacao_desc":"Tropical na boca","ocasiao":"Verão","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Agave Spritz":{"flavors":"Cítrico • Doce • Refrescante","perfil":"Equilibrado","perfil_desc":"Harmonia entre agave e limão","sensacao":"Efervescente","sensacao_desc":"Leve e burbuljante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada descontraída"},
+  "Verde Brisa":{"flavors":"Tropical • Refrescante • Herbáceo","perfil":"Vibrante","perfil_desc":"Leve e energizante","sensacao":"Fresco","sensacao_desc":"Mentolado com leveza","ocasiao":"Dia","ocasiao_desc":"Tarde ensolarada"},
+  "Sol e Sal":{"flavors":"Cítrico • Salgado • Floral","perfil":"Refrescante","perfil_desc":"Brightness tropical luminoso","sensacao":"Energizante","sensacao_desc":"Paladar desperto vibrante","ocasiao":"Tardinha","ocasiao_desc":"Momento sol poente"},
+  "Sombra na Areia":{"flavors":"Defumado • Tropical • Cítrico","perfil":"Intrigante","perfil_desc":"Complexo e misterioso","sensacao":"Refrescante","sensacao_desc":"Suave queimação","ocasiao":"Entardecer","ocasiao_desc":"Momento contemplativo"},
+  "Cacto Poético":{"flavors":"Herbal • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"elegância desértica","sensacao":"Refrescante","sensacao_desc":"leveza aromática","ocasiao":"Anoitecer","ocasiao_desc":"momentos contemplativos"},
+  "Bruma de Agave":{"flavors":"Defumado • Cítrico • Agave","perfil":"Complexo","perfil_desc":"Fumaça e doçura equilibradas","sensacao":"Envolvente","sensacao_desc":"Calor aromático suave","ocasiao":"Entardecer","ocasiao_desc":"Momentos contemplativvos refinados"},
+  "Fumaça de Frutas":{"flavors":"Frutado • Picante • Defumado","perfil":"Ousado","perfil_desc":"Complexo e desafiador","sensacao":"Ardente","sensacao_desc":"Queimação prolongada","ocasiao":"Noturna","ocasiao_desc":"Para momentos intensos"},
+  "Vesper":{"flavors":"Herbal • Cítrico • Sofisticado","perfil":"Elegante","perfil_desc":"Refinado e envolvente","sensacao":"Seco","sensacao_desc":"Fresco e limpo","ocasiao":"Noite","ocasiao_desc":"Sofisticação e requinte"},
+  "Bloody Mary":{"flavors":"Umami • Picante • Cítrico","perfil":"Clássico","perfil_desc":"Robusto e temperado","sensacao":"Refrescante","sensacao_desc":"Quente e revigorante","ocasiao":"Brunch","ocasiao_desc":"Repouso matinal elegante"},
+  "Harvey Wallbanger":{"flavors":"Cítrico • Herbáceo • Suave","perfil":"Refrescante","perfil_desc":"Vibrante e tropical","sensacao":"Leve","sensacao_desc":"Macio e elegante","ocasiao":"Festivo","ocasiao_desc":"Tarde ensolarada"},
+  "Sex on the Beach":{"flavors":"Frutado • Doce • Refrescante","perfil":"Tropical","perfil_desc":"vibrante e descontraído","sensacao":"Leve","sensacao_desc":"suave e envolvente","ocasiao":"Praia","ocasiao_desc":"momentos de diversão"},
+  "Lemon Drop":{"flavors":"Cítrico • Doce • Refrescante","perfil":"Elegante","perfil_desc":"sofisticado e equilibrado","sensacao":"Vibrante","sensacao_desc":"fresco e estimulante","ocasiao":"Celebração","ocasiao_desc":"momentos especiais e alegres"},
+  "Mule de Framboesa":{"flavors":"Frutado • Picante • Refrescante","perfil":"Vibrante","perfil_desc":"framboesa com gengibre","sensacao":"Efervescente","sensacao_desc":"cosquilho picante","ocasiao":"Verão","ocasiao_desc":"festas ao ar livre"},
+  "El Presidente":{"flavors":"Encorpado • Elegante • Sofisticado","perfil":"Clássico","perfil_desc":"Diplomático e refinado","sensacao":"Suave","sensacao_desc":"Macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Momento de distinção"},
+  "Planter's Punch":{"flavors":"Tropical • Amargo • Frutado","perfil":"Clássico","perfil_desc":"elegância caribenha atemporal","sensacao":"Refrescante","sensacao_desc":"doce e penetrante","ocasiao":"Festivo","ocasiao_desc":"celebração tropical vibrante"},
+  "Rum Old Fashioned":{"flavors":"Amadeirado • Caramelizado • Especiado","perfil":"Sofisticado","perfil_desc":"Elegância clássica e profunda","sensacao":"Aquecedor","sensacao_desc":"Abraço alcoólico reconfortante","ocasiao":"Noturna","ocasiao_desc":"Momentos de contemplação"},
+  "Painkiller":{"flavors":"Tropical • Cremoso • Especiado","perfil":"Exótico","perfil_desc":"Praia caribenha tropical","sensacao":"Suave","sensacao_desc":"Macio e envolvente","ocasiao":"Relaxamento","ocasiao_desc":"Descanso à beira-mar"},
+  "Mary Pickford":{"flavors":"Tropical • Frutado • Doce","perfil":"Clássico","perfil_desc":"Elegância tropical refrescante","sensacao":"Suave","sensacao_desc":"Seda na boca","ocasiao":"Tarde","ocasiao_desc":"Momento ensolarado"},
+  "Tom Collins":{"flavors":"Cítrico • Floral • Refrescante","perfil":"Clássico","perfil_desc":"elegância atemporal","sensacao":"Leve","sensacao_desc":"efervescência alerta","ocasiao":"Tarde","ocasiao_desc":"encontro social descontraído"},
+  "Corpse Reviver #2":{"flavors":"Cítrico • Herbal • Seco","perfil":"Clássico","perfil_desc":"elegância revigorante","sensacao":"Refrescante","sensacao_desc":"picante e leve","ocasiao":"Aperitivo","ocasiao_desc":"despertar sensorial"},
+  "White Lady":{"flavors":"Cítrico • Floral • Seco","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Cremosa","sensacao_desc":"Macia e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momento celebrativo refinado"},
+  "Hanky Panky":{"flavors":"Herbal • Amargo • Doce","perfil":"Sofisticado","perfil_desc":"Complexo e refinado","sensacao":"Envolvente","sensacao_desc":"Quente e sedutora","ocasiao":"Noturna","ocasiao_desc":"Encontros intimistas"},
+  "Southside":{"flavors":"Cítrico • Herbal • Refrescante","perfil":"Clássico","perfil_desc":"Elegância citrina com toque de hortelã","sensacao":"Revigorante","sensacao_desc":"Frescor mentolado e limpo","ocasiao":"Verão","ocasiao_desc":"Tarde ensolarada, celebração"},
+  "20th Century":{"flavors":"Floral • Cacauado • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Noturna","ocasiao_desc":"Momento de elegância"},
+  "Black Manhattan":{"flavors":"Amargo • Especiado • Fumegante","perfil":"Sofisticado","perfil_desc":"Elegância redonda e intensa","sensacao":"Encorpado","sensacao_desc":"Pesado e envolvente","ocasiao":"Noite","ocasiao_desc":"Drinks contemplativo e profundo"},
+  "Toronto":{"flavors":"Amargo • Especiado • Sofisticado","perfil":"Clássico","perfil_desc":"Coquetel histórico robusto","sensacao":"Intenso","sensacao_desc":"Queimação reconfortante","ocasiao":"Noturna","ocasiao_desc":"Conversas profundas"},
+  "Blood and Sand":{"flavors":"Frutado • Amargo • Doce","perfil":"Clássico","perfil_desc":"Equilibrado e sofisticado","sensacao":"Aveludada","sensacao_desc":"Morna e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Transição do dia"},
+  "Horse's Neck":{"flavors":"Picante • Amadeirada • Cítrica","perfil":"Clássico","perfil_desc":"Elegante e sofisticado","sensacao":"Refrescante","sensacao_desc":"Hormigueo especiado","ocasiao":"Coquetel","ocasiao_desc":"Aperitivo relaxante"},
+  "Highland Orchard":{"flavors":"Frutado • Herbáceo • Adocicado","perfil":"Sofisticado","perfil_desc":"Elegância aromática suave","sensacao":"Refrescante","sensacao_desc":"Leve e espumante","ocasiao":"Aperitivo","ocasiao_desc":"Momentos contemplativosatardecer"},
+  "Honey & Heather":{"flavors":"Herbal • Melado • Aromático","perfil":"Sofisticado","perfil_desc":"Complexo e envolvente","sensacao":"Reconfortante","sensacao_desc":"Quente e adocicado","ocasiao":"Noturna","ocasiao_desc":"Após jantar elegante"},
+  "Golden Citrus Fizz":{"flavors":"Mel • Cítrico • Floral","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Efervescente","sensacao_desc":"Leve e aérea","ocasiao":"Aperitivo","ocasiao_desc":"Momentos celebrativos"},
+  "Autumn Smoke":{"flavors":"Amadeirado • Defumado • Adocicado","perfil":"Envolvente","perfil_desc":"Quente e misterioso","sensacao":"Reconfortante","sensacao_desc":"Fumaça adocicada","ocasiao":"Noite","ocasiao_desc":"Momento contemplativo"},
+  "Bitter Hive":{"flavors":"Amargo • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"Elegância em copo","sensacao":"Provocante","sensacao_desc":"Queimação doce","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Spiced Nightcap":{"flavors":"Mel • Chocolate • Especiado","perfil":"Sofisticado","perfil_desc":"Elegância adocicada e envolvente","sensacao":"Reconfortante","sensacao_desc":"Calor e maciez abraçadora","ocasiao":"Noturna","ocasiao_desc":"Repouso contemplativo e aconchego"},
+  "Barley Highball":{"flavors":"Herbal • Doce • Terroso","perfil":"Sofisticado","perfil_desc":"Elegância cereal e mel","sensacao":"Refrescante","sensacao_desc":"Efervescência suave e leve","ocasiao":"Aperitivo","ocasiao_desc":"Momento de contemplação"},
+  "Tropical Heather":{"flavors":"Doce • Tropical • Herbáceo","perfil":"Exótico","perfil_desc":"Frutas tropicais com mel","sensacao":"Suave","sensacao_desc":"Morno e sedoso","ocasiao":"Festas","ocasiao_desc":"Celebrações ensolaradas"},
+  "Elder Fashion":{"flavors":"Floral • Amadeirado • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância e refinamento","sensacao":"Suave","sensacao_desc":"morno e envolvente","ocasiao":"Noturna","ocasiao_desc":"encontros elegantes"},
+  "French Gimlet":{"flavors":"Floral • Cítrico • Herbáceo","perfil":"Elegante","perfil_desc":"sofisticado e refinado","sensacao":"Fresco","sensacao_desc":"leve e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"momento de sofisticação"},
+  "St-Germain Sour":{"flavors":"Floral • Cítrico • Suave","perfil":"Elegante","perfil_desc":"sofisticado e refinado","sensacao":"Aveludada","sensacao_desc":"macia e envolvente","ocasiao":"Coquetel","ocasiao_desc":"aperitivo de luxo"},
+  "The Harvest":{"flavors":"Floral • Frutado • Refrescante","perfil":"Elegante","perfil_desc":"sofisticação de pomar","sensacao":"Efervescente","sensacao_desc":"bolhas delicadas dançando","ocasiao":"Brunch","ocasiao_desc":"celebração matinal luminosa"},
+  "Jardim Elétrico":{"flavors":"Floral • Cítrico • Herbal","perfil":"Refrescante","perfil_desc":"Luminoso e vivaz","sensacao":"Equilibrado","sensacao_desc":"Suave e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Momento social e descontraído"},
+  "Pera & Fumaça":{"flavors":"Frutado • Amadeirado • Floral","perfil":"Sofisticado","perfil_desc":"elegância adocicada","sensacao":"Envolvente","sensacao_desc":"fumaça suave","ocasiao":"Entardecer","ocasiao_desc":"contemplação requintada"},
+  "Citrus Cloud":{"flavors":"Floral • Cítrico • Mel","perfil":"Delicado","perfil_desc":"Elegância leve e sofisticada","sensacao":"Aveludado","sensacao_desc":"Espuma sedosa na boca","ocasiao":"Aperitivo","ocasiao_desc":"Momento refinado e social"},
+  "Vinho de Jardim":{"flavors":"Floral • Cítrico • Mineral","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Fresco","sensacao_desc":"Leve e efervescente","ocasiao":"Tarde","ocasiao_desc":"Momento tranquilo"},
+  "Chá da Tarde":{"flavors":"Floral • Herbáceo • Cítrico","perfil":"Refinado","perfil_desc":"Elegante e sofisticado","sensacao":"Refrescante","sensacao_desc":"Leve e envolvente","ocasiao":"Tarde","ocasiao_desc":"Pausa contemplativa"},
+  "Dourado Amargo":{"flavors":"Amargo • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância bittersweet","sensacao":"Refrescante","sensacao_desc":"amargura sedutora","ocasiao":"Aperitivo","ocasiao_desc":"pré-jantar refinado"},
+  "Estufa":{"flavors":"Floral • Refrescante • Herbáceo","perfil":"Delicado","perfil_desc":"Elegância verde e luminosa","sensacao":"Revigorante","sensacao_desc":"Frescor mineral tocante","ocasiao":"Primavera","ocasiao_desc":"Tarde ensolarada e leve"},
+  "Flor Rubra":{"flavors":"Floral • Frutado • Suave","perfil":"Elegante","perfil_desc":"Sofisticado e equilibrado","sensacao":"Refrescante","sensacao_desc":"Leve e sedoso","ocasiao":"Aperitivo","ocasiao_desc":"Encontros sofisticados"},
+  "Floral Mule Leve":{"flavors":"Floral • Cítrico • Picante","perfil":"Refrescante","perfil_desc":"Leve e elegante","sensacao":"Espumante","sensacao_desc":"Burbujas efervescentes","ocasiao":"Coquetel","ocasiao_desc":"Tarde ensolarada"},
+  "Tuxedo":{"flavors":"Herbal • Seco • Sofisticado","perfil":"Clássico","perfil_desc":"elegância destilada","sensacao":"Refinado","sensacao_desc":"suavidade amargosa","ocasiao":"Noturna","ocasiao_desc":"encontros formais"},
+  "Rose":{"flavors":"Floral • Herbal • Cítrico","perfil":"Elegante","perfil_desc":"sofisticado e refinado","sensacao":"Fresco","sensacao_desc":"leve e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"momentos especiais"},
+  "Strega Sour":{"flavors":"Herbal • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"Elegância cremosa","sensacao":"Aveludado","sensacao_desc":"Espuma sedosa","ocasiao":"Noite","ocasiao_desc":"Encontro refinado"},
+  "Strega Spritz":{"flavors":"Herbáceo • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Efervescente","sensacao_desc":"Leve e refrescante","ocasiao":"Aperitivo","ocasiao_desc":"Momentos sociais descontraídos"},
+  "Italian Buck":{"flavors":"Herbal • Cítrico • Picante","perfil":"Refrescante","perfil_desc":"Herbáceo e efervescente","sensacao":"Estimulante","sensacao_desc":"Formigante e vivo","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Witch's Kiss":{"flavors":"Herbal • Cítrico • Mel","perfil":"Misterioso","perfil_desc":"Complexo e envolvente","sensacao":"Sedutora","sensacao_desc":"Quente e suave","ocasiao":"Noturna","ocasiao_desc":"Encontros intimistas"},
+  "Benevento Old Fashioned":{"flavors":"Herbal • Amadeirado • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância amarga e quente","sensacao":"Envolvente","sensacao_desc":"Calor sedoso na garganta","ocasiao":"Noturna","ocasiao_desc":"Conversas contemplativas"},
+  "Golden Bee":{"flavors":"Herbal • Cítrico • Melado","perfil":"Encantador","perfil_desc":"Doce e aromático","sensacao":"Suave","sensacao_desc":"Morno e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Tarde tranquila"},
+  "Strega Martini":{"flavors":"Herbal • Citrina • Seca","perfil":"Sofisticado","perfil_desc":"elegante e refinado","sensacao":"Equilibrada","sensacao_desc":"fresca e equilibrada","ocasiao":"Social","ocasiao_desc":"encontros descontraídos"},
+  "Strega Coffee Flip":{"flavors":"Herbal • Cafeínico • Cremoso","perfil":"Sofisticado","perfil_desc":"Elegância amarga e adocicada","sensacao":"Aveludado","sensacao_desc":"Textura morna e envolvente","ocasiao":"Digestivo","ocasiao_desc":"Encerramento refinado"},
+  "Strega Highball":{"flavors":"Herbal • Cítrico • Refrescante","perfil":"Sofisticado","perfil_desc":"Elegância descomplicada","sensacao":"Efervescente","sensacao_desc":"Burbujas leves","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Giardino Giallo":{"flavors":"Herbal • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"elegância aromática italiana","sensacao":"Refrescante","sensacao_desc":"luminoso e equilibrado","ocasiao":"Aperitivo","ocasiao_desc":"tarde ensolarada"},
+  "Zafferano Tonic":{"flavors":"Herbal • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"Elegância aromática italiana","sensacao":"Refrescante","sensacao_desc":"Leveza burbuante","ocasiao":"Aperitivo","ocasiao_desc":"Encontros ao entardecer"},
+  "Ervas & Casca":{"flavors":"Herbal • Cítrico • Amargo","perfil":"Aromático","perfil_desc":"Ervas complexas, laranja vibrante","sensacao":"Refrescante","sensacao_desc":"Leve, estimulante, elegante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar, conversas"},
+  "Campo Noturno":{"flavors":"Herbal • Melífero • Terroso","perfil":"Contemplativo","perfil_desc":"Noturno e reconfortante","sensacao":"Envolvente","sensacao_desc":"Morno e acalentador","ocasiao":"Anoitecer","ocasiao_desc":"Repouso e introspecção"},
+  "Ouro & Fumaça":{"flavors":"Herbal • Doce • Defumado","perfil":"Sofisticado","perfil_desc":"Elegância aromática e complexa","sensacao":"Envolvente","sensacao_desc":"Fumaça quente e mel","ocasiao":"Noite","ocasiao_desc":"Momentos contemplativosIntrospecção"},
+  "Freddo di Benevento":{"flavors":"Herbal • Cítrico • Refrescante","perfil":"Elegante","perfil_desc":"sofisticação gelada","sensacao":"Revigorante","sensacao_desc":"frio intenso","ocasiao":"Aperitivo","ocasiao_desc":"momento contemplativo"},
+  "Fruto Secreto":{"flavors":"Floral • Frutado • Mel","perfil":"Sofisticado","perfil_desc":"Elegância herbácea doce","sensacao":"Morno","sensacao_desc":"Envolvimento agradável","ocasiao":"Pós-Jantar","ocasiao_desc":"Momentos contemplativosintimos"},
+  "Golden Orchard":{"flavors":"Herbal • Cítrico • Frutado","perfil":"Sofisticado","perfil_desc":"elegância verdejante","sensacao":"Refrescante","sensacao_desc":"leveza efervescente","ocasiao":"Aperitivo","ocasiao_desc":"momento elegante"},
+  "Noite em Benevento":{"flavors":"Amargo • Herbal • Tostado","perfil":"Sofisticado","perfil_desc":"Elegância noturna italiana","sensacao":"Envolvente","sensacao_desc":"Calor reconfortante profundo","ocasiao":"Pós-jantar","ocasiao_desc":"Conversas contemplativas lentas"},
+  "Citrus Incantation":{"flavors":"Cítrico • Herbal • Doce","perfil":"Luminoso","perfil_desc":"brilho amargo-doce","sensacao":"Refrescante","sensacao_desc":"efervescência bucal","ocasiao":"Aperitivo","ocasiao_desc":"momento jovial"},
+  "Campo Alto":{"flavors":"Herbal • Fresco • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância verde e luminosa","sensacao":"Refrescante","sensacao_desc":"toque crocante e leve","ocasiao":"Aperitivo","ocasiao_desc":"momento de conversas agradáveis"},
+  "Tropical Esotérico":{"flavors":"Herbal • Tropical • Melado","perfil":"Exótico","perfil_desc":"mistério tropical aromático","sensacao":"Envolvente","sensacao_desc":"quente e refrescante","ocasiao":"Entardecer","ocasiao_desc":"celebração ensolarada"},
+  "Strega & Tonic Verde":{"flavors":"Herbáceo • Cítrico • Floral","perfil":"Refrescante","perfil_desc":"Verde e aromático","sensacao":"Efervescente","sensacao_desc":"Leve e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Golden Orange Fizz":{"flavors":"Cítrico • Herbal • Efervescente","perfil":"Refrescante","perfil_desc":"Alegre e descontraído","sensacao":"Vibrante","sensacao_desc":"Leve e estimulante","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
+  "Alpine Highball":{"flavors":"Herbal • Cítrico • Amargo","perfil":"Aromático","perfil_desc":"Fresco e sofisticado","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Floral Witch":{"flavors":"Floral • Herbal • Doce","perfil":"Encantador","perfil_desc":"Misterioso e elegante","sensacao":"Refrescante","sensacao_desc":"Leve e efervescente","ocasiao":"Noturna","ocasiao_desc":"Eventos sofisticados"},
+  "Bitter Sunshine":{"flavors":"Amargo • Herbáceo • Cítrico","perfil":"Aperitivo","perfil_desc":"elegância refrescante","sensacao":"Efervescente","sensacao_desc":"burbujas leves","ocasiao":"Tarde","ocasiao_desc":"sol dourado"},
+  "Bamboo":{"flavors":"Seco • Herbal • Cítrico","perfil":"Clássico","perfil_desc":"elegância vintage e refinada","sensacao":"Sofisticado","sensacao_desc":"leveza mineral tátil","ocasiao":"Aperitivo","ocasiao_desc":"pausa contemplativa sofisticada"},
+  "Adonis":{"flavors":"Seco • Herbal • Cítrico","perfil":"Refinado","perfil_desc":"elegância fortificada","sensacao":"Suave","sensacao_desc":"macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Sherry Cobbler":{"flavors":"Frutado • Floral • Equilibrado","perfil":"Sofisticado","perfil_desc":"Elegância refrescante","sensacao":"Suave","sensacao_desc":"Toque sedoso","ocasiao":"Tarde","ocasiao_desc":"Momento contemplativo"},
+  "Rebujito":{"flavors":"Fresco • Herbáceo • Cítrico","perfil":"Refrescante","perfil_desc":"leve e descontraído","sensacao":"Efervescente","sensacao_desc":"borbulhante na boca","ocasiao":"Verão","ocasiao_desc":"tardes ensolaradas"},
+  "Tío Pepe & Tônica":{"flavors":"Seco • Mineral • Amargo","perfil":"Clássico","perfil_desc":"elegância ibérica refrescante","sensacao":"Crisp","sensacao_desc":"leveza efervescente","ocasiao":"Aperitivo","ocasiao_desc":"tarde ensolarada"},
+  "Sherry Highball":{"flavors":"Seco • Cítrico • Mineral","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Refrescante","sensacao_desc":"Espumante e vivaz","ocasiao":"Aperitivo","ocasiao_desc":"Momento de descontração"},
+  "Sherry Sour":{"flavors":"Seco • Cítrico • Encorpado","perfil":"Sofisticado","perfil_desc":"Elegância envelhecida","sensacao":"Suave","sensacao_desc":"Sedoso e equilibrado","ocasiao":"Aperitivo","ocasiao_desc":"Encontros refinados"},
+  "East India Sour":{"flavors":"Doce • Amargo • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância e complexidade","sensacao":"Sedoso","sensacao_desc":"Macio e reconfortante","ocasiao":"Aperitivo","ocasiao_desc":"Momento contemplativo refinado"},
+  "Sherry Old Fashioned":{"flavors":"Oxidado • Amargo • Doce","perfil":"Sofisticado","perfil_desc":"Elegância envelhecida","sensacao":"Aquecente","sensacao_desc":"Calidez prolongada","ocasiao":"Noturna","ocasiao_desc":"Contemplação e repouso"},
+  "Coronation Cocktail":{"flavors":"Sofisticado • Cítrico • Amargado","perfil":"Elegante","perfil_desc":"Refinado e complexo","sensacao":"Encorpado","sensacao_desc":"Morno e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Aperitivo formal e celebrativo"},
+  "Bosco Notturno":{"flavors":"Amargo • Cítrico • Herbáceo","perfil":"Sofisticado","perfil_desc":"Elegância noturna italiana","sensacao":"Refrescante","sensacao_desc":"Fresco e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Entardecer contemplativo"},
+  "Caramello Spritz":{"flavors":"Amargo • Frutado • Efervescente","perfil":"Sofisticado","perfil_desc":"elegância italiana refinada","sensacao":"Refrescante","sensacao_desc":"burbujas leves vibrantes","ocasiao":"Aperitivo","ocasiao_desc":"momento social descontraído"},
+  "Nero Fizz":{"flavors":"Amargo • Cítrico • Cremoso","perfil":"Sofisticado","perfil_desc":"elegância amarga e refrescante","sensacao":"Sedoso","sensacao_desc":"textura aveludada e leve","ocasiao":"Aperitivo","ocasiao_desc":"início de noite especial"},
+  "Sicilian Orchard":{"flavors":"Amargo • Frutado • Especiado","perfil":"Aromático","perfil_desc":"Herbal e acaramelado","sensacao":"Quentinho","sensacao_desc":"Abraço reconfortante","ocasiao":"Crepúsculo","ocasiao_desc":"Final de tarde contemplativo"},
+  "Amaro Tonic Café":{"flavors":"Amargo • Cafeínico • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância amarga e moderna","sensacao":"Revigorante","sensacao_desc":"Espumante e despertador","ocasiao":"Pós-jantar","ocasiao_desc":"Digestivo estimulante noturno"},
+  "Dark Tropic":{"flavors":"Amargo • Tropical • Picante","perfil":"Exótico","perfil_desc":"Frutas tropicais e especiarias","sensacao":"Refrescante","sensacao_desc":"Quente e estimulante","ocasiao":"Noite","ocasiao_desc":"Drinks sofisticados e elegantes"},
+  "Jardim Noturno":{"flavors":"Herbal • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância verde e doce","sensacao":"Refrescante","sensacao_desc":"efervescência delicada","ocasiao":"Noturna","ocasiao_desc":"encontros intimistas"},
+  "Maçã Verde Elétrica":{"flavors":"Herbal • Cítrico • Frutado","perfil":"Refrescante","perfil_desc":"Limpo e vibrante","sensacao":"Elétrico","sensacao_desc":"Formigante na língua","ocasiao":"Aperitivo","ocasiao_desc":"Início de noite"},
+  "Fennel Tonic":{"flavors":"Herbal • Fresco • Amargo","perfil":"Sofisticado","perfil_desc":"elegância botânica refinada","sensacao":"Refrescante","sensacao_desc":"formigamento herbal mentolado","ocasiao":"Aperitivo","ocasiao_desc":"encontro pré-jantar elegante"},
+  "Solar Verde":{"flavors":"Herbal • Cítrico • Refrescante","perfil":"Aperitivo","perfil_desc":"Elegante e estimulante","sensacao":"Vivaz","sensacao_desc":"Espumante na boca","ocasiao":"Pré-jantar","ocasiao_desc":"Momento de contemplação solar"},
+  "Vinha Fantasma":{"flavors":"Anisado • Frutado • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegante e misterioso","sensacao":"Refrescante","sensacao_desc":"Efervescente e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Noites especiais e sofisticadas"},
+  "Mate Verde":{"flavors":"Herbal • Cítrico • Anisado","perfil":"Refrescante","perfil_desc":"Verde e vibrante","sensacao":"Estimulante","sensacao_desc":"Energizante e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Abacaxi Anisado":{"flavors":"Anisado • Tropical • Refrescante","perfil":"Sofisticado","perfil_desc":"Elegante e equilibrado","sensacao":"Energizante","sensacao_desc":"Formigante e vibrante","ocasiao":"Aperitivo","ocasiao_desc":"Encontros noturnos chic"},
+  "Green Shandy":{"flavors":"Herbáceo • Cítrico • Refrescante","perfil":"Sofisticado","perfil_desc":"erva e trigo","sensacao":"Efervescente","sensacao_desc":"leve e picante","ocasiao":"Aperitivo","ocasiao_desc":"tarde ensolarada"},
+  "Fernet & Coke":{"flavors":"Amargo • Mentolado • Caramelizado","perfil":"Descontraído","perfil_desc":"clássico e acessível","sensacao":"Refrescante","sensacao_desc":"fresco e estimulante","ocasiao":"Social","ocasiao_desc":"encontro descontraído"},
+  "Industry Sour":{"flavors":"Amargo • Herbal • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância amarga e verde","sensacao":"Refrescante","sensacao_desc":"picância herbal fresca","ocasiao":"Aperitivo","ocasiao_desc":"antes de refeição"},
+  "Porto Tônico Tinto":{"flavors":"Frutado • Amargo • Sofisticado","perfil":"Elegante","perfil_desc":"Refinado e envolvente","sensacao":"Refrescante","sensacao_desc":"Espumante e leve","ocasiao":"Aperitivo","ocasiao_desc":"Encontros sofisticados"},
+  "Porto Flip":{"flavors":"Encorpado • Especiado • Sedoso","perfil":"Clássico","perfil_desc":"Elegância atemporal","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Noturna","ocasiao_desc":"Repouso e conforto"},
+  "Porto Negroni":{"flavors":"Amargo • Sofisticado • Frutado","perfil":"Clássico","perfil_desc":"Elegância encorpada","sensacao":"Aquecimento","sensacao_desc":"Suavidade envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Pôr do sol refinado"},
+  "Porto Branco & Tônica":{"flavors":"Cítrico • Herbal • Elegante","perfil":"Refrescante","perfil_desc":"Leve e equilibrado","sensacao":"Espumante","sensacao_desc":"Bolhas vibrantes","ocasiao":"Aperitivo","ocasiao_desc":"Início sofisticado"},
+  "Porto Branco Sour":{"flavors":"Cítrico • Suave • Encorpado","perfil":"Elegante","perfil_desc":"refinado e equilibrado","sensacao":"Sedoso","sensacao_desc":"macio na boca","ocasiao":"Aperitivo","ocasiao_desc":"início de noite"},
+  "Porto Branco Spritz":{"flavors":"Floral • Cítrico • Delicado","perfil":"Refinado","perfil_desc":"Elegância efervescente","sensacao":"Refrescante","sensacao_desc":"Leveza gaseificada","ocasiao":"Aperitivo","ocasiao_desc":"Momento social relaxado"},
+  "Lillet Vive":{"flavors":"Floral • Refrescante • Frutal","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"Burbujas vibrantes","ocasiao":"Aperitivo","ocasiao_desc":"Momento social relaxado"},
+  "Lillet Berry":{"flavors":"Frutado • Refrescante • Herbáceo","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"Burbujas vibrantes","ocasiao":"Aperitivo","ocasiao_desc":"Início de noite"},
+  "Lillet & Gim Highball":{"flavors":"Floral • Cítrico • Herbal","perfil":"Refinado","perfil_desc":"Elegante e sofisticado","sensacao":"Fresco","sensacao_desc":"Efervescente e leve","ocasiao":"Aperitivo","ocasiao_desc":"Início de noite"},
+  "Lillet Honey Lemon":{"flavors":"Floral • Melado • Cítrico","perfil":"Delicado","perfil_desc":"Elegância doce e fresca","sensacao":"Refrescante","sensacao_desc":"Leveza espumante","ocasiao":"Aperitivo","ocasiao_desc":"Manhã luminosa"},
+  "White Negroni Tropical":{"flavors":"Herbal • Amargo • Floral","perfil":"Sofisticado","perfil_desc":"elegância amargada e fresca","sensacao":"Refinado","sensacao_desc":"toque seco e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"momento de contemplação e conversa"},
+  "Lillet Garden Spritz":{"flavors":"Floral • Frutado • Refrescante","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"Vibrante na boca","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Cynar Sunset Highball":{"flavors":"Amargo • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância aperitivo refinado","sensacao":"Refrescante","sensacao_desc":"leveza efervescente","ocasiao":"Entardecer","ocasiao_desc":"momento golden hour"},
+  "French Aviation (hack)":{"flavors":"Floral • Amargo • Cítrico","perfil":"Elegante","perfil_desc":"sofisticado e equilibrado","sensacao":"Refrescante","sensacao_desc":"leve e vibrante","ocasiao":"Aperitivo","ocasiao_desc":"início de noite"},
+  "Lillet Orchard":{"flavors":"Floral • Mel • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância frutada e doce","sensacao":"Sedoso","sensacao_desc":"macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"encontro refinado e descontraído"},
+  "Almost Martini":{"flavors":"Herbáceo • Floral • Seco","perfil":"Sofisticado","perfil_desc":"Elegância contida e refinada","sensacao":"Fresco","sensacao_desc":"Cristalino e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Aperitivo entre amigos"},
+  "Horta & Laranja Queimada":{"flavors":"Amargo • Cítrico • Herbal","perfil":"Sofisticado","perfil_desc":"Elegância aromática e terrosa","sensacao":"Refrescante","sensacao_desc":"Queimação cítrica suave","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar especial"},
+  "Lillet Gold Rush":{"flavors":"Floral • Cítrico • Mel","perfil":"Sofisticado","perfil_desc":"elegante e refinado","sensacao":"Suave","sensacao_desc":"macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"início de noite elegante"},
+  "White Orchard Martini":{"flavors":"Floral • Frutado • Herbal","perfil":"Sofisticado","perfil_desc":"elegância em copo","sensacao":"Refrescante","sensacao_desc":"leveza primaveril","ocasiao":"Aperitivo","ocasiao_desc":"encontros refinados"},
+  "Solar Highball":{"flavors":"Cítrico • Floral • Refrescante","perfil":"Luminoso","perfil_desc":"Brilho solar em copo","sensacao":"Efervescente","sensacao_desc":"Leveza gaseificada","ocasiao":"Tarde","ocasiao_desc":"Momento ensolarado"},
+  "Lillet Spritz":{"flavors":"Floral • Cítrico • Elegante","perfil":"Refinado","perfil_desc":"leveza buquê aromático","sensacao":"Efervescente","sensacao_desc":"frescor borbulhante","ocasiao":"Aperitivo","ocasiao_desc":"encontro sofisticado"},
+  "French Pearl":{"flavors":"Herbal • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"elegância parisiense e frescor","sensacao":"Refrescante","sensacao_desc":"mentol suave e luminoso","ocasiao":"Aperitivo","ocasiao_desc":"encontros refinados e elegantes"},
+  "Lillet & Tônica":{"flavors":"Cítrico • Floral • Amargo","perfil":"Refinado","perfil_desc":"elegância leve e sofisticada","sensacao":"Refrescante","sensacao_desc":"fresco e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"início perfeito da noite"},
+  "Jasmine":{"flavors":"Floral • Amargo • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância equilibrada","sensacao":"Refrescante","sensacao_desc":"vivacidade aromatic","ocasiao":"Coquetel","ocasiao_desc":"aperitivo refinado"},
+  "Lillet Rosé Spritz":{"flavors":"Frutado • Floral • Refrescante","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Espumante","sensacao_desc":"Efervescente na boca","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Cynar Tônica":{"flavors":"Amargo • Cítrico • Herbáceo","perfil":"Refrescante","perfil_desc":"leve e vivificante","sensacao":"Espumante","sensacao_desc":"burbujeante na boca","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Black Negroni":{"flavors":"Amargo • Mentolado • Cítrico","perfil":"Sofisticado","perfil_desc":"complexo e intenso","sensacao":"Refrescante","sensacao_desc":"menta gelada","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Fernet Sour":{"flavors":"Amargo • Cítrico • Floral","perfil":"Sofisticado","perfil_desc":"Elegância herbal complexa","sensacao":"Sedoso","sensacao_desc":"Cremoso e aveludado","ocasiao":"Noturna","ocasiao_desc":"Digestivo pós-jantar"},
+  "Fernet Ginger Highball":{"flavors":"Picante • Amargo • Cítrico","perfil":"Estimulante","perfil_desc":"Refrescante e revigorante","sensacao":"Ardente","sensacao_desc":"Queimação picante prolongada","ocasiao":"Aperitivo","ocasiao_desc":"Antes da refeição"},
+  "Fernet Spritz":{"flavors":"Amargo • Cítrico • Efervescente","perfil":"Sofisticado","perfil_desc":"elegância com atitude","sensacao":"Refrescante","sensacao_desc":"formigamento aromatic o","ocasiao":"Aperitivo","ocasiao_desc":"encontros sociais chiques"},
+  "Jardim Suspenso":{"flavors":"Amargo • Refrescante • Herbáceo","perfil":"Sofisticado","perfil_desc":"Elegância verde e brilhante","sensacao":"Revigorante","sensacao_desc":"Frescor mentolado leve","ocasiao":"Aperitivo","ocasiao_desc":"Tardinha ensolarada elegante"},
+  "Bitter Milk Punch":{"flavors":"Amargo • Cremoso • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância reconfortante","sensacao":"Aveludado","sensacao_desc":"suavidade quente","ocasiao":"Entardecer","ocasiao_desc":"momento contemplativo"},
+  "Vinho Fantasma":{"flavors":"Amargo • Encorpado • Sofisticado","perfil":"Clássico","perfil_desc":"elegância com profundidade","sensacao":"Envolvente","sensacao_desc":"cobertura aveludada","ocasiao":"Noite","ocasiao_desc":"contemplação sofisticada"},
+  "Rubor Picante":{"flavors":"Amargo • Picante • Cítrico","perfil":"Ousado","perfil_desc":"Intenso e desafiador","sensacao":"Ardente","sensacao_desc":"Queimação refrescante","ocasiao":"Noturna","ocasiao_desc":"Happy hour sofisticado"},
+  "Espresso Amaro Highball":{"flavors":"Amargo • Encorpado • Refrescante","perfil":"Sofisticado","perfil_desc":"elegância bitter-cafeinada","sensacao":"Estimulante","sensacao_desc":"vibrante e despertadora","ocasiao":"Aperitivo","ocasiao_desc":"pós-almoço revigorante"},
+  "Casca & Fumaça":{"flavors":"Amargo • Defumado • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância com arestas","sensacao":"Envolvente","sensacao_desc":"fumaça quente penetrante","ocasiao":"Noturna","ocasiao_desc":"drinks pós-jantares"},
+  "Bitter & Melão":{"flavors":"Amargo • Doce • Frutado","perfil":"Sofisticado","perfil_desc":"elegância amarga e mel","sensacao":"Refrescante","sensacao_desc":"melão suave, final seco","ocasiao":"Happy Hour","ocasiao_desc":"encontros ao entardecer"},
+  "Campari Lemon Tonic":{"flavors":"Amargo • Cítrico • Refrescante","perfil":"Sofisticado","perfil_desc":"elegância brilhante e equilibrada","sensacao":"Espumante","sensacao_desc":"formigamento palatal agradável","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar requintado"},
+  "Laranja & Sal":{"flavors":"Amargo • Cítrico • Salgado","perfil":"Refrescante","perfil_desc":"Vibrante e desafiador","sensacao":"Provocante","sensacao_desc":"Picante na língua","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Highball Picante":{"flavors":"Amargo • Cítrico • Picante","perfil":"Refrescante","perfil_desc":"Efervescente e estimulante","sensacao":"Ardente","sensacao_desc":"Queimação suave prolongada","ocasiao":"Aperitivo","ocasiao_desc":"Noites quentes vibrantes"},
+  "Uva Amarga":{"flavors":"Amargo • Frutado • Refrescante","perfil":"Aperitivo","perfil_desc":"elegância amarga e cítrica","sensacao":"Efervescente","sensacao_desc":"bolhas leves na boca","ocasiao":"Coquetail","ocasiao_desc":"antes do jantar social"},
+  "Bitter Ginger Highball":{"flavors":"Amargo • Picante • Cítrico","perfil":"Vibrante","perfil_desc":"Refrescante e estimulante","sensacao":"Ardente","sensacao_desc":"Queimadura picante agradável","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Verde & Amargo":{"flavors":"Amargo • Frutado • Herbáceo","perfil":"Aperitivo","perfil_desc":"Refrescante e sofisticado","sensacao":"Revigorante","sensacao_desc":"Pungente e vivificante","ocasiao":"Pré-jantar","ocasiao_desc":"Momento de descontração"},
+  "Tomate Highball":{"flavors":"Amargo • Umami • Refrescante","perfil":"Savory","perfil_desc":"Sofisticado e terroso","sensacao":"Vibrante","sensacao_desc":"Picante e efervescente","ocasiao":"Aperitivo","ocasiao_desc":"Tarde social elegante"},
+  "Sangria":{"flavors":"Frutado • Cítrico • Suave","perfil":"Refrescante","perfil_desc":"Bebida social e leve","sensacao":"Equilibrada","sensacao_desc":"Harmonia frutal agradável","ocasiao":"Verão","ocasiao_desc":"Encontros ao ar livre"},
+  "Virgin Mojito":{"flavors":"Refrescante • Cítrico • Herbáceo","perfil":"Leve","perfil_desc":"Toque minimalista e puro","sensacao":"Revigorante","sensacao_desc":"Frescor na boca","ocasiao":"Diurno","ocasiao_desc":"Tarde ensolarada"},
+  "Shirley Temple":{"flavors":"Doce • Cítrico • Refrescante","perfil":"Infantil","perfil_desc":"Alegre e descomplicado","sensacao":"Efervescente","sensacao_desc":"Burbujas leves e alegres","ocasiao":"Infantil","ocasiao_desc":"Festas e celebrações familiares"},
+  "Arnold Palmer":{"flavors":"Refrescante • Cítrico • Suave","perfil":"Clássico","perfil_desc":"Elegância descomplicada","sensacao":"Revitalizante","sensacao_desc":"Frescor prolongado","ocasiao":"Tarde","ocasiao_desc":"Pausa energizante"},
+  "Hibiscus Fizz":{"flavors":"Floral • Cítrico • Refrescante","perfil":"Elegante","perfil_desc":"Sofisticado e vibrante","sensacao":"Efervescente","sensacao_desc":"Leve e espumante","ocasiao":"Brunch","ocasiao_desc":"Tarde ao sol"},
+  "Cucumber Cooler":{"flavors":"Fresco • Herbáceo • Cítrico","perfil":"Refrescante","perfil_desc":"leveza vegetal cristalina","sensacao":"Estimulante","sensacao_desc":"frieza mentolada vivificante","ocasiao":"Verão","ocasiao_desc":"tarde ensolarada descontraída"},
+  "Água de Coco Spritz":{"flavors":"Tropical • Refrescante • Cítrico","perfil":"Leve","perfil_desc":"Doce e efervescente","sensacao":"Revigorante","sensacao_desc":"Fresco na boca","ocasiao":"Verão","ocasiao_desc":"Tarde tropical descontraída"},
+  "Virgin Margarita":{"flavors":"Cítrico • Doce • Refrescante","perfil":"Tropical","perfil_desc":"Explosão cítrica equilibrada","sensacao":"Vivificante","sensacao_desc":"Fresco e estimulante","ocasiao":"Dia","ocasiao_desc":"Perfeito para tarde"},
+  "Ginger Lemonade":{"flavors":"Picante • Cítrico • Refrescante","perfil":"Energizante","perfil_desc":"Explosão revigorante","sensacao":"Efervescente","sensacao_desc":"Formigamento agradável","ocasiao":"Verão","ocasiao_desc":"Dias quentes e luminosos"},
+  "Shrub de Frutas Vermelhas":{"flavors":"Frutado • Azedo • Refrescante","perfil":"Vibrante","perfil_desc":"Frutas vermelhas vivas","sensacao":"Efervescente","sensacao_desc":"Burbujas na língua","ocasiao":"Tarde","ocasiao_desc":"Momento leve e social"},
+  "Solar Fizz":{"flavors":"Cítrico • Refrescante • Luminoso","perfil":"Efervescente","perfil_desc":"Borbulhas vibrantes","sensacao":"Estimulante","sensacao_desc":"Fresco e energizante","ocasiao":"Dia","ocasiao_desc":"Momento descontraído"},
+  "Jardim Alto":{"flavors":"Fresco • Herbal • Cítrico","perfil":"Jardim","perfil_desc":"Verde e aromático","sensacao":"Refrescante","sensacao_desc":"Efervescente e leve","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Trópico Seco":{"flavors":"Tropical • Especiado • Amadeirado","perfil":"Exótico","perfil_desc":"Frutas tropicais aquecidas","sensacao":"Envolvente","sensacao_desc":"Calor especiado suave","ocasiao":"Entardecer","ocasiao_desc":"Momento de contemplação"},
+  "Rubi Tônico":{"flavors":"Frutado • Refrescante • Herbáceo","perfil":"Elegante","perfil_desc":"sofisticado e leve","sensacao":"Efervescente","sensacao_desc":"burbujas na boca","ocasiao":"Social","ocasiao_desc":"encontros descontraídos"},
+  "Linha Clara":{"flavors":"Cristalino • Mineral • Herbáceo","perfil":"Minimalista","perfil_desc":"Elegância destilada e pura","sensacao":"Refrescante","sensacao_desc":"Leve toque salgado","ocasiao":"Aperitivo","ocasiao_desc":"Encontros sofisticados"},
+  "Flor de Pressa":{"flavors":"Floral • Efervescente • Delicado","perfil":"Sofisticado","perfil_desc":"Elegância em taça","sensacao":"Refrescante","sensacao_desc":"Burbujas leves, florais","ocasiao":"Celebração","ocasiao_desc":"Momentos especiais, brunch"},
+  "Dourado Frio":{"flavors":"Mielado • Cítrico • Suave","perfil":"Elegante","perfil_desc":"Refinado e equilibrado","sensacao":"Fresco","sensacao_desc":"Gelado, envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momento sofisticado"},
+  "Névoa Verde":{"flavors":"Floral • Frutado • Cítrico","perfil":"Delicado","perfil_desc":"Elegância suave e sofisticada","sensacao":"Refrescante","sensacao_desc":"Leveza adocicada e vibrante","ocasiao":"Coquetel","ocasiao_desc":"Tardes ensolaradas, encontros"},
+  "Xarope Simples":{"flavors":"Doce • Limpo • Neutro","perfil":"Clássico","perfil_desc":"açúcar puro cristalino","sensacao":"Suave","sensacao_desc":"untuosidade líquida lisa","ocasiao":"Base","ocasiao_desc":"coquetel fundamentalmente versátil"},
+  "Xarope Rico":{"flavors":"Doce • Cristalino • Neutro","perfil":"Clássico","perfil_desc":"base pura e versátil","sensacao":"Suave","sensacao_desc":"textura líquida morna","ocasiao":"Fundamental","ocasiao_desc":"ingrediente essencial mixologia"},
+  "Xarope Demerara":{"flavors":"Caramelado • Melado • Tropical","perfil":"Encorpado","perfil_desc":"Xarope viscoso e denso","sensacao":"Aveludado","sensacao_desc":"Macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Base para drinks sofisticados"},
+  "Xarope de Agave":{"flavors":"Doce • Floral • Suave","perfil":"Néctar","perfil_desc":"Doçura líquida pura","sensacao":"Sedoso","sensacao_desc":"Macio na boca","ocasiao":"Repouso","ocasiao_desc":"Momento de calma"},
+  "Xarope de Mel":{"flavors":"Floral • Melado • Suave","perfil":"Reconfortante","perfil_desc":"Doçura envolvente","sensacao":"Aquecedor","sensacao_desc":"Calor aconchegante","ocasiao":"Noturno","ocasiao_desc":"Repouso tranquilo"},
+  "Xarope de Gengibre":{"flavors":"Picante • Doce • Aromático","perfil":"Revigorante","perfil_desc":"Energizante e aquecedor","sensacao":"Ardente","sensacao_desc":"Queimação picante prolongada","ocasiao":"Inverno","ocasiao_desc":"Resfriados e frio intenso"},
+  "Xarope de Canela":{"flavors":"Quente • Doce • Aromático","perfil":"Reconfortante","perfil_desc":"Envolvente e acolhedor","sensacao":"Suave","sensacao_desc":"Morno e sedoso","ocasiao":"Inverno","ocasiao_desc":"Noites frias"},
+  "Xarope de Cardamomo":{"flavors":"Aromático • Especiado • Adocicado","perfil":"Refinado","perfil_desc":"elegância aromática intensa","sensacao":"Quente","sensacao_desc":"calor especiado suave","ocasiao":"Coquetel","ocasiao_desc":"base sofisticada premium"},
+  "Xarope de Lavanda":{"flavors":"floral • herbal • doce","perfil":"Elegante","perfil_desc":"sofisticação aromática","sensacao":"Calmante","sensacao_desc":"repouso perfumado","ocasiao":"Coquetel","ocasiao_desc":"momentos refinados"},
+  "Xarope de Hibisco":{"flavors":"Floral • Tânico • Levemente Ácido","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Refrescante","sensacao_desc":"Vibrante e revitalizante","ocasiao":"Coquetel","ocasiao_desc":"Base para drinks premium"},
+  "Xarope de Hortelã":{"flavors":"Fresco • Mentolado • Adocicado","perfil":"Refrescante","perfil_desc":"Claridade verde menta","sensacao":"Gelado","sensacao_desc":"Friozinho na boca","ocasiao":"Verão","ocasiao_desc":"Dias quentes e longos"},
+  "Cordial de Limão":{"flavors":"Cítrico • Doce • Floral","perfil":"Refrescante","perfil_desc":"Brightness limpo e puro","sensacao":"Vivificante","sensacao_desc":"Formigamento na língua","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Cordial de Toranja":{"flavors":"Cítrico • Amargo • Floral","perfil":"Refrescante","perfil_desc":"Brilhante e tonificante","sensacao":"Vibrante","sensacao_desc":"Estimulante e energética","ocasiao":"Aperitivo","ocasiao_desc":"Início de celebração"},
+  "Cordial de Sabugueiro":{"flavors":"Floral • Cítrico • Doce","perfil":"Elegante","perfil_desc":"Sofisticado e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e vivificante","ocasiao":"Primavera","ocasiao_desc":"Dias ensolarados e festivos"},
+  "Cordial de Framboesa":{"flavors":"Frutado • Doce • Ácido","perfil":"Refrescante","perfil_desc":"Intenso e vibrante","sensacao":"Suave","sensacao_desc":"Macio na boca","ocasiao":"Verão","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Cordial de Cítricos Clarificado":{"flavors":"Cítrico • Suave • Cremoso","perfil":"Refrescante","perfil_desc":"Brightness equilibrado com doçura","sensacao":"Sedoso","sensacao_desc":"Textura morna e aveludada","ocasiao":"Aperitivo","ocasiao_desc":"Momento leve e elegante"},
+  "Cordial de Frutas Vermelhas com Chá":{"flavors":"Frutado • Floral • Ácido","perfil":"Refrescante","perfil_desc":"doce e vibrante","sensacao":"Sedoso","sensacao_desc":"textura morna","ocasiao":"Verão","ocasiao_desc":"tarde tranquila"},
+  "Cordial Verde":{"flavors":"Herbáceo • Refrescante • Cítrico","perfil":"Aromático","perfil_desc":"Ervas frescas e vibrantes","sensacao":"Revigorante","sensacao_desc":"Frescor intenso e leve","ocasiao":"Verão","ocasiao_desc":"Dias quentes e ensolarados"},
+  "Cordial de Abacaxi com Especiarias":{"flavors":"Tropical • Especiado • Ácido","perfil":"Encorpado","perfil_desc":"denso e envolvente","sensacao":"Quente","sensacao_desc":"picante e aquecedor","ocasiao":"Aperitivo","ocasiao_desc":"antes de refeições"},
+  "Cordial de Pêra Assada":{"flavors":"Doce • Frutado • Especiado","perfil":"Rústico","perfil_desc":"Aconchego caseiro","sensacao":"Morninho","sensacao_desc":"Calor reconfortante","ocasiao":"Tarde","ocasiao_desc":"Pausa contemplativa"},
+  "Grenadine Caseira":{"flavors":"Frutado • Doce • Floral","perfil":"Luxuoso","perfil_desc":"Romã sedosa e sofisticada","sensacao":"Terciopelado","sensacao_desc":"Suave e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momentos elegantes e especiais"},
+  "Orgeat (Xarope de Amêndoa)":{"flavors":"Cremoso • Floral • Adocicado","perfil":"Clássico","perfil_desc":"elegância tropical ancestral","sensacao":"Aterciopelado","sensacao_desc":"macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"base versátil e sofisticada"},
+  "Falernum Caseiro":{"flavors":"Adocicado • Especiado • Amêndoado","perfil":"Aromático","perfil_desc":"Intensamente perfumado e complexo","sensacao":"Envolvente","sensacao_desc":"Morno e reconfortante","ocasiao":"Digestivo","ocasiao_desc":"Encerramento sofisticado"},
+  "Champagne Cocktail":{"flavors":"Sofisticado • Efervescente • Aromático","perfil":"Elegante","perfil_desc":"Refinado e celebratório","sensacao":"Delicado","sensacao_desc":"Espumante na língua","ocasiao":"Festivo","ocasiao_desc":"Momentos especiais"},
+  "Mint Julep":{"flavors":"Fresco • Doce • Herbáceo","perfil":"Refrescante","perfil_desc":"Menta vibrante e suave","sensacao":"Gelado","sensacao_desc":"Frio estimulante","ocasiao":"Verão","ocasiao_desc":"Tarde ensolarada"},
+  "Rusty Nail":{"flavors":"Amadeirado • Herbal • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância escocesa clássica","sensacao":"Aquecente","sensacao_desc":"calor envolvente suave","ocasiao":"Noturna","ocasiao_desc":"depois do jantar"},
+  "French Martini":{"flavors":"Frutado • Elegante • Tropical","perfil":"Sofisticado","perfil_desc":"Refinado e sensual","sensacao":"Suave","sensacao_desc":"Macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"Encontros noturnos elegantes"},
+  "Gibson":{"flavors":"Herbáceo • Seco • Umami","perfil":"Elegante","perfil_desc":"Sofisticado e mineral","sensacao":"Refrescante","sensacao_desc":"Fresco e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Angel Face":{"flavors":"Frutado • Floral • Suave","perfil":"Elegante","perfil_desc":"Sofisticado e delicado","sensacao":"Aveludada","sensacao_desc":"Morna e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Encontros refinados"},
+  "Monkey Gland":{"flavors":"Cítrico • Herbal • Frutado","perfil":"Exótico","perfil_desc":"Tropical e sofisticado","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Coquetel","ocasiao_desc":"Clássico vintage"},
+  "Brandy Crusta":{"flavors":"Sofisticado • Cítrico • Amadeirado","perfil":"Elegante","perfil_desc":"Refinado e complexo","sensacao":"Equilibrado","sensacao_desc":"Suave e envolvente","ocasiao":"Noturna","ocasiao_desc":"Momento de distinção"},
+  "Casino":{"flavors":"Herbal • Floral • Cítrico","perfil":"Sofisticado","perfil_desc":"elegância clássica britânica","sensacao":"Refrescante","sensacao_desc":"leveza aromática vibrante","ocasiao":"Coquetel","ocasiao_desc":"aperitivo de boas-vindas"},
+  "Paradise":{"flavors":"Frutado • Floral • Cítrico","perfil":"Tropical","perfil_desc":"Exótico e refrescante","sensacao":"Suave","sensacao_desc":"Macio na boca","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Old Cuban":{"flavors":"Tropical • Herbal • Sofisticado","perfil":"Elegante","perfil_desc":"Refinado e celebrativo","sensacao":"Efervescente","sensacao_desc":"Leve e refrescante","ocasiao":"Coquetel","ocasiao_desc":"Momentos especiais noturnos"},
+  "Yellow Bird":{"flavors":"Cítrico • Herbal • Tropical","perfil":"Luminoso","perfil_desc":"Brilhante e refrescante","sensacao":"Suave","sensacao_desc":"Macio e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Clima quente e descontraído"},
+  "Trinidad Sour":{"flavors":"Amargo • Doce • Cítrico","perfil":"Intenso","perfil_desc":"complexo e ousado","sensacao":"Equilibrado","sensacao_desc":"sedoso e refrescante","ocasiao":"Noturna","ocasiao_desc":"aperfeiçoamento do paladar"},
+  "Barracuda":{"flavors":"Tropical • Floral • Refrescante","perfil":"Vibrante","perfil_desc":"Exuberante e animado","sensacao":"Espumante","sensacao_desc":"Leve e efervescente","ocasiao":"Celebração","ocasiao_desc":"Festas e encontros sociais"},
+  "Tipperary":{"flavors":"Herbal • Doce • Especiado","perfil":"Complexo","perfil_desc":"Ervas e mel","sensacao":"Aterciopelado","sensacao_desc":"Morno e envolvente","ocasiao":"Noturna","ocasiao_desc":"Meditativo e introspectivo"},
+  "Suffering Bastard":{"flavors":"Picante • Cítrico • Amadeirado","perfil":"Vibrante","perfil_desc":"Espirituoso e refrescante","sensacao":"Pungente","sensacao_desc":"Queimação agradável","ocasiao":"Noturna","ocasiao_desc":"Drinks de bar autêntico"},
+  "Illegal Sour":{"flavors":"Defumado • Tropical • Amargo","perfil":"Complexo","perfil_desc":"Especiado e frutado","sensacao":"Refrescante","sensacao_desc":"Picante e envolvente","ocasiao":"Noturna","ocasiao_desc":"Exploração sofisticada"},
+  "Russian Spring Punch":{"flavors":"Frutado • Cítrico • Elegante","perfil":"Sofisticado","perfil_desc":"Refinado e festivo","sensacao":"Efervescente","sensacao_desc":"Leve e refrescante","ocasiao":"Brunch","ocasiao_desc":"Momentos celebrativos"},
+  "El Diablo":{"flavors":"Picante • Frutado • Refrescante","perfil":"Diabólico","perfil_desc":"Tequila ardente e sofisticado","sensacao":"Efervescente","sensacao_desc":"Formigamento na língua","ocasiao":"Festa","ocasiao_desc":"Noites animadas e descontraídas"},
+  "Bloody Maria":{"flavors":"Picante • Umami • Cítrico","perfil":"Robusto","perfil_desc":"Encorpado e vibrante","sensacao":"Ardente","sensacao_desc":"Queimação refrescante","ocasiao":"Brunch","ocasiao_desc":"Manhã descontraída"},
+  "Salty Dog":{"flavors":"Cítrico • Salgado • Refrescante","perfil":"Clássico","perfil_desc":"elegância descontraída","sensacao":"Revigorante","sensacao_desc":"picância salgada","ocasiao":"Tarde","ocasiao_desc":"happy hour refrescante"},
+  "Bronx Cocktail":{"flavors":"Cítrico • Herbal • Equilibrado","perfil":"Sofisticado","perfil_desc":"Elegância clássica refinada","sensacao":"Refrescante","sensacao_desc":"Toque agridoce suave","ocasiao":"Aperitivo","ocasiao_desc":"Encontros vespertinos elegantes"},
+  "Pimm's Cup":{"flavors":"Refrescante • Herbáceo • Frutado","perfil":"Clássico","perfil_desc":"Elegância britânica tradicional","sensacao":"Leve","sensacao_desc":"Toque efervescente suave","ocasiao":"Jardim","ocasiao_desc":"Tardes ensolaradas inglesas"},
+  "Zombie":{"flavors":"Tropical • Picante • Amadeirado","perfil":"Exótico","perfil_desc":"Complexo e envolvente","sensacao":"Refrescante","sensacao_desc":"Cítrico e adocicado","ocasiao":"Festa","ocasiao_desc":"Celebração animada"},
+  "Grasshopper":{"flavors":"Refrescante • Doce • Cremoso","perfil":"Sobremesa","perfil_desc":"Elegância líquida em copo","sensacao":"Suave","sensacao_desc":"Menta gelada envolvente","ocasiao":"Após-jantar","ocasiao_desc":"Encerramento indulgente"},
+  "Golden Dream":{"flavors":"Cítrico • Cremoso • Doce","perfil":"Elegante","perfil_desc":"Sofisticado e equilibrado","sensacao":"Sedoso","sensacao_desc":"Macio na boca","ocasiao":"Celebração","ocasiao_desc":"Momentos especiais"},
+  "Cachanchara":{"flavors":"Melado • Cítrico • Suave","perfil":"Rustico","perfil_desc":"Autêntico e descontraído","sensacao":"Reconfortante","sensacao_desc":"Quente e envolvente","ocasiao":"Noite","ocasiao_desc":"Conversa e descontração"},
+  "Collins de Toranja com Ervas":{"flavors":"Cítrico • Herbal • Refrescante","perfil":"Vibrante","perfil_desc":"Fresco e energético","sensacao":"Estimulante","sensacao_desc":"Leve e vivificante","ocasiao":"Aperitivo","ocasiao_desc":"Tarde ensolarada"},
+  "Grapefruit Gimlet":{"flavors":"Cítrico • Amargo • Floral","perfil":"Refrescante","perfil_desc":"seco e estimulante","sensacao":"Vivaz","sensacao_desc":"pungente na boca","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Spritz de Toranja":{"flavors":"Cítrico • Efervescente • Refrescante","perfil":"Alegre","perfil_desc":"Vibrante e descontraído","sensacao":"Leve","sensacao_desc":"Burbujeante na boca","ocasiao":"Aperitivo","ocasiao_desc":"Tardes ensolaradas"},
+  "Highball de Toranja e Bourbon":{"flavors":"Cítrico • Amadeirado • Refrescante","perfil":"Equilibrado","perfil_desc":"doçura e acidez","sensacao":"Revigorante","sensacao_desc":"efervescência agradável","ocasiao":"Aperitivo","ocasiao_desc":"encontros descontraídos"},
+  "Margarita Laranja Sanguínea e Aperol":{"flavors":"Cítrico • Amargo • Frutado","perfil":"Refrescante","perfil_desc":"Vibrante e equilibrado","sensacao":"Efervescente","sensacao_desc":"Leve e estimulante","ocasiao":"Aperitivo","ocasiao_desc":"Noites de celebração"},
+  "Key Lime Pie Margarita":{"flavors":"Cítrico • Cremoso • Amanteigado","perfil":"Dessert","perfil_desc":"Coquetel açucarado e indulgente","sensacao":"Refrescante","sensacao_desc":"Gelado e macio","ocasiao":"Sobremesa","ocasiao_desc":"Final doce e elegante"},
+  "Margarita Ancho Chili e Toranja":{"flavors":"Picante • Cítrico • Frutado","perfil":"Ousado","perfil_desc":"temperado e refrescante","sensacao":"Equilibrado","sensacao_desc":"ardor suave e clima","ocasiao":"Social","ocasiao_desc":"encontros animados e descontraídos"},
+  "Margarita Picante de Pepino":{"flavors":"Picante • Refrescante • Herbáceo","perfil":"Sofisticado","perfil_desc":"elegante e contemporâneo","sensacao":"Vibrante","sensacao_desc":"fresco e ardente","ocasiao":"Aperitivo","ocasiao_desc":"encontros sociais descontraídos"},
+  "Alaska":{"flavors":"Herbáceo • Floral • Especiado","perfil":"Sofisticado","perfil_desc":"Complexo e elegante","sensacao":"Refrescante","sensacao_desc":"Fresco e vibrante","ocasiao":"Noite","ocasiao_desc":"Aperitivo requintado"},
+  "Bijou":{"flavors":"Herbal • Aromático • Complexo","perfil":"Elegante","perfil_desc":"sofisticado e equilibrado","sensacao":"Warming","sensacao_desc":"quente e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"antes de refeição"},
+  "Brown Derby":{"flavors":"Cítrico • Amadeirado • Melado","perfil":"Sofisticado","perfil_desc":"elegância clássica americana","sensacao":"Reconfortante","sensacao_desc":"calor doce e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"encontros elegantes noturnos"},
+  "Champs-Élysées":{"flavors":"Herbal • Cítrico • Sofisticado","perfil":"Elegante","perfil_desc":"Refinado e complexo","sensacao":"Encorpado","sensacao_desc":"Morno e envolvente","ocasiao":"Noite","ocasiao_desc":"Momento celebratório"},
+  "Cynar Spritz":{"flavors":"Amargo • Cítrico • Efervescente","perfil":"Aperitivo","perfil_desc":"Leve e refrescante","sensacao":"Vivaz","sensacao_desc":"Bolhas dancing na língua","ocasiao":"Tarde","ocasiao_desc":"Momento descontraído social"},
+  "Pegu Club":{"flavors":"Cítrico • Herbal • Amargo","perfil":"Clássico","perfil_desc":"Equilibrado e sofisticado","sensacao":"Refrescante","sensacao_desc":"Fresco e vibrante","ocasiao":"Aperitivo","ocasiao_desc":"Antes do jantar"},
+  "Remember the Maine":{"flavors":"Amargado • Herbal • Especiado","perfil":"Clássico","perfil_desc":"Potente e sofisticado","sensacao":"Envolvente","sensacao_desc":"Quente e complexo","ocasiao":"Noite","ocasiao_desc":"Contemplação reflexiva"},
+  "Jungle Bird Maraschino":{"flavors":"Tropical • Amargo • Doce","perfil":"Exótico","perfil_desc":"Floresta tropical intensificada","sensacao":"Refrescante","sensacao_desc":"Picante e suave","ocasiao":"Festiva","ocasiao_desc":"Noite descontraída"},
+  "Highball de Amburana & Sal":{"flavors":"Madeirado • Salino • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegante e mineral","sensacao":"Refrescante","sensacao_desc":"Espumante e revigorante","ocasiao":"Aperitivo","ocasiao_desc":"Noites de celebração"},
+  "Cachaça & Jerez":{"flavors":"Amadeirado • Seco • Cítrico","perfil":"Sofisticado","perfil_desc":"Elegância destilada e envelhecida","sensacao":"Quente","sensacao_desc":"Abraço sedoso na garganta","ocasiao":"Noturna","ocasiao_desc":"Conversas intelectuais prolongadas"},
+  "Mezcal & Cenoura Queimada":{"flavors":"Defumado • Terroso • Caramelizado","perfil":"Complexo","perfil_desc":"Fumaça envolvente e tostada","sensacao":"Ardente","sensacao_desc":"Calor picante persistente","ocasiao":"Noturna","ocasiao_desc":"Contemplativos finais de noite"},
+  "Cynar & Soda Salina":{"flavors":"Amargo • Mineral • Refrescante","perfil":"Sofisticado","perfil_desc":"elegância herbácea e salgada","sensacao":"Equilibrado","sensacao_desc":"leveza com profundidade","ocasiao":"Aperitivo","ocasiao_desc":"antes do jantar"},
+  "Kingston Mineral":{"flavors":"Tanínico • Especiado • Mineral","perfil":"Elegante","perfil_desc":"Sofisticado e terroso","sensacao":"Refrescante","sensacao_desc":"Fresco com calor","ocasiao":"Aperitivo","ocasiao_desc":"Final de tarde"}
+};
+
   // ── profile generation ──
   const profileLoadingRef=useRef(new Set());
   const loadProfile=useCallback(async(recipe)=>{
     if(!recipe)return;
     const name=recipe.name;
     if(profileLoadingRef.current.has(name))return;
+    // receitas base: perfil já embutido
+    if(RECIPE_PROFILES[name]){setRecipeProfiles(prev=>({...prev,[name]:RECIPE_PROFILES[name]}));return;}
     const cacheKey="otr_prof_"+name;
     const cached=localStorage.getItem(cacheKey);
     if(cached){try{const p=JSON.parse(cached);setRecipeProfiles(prev=>({...prev,[name]:p}));return;}catch{}}
@@ -2339,7 +3345,7 @@ export default function OnTheRocks(){
   return(
     <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1",overflowX:"hidden"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Archivo:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Archivo:wght@300;400;500;600;700&family=Gloock&display=swap');
         html,body{background:#070707}
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(240,235,225,0.08);border-radius:2px}
@@ -2451,16 +3457,15 @@ export default function OnTheRocks(){
                       borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
                       overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
                       boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
-                      clipPath:dx<0?"inset(0 50% 0 0 round 16px 0 0 16px)":"inset(0 0 0 50% round 0 16px 16px 0)",
+                      WebkitMaskImage:dx<0
+                        ?"linear-gradient(to right, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)"
+                        :"linear-gradient(to left, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)",
+                      maskImage:dx<0
+                        ?"linear-gradient(to right, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)"
+                        :"linear-gradient(to left, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)",
                     }}>
                       {/* overlay base — leve */}
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.12) 0%, rgba(3,1,0,0.0) 30%, rgba(3,1,0,0.42) 70%, rgba(3,1,0,0.88) 100%)"}}/>
-                      {/* sombra do card central — localizada na borda interna */}
-                      <div style={{position:"absolute",inset:0,
-                        background:dx<0
-                          ?"linear-gradient(to right, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.0) 18%, rgba(0,0,0,0.72) 40%, rgba(0,0,0,0.95) 58%, rgba(0,0,0,1.0) 100%)"
-                          :"linear-gradient(to left, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.0) 18%, rgba(0,0,0,0.72) 40%, rgba(0,0,0,0.95) 58%, rgba(0,0,0,1.0) 100%)"
-                      }}/>
                       <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"18px 18px 24px"}}>
                         <div style={{fontFamily:"'Gloock',serif",
                           fontSize:pr.name.length>18?26:pr.name.length>13?32:pr.name.length>8?38:44,
@@ -2470,9 +3475,8 @@ export default function OnTheRocks(){
                     </div>
                   );
                 })}
-                {/* sombra central entre os peek cards */}
-                <div style={{position:"absolute",left:"50%",top:"44%",transform:"translate(-50%,-50%)",width:56,height:"calc(93% - 112px)",background:"linear-gradient(to right, transparent 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.97) 50%, rgba(0,0,0,0.75) 65%, transparent 100%)",pointerEvents:"none",zIndex:1}}/>
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]}/>
+                {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
                 {/* botões de ação — sobre o card */}
                 <div style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
@@ -2670,7 +3674,7 @@ export default function OnTheRocks(){
                   {comanda.map(name=>allRecipes.find(r=>r.name===name)).filter(Boolean).map(r=>{
                     const th=getTheme(r.categories);
                     const styleTag=r.categories.find(c=>STYLE_CATS.has(c));
-                    const spiritTag=r.categories.find(c=>SPIRIT_CATS.has(c));
+                    const spiritTag=r.categories.find(c=>spiritCatsAll.has(c));
                     return(
                       <div key={r.name} onClick={()=>setOpen(r)}
                         style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:6,background:th.bg,border:`1px solid ${th.border}33`,cursor:"pointer",position:"relative"}}>
@@ -2815,7 +3819,7 @@ export default function OnTheRocks(){
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={r.custom?()=>showConfirm("Excluir esta receita?",()=>deleteRecipe(r),true):undefined}/>)}
+                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll}/>)}
                 </div>
               )}
             </>
@@ -2829,7 +3833,7 @@ export default function OnTheRocks(){
       <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined}/>}
+      {open&&<Modal recipe={open} profile={recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
