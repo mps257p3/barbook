@@ -96,7 +96,7 @@ const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 // Fonte única de verdade. Altere aqui e afeta toda a tela.
 const CARD_TYPO = {
   // ── Tags do topo do card (família e base alcoólica — mesmo nível hierárquico) ──
-  tag:         { fontSize:8, letterSpacing:2, textTransform:"uppercase", color:"rgba(231,224,205,0.48)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.9)" },
+  tag:         { fontSize:10, letterSpacing:2, textTransform:"uppercase", color:"rgba(231,224,205,0.48)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.9)" },
   // ── Eyebrow acima do nome no hero (família na receita aberta) ─────────────────
   heroEyebrow: { fontSize:8, letterSpacing:2.5, textTransform:"uppercase", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1 },
   // ── Linha de flavors (Cítrico • Frutado • Herbal) — cor vem do tema ──────────
@@ -1750,18 +1750,15 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO ── */}
-        {/* ── HERO — image extends through profile row, fades at golden separator ── */}
-        <div style={{position:"relative",height:profile?.perfil?288:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
-          <div style={{position:"absolute",inset:0,background:profile?.perfil
-            ?"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 18%, rgba(6,4,2,0.32) 48%, rgba(6,4,2,0.68) 68%, rgba(10,9,6,0.86) 78%, rgba(10,9,6,0.97) 90%, rgba(10,9,6,1.0) 100%)"
-            :"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
+        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
           </div>}
-          <div style={{position:"absolute",bottom:profile?.perfil?82:16,left:18,right:18}}>
+          <div style={{position:"absolute",bottom:16,left:18,right:18}}>
             {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
@@ -1770,24 +1767,24 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             </div>
             {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
           </div>
-          {profile?.perfil&&(
-            <div style={{position:"absolute",bottom:0,left:0,right:0}}>
-              <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
-                {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
-                  <div key={i} style={{display:"contents"}}>
-                    {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
-                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
-                      <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
-                      <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
-                      <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
-            </div>
-          )}
         </div>
+        {profile?.perfil&&(
+          <div style={{backgroundColor:"#0A0906"}}>
+            <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
+              {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
+                <div key={i} style={{display:"contents"}}>
+                  {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
+                    <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                    <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                    <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
+          </div>
+        )}
 
         <div style={{padding:"16px 18px 32px",textAlign:"left"}}>
 
@@ -2587,12 +2584,14 @@ export default function OnTheRocks(){
         }catch(e){console.error(e);}
         setSyncing(false);
       }
+      fsInitializedRef.current = true;
     });
   },[]);
 
   // ── Sync to Firestore when data changes ──
   const syncToFirestore = useCallback(async (data) => {
     if(!auth.currentUser) return;
+    if(!fsInitializedRef.current) return;
     try{ await setDoc(doc(db,"users",auth.currentUser.uid), data, {merge:true}); }
     catch(e){ console.error(e); }
   },[]);
@@ -2709,9 +2708,16 @@ export default function OnTheRocks(){
   const searchInputRef=useRef(null);
   const peekNextRef=useRef(null);
   const peekPrevRef=useRef(null);
+  const fsInitializedRef=useRef(false);
   const handleDragChange=useCallback(({nextPct,prevPct})=>{
-    if(peekNextRef.current) peekNextRef.current.style.opacity=String(nextPct);
-    if(peekPrevRef.current) peekPrevRef.current.style.opacity=String(prevPct);
+    if(peekNextRef.current){
+      peekNextRef.current.style.opacity=String(0.22+nextPct*0.78);
+      peekNextRef.current.style.transform=`translateX(${52*(1-nextPct)}px)`;
+    }
+    if(peekPrevRef.current){
+      peekPrevRef.current.style.opacity=String(0.22+prevPct*0.78);
+      peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
+    }
   },[]);
   backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
   useEffect(()=>{
@@ -2919,10 +2925,10 @@ export default function OnTheRocks(){
       const img=new Image();img.src=url;
     });
   },[swipeRecipe?.name,swipeHistIdx]);// eslint-disable-line
-  // Reseta opacidade das peek cards ao trocar de recipe
+  // Reseta peek cards ao trocar de recipe
   useEffect(()=>{
-    if(peekNextRef.current) peekNextRef.current.style.opacity="0";
-    if(peekPrevRef.current) peekPrevRef.current.style.opacity="0";
+    if(peekNextRef.current){ peekNextRef.current.style.opacity="0.22"; peekNextRef.current.style.transform="translateX(52px)"; }
+    if(peekPrevRef.current){ peekPrevRef.current.style.opacity="0.22"; peekPrevRef.current.style.transform="translateX(-52px)"; }
   },[swipeRecipe?.name]);// eslint-disable-line
 
 const RECIPE_PROFILES = {
@@ -3400,6 +3406,7 @@ const RECIPE_PROFILES = {
     if(nextPeekRecipe)loadProfile(nextPeekRecipe);
     if(prevPeekRecipe)loadProfile(prevPeekRecipe);
   },[nextPeekRecipe?.name,prevPeekRecipe?.name,loadProfile]);// eslint-disable-line
+  useEffect(()=>{if(open)loadProfile(open);},[open?.name,loadProfile]);
 
   // reset idx ao mudar filtros
   useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,activeOccasions,filterMode,search]);
@@ -3505,7 +3512,7 @@ const RECIPE_PROFILES = {
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color 1.1s ease"}}>
+            <div style={{position:"fixed",inset:`70px 0 calc(50px + env(safe-area-inset-bottom, 8px)) 0`,display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color 1.1s ease"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background 1.1s ease"}}/>
@@ -3516,28 +3523,38 @@ const RECIPE_PROFILES = {
                 </div>}
               </>);})()}
               <div style={{flex:"1 1 auto",width:"100%",minHeight:0,position:"relative"}}>
-                {/* peek cards — centralizadas por baixo do card principal, reveladas no drag */}
+                {/* peek cards — visíveis nas laterais, reveladas no drag */}
                 {[
-                  {pr:nextPeekRecipe,pRef:peekNextRef},
-                  {pr:prevPeekRecipe,pRef:peekPrevRef},
-                ].map(({pr,pRef},idx)=>{
+                  {pr:nextPeekRecipe,pRef:peekNextRef,dx:52},
+                  {pr:prevPeekRecipe,pRef:peekPrevRef,dx:-52},
+                ].map(({pr,pRef,dx},idx)=>{
                   if(!pr)return null;
                   const th=getTheme(pr.categories);
                   const pv=getCardVisual(pr);
                   const pp=pr.perfil?{perfil:pr.perfil,sensacao:pr.sensacao,ocasiao:pr.ocasiao,flavors:pr.flavors}:recipeProfiles[pr.name];
+                  const isRight=dx>0;
                   return(
                     <div key={idx} ref={pRef} style={{
                       position:"absolute",inset:0,
                       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",
                       padding:"7% 16px 112px",
-                      pointerEvents:"none",zIndex:0,opacity:0,transition:"opacity .18s ease",
+                      pointerEvents:"none",zIndex:0,
+                      opacity:0.22,
+                      transform:`translateX(${dx}px)`,
+                      transition:"opacity .18s ease, transform .18s ease",
                     }}>
                     <div style={{
                       width:"100%",maxWidth:285,height:"100%",
                       borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),
                       border:`1.5px solid ${th.accent}`,
                       overflow:"hidden",position:"relative",
-                      transform:"scale(0.95)",
+                      transform:"scale(0.88)",
+                      WebkitMaskImage:isRight
+                        ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
+                        :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
+                      maskImage:isRight
+                        ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
+                        :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
                       boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 0 50px ${th.accent}18`,
                     }}>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
@@ -3610,6 +3627,7 @@ const RECIPE_PROFILES = {
               </div>
               {/* controles bottom — ocasião sheet flutua sobre o layout sem empurrar */}
               <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:8,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color 1.1s ease",position:"relative"}}>
+                <div style={{position:"absolute",top:-20,left:0,right:0,height:20,background:`linear-gradient(to bottom, transparent, ${getTheme(swipeRecipe.categories).accent}06)`,pointerEvents:"none"}}/>
                 {filterSheet==="ocasiao"&&(
                   <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",zIndex:30}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
