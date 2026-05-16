@@ -1273,14 +1273,22 @@ function Stars({n,color}){
 }
 
 // ─── FORM ─────────────────────────────────────────────────────────────────────
-const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], notes:"", rating:0, servings:"", categories:[] };
+const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], notes:"", rating:0, servings:"", categories:[], perfil:"", sensacao:"", ocasiao:"", flavors:"" };
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
 const addBtnSt = { marginTop:4, padding:"5px 12px", borderRadius:3, background:"none", border:"1px solid rgba(240,235,225,0.1)", color:"rgba(240,235,225,0.58)", cursor:"pointer", fontSize:11, letterSpacing:.5, fontFamily:"Archivo,sans-serif" };
 
-function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=null }) {
-  const [form, setForm] = useState(initial || EMPTY_FORM);
+function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpirits=[], sharedFiles=null }) {
+  const [form, setForm] = useState(()=>{
+    const base = initial || EMPTY_FORM;
+    if (!base.perfil && initialProfile?.perfil) {
+      return {...base, perfil:initialProfile.perfil, sensacao:initialProfile.sensacao||"", ocasiao:initialProfile.ocasiao||"", flavors:initialProfile.flavors||""};
+    }
+    return base;
+  });
   const [suggesting, setSuggesting] = useState(false);
   const [suggErr, setSuggErr] = useState(null);
+  const [suggestingSig, setSuggestingSig] = useState(false);
+  const [suggSigErr, setSuggSigErr] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [scanErr, setScanErr] = useState(null);
   const [previewImgs, setPreviewImgs] = useState([]);
@@ -1337,7 +1345,7 @@ function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=nu
     try {
       const res = await fetch("/api/anthropic", {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:400, system:`Você é um bartender especialista. Analise o drink e retorne APENAS um JSON com "styles" e "spirits".\nEstilos: ${STYLE_PRIORITY.join(", ")}\nSpirits: ${[...new Set([...SPIRIT_CATS,...customSpirits])].sort().join(", ")}\nExemplo: {"styles":["Sour","Shaken"],"spirits":["Gim"]}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
+        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:600, system:`Você é um bartender especialista. Retorne APENAS um JSON com:\n- "styles": array de estilos entre [${STYLE_PRIORITY.join(", ")}]\n- "spirits": array de spirits entre [${[...new Set([...SPIRIT_CATS,...customSpirits])].sort().join(", ")}]\n- "signature": {"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -1346,8 +1354,37 @@ function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=nu
       }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       setField("categories", [...new Set([...form.categories,...(parsed.styles||[]),...(parsed.spirits||[])])]);
+      if (parsed.signature) {
+        setForm(f=>({...f,
+          ...(!f.flavors && parsed.signature.flavors ? {flavors:parsed.signature.flavors} : {}),
+          ...(!f.perfil  && parsed.signature.perfil  ? {perfil:parsed.signature.perfil}   : {}),
+          ...(!f.sensacao&& parsed.signature.sensacao? {sensacao:parsed.signature.sensacao}: {}),
+          ...(!f.ocasiao && parsed.signature.ocasiao ? {ocasiao:parsed.signature.ocasiao}  : {}),
+        }));
+      }
     } catch (e) { setSuggErr(e?.message || "Erro ao sugerir."); }
     setSuggesting(false);
+  }, [form.name, form.ingredients]);
+
+  const suggestSignature = useCallback(async () => {
+    if (!form.name) return;
+    setSuggestingSig(true); setSuggSigErr(null);
+    try {
+      const res = await fetch("/api/anthropic", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:280, system:"Sommelier de coquetéis. Responda APENAS com JSON válido, sem texto adicional.", messages:[{role:"user",content:`Drink: "${form.name}"\nIngredientes: ${form.ingredients.filter(Boolean).join(", ")}\n\nGere perfil em português:\n{"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`}] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error("Serviço indisponível.");
+      const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
+      setForm(f=>({...f,
+        ...(parsed.flavors  ? {flavors:parsed.flavors}   : {}),
+        ...(parsed.perfil   ? {perfil:parsed.perfil}     : {}),
+        ...(parsed.sensacao ? {sensacao:parsed.sensacao} : {}),
+        ...(parsed.ocasiao  ? {ocasiao:parsed.ocasiao}   : {}),
+      }));
+    } catch (e) { setSuggSigErr(e?.message || "Erro ao sugerir."); }
+    setSuggestingSig(false);
   }, [form.name, form.ingredients]);
 
   const handleSave = () => {
@@ -1420,6 +1457,26 @@ function RecipeForm({ initial, onSave, onClose, customSpirits=[], sharedFiles=nu
             <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",marginBottom:6}}>Spirits / Ingredientes principais</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
               {[...new Set([...ALL_SPIRIT_OPTIONS,...customSpirits])].sort().map(s=>{const on=form.categories.includes(s);return <button key={s} onClick={()=>toggleCat(s)} style={{padding:"3px 10px",borderRadius:20,fontSize:11,background:on?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",border:`1px solid ${on?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)"}`,color:on?"#A0785A":"rgba(240,235,225,0.28)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s}</button>;})}
+            </div>
+          </div>
+
+          {/* ── Assinatura ── */}
+          <div style={{marginTop:18,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+              <label style={{...labelSt,margin:0}}>Assinatura</label>
+              <button onClick={suggestSignature} disabled={suggestingSig||!form.name.trim()} style={{padding:"3px 12px",borderRadius:20,fontSize:10,background:"rgba(160,120,90,0.12)",border:"1px solid rgba(160,120,90,0.4)",color:"#A0785A",cursor:"pointer",letterSpacing:.5,fontFamily:"Archivo,sans-serif",opacity:!form.name.trim()?.5:1}}>
+                {suggestingSig?"sugerindo…":"✦ sugerir com IA"}
+              </button>
+              {suggSigErr&&<span style={{fontSize:11,color:"#F87171"}}>{suggSigErr}</span>}
+            </div>
+            <input {...inp()} value={form.flavors} onChange={e=>setField("flavors",e.target.value)} placeholder="ex: Cítrico • Floral • Amadeirado" style={{...inp().style,marginBottom:10,fontSize:12}}/>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+              {[["perfil","Perfil","ex: Elegante"],["sensacao","Sensação","ex: Aveludado"],["ocasiao","Ocasião","ex: Aperitivo"]].map(([key,lbl,ph])=>(
+                <div key={key}>
+                  <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",marginBottom:5,fontWeight:700}}>{lbl}</div>
+                  <input {...inp()} value={form[key]} onChange={e=>setField(key,e.target.value)} placeholder={ph} style={{...inp().style,fontSize:12}}/>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -1703,10 +1760,10 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
               <div key={i} style={{display:"contents"}}>
                 {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,flex:1}}>
-                  <span style={{fontSize:12,color:theme.accent,lineHeight:1.1}}>{item[0]}</span>
-                  <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.35)",textTransform:"uppercase",fontWeight:500,lineHeight:1.4}}>{item[1]}</span>
-                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.3}}>{item[2]}</span>
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
+                  <span style={{fontSize:12,color:theme.accent,lineHeight:1.2}}>{item[0]}</span>
+                  <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.35)",textTransform:"uppercase",fontWeight:500,lineHeight:1.6}}>{item[1]}</span>
+                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5}}>{item[2]}</span>
                 </div>
               </div>
             ))}
@@ -2182,10 +2239,10 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                   {[["◈","Perfil",p.perfil,p.perfil_desc],["❋","Sensação",p.sensacao,p.sensacao_desc],["✦","Ocasião",p.ocasiao,p.ocasiao_desc]].map((item,i)=>(
                     <>
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
-                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
-                        <span style={{fontSize:14,color:theme.accent,lineHeight:1}}>{item[0]}</span>
-                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500}}>{item[1]}</span>
-                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center"}}>{item[2]}</span>
+                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,flex:1}}>
+                        <span style={{fontSize:13,color:theme.accent,lineHeight:1}}>{item[0]}</span>
+                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1}}>{item[1]}</span>
+                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.1}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
@@ -3476,7 +3533,7 @@ const RECIPE_PROFILES = {
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
                 {/* botões de ação — sobre o card */}
                 <div style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
@@ -3833,8 +3890,8 @@ const RECIPE_PROFILES = {
       <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
-      {(showForm||editing)&&<RecipeForm initial={editing} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
+      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
+      {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
       {confirmDialog&&<ConfirmDialog message={confirmDialog.message} danger={confirmDialog.danger} onConfirm={()=>{confirmDialog.onConfirm?.();closeConfirm();}} onCancel={confirmDialog.onConfirm?closeConfirm:null}/>}
