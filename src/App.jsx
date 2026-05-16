@@ -93,17 +93,35 @@ const FAMILY_DESC = {
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 
-// ─── TIPOGRAFIA DO CARD (aba Descobrir) ───────────────────────────────────────
-// Estilos centralizados. Altere aqui para afetar todos os cards de uma vez.
+// ─── SISTEMA TIPOGRÁFICO — Descobrir + Receita aberta ─────────────────────────
+// Fonte única de verdade. Altere aqui e afeta toda a tela.
 const CARD_TYPO = {
-  // Tag superior — família (Highball) e base (Fernet) compartilham o mesmo estilo
-  tag:      { fontSize:8, letterSpacing:2, textTransform:"uppercase", color:"rgba(231,224,205,0.48)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.9)" },
-  // Linha de flavors (Cítrico • Frutado • Herbal) — cor vem do tema
-  flavor:   { fontSize:8.5, letterSpacing:2.5, textTransform:"uppercase", fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.8)", opacity:0.75 },
-  // Rótulo da assinatura (PERFIL / SENSAÇÃO / OCASIÃO)
-  sigLabel: { fontSize:7.5, letterSpacing:1.5, textTransform:"uppercase", color:"rgba(231,224,205,0.32)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.6 },
-  // Valor da assinatura (Elegante / Aveludado / Aperitivo) — fontSize varia por comprimento
-  sigValue: { letterSpacing:0.5, textTransform:"uppercase", color:"rgba(231,224,205,0.82)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.5, textAlign:"center" },
+  // ── Tags do topo do card (família e base alcoólica — mesmo nível hierárquico) ──
+  tag:         { fontSize:8, letterSpacing:2, textTransform:"uppercase", color:"rgba(231,224,205,0.48)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1, textShadow:"0 1px 4px rgba(0,0,0,0.9)" },
+  // ── Eyebrow acima do nome no hero (família na receita aberta) ─────────────────
+  heroEyebrow: { fontSize:8, letterSpacing:2.5, textTransform:"uppercase", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1 },
+  // ── Linha de flavors (Cítrico • Frutado • Herbal) — cor vem do tema ──────────
+  flavor:      { fontSize:8.5, letterSpacing:2.5, textTransform:"uppercase", fontFamily:"Archivo,sans-serif", lineHeight:1, opacity:0.75 },
+  // ── Assinatura: ícone (◈ ❋ ✦) — cor e glow vêm do tema ─────────────────────
+  sigIcon:     { fontSize:12, lineHeight:1.2 },
+  // ── Assinatura: rótulo (PERFIL / SENSAÇÃO / OCASIÃO) ──────────────────────────
+  sigLabel:    { fontSize:7.5, letterSpacing:1.5, textTransform:"uppercase", color:"rgba(231,224,205,0.32)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.6 },
+  // ── Assinatura: valor (Elegante / Aveludado / Aperitivo) — fontSize por length ─
+  sigValue:    { letterSpacing:0.5, textTransform:"uppercase", color:"rgba(231,224,205,0.82)", fontWeight:600, fontFamily:"Archivo,sans-serif", lineHeight:1.5, textAlign:"center" },
+  // ── Cabeçalho de seção na receita (INGREDIENTES / MODO DE PREPARO) ────────────
+  sectionHead: { fontSize:9, letterSpacing:2.5, textTransform:"uppercase", fontWeight:700, fontFamily:"Archivo,sans-serif", opacity:0.6 },
+  // ── Corpo — ingredientes e passos ─────────────────────────────────────────────
+  bodyText:    { fontSize:14, color:"rgba(231,224,205,0.70)", lineHeight:1.6, fontFamily:"Archivo,sans-serif" },
+  // ── Notas (itálico, mais suave) ───────────────────────────────────────────────
+  noteText:    { fontSize:13, color:"rgba(231,224,205,0.45)", lineHeight:1.7, fontFamily:"Archivo,sans-serif", fontStyle:"italic" },
+  // ── Botões de ação da receita aberta (já provei, favorito, etc.) ──────────────
+  actionBtn:   { fontSize:10, letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, fontFamily:"Archivo,sans-serif" },
+  // ── Labels abaixo dos botões circulares (já provei / adicionar à comanda) ─────
+  actionLabel: { fontSize:9, letterSpacing:1.5, textTransform:"uppercase", fontWeight:700, fontFamily:"Archivo,sans-serif" },
+  // ── Botões de filtro da barra inferior (Ocasião / Não provados) ───────────────
+  filterBtn:   { fontSize:9, letterSpacing:1.5, textTransform:"uppercase", fontFamily:"Archivo,sans-serif" },
+  // ── Contador de posição no swipe (1 / 24) ─────────────────────────────────────
+  counter:     { fontSize:8, letterSpacing:2, textTransform:"uppercase", opacity:0.55, fontFamily:"Archivo,sans-serif" },
 };
 
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
@@ -1747,13 +1765,13 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
           </div>}
           <div style={{position:"absolute",bottom:16,left:18,right:18}}>
-            {styleTags[0]&&<div style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:0.75,marginBottom:6,fontWeight:600}}>{styleTags[0]}</div>}
+            {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
               <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
               <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
             </div>
-            {profile?.flavors&&<div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase",marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
+            {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
           </div>
         </div>
 
@@ -1765,9 +1783,9 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               <div key={i} style={{display:"contents"}}>
                 {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
-                  <span style={{fontSize:12,color:theme.accent,lineHeight:1.2}}>{item[0]}</span>
-                  <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.35)",textTransform:"uppercase",fontWeight:500,lineHeight:1.6}}>{item[1]}</span>
-                  <span style={{fontSize:8,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5}}>{item[2]}</span>
+                  <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                  <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                  <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
                 </div>
               </div>
             ))}
@@ -1787,7 +1805,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:12}}>como você avaliaria?</div>}
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:18}}>
             {(()=>{
-              const btnBase={display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,fontSize:10,letterSpacing:0.8,cursor:"pointer",transition:"all .15s",fontFamily:"Archivo,sans-serif",textTransform:"uppercase",fontWeight:600};
+              const btnBase={...CARD_TYPO.actionBtn,display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,cursor:"pointer",transition:"all .15s"};
               const dimBorder=`1px solid ${theme.accent}33`;
               const dimColor=`${theme.accent}66`;
               return(<>
@@ -1834,7 +1852,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           {recipe.servings&&recipe.servings!=="1"&&<div style={{fontSize:12,color:"rgba(240,235,225,0.48)",fontStyle:"italic",marginBottom:18}}>rende {recipe.servings}</div>}
 
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6}}>Ingredientes</div>
+            <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Ingredientes</div>
             <div style={{display:"flex",alignItems:"center",gap:0,border:`1px solid ${theme.border}44`,borderRadius:20,overflow:"hidden"}}>
               <button onClick={()=>setQty(q=>Math.max(1,q-1))} style={{width:28,height:26,background:"none",border:"none",color:qty>1?theme.accent:"rgba(240,235,225,0.2)",fontSize:16,cursor:qty>1?"pointer":"default",lineHeight:1}}>−</button>
               <span style={{fontSize:11,color:theme.accent,fontWeight:700,minWidth:28,textAlign:"center",letterSpacing:.5}}>{qty}×</span>
@@ -1849,14 +1867,14 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
-                  <span style={{fontSize:14,color:done?"rgba(240,235,225,0.2)":"rgba(240,235,225,0.72)",lineHeight:1.55,textDecoration:done?"line-through":"none",transition:"all .15s"}}>{scaleIng(ing,qty)}</span>
+                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{scaleIng(ing,qty)}</span>
                 </div>
               );
             })}
           </div>
 
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
-            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6}}>Modo de preparo</div>
+            <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Modo de preparo</div>
             {steps.length===0&&!generating&&<button onClick={generateSteps} style={{padding:"3px 12px",borderRadius:20,fontSize:10,background:theme.accent+"16",border:`1px solid ${theme.accent}44`,color:theme.accent,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>✦ gerar com IA</button>}
             {generating&&<span style={{fontSize:11,color:theme.accent,opacity:.5,fontStyle:"italic"}}>gerando…</span>}
           </div>
@@ -1867,7 +1885,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               {steps.map((s,i)=>(
                 <div key={i} style={{display:"grid",gridTemplateColumns:"24px 1fr",gap:12,alignItems:"start"}}>
                   <div style={{width:24,height:24,borderRadius:3,border:`1px solid ${theme.border}`,color:theme.label,fontSize:10,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
-                  <div style={{fontSize:14,color:"rgba(240,235,225,0.68)",lineHeight:1.7,paddingTop:2}}>{s}</div>
+                  <div style={{...CARD_TYPO.bodyText,paddingTop:2}}>{s}</div>
                 </div>
               ))}
             </div>
@@ -1893,7 +1911,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             ) : noteVal ? (
               <div onClick={()=>setEditingNote(true)} style={{background:theme.accent+"07",borderLeft:`2px solid ${theme.accent}44`,padding:"12px 15px",borderRadius:"0 3px 3px 0",cursor:"text"}}>
                 <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:5}}>Nota</div>
-                <div style={{fontSize:13,color:"rgba(240,235,225,0.45)",lineHeight:1.7,fontStyle:"italic"}}>{noteVal}</div>
+                <div style={CARD_TYPO.noteText}>{noteVal}</div>
               </div>
             ) : (
               <button onClick={()=>setEditingNote(true)} style={{background:"none",border:"none",padding:0,color:"rgba(240,235,225,0.42)",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>+ adicionar nota</button>
@@ -2222,7 +2240,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                     <>
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
                       <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
-                        <span style={{fontSize:12,color:theme.accent,lineHeight:1.2,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                        <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
                         <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
                         <span style={{...CARD_TYPO.sigValue,fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9}}>{item[2]}</span>
                       </div>
@@ -2797,7 +2815,7 @@ export default function OnTheRocks(){
       if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+r.ingredients.map(norm).join(" ")+" "+r.categories.map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
-    if(sort==="rating")list=[...list].sort((a,b)=>{if(!a.rating&&!b.rating)return 0;if(!a.rating)return 1;if(!b.rating)return -1;return b.rating-a.rating;});
+    if(sort==="rating")list=[...list].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating);
     else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
@@ -3499,7 +3517,7 @@ const RECIPE_PROFILES = {
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 50% 40% at 50% 0%, ${th.accent}08 0%, transparent 60%)`,pointerEvents:"none"}}/>
                 <div style={{position:"absolute",bottom:0,left:0,right:0,height:2,background:`linear-gradient(90deg, transparent, ${th.accent}44, transparent)`,pointerEvents:"none"}}/>
                 {hasFilters&&<div style={{position:"absolute",top:8,left:0,right:0,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
-                  <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent,opacity:.55}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
+                  <span style={{...CARD_TYPO.counter,color:th.accent}}>{swipeHistIdx+1} / {swipeFiltered?.length}</span>
                 </div>}
               </>);})()}
               <div style={{flex:"1 1 auto",width:"100%",minHeight:0,position:"relative"}}>
@@ -3552,7 +3570,7 @@ const RECIPE_PROFILES = {
                         boxShadow:isTried?"0 0 28px rgba(20,184,166,0.55), 0 0 56px rgba(20,184,166,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
                         fontSize:26,color:isTried?"#4ADE80":"rgba(240,235,225,0.6)",
                         transition:"all .25s"}}>✓</div>
-                      <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,fontFamily:"Archivo,sans-serif",color:isTried?"#4ADE80":"rgba(240,235,225,0.55)"}}>já provei</span>
+                      <span style={{...CARD_TYPO.actionLabel,color:isTried?"#4ADE80":"rgba(240,235,225,0.55)"}}>já provei</span>
                     </button>
                   </div>
                   );})()}
@@ -3567,7 +3585,7 @@ const RECIPE_PROFILES = {
                         boxShadow:isComanda?"0 0 28px rgba(160,120,90,0.55), 0 0 56px rgba(160,120,90,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
                         fontSize:isComanda?20:22,color:isComanda?"#E5C99E":"rgba(240,235,225,0.6)",
                         transition:"all .25s"}}>{isComanda?"◫":"🍸"}</div>
-                      <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700,fontFamily:"Archivo,sans-serif",color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
+                      <span style={{...CARD_TYPO.actionLabel,color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
                     </button>
                   </div>
                   );})()}
@@ -3591,7 +3609,7 @@ const RECIPE_PROFILES = {
               <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color .55s ease"}}>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
+                    style={{...CARD_TYPO.filterBtn,display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,cursor:"pointer",transition:"all .2s",
                       background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                       border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
                       color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
@@ -3600,7 +3618,7 @@ const RECIPE_PROFILES = {
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s"}}>
+                    style={{...CARD_TYPO.filterBtn,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
                     <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
                       <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
                     </div>
