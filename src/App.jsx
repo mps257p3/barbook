@@ -1729,16 +1729,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 65%, rgba(6,4,2,0.97) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
-          <div style={{position:"absolute",top:16,left:18,right:48,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            {styleTags[0]&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.7)",fontWeight:500}}>
-              <svg width="11" height="13" viewBox="0 0 10 12" fill="none" style={{opacity:0.75}}><path d="M1 1h8l-1.5 7H2.5L1 1z" stroke={theme.accent} strokeWidth="1" fill="none"/><path d="M2.5 8v3M7.5 8v3M1.5 11h7" stroke={theme.accent} strokeWidth="1" strokeLinecap="round"/></svg>
-              {styleTags[0]}
-            </span>}
-            {spiritTags[0]&&<span style={{display:"flex",alignItems:"center",gap:5,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.45)"}}>
-              <span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85}}/>
-              {spiritTags[0]}
-            </span>}
-          </div>
+          {styleTags[0]&&<span style={{position:"absolute",top:16,left:18,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.6)",fontWeight:500}}>{styleTags[0]}</span>}
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
@@ -2086,7 +2077,7 @@ function resizeImageToDataUrl(file,maxW=800,maxH=1200,quality=0.75){
 }
 
 // ─── SWIPE CARD ───────────────────────────────────────────────────────────────
-function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
+function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile,onDragChange,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
@@ -2095,18 +2086,26 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
   const [drag,setDrag]=useState(0);
   const [dragging,setDragging]=useState(false);
   const [gone,setGone]=useState(null);
+  const [visible,setVisible]=useState(false);
   const startX=useRef(0);
   const cardRef=useRef();
 
+  useEffect(()=>{const id=requestAnimationFrame(()=>setVisible(true));return()=>cancelAnimationFrame(id);},[]);
+
   const THRESH=38;
   const onPointerDown=e=>{startX.current=e.clientX;setDragging(true);cardRef.current?.setPointerCapture(e.pointerId);};
-  const onPointerMove=e=>{if(!dragging)return;setDrag(e.clientX-startX.current);};
+  const onPointerMove=e=>{
+    if(!dragging)return;
+    const d=e.clientX-startX.current;
+    setDrag(d);
+    onDragChange?.({nextPct:Math.max(0,Math.min(1,-d/THRESH)),prevPct:Math.max(0,Math.min(1,d/THRESH))});
+  };
   const onPointerUp=()=>{
     if(!dragging)return;
     setDragging(false);
     if(drag<-THRESH){setGone("left");setTimeout(()=>{onNext();setGone(null);setDrag(0);},300);}
     else if(drag>THRESH&&hasPrev){setGone("right");setTimeout(()=>{onPrev();setGone(null);setDrag(0);},300);}
-    else{setDrag(0);}
+    else{setDrag(0);onDragChange?.({nextPct:0,prevPct:0});}
   };
 
   const activeDrag=gone==="left"?-420:gone==="right"?420:drag;
@@ -2121,8 +2120,8 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
-        opacity:1,
-        transition:"none"}}>
+        opacity:visible?1:0,
+        transition:visible?"opacity .14s ease":"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
@@ -2239,10 +2238,10 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                   {[["◈","Perfil",p.perfil,p.perfil_desc],["❋","Sensação",p.sensacao,p.sensacao_desc],["✦","Ocasião",p.ocasiao,p.ocasiao_desc]].map((item,i)=>(
                     <>
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
-                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0,flex:1}}>
+                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
                         <span style={{fontSize:13,color:theme.accent,lineHeight:1}}>{item[0]}</span>
-                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1}}>{item[1]}</span>
-                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.1}}>{item[2]}</span>
+                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1.2}}>{item[1]}</span>
+                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.2}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
@@ -2712,6 +2711,20 @@ export default function OnTheRocks(){
   // ── Back button — navega dentro do app ──
   const backRef=useRef({});
   const searchInputRef=useRef(null);
+  const peekNextRef=useRef(null);
+  const peekPrevRef=useRef(null);
+  const handleDragChange=useCallback(({nextPct,prevPct})=>{
+    if(peekNextRef.current){
+      const dx=60*(1-nextPct);
+      peekNextRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.84+nextPct*0.16})`;
+      peekNextRef.current.style.opacity=String(0.82+nextPct*0.18);
+    }
+    if(peekPrevRef.current){
+      const dx=-60*(1-prevPct);
+      peekPrevRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.84+prevPct*0.16})`;
+      peekPrevRef.current.style.opacity=String(0.82+prevPct*0.18);
+    }
+  },[]);
   backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
@@ -3507,7 +3520,7 @@ const RECIPE_PROFILES = {
                   const th=getTheme(pr.categories);
                   const pv=getCardVisual(pr);
                   return(
-                    <div key={dx} style={{
+                    <div key={dx} ref={dx>0?peekNextRef:peekPrevRef} style={{
                       position:"absolute",left:"50%",top:"44%",width:260,
                       height:"calc(93% - 112px)",
                       transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
@@ -3533,7 +3546,7 @@ const RECIPE_PROFILES = {
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
                 {/* botões de ação — sobre o card */}
                 <div style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
