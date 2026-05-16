@@ -1851,11 +1851,11 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               <button onClick={()=>setQty(q=>Math.min(10,q+1))} style={{width:28,height:26,background:"none",border:"none",color:theme.accent,fontSize:16,cursor:"pointer",lineHeight:1}}>+</button>
             </div>
           </div>
-          <div style={{display:"flex",flexDirection:"column",gap:4,marginBottom:26}}>
+          <div style={{display:"flex",flexDirection:"column",gap:1,marginBottom:26}}>
             {recipe.ingredients.map((ing,i)=>{
               const done=checked.has(i);
               return(
-                <div key={i} onClick={()=>toggleCheck(i)} style={{display:"flex",gap:10,alignItems:"center",padding:"7px 10px",borderRadius:4,cursor:"pointer",background:done?"rgba(240,235,225,0.02)":"transparent",transition:"all .15s"}}>
+                <div key={i} onClick={()=>toggleCheck(i)} style={{display:"flex",gap:10,alignItems:"center",padding:"4px 10px",borderRadius:4,cursor:"pointer",background:done?"rgba(240,235,225,0.02)":"transparent",transition:"all .15s"}}>
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
