@@ -234,7 +234,6 @@ const BASE_RECIPES = [
   {name:"Hemingway Daiquiri Cordial",categories:["Luxardo Maraschino","Rum Branco","Sour","Shaken","Cordial"],ingredients:["60 ml rum branco","10 ml Luxardo Maraschino","20 ml suco de limão","10–15 ml cordial de toranja (no lugar do suco)"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 15s.","Coe em taça de coquetel gelada."],notes:"Variação com cordial de toranja no lugar do suco — mais concentrado e com os óleos da casca. Luxardo reduzido para 10 ml para preservar o caráter seco. Quer mais seco: reduza mais o Luxardo. Quer mais cítrico: aumente o limão, não o cordial.",rating:0,servings:"1",custom:false},
   {name:"Hemingway Daiquiri",categories:["Luxardo Maraschino","Rum Branco","Sour","Shaken"],ingredients:["60 ml rum branco","15 ml Luxardo Maraschino","20 ml suco de limão","15 ml suco de grapefruit"],steps:["Agite rum, Maraschino, limão e grapefruit com gelo por 15s.","Coe em taça de coquetel gelada."],notes:"Criado para Ernest Hemingway, que preferia drinks menos doces. Seco, cítrico e com fundo floral.",rating:0,servings:"",custom:false},
   {name:"Highball de Luxardo",categories:["Highball","Luxardo Maraschino","Built"],ingredients:["30 ml Luxardo","10 ml limão Tahiti","água com gás para completar","gelo"],steps:["Esprema o limão no copo. Encha com gelo.","Adicione o Luxardo.","Complete com água com gás. Mexa suavemente."],notes:"Super leve, quase um refrigerante adulto. Perfeito pra calor.",rating:0,servings:"",custom:false},
-  {name:"Hurricane",categories:["Rum Envelhecido","Tiki","Sling","Shaken"],ingredients:["60 ml rum jamaicano","30 ml purê ou xarope de maracujá","15 ml suco de limão","15 ml suco de laranja","10 ml xarope simples"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em copo alto com gelo picado.","Decore com rodela de laranja e cereja."],notes:"",rating:0,servings:"1",custom:false},
   {name:"Jamaica Rouge",categories:["Rum Envelhecido","Shaken"],ingredients:["2 partes rum escuro da Jamaica","1 parte groselha","3 dashes Curaçao de laranja","1 dash bitter"],steps:["Agite com gelo e coe em taça de coquetel."],notes:"",rating:0,servings:"",custom:false},
   {name:"Jasmine (Casa do Porco)",categories:["Campari","Triple Sec","Gim","Sour","Shaken"],ingredients:["45 ml Gim","15 ml Campari","15 ml Cointreau","20 ml suco de limão"],steps:["Agite todos os ingredientes com gelo por 15s.","Coe em taça de coquetel gelada.","Decore com casca de limão."],notes:"Cítrico, amargo e seco. Um sour sofisticado com alma italiana.",rating:0,servings:"1",custom:false},
   {name:"Jus dinger",categories:["Não alcóolicos","Highball","Built"],ingredients:["500g gengibre","3 polpas maracujá","2 polpas seriguela","2 polpas cajá","Açúcar orgânico","1 ramo hortelã","⅓ noz-moscada","flor de laranjeira"],steps:["Bata o gengibre com água e peneire.","Misture com as polpas e açúcar.","Adicione noz-moscada e flor de laranjeira."],notes:"",rating:0,servings:"6",custom:false},
@@ -2715,11 +2714,6 @@ export default function OnTheRocks(){
     if(peekNextRef.current) peekNextRef.current.style.opacity=String(nextPct);
     if(peekPrevRef.current) peekPrevRef.current.style.opacity=String(prevPct);
   },[]);
-  // Reseta opacidade das peek cards ao trocar de recipe
-  useEffect(()=>{
-    if(peekNextRef.current) peekNextRef.current.style.opacity="0";
-    if(peekPrevRef.current) peekPrevRef.current.style.opacity="0";
-  },[swipeRecipe?.name]);
   backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
@@ -2926,6 +2920,11 @@ export default function OnTheRocks(){
       const img=new Image();img.src=url;
     });
   },[swipeRecipe?.name,swipeHistIdx]);// eslint-disable-line
+  // Reseta opacidade das peek cards ao trocar de recipe
+  useEffect(()=>{
+    if(peekNextRef.current) peekNextRef.current.style.opacity="0";
+    if(peekPrevRef.current) peekPrevRef.current.style.opacity="0";
+  },[swipeRecipe?.name]);// eslint-disable-line
 
 const RECIPE_PROFILES = {
   "Aperol Spritz":{"flavors":"Amargo • Cítrico • Floral","perfil":"Refrescante","perfil_desc":"Leve e espumante","sensacao":"Efervescente","sensacao_desc":"Bolhas frescas","ocasiao":"Aperitivo","ocasiao_desc":"Início de celebração"},
