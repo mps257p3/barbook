@@ -52,8 +52,7 @@ const OCCASION_TAGS = {
   "Caju & Oak":["Churrasco","Tropical","A dois","Reconfortante"],"Jardim de Caju":["A dois","Refrescante","Inesperados","Complexo"],"Caju Escuro":["Introspectivo","Tropical","A dois","Inesperados"],"Caju Bianco":["A dois","Introspectivo","Inesperados"],"Fumaça Tropical":["Introspectivo","Inesperados","Churrasco"],"Caju Spritz":["Refrescante","Piscina","Tropical","Festa"],"Caju Noturno":["Introspectivo","Inesperados","A dois"],"Caju Verde":["Refrescante","Churrasco","Inesperados"],
   "Maracujá Tônico":["Refrescante","Piscina","Descomplicado"],"Gold Passion":["Reconfortante","A dois","Tropical","Inesperados"],"Passo Solar":["Refrescante","Churrasco","Piscina"],"Maracujá Amargo":["Refrescante","Churrasco","Inesperados"],"Linha do Equador":["Tropical","Piscina","Inesperados"],"Pornstar Martini":["Festa","A dois","Tropical"],"Saturn":["Complexo","Tropical","Inesperados","Festa"],"Hurricane":["Festa","Tropical","Piscina"],"Cobra's Fang":["Complexo","Tropical","Inesperados"],"Passion Fruit Margarita":["Refrescante","Churrasco","Piscina","Tropical"],"Whiskey Sour de Maracujá":["A dois","Reconfortante","Tropical","Inesperados"],
   "Highball de Cajuína":["Refrescante","Descomplicado","Churrasco"],"Gin & Cajuína":["Refrescante","Piscina","Descomplicado"],"Rabo de Galo com Cajuína":["Introspectivo","A dois","Inesperados"],"Cajuína & Mezcal":["Introspectivo","Inesperados","Churrasco"],"Cajuína Old Fashioned":["Reconfortante","Introspectivo","Inesperados"],"Tequila & Cajuína":["Refrescante","Churrasco","Piscina"],
-  "Batida de Coco":["Festa","Piscina","Tropical"],"Batida de Maracujá":["Festa","Piscina","Tropical"],"Cachaça Sour":["Refrescante","Churrasco"],"Quentão":["Reconfortante","Festa"],"Rabo de Galo":["Introspectivo","Clássicos"],"Leite de Onça":["Reconfortante","Festa"],"Caju Amigo":["Refrescante","Churrasco","Tropical"],"Macunaíma":["Introspectivo","Inesperados"],"Gabriela":["Inesperados"],"Cachaça Collins":["Refrescante","Piscina"],"Highball de Cachaça":["Descomplicado","Churrasco"],
-  "Old Fashioned de Cachaça":["Reconfortante","Clássicos"],"Caipirinha Envelhecida":["Introspectivo","Churrasco"],"Honey & Wood":["Reconfortante","Introspectivo"],"Julep Brasileiro":["Reconfortante","Introspectivo"],"Amaro Tropical":["Digestivo","Introspectivo"],"Madeira & Abacaxi":["Introspectivo","Inesperados","Tropical"],"Café com Cachaça":["Reconfortante","Digestivo"],"Orchard Brasileiro":["Introspectivo"],"Cachaça Manhattan":["Introspectivo"],"Spiced Cane":["Reconfortante","Inesperados"],"Rabo de Galo Envelhecido":["Introspectivo"],"Sazerac Brasileiro":["Introspectivo","Clássicos"],"Tropical Old Fashioned":["Introspectivo","Inesperados"],"Flor Rubra":["A dois","Refrescante"],"Highball de Amburana & Sal":["Introspectivo","Inesperados"],"Cachaça & Jerez":["Introspectivo","Inesperados"],
+  "Batida de Coco":["Festa","Piscina","Tropical"],"Batida de Maracujá":["Festa","Piscina","Tropical"],"Cachaça Sour":["Refrescante","Churrasco"],"Quentão":["Reconfortante","Festa"],"Rabo de Galo":["Introspectivo","Clássicos"],"Leite de Onça":["Reconfortante","Festa"],"Caju Amigo":["Refrescante","Churrasco","Tropical"],"Macunaíma":["Introspectivo","Inesperados"],"Gabriela":["Inesperados"],"Cachaça Collins":["Refrescante","Piscina"],  "Old Fashioned de Cachaça":["Reconfortante","Clássicos"],"Caipirinha Envelhecida":["Introspectivo","Churrasco"],"Honey & Wood":["Reconfortante","Introspectivo"],"Julep Brasileiro":["Reconfortante","Introspectivo"],"Amaro Tropical":["Digestivo","Introspectivo"],"Madeira & Abacaxi":["Introspectivo","Inesperados","Tropical"],"Café com Cachaça":["Reconfortante","Digestivo"],"Orchard Brasileiro":["Introspectivo"],"Cachaça Manhattan":["Introspectivo"],"Spiced Cane":["Reconfortante","Inesperados"],"Rabo de Galo Envelhecido":["Introspectivo"],"Sazerac Brasileiro":["Introspectivo","Clássicos"],"Tropical Old Fashioned":["Introspectivo","Inesperados"],"Flor Rubra":["A dois","Refrescante"],"Highball de Amburana & Sal":["Introspectivo","Inesperados"],"Cachaça & Jerez":["Introspectivo","Inesperados"],
   "St‑Germain Hugo Spritz":["Refrescante","Piscina","Baixo álcool"],"St‑Germain Spritz":["Refrescante","Piscina","Baixo álcool"],"St-Germain Sour":["Refrescante","A dois"],"The Harvest":["Refrescante","A dois","Baixo álcool"],"Chá da Tarde":["Refrescante","Introspectivo"],"Vinho de Jardim":["Refrescante","A dois","Baixo álcool"],"Dourado Amargo":["Reconfortante"],"White Orchard Martini":["Introspectivo","A dois"],
   "Strega Sour":["Introspectivo","Inesperados"],"Strega Spritz":["Refrescante","Piscina","Baixo álcool"],"Italian Buck":["Refrescante"],"Strega Coffee Flip":["Digestivo","Inesperados"],"Strega Highball":["Descomplicado","Refrescante"],"Giardino Giallo":["Refrescante","Piscina"],"Zafferano Tonic":["Inesperados","Refrescante"],"Ervas & Casca":["Inesperados"],"Campo Noturno":["Digestivo","Introspectivo"],"Ouro & Fumaça":["Introspectivo","Inesperados"],"Freddo di Benevento":["Introspectivo","Descomplicado"],"Fruto Secreto":["Introspectivo"],"Golden Orchard":["Refrescante","Piscina"],"Noite em Benevento":["Digestivo","Reconfortante"],"Citrus Incantation":["Refrescante"],"Campo Alto":["Refrescante","Piscina"],"Tropical Esotérico":["Inesperados","Festa","Tropical"],"Strega & Tonic Verde":["Refrescante","Piscina"],"Golden Orange Fizz":["Refrescante","Descomplicado"],"Floral Witch":["Refrescante","Piscina"],"Bitter Sunshine":["Refrescante","Inesperados","Baixo álcool"],
   "Bamboo":["Introspectivo","Inesperados","Baixo álcool"],"Adonis":["Introspectivo","Inesperados","Baixo álcool"],"Sherry Cobbler":["Clássicos","Refrescante","Baixo álcool"],"Rebujito":["Refrescante","Festa","Baixo álcool"],"Tío Pepe & Tônica":["Refrescante","Descomplicado","Baixo álcool"],"Sherry Highball":["Refrescante","Descomplicado","Baixo álcool"],"Sherry Sour":["Introspectivo","Baixo álcool"],"East India Sour":["Digestivo","Inesperados"],"Sherry Old Fashioned":["Introspectivo","Inesperados"],"Coronation Cocktail":["Inesperados"],
@@ -390,7 +389,6 @@ const BASE_RECIPES = [
   {name:"Macunaíma",categories:["Cachaça","Fernet","Sour","Shaken"],ingredients:["50 ml cachaça","20 ml suco de limão","10 ml xarope simples","5 ml Fernet-Branca"],steps:["Combine tudo na coqueteleira com gelo.","Agite por 12s.","Coe em taça coupe."],notes:"O Fernet-Branca é o detalhe — amargura e complexidade sem dominar.",rating:0,servings:"",custom:false},
   {name:"Gabriela",categories:["Cachaça","Smash","Built"],ingredients:["50 ml cachaça","cravo e canela infusionados (48h na cachaça)","açúcar a gosto","suco de limão a gosto"],steps:["Infuse cravo e canela na cachaça por 24 a 48h.","Combine a cachaça infusionada com açúcar e limão em copo com gelo.","Mexa suavemente e sirva."],notes:"Regional e especiada. A infusão define o caráter do drink.",rating:0,servings:"",custom:false},
   {name:"Cachaça Collins",categories:["Cachaça","Collins","Built"],ingredients:["50 ml cachaça","25 ml suco de limão","15 ml xarope simples","soda gelada","gelo"],steps:["Combine cachaça, limão e xarope na coqueteleira com gelo.","Agite e coe em copo alto com gelo.","Complete com soda. Mexa suavemente."],notes:"Versão brasileira do Collins. Refrescante e muito acessível.",rating:0,servings:"",custom:false},
-  {name:"Highball de Cachaça",categories:["Cachaça","Highball","Built"],ingredients:["50 ml cachaça","água com gás ou ginger beer","gelo"],steps:["Coloque gelo em copo highball.","Adicione a cachaça.","Complete com água com gás ou ginger beer. Mexa uma vez e sirva."],notes:"O highball mais simples e versátil com cachaça.",rating:0,servings:"",custom:false},
 
   // ── CACHAÇA ENVELHECIDA ──
   {name:"Old Fashioned de Cachaça",categories:["Cachaça Envelhecida","Stirred"],ingredients:["60 ml cachaça envelhecida","1 col. de chá de açúcar (ou 10 ml xarope simples)","2 dashes Angostura bitters","casca de laranja"],steps:["Dissolva o açúcar com os bitters e um splash de água.","Adicione a cachaça e gelo grande.","Mexa por 30s.","Expresse a casca de laranja sobre o drink e decore."],notes:"A madeira da cachaça envelhecida brilha sem distração. Se você tiver que escolher um, é esse.",rating:0,servings:"",custom:false},
@@ -944,7 +942,6 @@ const RECIPE_MOODS = {
   "Macunaíma": "velvet_aperitivo",
   "Gabriela": "vintage_soda",
   "Cachaça Collins": "frost_tide",
-  "Highball de Cachaça": "frost_tide",
   "Old Fashioned de Cachaça": "vintage_soda",
   "Caipirinha Envelhecida": "vintage_soda",
   "Honey & Wood": "vintage_soda",
@@ -1757,7 +1754,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
         {/* ── HERO ── */}
         <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 65%, rgba(6,4,2,0.97) 100%)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
@@ -1920,7 +1917,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
           <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",flexDirection:"column",gap:8}}>
             {onRepo&&(
-              <button onClick={onRepo} style={{background:"none",border:"1px solid rgba(160,120,90,0.25)",borderRadius:3,padding:"4px 12px",color:"rgba(160,120,90,0.7)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",alignSelf:"flex-start"}}>↺ Repor ao original</button>
+              <button onClick={onRepo} style={{background:"none",border:"1px solid rgba(160,120,90,0.25)",borderRadius:3,padding:"4px 12px",color:"rgba(160,120,90,0.7)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",alignSelf:"flex-start"}}>↺ Recuperar receita original</button>
             )}
             {!confirmDelete?(
               <button onClick={()=>setConfirmDelete(true)} style={{background:"none",border:"1px solid rgba(239,68,68,0.2)",borderRadius:3,padding:"4px 12px",color:"rgba(239,68,68,0.5)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif",alignSelf:"flex-start"}}>excluir receita</button>
@@ -2715,17 +2712,14 @@ export default function OnTheRocks(){
   const peekNextRef=useRef(null);
   const peekPrevRef=useRef(null);
   const handleDragChange=useCallback(({nextPct,prevPct})=>{
-    if(peekNextRef.current){
-      const dx=56*(1-nextPct);
-      peekNextRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.82+nextPct*0.18})`;
-      peekNextRef.current.style.opacity=String(nextPct);
-    }
-    if(peekPrevRef.current){
-      const dx=-56*(1-prevPct);
-      peekPrevRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.82+prevPct*0.18})`;
-      peekPrevRef.current.style.opacity=String(prevPct);
-    }
+    if(peekNextRef.current) peekNextRef.current.style.opacity=String(nextPct);
+    if(peekPrevRef.current) peekPrevRef.current.style.opacity=String(prevPct);
   },[]);
+  // Reseta opacidade das peek cards ao trocar de recipe
+  useEffect(()=>{
+    if(peekNextRef.current) peekNextRef.current.style.opacity="0";
+    if(peekPrevRef.current) peekPrevRef.current.style.opacity="0";
+  },[swipeRecipe?.name]);
   backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
@@ -3110,7 +3104,6 @@ const RECIPE_PROFILES = {
   "Macunaíma":{"flavors":"Herbal • Cítrico • Defumado","perfil":"Complexo","perfil_desc":"Tropical com amargura elegante","sensacao":"Provocante","sensacao_desc":"Queimação refrescante intensa","ocasiao":"Noturna","ocasiao_desc":"Coquetel de contemplação"},
   "Gabriela":{"flavors":"Especiado • Cítrico • Terroso","perfil":"Tradicional","perfil_desc":"Raízes brasileiras autênticas","sensacao":"Aquecente","sensacao_desc":"Abraço reconfortante","ocasiao":"Noturno","ocasiao_desc":"Encontros intimistas"},
   "Cachaça Collins":{"flavors":"Cítrico • Tropical • Refrescante","perfil":"Vibrante","perfil_desc":"Intenso e alegre","sensacao":"Efervescente","sensacao_desc":"Leve e estimulante","ocasiao":"Social","ocasiao_desc":"Festas e encontros"},
-  "Highball de Cachaça":{"flavors":"Herbáceo • Picante • Refrescante","perfil":"Vibrante","perfil_desc":"Tropical e energético","sensacao":"Efervescente","sensacao_desc":"Formigante na língua","ocasiao":"Social","ocasiao_desc":"Encontros descontraídos"},
   "Old Fashioned de Cachaça":{"flavors":"Amadeirado • Cítrico • Especiado","perfil":"Robusto","perfil_desc":"Encorpado e intenso","sensacao":"Quente","sensacao_desc":"Abraço reconfortante","ocasiao":"Noturna","ocasiao_desc":"Contemplação relaxada"},
   "Caipirinha Envelhecida":{"flavors":"Amadeirado • Cítrico • Suave","perfil":"Sofisticado","perfil_desc":"Elegância envelhecida","sensacao":"Morno","sensacao_desc":"Calor reconfortante","ocasiao":"Aperitivo","ocasiao_desc":"Encontros refinados"},
   "Honey & Wood":{"flavors":"Doce • Amadeirado • Cítrico","perfil":"Encorpado","perfil_desc":"Warmth e suavidade","sensacao":"Reconfortante","sensacao_desc":"Abraço líquido","ocasiao":"Noite","ocasiao_desc":"Repouso contemplativo"},
@@ -3521,36 +3514,53 @@ const RECIPE_PROFILES = {
                 </div>}
               </>);})()}
               <div style={{flex:"1 1 auto",width:"100%",minHeight:0,position:"relative"}}>
-                {/* peek cards — dentro do flex:1 para alinhar com o card central */}
+                {/* peek cards — centralizadas por baixo do card principal, reveladas no drag */}
                 {[
-                  {pr:prevPeekRecipe,dx:-60,rot:0},
-                  {pr:nextPeekRecipe,dx:60,rot:0},
-                ].map(({pr,dx,rot})=>{
+                  {pr:nextPeekRecipe,pRef:peekNextRef},
+                  {pr:prevPeekRecipe,pRef:peekPrevRef},
+                ].map(({pr,pRef},idx)=>{
                   if(!pr)return null;
                   const th=getTheme(pr.categories);
                   const pv=getCardVisual(pr);
+                  const pp=pr.perfil?{perfil:pr.perfil,sensacao:pr.sensacao,ocasiao:pr.ocasiao,flavors:pr.flavors}:recipeProfiles[pr.name];
                   return(
-                    <div key={dx} ref={dx>0?peekNextRef:peekPrevRef} style={{
-                      position:"absolute",left:"50%",top:"44%",width:260,
-                      height:"calc(93% - 112px)",
-                      transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
-                      borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
+                    <div key={idx} ref={pRef} style={{
+                      position:"absolute",left:"50%",top:"50%",width:"100%",maxWidth:285,
+                      height:"calc(100% - 4px)",
+                      transform:"translate(-50%,-50%) scale(0.95)",
+                      borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),
+                      border:`1.5px solid ${th.accent}`,
                       overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0,
-                      boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
-                      WebkitMaskImage:dx<0
-                        ?"linear-gradient(to right, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)"
-                        :"linear-gradient(to left, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)",
-                      maskImage:dx<0
-                        ?"linear-gradient(to right, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)"
-                        :"linear-gradient(to left, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)",
+                      transition:"opacity .18s ease",
+                      boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 0 50px ${th.accent}18`,
                     }}>
-                      {/* overlay base — leve */}
-                      <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.12) 0%, rgba(3,1,0,0.0) 30%, rgba(3,1,0,0.42) 70%, rgba(3,1,0,0.88) 100%)"}}/>
-                      <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"18px 18px 24px"}}>
+                      <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
+                      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.82) 100%)",mixBlendMode:"multiply"}}/>
+                      <div style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:10}}>
                         <div style={{fontFamily:"'Gloock',serif",
-                          fontSize:pr.name.length>18?26:pr.name.length>13?32:pr.name.length>8?38:44,
-                          fontWeight:400,lineHeight:1.1,color:"rgba(231,224,205,0.75)",letterSpacing:"-0.5px",
-                          overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{pr.name}</div>
+                          fontSize:pr.name.length>22?26:pr.name.length>18?30:pr.name.length>14?35:pr.name.length>11?38:pr.name.length>7?48:55,
+                          fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.95)",letterSpacing:"-0.3px",
+                          overflow:"hidden",display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",
+                          textShadow:"0 1px 4px rgba(0,0,0,0.8), 0 2px 14px rgba(0,0,0,0.6)"}}>{pr.name}</div>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}>
+                          <div style={{height:2,width:36,background:th.accent,borderRadius:2,opacity:0.9}}/>
+                          <div style={{width:7,height:2,borderRadius:1,background:th.accent,opacity:0.9}}/>
+                        </div>
+                        {pp?.flavors&&<div style={{...CARD_TYPO.flavor,color:th.accent}}>{pp.flavors.replace(/·/g,"•")}</div>}
+                        {pp?.perfil&&(
+                          <div style={{display:"flex",justifyContent:"space-between",paddingTop:8,borderTop:`1.5px solid ${th.accent}30`}}>
+                            {[["◈","Perfil",pp.perfil],["❋","Sensação",pp.sensacao],["✦","Ocasião",pp.ocasiao]].map((item,i)=>(
+                              <div key={i} style={{display:"contents"}}>
+                                {i>0&&<div style={{width:1,alignSelf:"stretch",background:`${th.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
+                                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
+                                  <span style={{...CARD_TYPO.sigIcon,color:th.accent}}>{item[0]}</span>
+                                  <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                                  <span style={{...CARD_TYPO.sigValue,fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9}}>{item[2]}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -3591,22 +3601,21 @@ const RECIPE_PROFILES = {
                   );})()}
                 </div>
               </div>
-              {/* sheet ocasião — abre acima dos botões */}
-              {filterSheet==="ocasiao"&&(
-                <div style={{flexShrink:0,width:"calc(100% - 24px)",background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",marginBottom:6,zIndex:20}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {OCCASION_LIST.map(tag=>{
-                      const active=activeOccasions.includes(tag);
-                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
-                    })}
+              {/* controles bottom — ocasião sheet flutua sobre o layout sem empurrar */}
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color .55s ease",position:"relative"}}>
+                {filterSheet==="ocasiao"&&(
+                  <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",zIndex:30}}>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {OCCASION_LIST.map(tag=>{
+                        const active=activeOccasions.includes(tag);
+                        return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
+                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-              {/* controles bottom */}
-              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color .55s ease"}}>
+                )}
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{...CARD_TYPO.filterBtn,display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,cursor:"pointer",transition:"all .2s",
@@ -3913,7 +3922,7 @@ const RECIPE_PROFILES = {
       <MobileNav tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
+      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
