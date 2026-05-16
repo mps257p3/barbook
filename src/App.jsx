@@ -115,10 +115,8 @@ const CARD_TYPO = {
   noteText:    { fontSize:13, color:"rgba(231,224,205,0.45)", lineHeight:1.7, fontFamily:"Archivo,sans-serif", fontStyle:"italic" },
   // ── Botões de ação da receita aberta (já provei, favorito, etc.) ──────────────
   actionBtn:   { fontSize:10, letterSpacing:0.8, textTransform:"uppercase", fontWeight:600, fontFamily:"Archivo,sans-serif" },
-  // ── Labels abaixo dos botões circulares (já provei / adicionar à comanda) ─────
-  actionLabel: { fontSize:9, letterSpacing:1.5, textTransform:"uppercase", fontWeight:700, fontFamily:"Archivo,sans-serif" },
-  // ── Botões de filtro da barra inferior (Ocasião / Não provados) ───────────────
-  filterBtn:   { fontSize:9, letterSpacing:1.5, textTransform:"uppercase", fontFamily:"Archivo,sans-serif" },
+  // ── Labels de UI: abaixo dos botões circulares e filtros da barra inferior ─────
+  uiLabel:     { fontSize:9, letterSpacing:1.5, textTransform:"uppercase", fontWeight:600, fontFamily:"Archivo,sans-serif" },
   // ── Contador de posição no swipe (1 / 24) ─────────────────────────────────────
   counter:     { fontSize:8, letterSpacing:2, textTransform:"uppercase", opacity:0.55, fontFamily:"Archivo,sans-serif" },
 };
@@ -1752,15 +1750,18 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO ── */}
-        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
+        {/* ── HERO — image extends through profile row, fades at golden separator ── */}
+        <div style={{position:"relative",height:profile?.perfil?288:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
+          <div style={{position:"absolute",inset:0,background:profile?.perfil
+            ?"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 18%, rgba(6,4,2,0.32) 48%, rgba(6,4,2,0.68) 68%, rgba(10,9,6,0.86) 78%, rgba(10,9,6,0.97) 90%, rgba(10,9,6,1.0) 100%)"
+            :"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
           </div>}
-          <div style={{position:"absolute",bottom:16,left:18,right:18}}>
+          <div style={{position:"absolute",bottom:profile?.perfil?82:16,left:18,right:18}}>
             {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
@@ -1769,28 +1770,26 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             </div>
             {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
           </div>
+          {profile?.perfil&&(
+            <div style={{position:"absolute",bottom:0,left:0,right:0}}>
+              <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
+                {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
+                  <div key={i} style={{display:"contents"}}>
+                    {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
+                      <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                      <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                      <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
+            </div>
+          )}
         </div>
 
-        {/* profile row */}
-        {profile?.perfil&&(
-          <>
-          <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
-            {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
-              <div key={i} style={{display:"contents"}}>
-                {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
-                  <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
-                  <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
-                  <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
-          </>
-        )}
-
-        <div style={{padding:"16px 18px 32px"}}>
+        <div style={{padding:"16px 18px 32px",textAlign:"left"}}>
 
           {/* estrelas + ações */}
           <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:12,alignItems:"center"}}>
@@ -3397,6 +3396,10 @@ const RECIPE_PROFILES = {
   },[]);
 
   useEffect(()=>{if(swipeRecipe)loadProfile(swipeRecipe);},[swipeRecipe?.name,loadProfile]);
+  useEffect(()=>{
+    if(nextPeekRecipe)loadProfile(nextPeekRecipe);
+    if(prevPeekRecipe)loadProfile(prevPeekRecipe);
+  },[nextPeekRecipe?.name,prevPeekRecipe?.name,loadProfile]);// eslint-disable-line
 
   // reset idx ao mudar filtros
   useEffect(()=>{setSwipeHistIdx(0);},[activeStyle,activeSpirits,activeOccasions,filterMode,search]);
@@ -3502,10 +3505,10 @@ const RECIPE_PROFILES = {
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color .55s ease"}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color 1.1s ease"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
-                <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background .6s ease"}}/>
+                <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background 1.1s ease"}}/>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 50% 40% at 50% 0%, ${th.accent}08 0%, transparent 60%)`,pointerEvents:"none"}}/>
                 <div style={{position:"absolute",bottom:0,left:0,right:0,height:2,background:`linear-gradient(90deg, transparent, ${th.accent}44, transparent)`,pointerEvents:"none"}}/>
                 {hasFilters&&<div style={{position:"absolute",top:8,left:0,right:0,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
@@ -3524,13 +3527,17 @@ const RECIPE_PROFILES = {
                   const pp=pr.perfil?{perfil:pr.perfil,sensacao:pr.sensacao,ocasiao:pr.ocasiao,flavors:pr.flavors}:recipeProfiles[pr.name];
                   return(
                     <div key={idx} ref={pRef} style={{
-                      position:"absolute",left:"50%",top:"50%",width:"100%",maxWidth:285,
-                      height:"calc(100% - 4px)",
-                      transform:"translate(-50%,-50%) scale(0.95)",
+                      position:"absolute",inset:0,
+                      display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",
+                      padding:"7% 16px 112px",
+                      pointerEvents:"none",zIndex:0,opacity:0,transition:"opacity .18s ease",
+                    }}>
+                    <div style={{
+                      width:"100%",maxWidth:285,height:"100%",
                       borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),
                       border:`1.5px solid ${th.accent}`,
-                      overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0,
-                      transition:"opacity .18s ease",
+                      overflow:"hidden",position:"relative",
+                      transform:"scale(0.95)",
                       boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 0 50px ${th.accent}18`,
                     }}>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
@@ -3562,6 +3569,7 @@ const RECIPE_PROFILES = {
                         )}
                       </div>
                     </div>
+                    </div>
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
@@ -3579,7 +3587,7 @@ const RECIPE_PROFILES = {
                         boxShadow:isTried?"0 0 28px rgba(20,184,166,0.55), 0 0 56px rgba(20,184,166,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
                         fontSize:26,color:isTried?"#4ADE80":"rgba(240,235,225,0.6)",
                         transition:"all .25s"}}>✓</div>
-                      <span style={{...CARD_TYPO.actionLabel,color:isTried?"#4ADE80":"rgba(240,235,225,0.55)"}}>já provei</span>
+                      <span style={{...CARD_TYPO.uiLabel,color:isTried?"#4ADE80":"rgba(240,235,225,0.55)"}}>já provei</span>
                     </button>
                   </div>
                   );})()}
@@ -3594,14 +3602,14 @@ const RECIPE_PROFILES = {
                         boxShadow:isComanda?"0 0 28px rgba(160,120,90,0.55), 0 0 56px rgba(160,120,90,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
                         fontSize:isComanda?20:22,color:isComanda?"#E5C99E":"rgba(240,235,225,0.6)",
                         transition:"all .25s"}}>{isComanda?"◫":"🍸"}</div>
-                      <span style={{...CARD_TYPO.actionLabel,color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
+                      <span style={{...CARD_TYPO.uiLabel,color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
                     </button>
                   </div>
                   );})()}
                 </div>
               </div>
               {/* controles bottom — ocasião sheet flutua sobre o layout sem empurrar */}
-              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color .55s ease",position:"relative"}}>
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:8,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color 1.1s ease",position:"relative"}}>
                 {filterSheet==="ocasiao"&&(
                   <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",zIndex:30}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
@@ -3617,7 +3625,7 @@ const RECIPE_PROFILES = {
                 )}
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                    style={{...CARD_TYPO.filterBtn,display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,cursor:"pointer",transition:"all .2s",
+                    style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,cursor:"pointer",transition:"all .2s",
                       background:activeOccasions.length?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                       border:`1px solid ${activeOccasions.length?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
                       color:activeOccasions.length?"#C8A96E":"rgba(240,235,225,0.35)"}}>
@@ -3626,7 +3634,7 @@ const RECIPE_PROFILES = {
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
-                    style={{...CARD_TYPO.filterBtn,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
+                    style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
                     <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
                       <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
                     </div>
