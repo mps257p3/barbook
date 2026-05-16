@@ -1729,12 +1729,12 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 65%, rgba(6,4,2,0.97) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
-          {styleTags[0]&&<span style={{position:"absolute",top:16,left:18,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.6)",fontWeight:500}}>{styleTags[0]}</span>}
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
           </div>}
           <div style={{position:"absolute",bottom:16,left:18,right:18}}>
+            {styleTags[0]&&<div style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:0.75,marginBottom:6,fontWeight:600}}>{styleTags[0]}</div>}
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
               <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
@@ -2174,31 +2174,6 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               );})()}
             </div>
 
-            {/* trocar foto */}
-            {(onSetCustomBg||onClearCustomBg)&&(
-              <div onPointerDown={e=>e.stopPropagation()} onPointerMove={e=>e.stopPropagation()} onPointerUp={e=>e.stopPropagation()}
-                style={{position:"absolute",top:48,right:14,zIndex:20}}>
-                {customBg?(
-                  <button onClick={e=>{e.stopPropagation();onClearCustomBg?.();}}
-                    style={{display:"flex",alignItems:"center",gap:3,padding:"4px 9px",borderRadius:12,
-                      background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.3)",
-                      cursor:"pointer",fontSize:8,letterSpacing:1,textTransform:"uppercase",
-                      color:"#F87171",fontFamily:"Archivo,sans-serif",lineHeight:1}}>
-                    ✕ excluir foto
-                  </button>
-                ):(
-                  <label onClick={e=>e.stopPropagation()}
-                    style={{display:"flex",alignItems:"center",gap:3,padding:"4px 9px",borderRadius:12,
-                      background:"rgba(0,0,0,0.5)",border:"1px solid rgba(255,255,255,0.12)",
-                      cursor:"pointer",fontSize:8,letterSpacing:1,textTransform:"uppercase",
-                      color:"rgba(231,224,205,0.6)",fontFamily:"Archivo,sans-serif",lineHeight:1}}>
-                    ◉ foto
-                    <input type="file" accept="image/*" style={{display:"none"}}
-                      onChange={async e=>{const f=e.target.files?.[0];if(f){const url=await resizeImageToDataUrl(f);if(url)onSetCustomBg?.(url);}e.target.value="";}}/>
-                  </label>
-                )}
-              </div>
-            )}
 
             {/* autoral seal */}
             {recipe.custom&&(
@@ -2239,9 +2214,9 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                     <>
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
                       <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
-                        <span style={{fontSize:13,color:theme.accent,lineHeight:1}}>{item[0]}</span>
-                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1.2}}>{item[1]}</span>
-                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.2}}>{item[2]}</span>
+                        <span style={{fontSize:13,color:theme.accent,lineHeight:1.2}}>{item[0]}</span>
+                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1.6}}>{item[1]}</span>
+                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
