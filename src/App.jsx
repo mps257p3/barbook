@@ -2121,7 +2121,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transition:visible?"opacity .14s ease":"none"}}>
+        transition:visible?"opacity .28s ease":"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
@@ -2162,13 +2162,12 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
             {/* top row */}
             <div style={{position:"absolute",top:18,left:20,right:20,display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
-              {styleTag&&<span style={{display:"flex",alignItems:"center",gap:7,fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.75)",fontWeight:500,flexShrink:0,lineHeight:1}}>
-                <GlassIcon categories={recipe.categories} color={theme.accent} size={14} opacity={0.8}/>
+              {styleTag&&<span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:"rgba(231,224,205,0.50)",fontWeight:600,flexShrink:0,lineHeight:1,fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>
                 {styleTag}
               </span>}
-              {spiritTag&&(()=>{const sl=spiritTag.length;const sfs=sl>16?9:sl>11?10:11;const sls=sl>16?1:sl>11?1.5:2;return(
-              <span style={{display:"flex",alignItems:"center",gap:5,fontSize:sfs,letterSpacing:sls,textTransform:"uppercase",color:"rgba(231,224,205,0.45)",flexShrink:1,minWidth:0,lineHeight:1}}>
-                <span style={{width:5,height:5,borderRadius:"50%",background:theme.accent,opacity:0.85,flexShrink:0,display:"inline-block"}}/>
+              {spiritTag&&(()=>{const sl=spiritTag.length;const sfs=sl>16?8:sl>11?9:10;const sls=sl>16?1:sl>11?1.5:2;return(
+              <span style={{display:"flex",alignItems:"center",gap:5,fontSize:sfs,letterSpacing:sls,textTransform:"uppercase",color:"rgba(231,224,205,0.38)",flexShrink:1,minWidth:0,lineHeight:1,fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>
+                <span style={{width:4,height:4,borderRadius:"50%",background:theme.accent,flexShrink:0,display:"inline-block"}}/>
                 <span style={{whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{spiritTag}</span>
               </span>
               );})()}
@@ -2189,10 +2188,10 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             {/* bottom content - clickable */}
             <div onClick={()=>onOpen(recipe)} style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left",cursor:"pointer"}}>
               <div style={{fontFamily:"'Gloock',serif",
-                fontSize:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>11?36:recipe.name.length>7?48:55,
+                fontSize:recipe.name.length>22?26:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>11?38:recipe.name.length>7?48:55,
                 fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
-                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:2,
-                textShadow:"0 1px 4px rgba(0,0,0,0.7), 0 2px 12px rgba(0,0,0,0.5)"}}>{recipe.name}</div>
+                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",paddingBottom:2,
+                textShadow:"0 1px 4px rgba(0,0,0,0.8), 0 2px 14px rgba(0,0,0,0.6)"}}>{recipe.name}</div>
 
               {/* divider */}
               <div style={{display:"flex",alignItems:"center",gap:8}}>
@@ -2202,7 +2201,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
 
               {/* flavor tags — cor da família */}
               {p?.flavors&&(
-                <div style={{fontSize:9,letterSpacing:2.5,color:theme.accent,opacity:0.8,textTransform:"uppercase"}}>
+                <div style={{fontSize:8.5,letterSpacing:2.5,color:theme.accent,opacity:0.75,textTransform:"uppercase",fontFamily:"Archivo,sans-serif",textShadow:"0 1px 4px rgba(0,0,0,0.8)"}}>
                   {p.flavors.replace(/·/g,"•")}
                 </div>
               )}
@@ -2214,9 +2213,9 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                     <>
                       {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
                       <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
-                        <span style={{fontSize:13,color:theme.accent,lineHeight:1.2}}>{item[0]}</span>
-                        <span style={{fontSize:9,letterSpacing:1.5,color:"rgba(231,224,205,0.38)",textTransform:"uppercase",fontWeight:500,lineHeight:1.6}}>{item[1]}</span>
-                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.6,color:"rgba(231,224,205,0.85)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5}}>{item[2]}</span>
+                        <span style={{fontSize:12,color:theme.accent,lineHeight:1.2,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                        <span style={{fontSize:7.5,letterSpacing:1.5,color:"rgba(231,224,205,0.32)",textTransform:"uppercase",fontWeight:600,lineHeight:1.6,fontFamily:"Archivo,sans-serif"}}>{item[1]}</span>
+                        <span style={{fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9,letterSpacing:0.5,color:"rgba(231,224,205,0.82)",textTransform:"uppercase",fontWeight:600,textAlign:"center",lineHeight:1.5,fontFamily:"Archivo,sans-serif"}}>{item[2]}</span>
                       </div>
                     </>
                   ))}
@@ -2690,14 +2689,14 @@ export default function OnTheRocks(){
   const peekPrevRef=useRef(null);
   const handleDragChange=useCallback(({nextPct,prevPct})=>{
     if(peekNextRef.current){
-      const dx=60*(1-nextPct);
-      peekNextRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.84+nextPct*0.16})`;
-      peekNextRef.current.style.opacity=String(0.82+nextPct*0.18);
+      const dx=56*(1-nextPct);
+      peekNextRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.82+nextPct*0.18})`;
+      peekNextRef.current.style.opacity=String(nextPct);
     }
     if(peekPrevRef.current){
-      const dx=-60*(1-prevPct);
-      peekPrevRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.84+prevPct*0.16})`;
-      peekPrevRef.current.style.opacity=String(0.82+prevPct*0.18);
+      const dx=-56*(1-prevPct);
+      peekPrevRef.current.style.transform=`translate(calc(-50% + ${dx}px),-50%) scale(${0.82+prevPct*0.18})`;
+      peekPrevRef.current.style.opacity=String(prevPct);
     }
   },[]);
   backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
@@ -3475,7 +3474,7 @@ const RECIPE_PROFILES = {
               <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
-            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none"}}>
+            <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color .55s ease"}}>
               {/* fundo atmosférico */}
               {(()=>{const th=getTheme(swipeRecipe.categories);return(<>
                 <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse 80% 60% at 50% 100%, ${th.accent}18 0%, transparent 70%)`,pointerEvents:"none",transition:"background .6s ease"}}/>
@@ -3500,7 +3499,7 @@ const RECIPE_PROFILES = {
                       height:"calc(93% - 112px)",
                       transform:`translate(calc(-50% + ${dx}px),-50%) scale(0.84)`,
                       borderRadius:16,backgroundColor:"#0A0906",...buildCardBgEditorial(pv),border:`1px solid ${th.accent}`,
-                      overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0.82,
+                      overflow:"hidden",pointerEvents:"none",zIndex:0,opacity:0,
                       boxShadow:`0 12px 30px rgba(0,0,0,0.5)`,
                       WebkitMaskImage:dx<0
                         ?"linear-gradient(to right, black 0%, black 12%, rgba(0,0,0,0.88) 24%, rgba(0,0,0,0.62) 38%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0.12) 64%, transparent 78%)"
@@ -3571,7 +3570,7 @@ const RECIPE_PROFILES = {
                 </div>
               )}
               {/* controles bottom */}
-              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14}}>
+              <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,backgroundColor:`${getTheme(swipeRecipe.categories).accent}0a`,transition:"background-color .55s ease"}}>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
                     style={{display:"flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:20,fontSize:9,letterSpacing:1.5,textTransform:"uppercase",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .2s",
