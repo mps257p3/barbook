@@ -1616,12 +1616,12 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 
       {/* tags */}
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10,flexWrap:"wrap"}}>
-        {styleTag&&<span style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent}}>{styleTag}</span>}
-        {spiritTag&&<><span style={{fontSize:8,color:theme.accent,opacity:.3}}>·</span><span style={{fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.52)"}}>{spiritTag}</span></>}
+        {styleTag&&<span style={{...CARD_TYPO.tag,color:theme.accent}}>{styleTag}</span>}
+        {spiritTag&&<><span style={{...CARD_TYPO.tag,color:theme.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.48)"}}>{spiritTag}</span></>}
       </div>
 
       {/* nome */}
-      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:21,fontWeight:700,lineHeight:1.1,color:"#F0EBE1",marginBottom:9,paddingRight:48,letterSpacing:.2}}>{recipe.name}</div>
+      <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>22?16:recipe.name.length>16?18:21,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.95)",marginBottom:9,paddingRight:48,letterSpacing:"-0.2px"}}>{recipe.name}</div>
 
       {/* stars */}
       {recipe.rating>0&&<div style={{marginBottom:9}}><Stars n={recipe.rating} color={theme.accent}/></div>}
@@ -1631,15 +1631,15 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 
       {/* ingredientes */}
       <div>
-        <div style={{fontSize:7,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:4}}>Ingredientes</div>
-        <div style={{fontSize:10,color:"rgba(240,235,225,0.52)",lineHeight:1.65,whiteSpace:"nowrap",overflow:"hidden",WebkitMaskImage:"linear-gradient(to right,black 60%,transparent 100%)",maskImage:"linear-gradient(to right,black 60%,transparent 100%)"}}>
+        <div style={{...CARD_TYPO.sectionHead,color:theme.accent,marginBottom:4}}>Ingredientes</div>
+        <div style={{...CARD_TYPO.bodyText,fontSize:10,color:"rgba(240,235,225,0.45)",whiteSpace:"nowrap",overflow:"hidden",WebkitMaskImage:"linear-gradient(to right,black 60%,transparent 100%)",maskImage:"linear-gradient(to right,black 60%,transparent 100%)"}}>
           {recipe.ingredients.slice(0,3).map((ing,i)=>(
             <span key={i}>{i>0&&<span style={{opacity:.4,margin:"0 4px"}}>·</span>}{ing}</span>
           ))}{recipe.ingredients.length>3&&<span style={{opacity:.3}}> · …</span>}
         </div>
       </div>
 
-      {hasAll&&<div style={{position:"absolute",bottom:8,right:30,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:"#4ADE80",opacity:.75}}>tenho tudo</div>}
+      {hasAll&&<div style={{...CARD_TYPO.counter,position:"absolute",bottom:8,right:30,color:"#4ADE80",opacity:.75}}>tenho tudo</div>}
       <button onClick={e=>{e.stopPropagation();onTried();}} style={{position:"absolute",bottom:6,right:8,background:"none",border:"none",fontSize:14,color:isTried?"#4ADE80":"rgba(255,255,255,0.12)",cursor:"pointer",padding:4,lineHeight:1,transition:"color .15s"}}>
         {isTried?"✓":"○"}
       </button>
@@ -2422,8 +2422,8 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
           <button key={l} onClick={()=>onGoTo(filter)} style={{background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:5,padding:"16px 14px",textAlign:"left",cursor:"pointer",transition:"border-color .15s",fontFamily:"Archivo,sans-serif"}}
             onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(160,120,90,0.3)"}
             onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(240,235,225,0.07)"}>
-            <div style={{fontSize:28,fontFamily:"'Cormorant Garamond',serif",fontWeight:600,color:"#A0785A",lineHeight:1}}>{v}</div>
-            <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.52)",marginTop:4,fontWeight:700}}>{l}</div>
+            <div style={{fontFamily:"'Gloock',serif",fontSize:28,fontWeight:400,color:"#A0785A",lineHeight:1}}>{v}</div>
+            <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.45)",marginTop:5}}>{l}</div>
           </button>
         ))}
       </div>
@@ -2431,7 +2431,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
       {/* top rated */}
       {topRated.length>0&&(
         <div style={{marginBottom:28}}>
-          <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>Melhores avaliados</div>
+          <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:10}}>Melhores avaliados</div>
           <div style={{display:"flex",flexDirection:"column",gap:5}}>
             {topRated.map(r=>{
               const th=getTheme(r.categories);
@@ -2439,7 +2439,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
                 <button key={r.name} onClick={()=>onOpenRecipe(r)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:4,background:"rgba(240,235,225,0.02)",border:`1px solid ${th.border}22`,cursor:"pointer",textAlign:"left",width:"100%",transition:"border-color .15s",fontFamily:"Archivo,sans-serif"}}
                   onMouseEnter={e=>e.currentTarget.style.borderColor=th.border+"55"}
                   onMouseLeave={e=>e.currentTarget.style.borderColor=th.border+"22"}>
-                  <div style={{flex:1,fontFamily:"'Cormorant Garamond',serif",fontSize:15,color:"#F0EBE1"}}>{r.name}</div>
+                  <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:15,fontWeight:400,color:"rgba(231,224,205,0.9)",lineHeight:1.2}}>{r.name}</div>
                   <Stars n={r.rating} color={th.accent}/>
                 </button>
               );
@@ -2450,7 +2450,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
 
 
       {/* dados */}
-      <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:10}}>Dados</div>
+      <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:10}}>Dados</div>
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         <button onClick={onAddRecipe} style={{...btnSt,color:"#A0785A",borderColor:"rgba(160,120,90,0.3)",background:"rgba(160,120,90,0.08)"}}><span style={{fontSize:18,lineHeight:1}}>+</span> Nova receita</button>
         <button onClick={exportJSON} style={btnSt}><span style={{fontSize:16}}>↓</span> Exportar backup</button>
@@ -2483,7 +2483,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
 
       {/* sobre */}
       <div style={{marginTop:28,marginBottom:8}}>
-        <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.42)",fontWeight:700,marginBottom:12}}>Sobre</div>
+        <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:12}}>Sobre</div>
         <div style={{background:"rgba(240,235,225,0.02)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:5,padding:"16px 16px",display:"flex",flexDirection:"column",gap:10}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
             <span style={{fontFamily:"Archivo,sans-serif",fontSize:13,fontWeight:900,letterSpacing:4,textTransform:"uppercase",color:"#F0EBE1"}}>ON THE ROCKS</span>
@@ -3667,7 +3667,7 @@ const RECIPE_PROFILES = {
               {/* header */}
               <div style={{marginBottom:20}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                  <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>Meu Bar</div>
+                  <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.4)"}}>Meu Bar</div>
                   {owned.length>0&&(
                     <button onClick={()=>setOwned([])} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>limpar</button>
                   )}
@@ -3702,7 +3702,7 @@ const RECIPE_PROFILES = {
               )}
               {/* adicionar bebida customizada */}
               <div style={{marginTop:24,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)"}}>
-                <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.35)",fontWeight:700,marginBottom:10}}>Adicionar bebida</div>
+                <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.35)",marginBottom:10}}>Adicionar bebida</div>
                 <div style={{display:"flex",gap:8}}>
                   <input value={spiritSearch} onChange={e=>setSpiritSearch(e.target.value)}
                     onKeyDown={e=>{if(e.key==="Enter"&&spiritSearch.trim()){setCustomSpirits(p=>[...new Set([...p,spiritSearch.trim()])]);setSpiritSearch("");}}}
@@ -3713,7 +3713,7 @@ const RECIPE_PROFILES = {
                 </div>
                 {customSpirits.length>0&&(
                   <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
-                    <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontWeight:700,marginBottom:10}}>Bebidas adicionadas</div>
+                    <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.3)",marginBottom:10}}>Bebidas adicionadas</div>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {customSpirits.map(s=>(
                         <button key={s} onClick={()=>showConfirm(`Remover "${s}" do seu bar?`,()=>setCustomSpirits(p=>p.filter(x=>x!==s)),false)} style={{padding:"5px 10px",borderRadius:20,fontSize:11,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.2)",color:"rgba(160,120,90,0.6)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s} ×</button>
@@ -3731,7 +3731,7 @@ const RECIPE_PROFILES = {
                 return(
                   <div style={{marginTop:28}}>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:owned.length>1?10:14}}>
-                      <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontWeight:700}}>
+                      <div style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.7)"}}>
                         Você pode fazer · <span style={{color:"#C8A96E"}}>{possiveis.length}</span>
                       </div>
                       <button onClick={()=>{if(filterAnd&&owned.length>1){setActiveSpirits(owned);setFilterMode("tudo");}else{setFilterMode("tenho");}setMobileTab("explorar");}}
@@ -3766,7 +3766,7 @@ const RECIPE_PROFILES = {
             <div style={{paddingBottom:100}}>
               <div style={{marginBottom:20}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                  <div style={{fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>Comanda</div>
+                  <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.4)"}}>Comanda</div>
                   <div style={{display:"flex",gap:6}}>
                     {comanda.length>1&&(
                       <button onClick={()=>setComandaReorder(r=>!r)} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:comandaReorder?"rgba(160,120,90,0.12)":"none",border:`1px solid ${comandaReorder?"rgba(160,120,90,0.4)":"rgba(240,235,225,0.1)"}`,color:comandaReorder?"#C8A96E":"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>{comandaReorder?"concluir":"⇅ ordenar"}</button>
@@ -3797,10 +3797,10 @@ const RECIPE_PROFILES = {
                           <GlassIcon categories={r.categories} color={th.accent} size={36} opacity={0.5}/>
                         </div>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:19,fontWeight:700,color:"#F0EBE1",lineHeight:1.1,marginBottom:3}}>{r.name}</div>
+                          <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.95)",lineHeight:1.15,marginBottom:4}}>{r.name}</div>
                           <div style={{display:"flex",gap:6}}>
-                            {styleTag&&<span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:th.accent}}>{styleTag}</span>}
-                            {spiritTag&&<span style={{fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)"}}>{spiritTag}</span>}
+                            {styleTag&&<span style={{...CARD_TYPO.tag,color:th.accent}}>{styleTag}</span>}
+                            {spiritTag&&<span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.4)"}}>{spiritTag}</span>}
                           </div>
                         </div>
                         {comandaReorder?(
@@ -3826,39 +3826,39 @@ const RECIPE_PROFILES = {
               <div className="mnv" style={{display:"none",gap:6,flexWrap:"wrap",marginBottom:10,paddingBottom:4}}>
                 {/* família */}
                 <button onClick={()=>activeStyle?setActiveStyle(null):setFilterSheet(filterSheet==="familia"?null:"familia")}
-                  style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
                     background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:filterSheet==="familia"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                     border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":filterSheet==="familia"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:filterSheet==="familia"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:filterSheet==="familia"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                   {activeStyle||"Família"}{activeStyle?" ×":""}
                 </button>
                 {/* spirit */}
                 <button onClick={()=>setFilterSheet(filterSheet==="spirit"?null:"spirit")}
-                  style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
                     background:activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                     border:`1px solid ${activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeSpirits.length||filterSheet==="spirit"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    color:activeSpirits.length||filterSheet==="spirit"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                   {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
                 </button>
                 {/* ocasião */}
                 <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                  style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
                     background:activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                     border:`1px solid ${activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                   {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                 </button>
                 {/* filtros rápidos */}
                 {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
-                  <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{padding:"9px 16px",borderRadius:20,fontSize:13,fontWeight:600,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                  <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
                     background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                     border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:filterMode===v?"#C8A96E":"rgba(240,235,225,0.5)"}}>
+                    color:filterMode===v?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                     {l}
                   </button>
                 ))}
                 {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0)&&(
-                  <button onClick={clearAll} style={{padding:"9px 16px",borderRadius:20,fontSize:13,flexShrink:0,cursor:"pointer",fontFamily:"Archivo,sans-serif",background:"none",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.3)"}}>limpar</button>
+                  <button onClick={clearAll} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",background:"none",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.28)"}}>limpar</button>
                 )}
               </div>
               {/* sheet família */}
@@ -3915,13 +3915,13 @@ const RECIPE_PROFILES = {
               </div>
 
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-                <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.4)",fontWeight:700}}>
+                <span style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.4)"}}>
                   <span style={{color:"#A0785A"}}>{filtered.length}</span> drink{filtered.length!==1?"s":""}
                   {activeStyle&&` · ${activeStyle}`}
                 </span>
                 <div style={{display:"flex",gap:5}}>
                   {[["nome","A–Z"],["rating","★ Rating"],["recentes","Recentes"]].map(([v,l])=>(
-                    <button key={v} onClick={()=>setSort(v)} style={{padding:"4px 10px",borderRadius:3,fontSize:10,letterSpacing:.5,background:sort===v?"rgba(160,120,90,0.1)":"transparent",border:`1px solid ${sort===v?"rgba(160,120,90,0.35)":"rgba(240,235,225,0.07)"}`,color:sort===v?"#A0785A":"rgba(240,235,225,0.26)",transition:"all .12s"}}>{l}</button>
+                    <button key={v} onClick={()=>setSort(v)} style={{...CARD_TYPO.counter,padding:"4px 10px",borderRadius:3,background:sort===v?"rgba(160,120,90,0.1)":"transparent",border:`1px solid ${sort===v?"rgba(160,120,90,0.35)":"rgba(240,235,225,0.07)"}`,color:sort===v?"#A0785A":"rgba(240,235,225,0.26)",transition:"all .12s"}}>{l}</button>
                   ))}
                 </div>
               </div>
