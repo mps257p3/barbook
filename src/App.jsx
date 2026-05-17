@@ -2624,14 +2624,6 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
   useEffect(()=>{try{localStorage.setItem("otr_custom_bgs",JSON.stringify(customBgs));}catch{}},[customBgs]);
   useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
-  useEffect(()=>{
-    if(!open){
-      if(explorarScrollRef.current.tab==="explorar"){
-        const pos=explorarScrollRef.current.pos;
-        requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
-      }
-    }
-  },[open]);
 
   useEffect(()=>{
     if(!("wakeLock" in navigator))return;
@@ -2657,6 +2649,12 @@ export default function OnTheRocks(){
   const [search,setSearch]=useState("");
   const [spiritSearch,setSpiritSearch]=useState("");
   const [open,setOpen]=useState(null);
+  useEffect(()=>{
+    if(!open&&explorarScrollRef.current.tab==="explorar"){
+      const pos=explorarScrollRef.current.pos;
+      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
+    }
+  },[open]);
   const [editing,setEditing]=useState(null);
   const [showForm,setShowForm]=useState(false);
   const [sharedFiles,setSharedFiles]=useState(null);
