@@ -91,6 +91,7 @@ const FAMILY_DESC = {
 };
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const capFirst = s => typeof s==="string"&&s.length ? s.charAt(0).toUpperCase()+s.slice(1) : s;
 
 // ─── SISTEMA TIPOGRÁFICO — Descobrir + Receita aberta ─────────────────────────
 // Fonte única de verdade. Altere aqui e afeta toda a tela.
@@ -1270,7 +1271,7 @@ function buildCardBg(visual) {
   };
 }
 
-function buildCardBgEditorial(visual) {
+function buildCardBgEditorial(visual, photoPos="center") {
   const dimTint = t => t ? t.replace(/([\d.]+)\)$/, (_, a) => `${(+a * 0.6).toFixed(3)})`) : null;
   const tint = dimTint(visual.spiritTint);
   const layers = [
@@ -1283,7 +1284,7 @@ function buildCardBgEditorial(visual) {
   return {
     backgroundImage: layers.join(", "),
     backgroundSize:  sizes,
-    backgroundPosition: layers.map(()=>"center").join(", "),
+    backgroundPosition: [...layers.slice(0,-1).map(()=>"center"), photoPos].join(", "),
     backgroundRepeat: "no-repeat",
   };
 }
@@ -1652,10 +1653,18 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
+function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg,bgOffset,onSetBgOffset}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
+  const [posEditMode,setPosEditMode]=useState(false);
+  const [localOffset,setLocalOffset]=useState(bgOffset||{x:50,y:50});
+  useEffect(()=>{setLocalOffset(bgOffset||{x:50,y:50});},[bgOffset]);
+  const posStartRef=useRef(null);
+  const heroBgPos=posEditMode?`${localOffset.x}% ${localOffset.y}%`:(bgOffset?`${bgOffset.x}% ${bgOffset.y}%`:"center");
+  const onPosPointerDown=e=>{posStartRef.current={x:e.clientX,y:e.clientY,ox:localOffset.x,oy:localOffset.y};e.currentTarget.setPointerCapture(e.pointerId);};
+  const onPosPointerMove=e=>{if(!posStartRef.current)return;const dx=e.clientX-posStartRef.current.x;const dy=e.clientY-posStartRef.current.y;setLocalOffset({x:Math.max(0,Math.min(100,posStartRef.current.ox-dx*0.4)),y:Math.max(0,Math.min(100,posStartRef.current.oy-dy*0.4))});};
+  const onPosPointerUp=()=>{posStartRef.current=null;};
   const [steps,setSteps]=useState(recipe.steps);
   const [generating,setGenerating]=useState(false);
   const [genErr,setGenErr]=useState(null);
@@ -1721,10 +1730,21 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO ── */}
-        <div style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0}}>
+        <div
+          style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,heroBgPos),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0,cursor:posEditMode?"crosshair":"default",touchAction:posEditMode?"none":"auto"}}
+          onPointerDown={posEditMode?onPosPointerDown:undefined}
+          onPointerMove={posEditMode?onPosPointerMove:undefined}
+          onPointerUp={posEditMode?onPosPointerUp:undefined}
+          onPointerCancel={posEditMode?onPosPointerUp:undefined}
+        >
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
+          {customBg&&(posEditMode?(
+            <button onClick={()=>{setPosEditMode(false);onSetBgOffset?.(localOffset);}} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:`1px solid ${theme.accent}55`,background:`${theme.accent}22`,color:theme.accent,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>✓</button>
+          ):(
+            <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>⊕</button>
+          ))}
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
@@ -1830,7 +1850,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
-                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{scaleIng(ing,qty)}</span>
+                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(scaleIng(ing,qty))}</span>
                 </div>
               );
             })}
@@ -1848,7 +1868,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               {steps.map((s,i)=>(
                 <div key={i} style={{display:"grid",gridTemplateColumns:"24px 1fr",gap:12,alignItems:"start"}}>
                   <div style={{width:24,height:24,borderRadius:3,border:`1px solid ${theme.border}`,color:theme.label,fontSize:10,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
-                  <div style={{...CARD_TYPO.bodyText,paddingTop:2}}>{s}</div>
+                  <div style={{...CARD_TYPO.bodyText,paddingTop:2}}>{capFirst(s)}</div>
                 </div>
               ))}
             </div>
@@ -2099,7 +2119,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
     setDragging(false);
     if(drag<-THRESH){setGone("left");setTimeout(()=>{onNext();setGone(null);setDrag(0);},300);}
     else if(drag>THRESH&&hasPrev){setGone("right");setTimeout(()=>{onPrev();setGone(null);setDrag(0);},300);}
-    else{setDrag(0);onDragChange?.({nextPct:0,prevPct:0});}
+    else{setDrag(0);onDragChange?.({nextPct:0,prevPct:0});if(Math.abs(drag)<6)onOpen(recipe);}
   };
 
   const activeDrag=gone==="left"?-420:gone==="right"?420:drag;
@@ -2124,10 +2144,10 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             backgroundColor:"#0A0906",
             ...buildCardBgEditorial(displayVisual),
             borderRadius:16,position:"relative",overflow:"hidden",
-            cursor:dragging?"grabbing":"grab",
+            cursor:dragging?"grabbing":"pointer",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 28px 48px 6px rgba(0,0,0,0.92), 0 50px 90px rgba(0,0,0,0.88), 0 0 70px ${theme.accent}18, 0 0 14px ${theme.accent}22`,
+            boxShadow:`0 2px 5px rgba(0,0,0,0.98), 0 6px 14px rgba(0,0,0,0.92), 0 16px 28px rgba(0,0,0,0.85), 0 32px 44px rgba(0,0,0,0.72), 0 0 36px ${theme.accent}16, 0 0 10px ${theme.accent}20`,
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
@@ -2175,8 +2195,8 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               </div>
             )}
 
-            {/* bottom content - clickable */}
-            <div onClick={()=>onOpen(recipe)} style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left",cursor:"pointer"}}>
+            {/* bottom content */}
+            <div style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left"}}>
               <div style={{fontFamily:"'Gloock',serif",
                 fontSize:recipe.name.length>22?26:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>11?38:recipe.name.length>7?48:55,
                 fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
@@ -2527,6 +2547,9 @@ export default function OnTheRocks(){
   const [customSpirits,setCustomSpirits]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_spirits")||"[]");}catch{return[];}});
   const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
   const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
+  const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
+  const mainRef=useRef();
+  const explorarScrollRef=useRef({pos:0,tab:"explorar"});
 
   // ── Captura redirect do Google (mobile) ──
   useEffect(()=>{
@@ -2600,6 +2623,15 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
   useEffect(()=>{try{localStorage.setItem("otr_custom_bgs",JSON.stringify(customBgs));}catch{}},[customBgs]);
+  useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
+  useEffect(()=>{
+    if(!open){
+      if(explorarScrollRef.current.tab==="explorar"){
+        const pos=explorarScrollRef.current.pos;
+        requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
+      }
+    }
+  },[open]);
 
   useEffect(()=>{
     if(!("wakeLock" in navigator))return;
@@ -3500,7 +3532,7 @@ const RECIPE_PROFILES = {
           <SidebarContent {...sidebarProps}/>
         </aside>
 
-        <main className="app-main" style={{padding:"18px 22px 24px"}}>
+        <main ref={mainRef} className="app-main" style={{padding:"18px 22px 24px"}}>
           {/* mobile: tabs de conteúdo */}
           {mobileTab==="descobrir"&&!swipeRecipe ? (
             <div style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,opacity:.45}}>
@@ -3551,7 +3583,7 @@ const RECIPE_PROFILES = {
                       maskImage:isRight
                         ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
                         :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
-                      boxShadow:`0 2px 6px 3px rgba(0,0,0,1), 0 10px 22px 4px rgba(0,0,0,0.98), 0 0 50px ${th.accent}18`,
+                      boxShadow:`0 2px 4px rgba(0,0,0,0.85)`,
                     }}>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
                       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.82) 100%)",mixBlendMode:"multiply"}}/>
@@ -3938,7 +3970,7 @@ const RECIPE_PROFILES = {
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
+                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
                 </div>
               )}
             </>
@@ -3952,7 +3984,7 @@ const RECIPE_PROFILES = {
       <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})}/>}
+      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
