@@ -1620,8 +1620,8 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
       {/* fundo: nome + divisor + estrelas */}
       <div style={{position:"absolute",bottom:10,left:12,right:12,display:"flex",flexDirection:"column",gap:6}}>
         <div style={{fontFamily:"'Gloock',serif",
-          fontSize:recipe.name.length>22?16:recipe.name.length>18?18:recipe.name.length>14?20:22,
-          fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.2px",
+          fontSize:recipe.name.length>22?19:recipe.name.length>18?21:recipe.name.length>14?24:27,
+          fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
           overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
           textShadow:"0 1px 4px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.7)"}}>{recipe.name}</div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -2342,7 +2342,6 @@ function Tutorial({ onClose, onTabChange }) {
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
 function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial }) {
   const topRated = [...allRecipes].filter(r=>r.rating>0&&!r.categories.includes("Preparos Caseiros")).sort((a,b)=>b.rating-a.rating).slice(0,5);
-  const btnSt = {padding:"12px 16px",borderRadius:3,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",color:"rgba(240,235,225,0.5)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",gap:10};
   const [authError,setAuthError]=useState(null);
   const [restoreConfirm,setRestoreConfirm]=useState(null);
   const [versionTaps,setVersionTaps]=useState(0);
@@ -2358,59 +2357,77 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
     }
     setAuthLoading(false);
   };
+  const SectionHead=({label})=>(
+    <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+      <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
+      <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>{label}</span>
+    </div>
+  );
   return (
-    <div style={{padding:"20px 20px 20px"}}>
+    <div style={{paddingBottom:100}}>
 
-      {/* login / usuario */}
+      {/* user card */}
       {user ? (
-        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:28,padding:"16px",borderRadius:6,background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)"}}>
-          {user.photoURL && <img src={user.photoURL} alt="" style={{width:48,height:48,borderRadius:"50%",border:"1px solid rgba(160,120,90,0.3)"}}/>}
-          <div style={{flex:1}}>
-            <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18,color:"#F0EBE1",lineHeight:1.2}}>{user.displayName}</div>
-            <div style={{fontSize:11,color:"rgba(240,235,225,0.52)",marginTop:3}}>{user.email}</div>
-            {syncing && <div style={{fontSize:10,color:"#A0785A",marginTop:4,letterSpacing:1}}>sincronizando…</div>}
+        <div style={{position:"relative",marginBottom:24,padding:"22px 18px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.07)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,120,90,0.2) 0%,transparent 65%)",pointerEvents:"none"}}/>
+          <div style={{display:"flex",alignItems:"center",gap:14,position:"relative"}}>
+            {user.photoURL&&(
+              <div style={{position:"relative",flexShrink:0}}>
+                <div style={{position:"absolute",inset:-3,borderRadius:"50%",background:"radial-gradient(circle,rgba(160,120,90,0.5) 0%,transparent 70%)",filter:"blur(5px)"}}/>
+                <img src={user.photoURL} alt="" style={{width:52,height:52,borderRadius:"50%",border:"1.5px solid rgba(160,120,90,0.45)",position:"relative"}}/>
+              </div>
+            )}
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.2,letterSpacing:"-0.2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName}</div>
+              <div style={{...CARD_TYPO.sigLabel,marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.email}</div>
+              {syncing&&<div style={{...CARD_TYPO.counter,color:"#A0785A",marginTop:5,opacity:1}}>sincronizando…</div>}
+            </div>
+            <button onClick={signOutUser} style={{...CARD_TYPO.uiLabel,padding:"6px 14px",borderRadius:20,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.45)",cursor:"pointer",flexShrink:0}}>sair</button>
           </div>
-          <button onClick={signOutUser} style={{padding:"6px 14px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>sair</button>
         </div>
       ) : (
-        <>
-          <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:28,padding:"14px 16px",borderRadius:5,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1}}>
+        <div style={{marginBottom:24}}>
+          <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:0,padding:"16px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1,backdropFilter:"blur(10px)",boxSizing:"border-box"}}>
             <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.3z" fill="#EA4335"/></svg>
             {authLoading?"Aguarde…":"Entrar com Google"}
           </button>
-          {authError&&<div style={{marginBottom:28,padding:"10px 12px",borderRadius:4,background:"rgba(180,60,60,0.15)",border:"1px solid rgba(180,60,60,0.3)",fontSize:11,color:"#e08080",fontFamily:"Archivo,sans-serif",wordBreak:"break-all"}}>{authError}</div>}
-        </>
+          {authError&&<div style={{marginTop:8,padding:"10px 12px",borderRadius:8,background:"rgba(180,60,60,0.15)",border:"1px solid rgba(180,60,60,0.3)",fontSize:11,color:"#e08080",fontFamily:"Archivo,sans-serif",wordBreak:"break-all"}}>{authError}</div>}
+        </div>
       )}
 
       {/* stats */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:28}}>
-        {[
-          ["Receitas",drinkCount,"tudo"],
-          ["Provados",tried.length,"provados"],
-          ["Favoritos",favs.length,"favs"],
-          ["Minhas receitas",customRecipes.length,"custom"],
-        ].map(([l,v,filter])=>(
-          <button key={l} onClick={()=>onGoTo(filter)} style={{background:"rgba(240,235,225,0.03)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:5,padding:"16px 14px",textAlign:"left",cursor:"pointer",transition:"border-color .15s",fontFamily:"Archivo,sans-serif"}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(160,120,90,0.3)"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(240,235,225,0.07)"}>
-            <div style={{fontFamily:"'Gloock',serif",fontSize:28,fontWeight:400,color:"#A0785A",lineHeight:1}}>{v}</div>
-            <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.45)",marginTop:5}}>{l}</div>
-          </button>
-        ))}
+      <div style={{marginBottom:24}}>
+        <SectionHead label="Sua coleção"/>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          {[
+            ["Receitas",drinkCount,"tudo"],
+            ["Provados",tried.length,"provados"],
+            ["Favoritos",favs.length,"favs"],
+            ["Minhas receitas",customRecipes.length,"custom"],
+          ].map(([l,v,filter])=>(
+            <button key={l} onClick={()=>onGoTo(filter)}
+              style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,padding:"18px 16px",textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",backdropFilter:"blur(8px)",transition:"border-color .15s"}}
+              onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(160,120,90,0.35)"}
+              onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(240,235,225,0.07)"}>
+              <div style={{fontFamily:"'Gloock',serif",fontSize:34,fontWeight:400,color:"#A0785A",lineHeight:1}}>{v}</div>
+              <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.45)",marginTop:6}}>{l}</div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* top rated */}
       {topRated.length>0&&(
-        <div style={{marginBottom:28}}>
-          <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:10}}>Melhores avaliados</div>
-          <div style={{display:"flex",flexDirection:"column",gap:5}}>
-            {topRated.map(r=>{
+        <div style={{marginBottom:24}}>
+          <SectionHead label="Melhores avaliados"/>
+          <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
+            {topRated.map((r,i)=>{
               const th=getTheme(r.categories);
               return(
-                <button key={r.name} onClick={()=>onOpenRecipe(r)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:4,background:"rgba(240,235,225,0.02)",border:`1px solid ${th.border}22`,cursor:"pointer",textAlign:"left",width:"100%",transition:"border-color .15s",fontFamily:"Archivo,sans-serif"}}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor=th.border+"55"}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor=th.border+"22"}>
-                  <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:15,fontWeight:400,color:"rgba(231,224,205,0.9)",lineHeight:1.2}}>{r.name}</div>
+                <button key={r.name} onClick={()=>onOpenRecipe(r)}
+                  style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",cursor:"pointer",textAlign:"left",width:"100%",background:"none",border:"none",borderBottom:i<topRated.length-1?"1px solid rgba(240,235,225,0.05)":"none",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>
+                  <div style={{width:3,height:22,borderRadius:2,background:th.accent,opacity:0.85,flexShrink:0}}/>
+                  <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.92)",lineHeight:1.2}}>{r.name}</div>
                   <Stars n={r.rating} color={th.accent}/>
                 </button>
               );
@@ -2419,62 +2436,69 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         </div>
       )}
 
-
       {/* dados */}
-      <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:10}}>Dados</div>
-      <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        <button onClick={onAddRecipe} style={{...btnSt,color:"#A0785A",borderColor:"rgba(160,120,90,0.3)",background:"rgba(160,120,90,0.08)"}}><span style={{fontSize:18,lineHeight:1}}>+</span> Nova receita</button>
-        <button onClick={exportJSON} style={btnSt}><span style={{fontSize:16}}>↓</span> Exportar backup</button>
-        <button onClick={()=>importRef.current?.click()} style={btnSt}><span style={{fontSize:16}}>↑</span> Importar backup</button>
-
-        {restoreConfirm==="recipes"?(
-          <div style={{padding:"14px",borderRadius:3,background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.18)"}}>
-            <p style={{margin:"0 0 10px",fontSize:12,color:"rgba(240,235,225,0.6)",lineHeight:1.6}}>As receitas originais voltam ao padrão. Suas receitas criadas e avaliações são mantidas.</p>
-            <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>{onRestoreRecipes();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:3,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
-              <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
-            </div>
-          </div>
-        ):(
-          <button onClick={()=>setRestoreConfirm("recipes")} style={{...btnSt,color:"rgba(239,68,68,0.7)",borderColor:"rgba(239,68,68,0.15)"}}><span style={{fontSize:16}}>↺</span> Restaurar receitas originais</button>
-        )}
-
-        {restoreConfirm==="all"?(
-          <div style={{padding:"14px",borderRadius:3,background:"rgba(239,68,68,0.04)",border:"1px solid rgba(239,68,68,0.18)"}}>
-            <p style={{margin:"0 0 10px",fontSize:12,color:"rgba(240,235,225,0.6)",lineHeight:1.6}}>Esta ação vai redefinir toda a experiência — receitas originais voltam ao padrão e as suas receitas criadas serão apagadas. Não dá pra desfazer.</p>
-            <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>{onRestoreAll();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:3,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
-              <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:3,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
-            </div>
-          </div>
-        ):(
-          <button onClick={()=>setRestoreConfirm("all")} style={{...btnSt,color:"rgba(239,68,68,0.7)",borderColor:"rgba(239,68,68,0.15)"}}><span style={{fontSize:16}}>⊗</span> Restaurar app original</button>
-        )}
-      </div>
-
-      {/* sobre */}
-      <div style={{marginTop:28,marginBottom:8}}>
-        <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.42)",marginBottom:12}}>Sobre</div>
-        <div style={{background:"rgba(240,235,225,0.02)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:5,padding:"16px 16px",display:"flex",flexDirection:"column",gap:10}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-            <span style={{fontFamily:"Archivo,sans-serif",fontSize:13,fontWeight:900,letterSpacing:4,textTransform:"uppercase",color:"#F0EBE1"}}>ON THE ROCKS</span>
-            <span onClick={handleVersionTap} style={{fontSize:10,color:"rgba(240,235,225,0.42)",letterSpacing:1,cursor:"default",userSelect:"none"}}>v1.0</span>
-          </div>
-          <p style={{fontSize:11,color:"rgba(240,235,225,0.45)",lineHeight:1.6,margin:0}}>Desenvolvido por Marcelo Parducci</p>
-          <div style={{paddingTop:10,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
-            <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
-              <span style={{fontSize:10,color:"rgba(240,235,225,0.48)",letterSpacing:.5}}>Dados</span>
-              <span style={{fontSize:10,color:"rgba(240,235,225,0.4)",textAlign:"right"}}>Sincronizados via Google Account</span>
-            </div>
+      <div style={{marginBottom:24}}>
+        <SectionHead label="Dados"/>
+        <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
+          {[
+            {label:"+ Nova receita",fn:onAddRecipe,accent:true},
+            {label:"↓ Exportar backup",fn:exportJSON},
+            {label:"↑ Importar backup",fn:()=>importRef.current?.click()},
+          ].map(({label,fn,accent},i,arr)=>(
+            <button key={label} onClick={fn}
+              style={{display:"flex",alignItems:"center",gap:10,padding:"14px 16px",width:"100%",background:"none",border:"none",borderBottom:i<arr.length-1?"1px solid rgba(240,235,225,0.05)":"none",color:accent?"#A0785A":"rgba(240,235,225,0.55)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>
+              {label}
+            </button>
+          ))}
+          <div style={{borderTop:"1px solid rgba(240,235,225,0.05)"}}>
+            {restoreConfirm==="recipes"?(
+              <div style={{padding:"14px 16px"}}>
+                <p style={{margin:"0 0 10px",...CARD_TYPO.bodyText,fontSize:12,color:"rgba(240,235,225,0.6)"}}>As receitas originais voltam ao padrão. Suas receitas criadas e avaliações são mantidas.</p>
+                <div style={{display:"flex",gap:8}}>
+                  <button onClick={()=>{onRestoreRecipes();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:8,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
+                  <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:8,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
+                </div>
+              </div>
+            ):(
+              <button onClick={()=>setRestoreConfirm("recipes")} style={{display:"flex",alignItems:"center",gap:10,padding:"14px 16px",width:"100%",background:"none",border:"none",borderBottom:"1px solid rgba(240,235,225,0.05)",color:"rgba(239,68,68,0.65)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>↺ Restaurar receitas originais</button>
+            )}
+            {restoreConfirm==="all"?(
+              <div style={{padding:"14px 16px"}}>
+                <p style={{margin:"0 0 10px",...CARD_TYPO.bodyText,fontSize:12,color:"rgba(240,235,225,0.6)"}}>Esta ação vai redefinir toda a experiência — receitas originais voltam ao padrão e as suas receitas criadas serão apagadas. Não dá pra desfazer.</p>
+                <div style={{display:"flex",gap:8}}>
+                  <button onClick={()=>{onRestoreAll();setRestoreConfirm(null);}} style={{padding:"7px 14px",borderRadius:8,background:"rgba(239,68,68,0.15)",border:"1px solid rgba(239,68,68,0.4)",color:"#F87171",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>confirmar</button>
+                  <button onClick={()=>setRestoreConfirm(null)} style={{padding:"7px 12px",borderRadius:8,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.52)",fontSize:11,cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>cancelar</button>
+                </div>
+              </div>
+            ):(
+              <button onClick={()=>setRestoreConfirm("all")} style={{display:"flex",alignItems:"center",gap:10,padding:"14px 16px",width:"100%",background:"none",border:"none",color:"rgba(239,68,68,0.65)",fontSize:13,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>⊗ Restaurar app original</button>
+            )}
           </div>
         </div>
       </div>
 
-      <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)",textAlign:"center",fontSize:10,color:"rgba(240,235,225,0.42)",letterSpacing:0.5,lineHeight:1.7}}>
+      {/* sobre */}
+      <div style={{marginBottom:16}}>
+        <SectionHead label="Sobre"/>
+        <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,padding:"18px 18px",backdropFilter:"blur(8px)",display:"flex",flexDirection:"column",gap:12}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+            <span style={{fontFamily:"Archivo,sans-serif",fontSize:12,fontWeight:900,letterSpacing:4,textTransform:"uppercase",color:"rgba(231,224,205,0.85)"}}>ON THE ROCKS</span>
+            <span onClick={handleVersionTap} style={{...CARD_TYPO.counter,cursor:"default",userSelect:"none",opacity:0.4}}>v1.0</span>
+          </div>
+          <div style={{height:"1px",background:"linear-gradient(to right,rgba(160,120,90,0.5),transparent)"}}/>
+          <p style={{...CARD_TYPO.bodyText,fontSize:11,color:"rgba(240,235,225,0.42)",margin:0}}>Desenvolvido por Marcelo Parducci</p>
+          <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
+            <span style={{...CARD_TYPO.sigLabel,opacity:0.6}}>Dados</span>
+            <span style={{...CARD_TYPO.sigLabel,opacity:0.5,textAlign:"right"}}>Sincronizados via Google Account</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)",textAlign:"center",...CARD_TYPO.bodyText,fontSize:10,color:"rgba(240,235,225,0.35)",lineHeight:1.8}}>
         Conteúdo destinado a maiores de 18 anos.<br/>Beba com responsabilidade.
       </div>
 
-      <div style={{marginTop:16,textAlign:"center",fontSize:9,color:"rgba(240,235,225,0.18)",letterSpacing:1,fontFamily:"Archivo,sans-serif"}}>
+      <div style={{marginTop:14,textAlign:"center",...CARD_TYPO.counter,color:"rgba(240,235,225,0.15)",letterSpacing:1}}>
         {(()=>{
           const d=new Date(__BUILD_TIME__);
           const dia=d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
@@ -3635,56 +3659,69 @@ const RECIPE_PROFILES = {
             </div>
           ) : mobileTab==="ingredientes" ? (
             <div style={{paddingBottom:100,display:"flex",flexDirection:"column",gap:0}}>
-              {/* header */}
-              <div style={{marginBottom:20}}>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                  <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.4)"}}>Meu Bar</div>
-                  {owned.length>0&&(
-                    <button onClick={()=>setOwned([])} style={{padding:"3px 10px",borderRadius:20,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>limpar</button>
-                  )}
+              {/* hero */}
+              <div style={{position:"relative",margin:"-18px -22px 24px",padding:"32px 24px 26px",overflow:"hidden",background:"linear-gradient(to bottom,rgba(30,16,4,0.98) 0%,rgba(8,5,1,0.99) 100%)"}}>
+                <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 10% 120%,rgba(160,120,90,0.4) 0%,rgba(160,120,90,0.08) 45%,transparent 70%)",pointerEvents:"none"}}/>
+                <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 50% 35% at 90% -10%,rgba(160,120,90,0.12) 0%,transparent 65%)",pointerEvents:"none"}}/>
+                <div style={{...CARD_TYPO.heroEyebrow,color:"rgba(160,120,90,0.55)",marginBottom:8,letterSpacing:3,position:"relative"}}>O QUE VOCÊ TEM</div>
+                <div style={{fontFamily:"'Gloock',serif",fontSize:36,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.05,letterSpacing:"-0.5px",marginBottom:10,position:"relative",textShadow:"0 1px 12px rgba(0,0,0,0.9)"}}>Meu Bar</div>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,position:"relative"}}>
+                  <div style={{height:1.5,width:26,background:"#A0785A",borderRadius:2,opacity:0.9}}/>
+                  <div style={{width:5,height:1.5,borderRadius:1,background:"#A0785A",opacity:0.9}}/>
                 </div>
-                <div style={{fontSize:13,color:"rgba(240,235,225,0.35)",lineHeight:1.5}}>Marque o que você tem em casa e descubra o que pode fazer.</div>
+                <div style={{...CARD_TYPO.bodyText,fontSize:13,color:"rgba(240,235,225,0.4)",position:"relative"}}>Marque o que você tem e descubra o que pode fazer.</div>
+                {owned.length>0&&<button onClick={()=>setOwned([])} style={{position:"absolute",top:24,right:20,padding:"4px 12px",borderRadius:20,...CARD_TYPO.uiLabel,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer"}}>limpar</button>}
               </div>
-              {/* spirits em grid */}
-              <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-                {allSpirits.map(s=>{
-                  const has=owned.includes(s);
-                  return(
-                    <button key={s} onClick={()=>toggleOwned(s)}
-                      style={{padding:"8px 14px",borderRadius:20,fontSize:12,
-                        background:has?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",
-                        border:`1px solid ${has?"rgba(160,120,90,0.55)":"rgba(240,235,225,0.1)"}`,
-                        color:has?"#C8A96E":"rgba(240,235,225,0.38)",
-                        cursor:"pointer",fontFamily:"Archivo,sans-serif",
-                        transition:"all .15s",
-                        filter:has?`drop-shadow(0 0 6px rgba(160,120,90,0.3))`:"none"}}>
-                      {has&&<span style={{marginRight:5,fontSize:10}}>✓</span>}{s}
-                    </button>
-                  );
-                })}
+
+              {/* spirits */}
+              <div style={{marginBottom:20,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:14,padding:"18px 16px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                  <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
+                  <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Destilados</span>
+                </div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {allSpirits.map(s=>{
+                    const has=owned.includes(s);
+                    return(
+                      <button key={s} onClick={()=>toggleOwned(s)}
+                        style={{padding:"7px 13px",borderRadius:20,fontSize:12,
+                          background:has?"rgba(160,120,90,0.18)":"rgba(240,235,225,0.03)",
+                          border:`1.5px solid ${has?"rgba(160,120,90,0.65)":"rgba(240,235,225,0.08)"}`,
+                          color:has?"#C8A96E":"rgba(240,235,225,0.38)",
+                          cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .15s",
+                          boxShadow:has?"0 0 10px rgba(160,120,90,0.18)":"none"}}>
+                        {has&&<span style={{marginRight:4,fontSize:9}}>✓</span>}{s}
+                      </button>
+                    );
+                  })}
+                </div>
+                {owned.length>1&&(
+                  <button onClick={()=>setFilterAnd(p=>!p)} style={{display:"flex",alignItems:"center",gap:8,marginTop:14,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"Archivo,sans-serif"}}>
+                    <div style={{width:32,height:18,borderRadius:9,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
+                      <div style={{position:"absolute",top:3,left:filterAnd?14:3,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
+                    </div>
+                    <span style={{fontSize:11,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.35)",transition:"color .2s",letterSpacing:.3}}>no mesmo drink</span>
+                  </button>
+                )}
               </div>
-              {owned.length>1&&(
-                <button onClick={()=>setFilterAnd(p=>!p)} style={{display:"flex",alignItems:"center",gap:8,marginTop:16,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"Archivo,sans-serif"}}>
-                  <div style={{width:32,height:18,borderRadius:9,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
-                    <div style={{position:"absolute",top:3,left:filterAnd?14:3,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
-                  </div>
-                  <span style={{fontSize:11,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.35)",transition:"color .2s",letterSpacing:.3}}>no mesmo drink</span>
-                </button>
-              )}
-              {/* adicionar bebida customizada */}
-              <div style={{marginTop:24,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)"}}>
-                <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.35)",marginBottom:10}}>Adicionar bebida</div>
+
+              {/* adicionar bebida */}
+              <div style={{marginBottom:24,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:14,padding:"18px 16px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                  <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
+                  <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Adicionar bebida</span>
+                </div>
                 <div style={{display:"flex",gap:8}}>
                   <input value={spiritSearch} onChange={e=>setSpiritSearch(e.target.value)}
                     onKeyDown={e=>{if(e.key==="Enter"&&spiritSearch.trim()){setCustomSpirits(p=>[...new Set([...p,spiritSearch.trim()])]);setSpiritSearch("");}}}
                     placeholder="ex: Fernet, Licor 43…"
-                    style={{flex:1,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:6,padding:"10px 14px",color:"#F0EBE1",fontSize:13,outline:"none",fontFamily:"Archivo,sans-serif"}}/>
+                    style={{flex:1,background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:8,padding:"10px 14px",color:"#F0EBE1",fontSize:13,outline:"none",fontFamily:"Archivo,sans-serif"}}/>
                   <button onClick={()=>{if(spiritSearch.trim()){setCustomSpirits(p=>[...new Set([...p,spiritSearch.trim()])]);setSpiritSearch("");}}}
-                    style={{padding:"10px 16px",borderRadius:6,background:"rgba(160,120,90,0.12)",border:"1px solid rgba(160,120,90,0.3)",color:"#A0785A",fontSize:16,cursor:"pointer"}}>+</button>
+                    style={{padding:"10px 16px",borderRadius:8,background:"rgba(160,120,90,0.12)",border:"1px solid rgba(160,120,90,0.3)",color:"#A0785A",fontSize:16,cursor:"pointer"}}>+</button>
                 </div>
                 {customSpirits.length>0&&(
-                  <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
-                    <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.3)",marginBottom:10}}>Bebidas adicionadas</div>
+                  <div style={{marginTop:16,paddingTop:12,borderTop:"1px solid rgba(240,235,225,0.05)"}}>
+                    <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.3)",marginBottom:10}}>Adicionadas</div>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {customSpirits.map(s=>(
                         <button key={s} onClick={()=>showConfirm(`Remover "${s}" do seu bar?`,()=>setCustomSpirits(p=>p.filter(x=>x!==s)),false)} style={{padding:"5px 10px",borderRadius:20,fontSize:11,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.2)",color:"rgba(160,120,90,0.6)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s} ×</button>
@@ -3693,41 +3730,27 @@ const RECIPE_PROFILES = {
                   </div>
                 )}
               </div>
-              {/* receitas possíveis inline */}
+
+              {/* receitas possíveis */}
               {owned.length>0&&(()=>{
                 const possiveis=filterAnd&&owned.length>1
                   ?allRecipes.filter(r=>owned.every(s=>r.categories.includes(s)))
                   :allRecipes.filter(r=>hasAllIngredients(r));
                 if(!possiveis.length)return null;
                 return(
-                  <div style={{marginTop:28}}>
-                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:owned.length>1?10:14}}>
-                      <div style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.7)"}}>
-                        Você pode fazer · <span style={{color:"#C8A96E"}}>{possiveis.length}</span>
+                  <div>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+                      <div style={{display:"flex",alignItems:"center",gap:10}}>
+                        <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
+                        <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Você pode fazer <span style={{color:"#C8A96E",fontFamily:"'Gloock',serif",fontSize:14,letterSpacing:0,textTransform:"none",fontWeight:400}}>{possiveis.length}</span></span>
                       </div>
                       <button onClick={()=>{if(filterAnd&&owned.length>1){setActiveSpirits(owned);setFilterMode("tudo");}else{setFilterMode("tenho");}setMobileTab("explorar");}}
-                        style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>
+                        style={{...CARD_TYPO.uiLabel,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer"}}>
                         ver todos →
                       </button>
                     </div>
-                    <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                      {possiveis.map(r=>{
-                        const th=getTheme(r.categories);
-                        return(
-                          <button key={r.name} onClick={()=>setOpen(r)}
-                            style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:8,
-                              background:th.bg,border:`1px solid ${th.border}33`,
-                              cursor:"pointer",fontFamily:"Archivo,sans-serif",textAlign:"left",
-                              transition:"border-color .15s"}}
-                            onMouseEnter={e=>e.currentTarget.style.borderColor=th.border+"66"}
-                            onMouseLeave={e=>e.currentTarget.style.borderColor=th.border+"33"}>
-                            <div style={{width:6,height:6,borderRadius:1,background:th.accent,flexShrink:0}}/>
-                            <span style={{flex:1,fontSize:13,color:"rgba(240,235,225,0.75)",fontWeight:500}}>{r.name}</span>
-                            {r.rating>0&&<span style={{fontSize:10,color:th.accent,opacity:.7}}>{"★".repeat(r.rating)}</span>}
-                            <span style={{fontSize:11,color:"rgba(240,235,225,0.2)"}}>›</span>
-                          </button>
-                        );
-                      })}
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {possiveis.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
                     </div>
                   </div>
                 );
