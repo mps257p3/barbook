@@ -1694,8 +1694,18 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const shareCardRef=useRef();
 
   const shareAsImage=useCallback(async()=>{
-    if(!shareCardRef.current||sharing)return;
+    if(sharing)return;
     setSharing(true);
+    const shareUrl=`${window.location.origin}/?r=${encodeURIComponent(recipe.name)}`;
+    if(navigator.share){
+      try{
+        await navigator.share({title:recipe.name,text:`${recipe.name} — On the Rocks`,url:shareUrl});
+        setSharing(false);return;
+      }catch(e){
+        if(e?.name==="AbortError"){setSharing(false);return;}
+      }
+    }
+    if(!shareCardRef.current){setSharing(false);return;}
     try{
       const canvas=await html2canvas(shareCardRef.current,{backgroundColor:null,scale:2,logging:false,useCORS:true});
       canvas.toBlob(async blob=>{
@@ -1733,62 +1743,69 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
       {posEditMode&&customBg&&<div style={{position:"absolute",inset:0,backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:heroBgPos,opacity:0.2,pointerEvents:"none"}}/>}
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
-        {/* ── HERO ── */}
+        {/* ── HERO + PROFILE wrapper — shared bg image fades through profile to yellow line ── */}
         <div
-          style={{position:"relative",height:220,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,heroBgPos),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0,cursor:posEditMode?"crosshair":"default",touchAction:posEditMode?"none":"auto"}}
+          style={{position:"relative",backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,heroBgPos),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0,cursor:posEditMode?"crosshair":"default",touchAction:posEditMode?"none":"auto"}}
           onPointerDown={posEditMode?onPosPointerDown:undefined}
           onPointerMove={posEditMode?onPosPointerMove:undefined}
           onPointerUp={posEditMode?onPosPointerUp:undefined}
           onPointerCancel={posEditMode?onPosPointerUp:undefined}
         >
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
+          {/* gradient fades bg image from hero through profile section, fully solid at yellow line */}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.45) 52%, rgba(10,9,6,0.78) 72%, rgba(10,9,6,1.0) 90%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",opacity:posEditMode?0.25:1,pointerEvents:"none",transition:"opacity .25s"}}/>
-          <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
-          {customBg&&(posEditMode?(
-            <button onClick={()=>{setPosEditMode(false);onSetBgOffset?.(localOffset);}} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:`1px solid ${theme.accent}55`,background:`${theme.accent}22`,color:theme.accent,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>✓</button>
-          ):(
-            <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
-            </button>
-          ))}
-          {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
-            <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
-            <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
-          </div>}
-          {posEditMode?(
-            <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,pointerEvents:"none",zIndex:5}}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(240,235,225,0.55)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
-              <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",fontFamily:"Archivo,sans-serif"}}>arraste para reposicionar</span>
-            </div>
-          ):(
-            <div style={{position:"absolute",bottom:16,left:18,right:18}}>
-              {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
-              <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
-                <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
-                <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
+
+          {/* hero content area */}
+          <div style={{position:"relative",height:220,zIndex:1}}>
+            <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
+            {customBg&&(posEditMode?(
+              <button onClick={()=>{setPosEditMode(false);onSetBgOffset?.(localOffset);}} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:`1px solid ${theme.accent}55`,background:`${theme.accent}22`,color:theme.accent,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>✓</button>
+            ):(
+              <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+              </button>
+            ))}
+            {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
+              <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
+              <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
+            </div>}
+            {posEditMode?(
+              <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,pointerEvents:"none",zIndex:5}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(240,235,225,0.55)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+                <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",fontFamily:"Archivo,sans-serif"}}>arraste para reposicionar</span>
               </div>
-              {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
+            ):(
+              <div style={{position:"absolute",bottom:16,left:18,right:18}}>
+                {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
+                <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+                  <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
+                  <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
+                </div>
+                {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
+              </div>
+            )}
+          </div>
+
+          {/* profile section — transparent bg, image bleeds through from hero above */}
+          {profile?.perfil&&(
+            <div style={{position:"relative",zIndex:1,filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
+              <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
+                {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
+                  <div key={i} style={{display:"contents"}}>
+                    {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
+                      <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
+                      <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                      <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
             </div>
           )}
         </div>
-        {profile?.perfil&&(
-          <div style={{backgroundColor:"#0A0906",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
-            <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
-              {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
-                <div key={i} style={{display:"contents"}}>
-                  {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
-                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
-                    <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
-                    <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
-                    <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
-          </div>
-        )}
 
         <div style={{padding:"16px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
 
@@ -1931,42 +1948,56 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
         </div>
       </div>
 
-      {/* card oculto para captura de imagem */}
-      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:400,background:`linear-gradient(145deg,${theme.bg} 0%,#080808 100%)`,border:`1px solid ${theme.border}55`,borderRadius:12,padding:"28px 30px",fontFamily:"Archivo,sans-serif",overflow:"hidden"}}>
-        {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:24,right:-70,width:260,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:9,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none",zIndex:5}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
-        <div style={{fontSize:8,letterSpacing:5,textTransform:"uppercase",color:"rgba(240,235,225,0.52)",marginBottom:16}}>ON THE ROCKS</div>
-        <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:14}}>
-          {recipe.categories.filter(c=>STYLE_CATS.has(c)).map(c=><span key={c} style={{padding:"2px 9px",borderRadius:2,fontSize:9,letterSpacing:1,background:(TYPE_THEME[c]?.accent||"#888")+"18",border:`1px solid ${(TYPE_THEME[c]?.border||"#888")+"55"}`,color:TYPE_THEME[c]?.label||"rgba(240,235,225,0.5)",fontWeight:700}}>{c}</span>)}
-        </div>
-        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,fontWeight:600,color:"#F0EBE1",marginBottom:20,lineHeight:1.1}}>{recipe.name}</div>
-        <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6,marginBottom:10}}>Ingredientes</div>
-        <div style={{display:"flex",flexDirection:"column",gap:7,marginBottom:20}}>
-          {recipe.ingredients.map((ing,i)=>(
-            <div key={i} style={{display:"flex",gap:10,alignItems:"baseline"}}>
-              <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.5,flexShrink:0,marginTop:8}}/>
-              <span style={{fontSize:13,color:"rgba(240,235,225,0.65)",lineHeight:1.5}}>{ing}</span>
+      {/* card oculto para captura de imagem — estética do app */}
+      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:360,background:"#0A0906",borderRadius:12,fontFamily:"Archivo,sans-serif",overflow:"hidden"}}>
+        {/* hero com bg image */}
+        <div style={{position:"relative",height:195,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,"center")}}>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.05) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.52) 58%, rgba(10,9,6,1.0) 100%)"}}/>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply"}}/>
+          <div style={{position:"absolute",top:14,left:16,fontSize:7,letterSpacing:4,textTransform:"uppercase",color:"rgba(240,235,225,0.52)"}}>ON THE ROCKS</div>
+          {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:12,right:-52,width:200,transform:"rotate(45deg)",background:`linear-gradient(to right,transparent,${theme.accent}38)`,textAlign:"center",fontSize:7,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontWeight:700,padding:"1px 0"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
+          <div style={{position:"absolute",bottom:14,left:16,right:16}}>
+            {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.75,marginBottom:5}}>{styleTags[0]}</div>}
+            <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>16?22:recipe.name.length>11?26:30,fontWeight:400,lineHeight:1.18,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px"}}>{recipe.name}</div>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginTop:6}}>
+              <div style={{height:2,width:28,background:theme.accent,borderRadius:2,opacity:0.85}}/>
+              <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.85}}/>
             </div>
-          ))}
+          </div>
         </div>
-        {steps.length>0&&(
-          <>
-            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.6,marginBottom:10}}>Modo de preparo</div>
-            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
-              {steps.map((s,i)=>(
-                <div key={i} style={{display:"grid",gridTemplateColumns:"18px 1fr",gap:8,alignItems:"start"}}>
-                  <div style={{width:18,height:18,borderRadius:2,border:`1px solid ${theme.border}`,color:theme.label,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</div>
-                  <div style={{fontSize:11,color:"rgba(240,235,225,0.62)",lineHeight:1.6}}>{s}</div>
+        {/* perfil */}
+        {profile?.perfil&&(
+          <div style={{borderBottom:"1px solid rgba(240,235,225,0.07)",padding:"8px 16px 9px"}}>
+            <div style={{display:"flex",justifyContent:"space-between"}}>
+              {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
+                <div key={i} style={{display:"contents"}}>
+                  {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
+                    <span style={{...CARD_TYPO.sigIcon,color:theme.accent}}>{item[0]}</span>
+                    <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
+                    <span style={{...CARD_TYPO.sigValue,fontSize:7}}>{item[2]}</span>
+                  </div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
-        {noteVal&&<div style={{borderLeft:`2px solid ${theme.accent}44`,paddingLeft:12,marginTop:4,marginBottom:16}}>
-          <div style={{fontSize:11,color:"rgba(240,235,225,0.58)",fontStyle:"italic",lineHeight:1.6}}>{noteVal}</div>
-        </div>}
-        <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:14,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
-          <div style={{fontSize:8,letterSpacing:2,color:"rgba(240,235,225,0.4)",textTransform:"uppercase"}}>on-the-rocks.app</div>
+        {/* ingredientes */}
+        <div style={{padding:"13px 16px 10px"}}>
+          <div style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.55,marginBottom:9}}>Ingredientes</div>
+          <div style={{display:"flex",flexDirection:"column",gap:5}}>
+            {recipe.ingredients.slice(0,9).map((ing,i)=>(
+              <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
+                <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.45,flexShrink:0,marginTop:7}}/>
+                <span style={{fontSize:12,color:"rgba(240,235,225,0.62)",lineHeight:1.45}}>{ing}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* rodapé */}
+        <div style={{padding:"9px 16px 14px",borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:12,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
+          <div style={{fontSize:7,letterSpacing:2.5,color:"rgba(240,235,225,0.32)",textTransform:"uppercase"}}>on-the-rocks.app</div>
         </div>
       </div>
     </div>
@@ -2148,7 +2179,8 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transition:visible?"opacity .28s ease":"none"}}>
+        transform:visible?"none":"scale(0.96) translateY(18px)",
+        transition:visible?"opacity .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1)":"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
@@ -2283,18 +2315,31 @@ function RatingPopup({recipe,currentRating,onRate,onClose}){
 // ─── MOBILE NAV ───────────────────────────────────────────────────────────────
 function MobileNav({ tab, setTab, favCount, onSameTab, accentColor }) {
   const items = [
-    { id:"descobrir",    icon:"◈", label:"Descobrir" },
-    { id:"explorar",     icon:"⊞", label:"Explorar" },
-    { id:"ingredientes", icon:"⊙", label:"Bar" },
-    { id:"comanda",      icon:"◫", label:"Comanda" },
-    { id:"perfil",       icon:"⊛", label:"Perfil" },
+    { id:"descobrir",    label:"Descobrir" },
+    { id:"explorar",     label:"Explorar" },
+    { id:"ingredientes", label:"Bar" },
+    { id:"comanda",      label:"Comanda" },
+    { id:"perfil",       label:"Perfil" },
   ];
+  const navIcon = id => {
+    if(id==="descobrir")    return <span style={{fontSize:17,lineHeight:1}}>◈</span>;
+    if(id==="explorar")     return <span style={{fontSize:17,lineHeight:1}}>⊞</span>;
+    if(id==="ingredientes") return <span style={{fontSize:17,lineHeight:1}}>⊙</span>;
+    if(id==="perfil")       return <span style={{fontSize:17,lineHeight:1}}>⊛</span>;
+    if(id==="comanda") return (
+      <svg width="17" height="17" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 4 L19 4 L11 14 Z"/>
+        <line x1="11" y1="14" x2="11" y2="19"/>
+        <line x1="7" y1="19" x2="15" y2="19"/>
+      </svg>
+    );
+  };
   return (
     <nav className="mnv" style={{position:"fixed",bottom:0,left:0,right:0,background:"#080808",borderTop:"1px solid rgba(240,235,225,0.07)",zIndex:9999,paddingBottom:"env(safe-area-inset-bottom,8px)"}}>
       {accentColor&&<div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg, transparent, ${accentColor}55 50%, transparent)`,pointerEvents:"none",transition:"background 1.1s ease"}}/>}
       {items.map(t=>(
         <button key={t.id} onClick={()=>tab===t.id ? onSameTab?.(t.id) : setTab(t.id)} style={{flex:1,padding:"10px 4px 6px",background:"none",border:"none",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",color:tab===t.id?"#F0A030":"rgba(240,235,225,0.26)",transition:"color .15s",fontFamily:"Archivo,sans-serif",filter:tab===t.id?"drop-shadow(0 0 6px #F0A03088)":"none"}}>
-          <span style={{fontSize:17,lineHeight:1}}>{t.icon}</span>
+          {navIcon(t.id)}
           <span style={{fontSize:9,letterSpacing:1.5,textTransform:"uppercase",fontWeight:700}}>{t.label}</span>
           <div style={{height:2,width:tab===t.id?18:0,borderRadius:1,background:"#F0A030",boxShadow:tab===t.id?"0 0 10px #F0A030cc, 0 0 4px #F0A030":"none",transition:"width .25s ease, box-shadow .25s ease",marginTop:2}}/>
         </button>
@@ -2656,6 +2701,15 @@ export default function OnTheRocks(){
   },[]);
 
   const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r).filter(r=>!r.deleted),...customRecipes],[customRecipes,overrides]);
+
+  const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
+  useEffect(()=>{
+    if(!deepLinkNameRef.current||!allRecipes.length)return;
+    const name=decodeURIComponent(deepLinkNameRef.current);
+    deepLinkNameRef.current=null;
+    const recipe=allRecipes.find(r=>r.name===name);
+    if(recipe){window.history.replaceState({},"","/");setOpen(recipe);}
+  },[allRecipes]);
 
   const [activeStyle,setActiveStyle]=useState(null);
   const [activeSpirits,setActiveSpirits]=useState([]);
@@ -3595,7 +3649,7 @@ const RECIPE_PROFILES = {
                       maskImage:isRight
                         ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
                         :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
-                      boxShadow:`0 2px 4px rgba(0,0,0,0.85)`,
+                      boxShadow:`0 1px 3px rgba(0,0,0,0.35)`,
                     }}>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
                       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.82) 100%)",mixBlendMode:"multiply"}}/>
@@ -3870,87 +3924,88 @@ const RECIPE_PROFILES = {
             <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}}/>
           ) : (
             <>
+              {/* backdrop click-outside para fechar filtro */}
+              {filterSheet&&<div onClick={()=>setFilterSheet(null)} style={{position:"fixed",inset:0,zIndex:98}}/>}
               {/* mobile: botões família + spirit + filtros */}
-              <div className="mnv" style={{display:"none",gap:6,flexWrap:"wrap",marginBottom:10,paddingBottom:4}}>
-                {/* família */}
-                <button onClick={()=>activeStyle?setActiveStyle(null):setFilterSheet(filterSheet==="familia"?null:"familia")}
-                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
-                    background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:filterSheet==="familia"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":filterSheet==="familia"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:filterSheet==="familia"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
-                  {activeStyle||"Família"}{activeStyle?" ×":""}
-                </button>
-                {/* spirit */}
-                <button onClick={()=>setFilterSheet(filterSheet==="spirit"?null:"spirit")}
-                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
-                    background:activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeSpirits.length||filterSheet==="spirit"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
-                  {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
-                </button>
-                {/* ocasião */}
-                <button onClick={()=>setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
-                  style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
-                    background:activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
-                  {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
-                </button>
-                {/* filtros rápidos */}
-                {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
-                  <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
-                    background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                    border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                    color:filterMode===v?"#C8A96E":"rgba(240,235,225,0.45)"}}>
-                    {l}
+              <div className="mnv" style={{display:"none",position:"relative",marginBottom:10,zIndex:99}}>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",paddingBottom:4}}>
+                  {/* família */}
+                  <button onClick={()=>activeStyle?setActiveStyle(null):setFilterSheet(filterSheet==="familia"?null:"familia")}
+                    style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
+                      background:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg:filterSheet==="familia"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border+"66":filterSheet==="familia"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                      color:activeStyle?(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).label:filterSheet==="familia"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
+                    {activeStyle||"Família"}{activeStyle?" ×":""}
                   </button>
-                ))}
-                {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0)&&(
-                  <button onClick={clearAll} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",background:"none",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.28)"}}>limpar</button>
+                  {/* spirit */}
+                  <button onClick={()=>activeSpirits.length?setActiveSpirits([]):setFilterSheet(filterSheet==="spirit"?null:"spirit")}
+                    style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
+                      background:activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activeSpirits.length||filterSheet==="spirit"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                      color:activeSpirits.length||filterSheet==="spirit"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
+                    {activeSpirits.length?activeSpirits[0]+(activeSpirits.length>1?` +${activeSpirits.length-1}`:"")+" ×":"Spirit"}
+                  </button>
+                  {/* ocasião */}
+                  <button onClick={()=>activeOccasions.length?setActiveOccasions([]):setFilterSheet(filterSheet==="ocasiao"?null:"ocasiao")}
+                    style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
+                      background:activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activeOccasions.length||filterSheet==="ocasiao"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                      color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
+                    {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
+                  </button>
+                  {/* filtros rápidos */}
+                  {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
+                    <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
+                      background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                      color:filterMode===v?"#C8A96E":"rgba(240,235,225,0.45)"}}>
+                      {l}
+                    </button>
+                  ))}
+                  {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0)&&(
+                    <button onClick={clearAll} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",background:"none",border:"1px solid rgba(240,235,225,0.07)",color:"rgba(240,235,225,0.28)"}}>limpar</button>
+                  )}
+                </div>
+                {/* sheets como overlays absolutos */}
+                {filterSheet==="familia"&&(
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(14,8,2,0.88)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.55)"}}>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
+                        const active=activeStyle===s;
+                        const th=TYPE_THEME[s]||TYPE_THEME["_default"];
+                        return(<button key={s} onClick={()=>{setActiveStyle(active?null:s);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
+                          background:active?th.bg:"rgba(240,235,225,0.04)",
+                          border:`1px solid ${active?th.border+"66":"rgba(240,235,225,0.09)"}`,
+                          color:active?th.label:"rgba(240,235,225,0.45)"}}>{s}</button>);
+                      })}
+                    </div>
+                  </div>
+                )}
+                {filterSheet==="spirit"&&(
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(14,8,2,0.88)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.55)"}}>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {allSpirits.map(s=>{
+                        const active=activeSpirits.includes(s);
+                        return(<button key={s} onClick={()=>{toggleSpirit(s);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
+                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{s}</button>);
+                      })}
+                    </div>
+                  </div>
+                )}
+                {filterSheet==="ocasiao"&&(
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(14,8,2,0.88)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.55)"}}>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {OCCASION_LIST.map(tag=>{
+                        const active=activeOccasions.includes(tag);
+                        return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
+                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                      })}
+                    </div>
+                  </div>
                 )}
               </div>
-              {/* sheet família */}
-              {filterSheet==="familia"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
-                      const active=activeStyle===s;
-                      const th=TYPE_THEME[s]||TYPE_THEME["_default"];
-                      return(<button key={s} onClick={()=>{setActiveStyle(active?null:s);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
-                        background:active?th.bg:"rgba(240,235,225,0.04)",
-                        border:`1px solid ${active?th.border+"66":"rgba(240,235,225,0.09)"}`,
-                        color:active?th.label:"rgba(240,235,225,0.45)"}}>{s}</button>);
-                    })}
-                  </div>
-                </div>
-              )}
-              {/* sheet spirit */}
-              {filterSheet==="spirit"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {allSpirits.map(s=>{
-                      const active=activeSpirits.includes(s);
-                      return(<button key={s} onClick={()=>{toggleSpirit(s);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
-                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{s}</button>);
-                    })}
-                  </div>
-                </div>
-              )}
-              {/* sheet ocasião */}
-              {filterSheet==="ocasiao"&&(
-                <div className="mnv" style={{display:"none",flexDirection:"column",background:"rgba(22,14,6,0.98)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"12px 14px 10px",marginBottom:12,gap:8}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {OCCASION_LIST.map(tag=>{
-                      const active=activeOccasions.includes(tag);
-                      return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
-                        background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                        border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                        color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
-                    })}
-                  </div>
-                  {activeOccasions.length>0&&<button onClick={()=>setActiveOccasions([])} style={{marginTop:4,fontSize:9,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer",letterSpacing:1,fontFamily:"Archivo,sans-serif",textAlign:"left"}}>limpar ocasião ×</button>}
-                </div>
-              )}
               {/* family description */}
               {activeStyle&&FAMILY_DESC[activeStyle]&&(
                 <div className="mnv" style={{marginBottom:14,padding:"12px 14px",borderRadius:6,background:`${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).bg}cc`,border:`1px solid ${(TYPE_THEME[activeStyle]||TYPE_THEME["_default"]).border}44`}}>
@@ -3958,8 +4013,9 @@ const RECIPE_PROFILES = {
                   <p style={{margin:0,fontSize:12,color:"rgba(240,235,225,0.65)",lineHeight:1.65}}>{FAMILY_DESC[activeStyle]}</p>
                 </div>
               )}              {/* mobile: busca */}
-              <div className="mnv" style={{marginBottom:14}}>
-                <input ref={searchInputRef} value={search} onChange={e=>setSearch(e.target.value)} placeholder="buscar drink, ingrediente…" style={{width:"100%",background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:3,padding:"9px 12px",color:"#F0EBE1",fontSize:13,boxSizing:"border-box"}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
+              <div className="mnv" style={{marginBottom:14,position:"relative"}}>
+                <input ref={searchInputRef} value={search} onChange={e=>setSearch(e.target.value)} placeholder="buscar drink, ingrediente…" style={{width:"100%",background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.08)",borderRadius:3,padding:"9px 36px 9px 12px",color:"#F0EBE1",fontSize:13,boxSizing:"border-box"}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
+                {search&&<button onClick={()=>{setSearch("");searchInputRef.current?.focus();}} style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",color:"rgba(240,235,225,0.38)",cursor:"pointer",fontSize:18,lineHeight:1,padding:"4px 6px"}}>×</button>}
               </div>
 
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>

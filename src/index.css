@@ -65,6 +65,10 @@ body {
   40%  { opacity: 0.62; transform: translateY(-7px); }
   80%  { opacity: 0.18; transform: translateY(-16px); }
 }
+@keyframes cardEntrance {
+  from { opacity: 0; transform: scale(0.96) translateY(18px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
 @keyframes otr-grain {
   0%, 100% { transform: translate(0, 0); }
   25% { transform: translate(-1%, 2%); }
