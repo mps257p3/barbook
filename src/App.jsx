@@ -1234,6 +1234,15 @@ function getMood(recipe) {
   if (has("Vodka"))                                                                  return "frost_tide";
   return "frost_tide";
 }
+const PREPARO_CASEIRO_NAMES = BASE_RECIPES
+  .filter(r=>r.categories.includes("Preparos Caseiros"))
+  .map(r=>r.name.toLowerCase().replace(/\s*\(.*?\)\s*/g," ").replace(/\bcaseiro[a]?\b/g,"").replace(/\s+/g," ").trim())
+  .filter(k=>k.length>0);
+function isPreparoCaseiro(ing){
+  const lower=ing.toLowerCase();
+  return PREPARO_CASEIRO_NAMES.some(k=>lower.includes(k));
+}
+
 function getCardVisual(recipe, spiritCats=SPIRIT_CATS) {
   const mood         = RECIPE_MOODS[recipe.name] || getMood(recipe);
   const cats         = recipe.categories || [];
@@ -1880,7 +1889,10 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
-                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(scaleIng(ing,qty))}</span>
+                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>
+                    {capFirst(scaleIng(ing,qty))}
+                    {isPreparoCaseiro(ing)&&<span style={{fontSize:9,letterSpacing:0.8,textTransform:"uppercase",color:done?"rgba(240,235,225,0.15)":theme.accent,opacity:done?1:0.58,marginLeft:6,fontFamily:"Archivo,sans-serif",whiteSpace:"nowrap",fontWeight:500}}>(preparo caseiro)</span>}
+                  </span>
                 </div>
               );
             })}
@@ -2015,7 +2027,10 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             {recipe.ingredients.slice(0,9).map((ing,i)=>(
               <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
                 <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:7}}/>
-                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.6)",lineHeight:1.4}}>{ing}</span>
+                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.6)",lineHeight:1.4}}>
+                  {ing}
+                  {isPreparoCaseiro(ing)&&<span style={{fontSize:7.5,letterSpacing:0.8,textTransform:"uppercase",color:theme.accent,opacity:.6,marginLeft:5,fontFamily:"Archivo,sans-serif",whiteSpace:"nowrap",fontWeight:500}}>(preparo caseiro)</span>}
+                </span>
               </div>
             ))}
           </div>
@@ -2205,7 +2220,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transition:visible?"opacity .45s ease":"none"}}>
+        transition:visible?"opacity 1.4s ease":"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
