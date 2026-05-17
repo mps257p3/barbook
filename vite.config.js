@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'node:fs'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -10,6 +11,14 @@ export default defineConfig(({ mode }) => {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
   plugins: [
+    {
+      name: 'copy-dot-dirs',
+      apply: 'build',
+      closeBundle() {
+        if (fs.existsSync('public/.well-known'))
+          fs.cpSync('public/.well-known', 'dist/.well-known', { recursive: true });
+      }
+    },
     react(),
     VitePWA({
       registerType: 'autoUpdate',
