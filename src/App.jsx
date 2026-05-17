@@ -1948,32 +1948,58 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
         </div>
       </div>
 
-      {/* card oculto para captura de imagem — estética do app */}
-      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:360,background:"#0A0906",borderRadius:12,fontFamily:"Archivo,sans-serif",overflow:"hidden"}}>
-        {/* hero com bg image */}
-        <div style={{position:"relative",height:195,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,"center")}}>
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.05) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.52) 58%, rgba(10,9,6,1.0) 100%)"}}/>
+      {/* card oculto para captura de imagem */}
+      <div ref={shareCardRef} style={{position:"fixed",left:-9999,top:-9999,width:360,background:"#0A0906",borderRadius:12,fontFamily:"Archivo,sans-serif",overflow:"hidden",border:`1.5px solid ${theme.accent}55`,boxShadow:`0 0 32px ${theme.accent}22`}}>
+        {/* hero zone — bg editorial + camadas atmosféricas */}
+        <div style={{position:"relative",height:222,backgroundColor:"#0A0906",...buildCardBgEditorial(visual,"center")}}>
+          {/* gradient cinemático */}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.3) 0%, rgba(3,1,0,0) 22%, rgba(3,1,0,0.45) 56%, rgba(3,1,0,0.97) 100%)"}}/>
+          {/* vinheta */}
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply"}}/>
-          <div style={{position:"absolute",top:14,left:16,fontSize:7,letterSpacing:4,textTransform:"uppercase",color:"rgba(240,235,225,0.52)"}}>ON THE ROCKS</div>
-          {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:12,right:-52,width:200,transform:"rotate(45deg)",background:`linear-gradient(to right,transparent,${theme.accent}38)`,textAlign:"center",fontSize:7,letterSpacing:2,textTransform:"uppercase",color:theme.accent,fontWeight:700,padding:"1px 0"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
-          <div style={{position:"absolute",bottom:14,left:16,right:16}}>
-            {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.75,marginBottom:5}}>{styleTags[0]}</div>}
-            <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>16?22:recipe.name.length>11?26:30,fontWeight:400,lineHeight:1.18,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px"}}>{recipe.name}</div>
-            <div style={{display:"flex",alignItems:"center",gap:6,marginTop:6}}>
-              <div style={{height:2,width:28,background:theme.accent,borderRadius:2,opacity:0.85}}/>
-              <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.85}}/>
+          {/* luz de vidro no topo */}
+          <div style={{position:"absolute",top:0,left:0,right:0,height:"45%",background:"radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)"}}/>
+          {/* neon — canto inferior esquerdo */}
+          <div style={{position:"absolute",inset:0,borderRadius:12,mixBlendMode:"screen",
+            background:`radial-gradient(ellipse 75% 42% at -10% 108%, ${theme.accent} 0%, ${theme.accent}aa 5%, ${theme.accent}55 21%, ${theme.accent}1c 45%, transparent 68%)`
+          }}/>
+          {/* wordmark */}
+          <div style={{position:"absolute",top:14,left:16,fontSize:7,letterSpacing:4,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>ON THE ROCKS</div>
+          {/* category chips */}
+          <div style={{position:"absolute",top:30,left:14,display:"flex",gap:4}}>
+            {styleTags[0]&&<span style={{...CARD_TYPO.tag,background:"rgba(0,0,0,0.52)",padding:"3px 7px",borderRadius:3}}>{styleTags[0]}</span>}
+            {spiritTags[0]&&<span style={{...CARD_TYPO.tag,color:theme.accent,background:"rgba(0,0,0,0.45)",padding:"3px 7px",borderRadius:3}}>{spiritTags[0]}</span>}
+          </div>
+          {/* foto do usuário — canto superior direito */}
+          {customBg&&(
+            <div style={{position:"absolute",top:12,right:12,width:68,height:76,borderRadius:5,
+              backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:"center",
+              border:`1.5px solid ${theme.accent}88`,
+              boxShadow:`0 0 16px ${theme.accent}44, 0 2px 14px rgba(0,0,0,0.75)`,
+              overflow:"hidden"}}/>
+          )}
+          {/* nome + divider + flavor */}
+          <div style={{position:"absolute",bottom:16,left:16,right:customBg?92:16}}>
+            {(recipe.custom||recipe.adjusted)&&<div style={{display:"flex",alignItems:"center",gap:5,marginBottom:5}}>
+              <span style={{width:10,height:1,background:theme.accent,display:"inline-block",opacity:0.8}}/>
+              <span style={{fontSize:7,letterSpacing:2,textTransform:"uppercase",color:theme.accent,opacity:.8}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</span>
+            </div>}
+            <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?20:recipe.name.length>14?24:recipe.name.length>10?28:32,fontWeight:400,lineHeight:1.18,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",textShadow:"0 1px 8px rgba(0,0,0,0.8)"}}>{recipe.name}</div>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginTop:7}}>
+              <div style={{height:2,width:28,background:theme.accent,borderRadius:2,opacity:0.88}}/>
+              <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.88}}/>
+              {profile?.flavors&&<span style={{...CARD_TYPO.flavor,color:theme.accent,fontSize:7.5,opacity:.82}}>{profile.flavors.replace(/·/g,"•")}</span>}
             </div>
           </div>
         </div>
         {/* perfil */}
         {profile?.perfil&&(
-          <div style={{borderBottom:"1px solid rgba(240,235,225,0.07)",padding:"8px 16px 9px"}}>
+          <div style={{borderBottom:`1px solid ${theme.accent}22`,padding:"9px 16px 10px"}}>
             <div style={{display:"flex",justifyContent:"space-between"}}>
               {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
                 <div key={i} style={{display:"contents"}}>
                   {i>0&&<div style={{width:1,alignSelf:"stretch",background:`linear-gradient(to bottom,${theme.accent}65,${theme.accent}18)`,flexShrink:0,margin:"0 2px"}}/>}
                   <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
-                    <span style={{...CARD_TYPO.sigIcon,color:theme.accent}}>{item[0]}</span>
+                    <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
                     <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
                     <span style={{...CARD_TYPO.sigValue,fontSize:7}}>{item[2]}</span>
                   </div>
@@ -1983,21 +2009,21 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           </div>
         )}
         {/* ingredientes */}
-        <div style={{padding:"13px 16px 10px"}}>
-          <div style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.55,marginBottom:9}}>Ingredientes</div>
-          <div style={{display:"flex",flexDirection:"column",gap:5}}>
+        <div style={{padding:"12px 16px 10px"}}>
+          <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:8}}>Ingredientes</div>
+          <div style={{display:"flex",flexDirection:"column",gap:4}}>
             {recipe.ingredients.slice(0,9).map((ing,i)=>(
               <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
-                <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.45,flexShrink:0,marginTop:7}}/>
-                <span style={{fontSize:12,color:"rgba(240,235,225,0.62)",lineHeight:1.45}}>{ing}</span>
+                <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:7}}/>
+                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.6)",lineHeight:1.4}}>{ing}</span>
               </div>
             ))}
           </div>
         </div>
         {/* rodapé */}
-        <div style={{padding:"9px 16px 14px",borderTop:"1px solid rgba(240,235,225,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:12,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
-          <div style={{fontSize:7,letterSpacing:2.5,color:"rgba(240,235,225,0.32)",textTransform:"uppercase"}}>on-the-rocks.app</div>
+        <div style={{padding:"8px 16px 13px",borderTop:`1px solid ${theme.accent}15`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:11,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
+          <div style={{fontSize:7,letterSpacing:2.5,color:"rgba(240,235,225,0.28)",textTransform:"uppercase"}}>on-the-rocks.app</div>
         </div>
       </div>
     </div>
@@ -2179,8 +2205,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transform:visible?"none":"scale(0.96) translateY(18px)",
-        transition:visible?"opacity .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1)":"none"}}>
+        transition:visible?"opacity .45s ease":"none"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
