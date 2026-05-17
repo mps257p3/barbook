@@ -3711,9 +3711,12 @@ const RECIPE_PROFILES = {
                         background:isComanda?"rgba(160,120,90,0.25)":"rgba(240,235,225,0.08)",
                         border:`1.5px solid ${isComanda?"rgba(200,169,110,0.7)":"rgba(240,235,225,0.22)"}`,
                         boxShadow:isComanda?"0 0 28px rgba(160,120,90,0.55), 0 0 56px rgba(160,120,90,0.2), inset 0 1px 0 rgba(255,255,255,0.1)":"0 0 18px rgba(240,235,225,0.06), inset 0 1px 0 rgba(255,255,255,0.08)",
-                        fontSize:isComanda?20:22,color:isComanda?"#E5C99E":"rgba(240,235,225,0.6)",
-                        transition:"all .25s"}}>{isComanda?"◫":"🍸"}</div>
-                      <span style={{...CARD_TYPO.uiLabel,color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>adicionar à comanda</span>
+                        transition:"all .25s",color:isComanda?"#E5C99E":"rgba(240,235,225,0.6)"}}>
+                          <svg width={isComanda?18:20} height={isComanda?18:20} viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 4 L19 4 L11 14 Z"/><line x1="11" y1="14" x2="11" y2="19"/><line x1="7" y1="19" x2="15" y2="19"/>
+                          </svg>
+                        </div>
+                      <span style={{...CARD_TYPO.uiLabel,color:isComanda?"#C8A96E":"rgba(240,235,225,0.55)"}}>{isComanda?"adicionado à comanda":"adicionar à comanda"}</span>
                     </button>
                   </div>
                   );})()}
