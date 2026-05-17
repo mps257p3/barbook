@@ -3627,7 +3627,7 @@ const RECIPE_PROFILES = {
               </div>
               {/* controles bottom — ocasião sheet flutua sobre o layout sem empurrar */}
               <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,background:`radial-gradient(ellipse 100% 140% at 50% 100%, ${getTheme(swipeRecipe.categories).accent}1a 0%, ${getTheme(swipeRecipe.categories).accent}08 45%, transparent 75%)`,transition:"background 1.1s ease",position:"relative"}}>
-                <div style={{position:"fixed",bottom:`calc(50px + env(safe-area-inset-bottom, 8px))`,left:0,right:0,height:1,background:`linear-gradient(90deg, transparent, ${getTheme(swipeRecipe.categories).accent}55 50%, transparent)`,pointerEvents:"none",transition:"background 1.1s ease",zIndex:500}}/>
+                <div style={{position:"fixed",bottom:`calc(50px + env(safe-area-inset-bottom, 8px))`,left:0,right:0,height:1,background:`linear-gradient(90deg, transparent, ${getTheme(swipeRecipe.categories).accent}55 50%, transparent)`,pointerEvents:"none",transition:"background 1.1s ease",zIndex:10000}}/>
 
                 {filterSheet==="ocasiao"&&(
                   <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(10,8,6,0.97)",border:"1px solid rgba(240,235,225,0.1)",borderRadius:12,padding:"12px 14px",zIndex:30}}>
