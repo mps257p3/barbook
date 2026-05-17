@@ -2286,7 +2286,7 @@ function MobileNav({ tab, setTab, favCount, onSameTab, accentColor }) {
     { id:"perfil",       icon:"⊛", label:"Perfil" },
   ];
   return (
-    <nav className="mnv" style={{position:"fixed",bottom:0,left:0,right:0,background:"#080808",borderTop:"1px solid rgba(240,235,225,0.07)",zIndex:9999,paddingBottom:"env(safe-area-inset-bottom,8px)",position:"relative"}}>
+    <nav className="mnv" style={{position:"fixed",bottom:0,left:0,right:0,background:"#080808",borderTop:"1px solid rgba(240,235,225,0.07)",zIndex:9999,paddingBottom:"env(safe-area-inset-bottom,8px)"}}>
       {accentColor&&<div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg, transparent, ${accentColor}55 50%, transparent)`,pointerEvents:"none",transition:"background 1.1s ease"}}/>}
       {items.map(t=>(
         <button key={t.id} onClick={()=>tab===t.id ? onSameTab?.(t.id) : setTab(t.id)} style={{flex:1,padding:"10px 4px 6px",background:"none",border:"none",display:"flex",flexDirection:"column",alignItems:"center",gap:4,cursor:"pointer",color:tab===t.id?"#F0A030":"rgba(240,235,225,0.26)",transition:"color .15s",fontFamily:"Archivo,sans-serif",filter:tab===t.id?"drop-shadow(0 0 6px #F0A03088)":"none"}}>
