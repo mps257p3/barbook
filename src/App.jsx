@@ -2379,7 +2379,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
             )}
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.2,letterSpacing:"-0.2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName}</div>
-              <div style={{...CARD_TYPO.sigLabel,marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.email}</div>
+              <div style={{fontSize:11,color:"rgba(240,235,225,0.5)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:"Archivo,sans-serif"}}>{user.email}</div>
               {syncing&&<div style={{...CARD_TYPO.counter,color:"#A0785A",marginTop:5,opacity:1}}>sincronizando…</div>}
             </div>
             <button onClick={signOutUser} style={{...CARD_TYPO.uiLabel,padding:"6px 14px",borderRadius:20,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.45)",cursor:"pointer",flexShrink:0}}>sair</button>
@@ -2410,7 +2410,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
               onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(160,120,90,0.35)"}
               onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(240,235,225,0.07)"}>
               <div style={{fontFamily:"'Gloock',serif",fontSize:34,fontWeight:400,color:"#A0785A",lineHeight:1}}>{v}</div>
-              <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.45)",marginTop:6}}>{l}</div>
+              <div style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.6)",marginTop:6}}>{l}</div>
             </button>
           ))}
         </div>
@@ -2486,15 +2486,15 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
             <span onClick={handleVersionTap} style={{...CARD_TYPO.counter,cursor:"default",userSelect:"none",opacity:0.4}}>v1.0</span>
           </div>
           <div style={{height:"1px",background:"linear-gradient(to right,rgba(160,120,90,0.5),transparent)"}}/>
-          <p style={{...CARD_TYPO.bodyText,fontSize:11,color:"rgba(240,235,225,0.42)",margin:0}}>Desenvolvido por Marcelo Parducci</p>
+          <p style={{fontSize:12,color:"rgba(240,235,225,0.58)",fontFamily:"Archivo,sans-serif",margin:0}}>Desenvolvido por Marcelo Parducci</p>
           <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
-            <span style={{...CARD_TYPO.sigLabel,opacity:0.6}}>Dados</span>
-            <span style={{...CARD_TYPO.sigLabel,opacity:0.5,textAlign:"right"}}>Sincronizados via Google Account</span>
+            <span style={{fontSize:10,color:"rgba(240,235,225,0.45)",fontFamily:"Archivo,sans-serif",letterSpacing:.5}}>Dados</span>
+            <span style={{fontSize:10,color:"rgba(240,235,225,0.4)",fontFamily:"Archivo,sans-serif",textAlign:"right"}}>Sincronizados via Google Account</span>
           </div>
         </div>
       </div>
 
-      <div style={{paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)",textAlign:"center",...CARD_TYPO.bodyText,fontSize:10,color:"rgba(240,235,225,0.35)",lineHeight:1.8}}>
+      <div style={{paddingTop:16,borderTop:"1px solid rgba(240,235,225,0.05)",textAlign:"center",fontSize:10,color:"rgba(240,235,225,0.48)",fontFamily:"Archivo,sans-serif",lineHeight:1.8}}>
         Conteúdo destinado a maiores de 18 anos.<br/>Beba com responsabilidade.
       </div>
 
