@@ -1703,18 +1703,8 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const shareCardRef=useRef();
 
   const shareAsImage=useCallback(async()=>{
-    if(sharing)return;
+    if(!shareCardRef.current||sharing)return;
     setSharing(true);
-    const shareUrl=`${window.location.origin}/?r=${encodeURIComponent(recipe.name)}`;
-    if(navigator.share){
-      try{
-        await navigator.share({title:recipe.name,text:`${recipe.name} — On the Rocks`,url:shareUrl});
-        setSharing(false);return;
-      }catch(e){
-        if(e?.name==="AbortError"){setSharing(false);return;}
-      }
-    }
-    if(!shareCardRef.current){setSharing(false);return;}
     try{
       const canvas=await html2canvas(shareCardRef.current,{backgroundColor:null,scale:2,logging:false,useCORS:true});
       canvas.toBlob(async blob=>{
