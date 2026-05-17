@@ -1572,11 +1572,12 @@ function NoiseOverlay({opacity=0.038}){
 }
 
 // ─── CARD ─────────────────────────────────────────────────────────────────────
-function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS}){
+function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS,customBg}){
   const theme=getTheme(recipe.categories);
+  const visual=getCardVisual(recipe,spiritCats);
+  const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
   const styleTag=recipe.categories.find(c=>STYLE_CATS.has(c));
   const spiritTag=recipe.categories.find(c=>spiritCats.has(c));
-  const [hov,setHov]=useState(false);
   const [quickActions,setQuickActions]=useState(false);
   const longPressTimer=useRef();
   const wasLongPress=useRef(false);
@@ -1586,94 +1587,64 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
     <div
       onPointerDown={startLongPress} onPointerUp={endLongPress} onPointerLeave={endLongPress} onPointerCancel={endLongPress}
       onClick={()=>{if(wasLongPress.current)return;onClick();}}
-      onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
-      style={{background:theme.bg,borderRadius:4,padding:"16px 16px 14px 18px",cursor:"pointer",position:"relative",overflow:"hidden",transform:hov?"translateY(-2px)":"none",boxShadow:hov?`0 10px 36px rgba(0,0,0,.55), inset 0 0 40px ${theme.accent}08`:`0 2px 10px rgba(0,0,0,.45), inset 0 0 24px ${theme.accent}04`,display:"flex",flexDirection:"column",minHeight:152,borderLeft:`2px solid ${hov?theme.accent+"cc":theme.accent+"44"}`,transition:"all .2s ease"}}>
+      style={{position:"relative",height:168,borderRadius:12,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),
+        border:`1.5px solid ${theme.accent}`,overflow:"hidden",cursor:"pointer",
+        boxShadow:`0 4px 16px rgba(0,0,0,0.9), 0 0 40px ${theme.accent}10`,
+        transition:"transform .2s ease, box-shadow .2s ease"}}>
 
-      {/* noise grain */}
-      <NoiseOverlay/>
-
-      {/* watermark copo */}
-      <div style={{position:"absolute",right:-18,top:"50%",transform:"translateY(-50%)",pointerEvents:"none",opacity:0.05}}>
-        <GlassIcon categories={recipe.categories} color={theme.accent} size={145}/>
-      </div>
+      {/* overlays atmosféricos */}
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.22) 0%, rgba(3,1,0,0.0) 18%, rgba(3,1,0,0.55) 58%, rgba(3,1,0,0.96) 100%)",pointerEvents:"none"}}/>
+      <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.82) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
+      <div style={{position:"absolute",inset:0,borderRadius:12,pointerEvents:"none",mixBlendMode:"screen",
+        background:`radial-gradient(ellipse 80% 45% at -8% 108%, ${theme.accent} 0%, ${theme.accent}aa 5%, ${theme.accent}55 22%, ${theme.accent}18 45%, transparent 68%)`}}/>
+      {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none"}}/>}
 
       {/* fita autoral */}
-      {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:18,right:-55,width:200,transform:"rotate(45deg)",background:`linear-gradient(to right, transparent, ${theme.accent}40)`,textAlign:"center",fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
+      {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:14,right:-44,width:160,transform:"rotate(45deg)",background:`linear-gradient(to right,transparent,${theme.accent}40)`,textAlign:"center",fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
 
-      {/* linha de topo — gradiente sutil */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,${theme.accent}88,${theme.accent}22,transparent)`,opacity:hov?.8:.3,transition:"opacity .2s"}}/>
-
-      {/* fav + comanda */}
-      <button onClick={e=>{e.stopPropagation();onFav();}} style={{position:"absolute",top:8,right:8,background:"none",border:"none",cursor:"pointer",padding:4,transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.15)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2}}>
-        {isFav
-          ?<svg width="15" height="12" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
-          :<svg width="15" height="12" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
-        }
-      </button>
-      <button onClick={e=>{e.stopPropagation();onComanda();}} style={{position:"absolute",top:8,right:30,background:"none",border:"none",fontSize:12,color:isComanda?"#C8A96E":"rgba(255,255,255,0.1)",cursor:"pointer",padding:4,transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none",zIndex:2}}>
-        {isComanda?"◫":"◻"}
-      </button>
-
-      {/* tags */}
-      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10,flexWrap:"wrap"}}>
-        {styleTag&&<span style={{...CARD_TYPO.tag,color:theme.accent}}>{styleTag}</span>}
-        {spiritTag&&<><span style={{...CARD_TYPO.tag,color:theme.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.48)"}}>{spiritTag}</span></>}
-      </div>
-
-      {/* nome */}
-      <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>22?16:recipe.name.length>16?18:21,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.95)",marginBottom:9,paddingRight:48,letterSpacing:"-0.2px"}}>{recipe.name}</div>
-
-      {/* stars */}
-      {recipe.rating>0&&<div style={{marginBottom:9}}><Stars n={recipe.rating} color={theme.accent}/></div>}
-
-      {/* divisor */}
-      <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}33,transparent)`,marginBottom:9,marginTop:"auto"}}/>
-
-      {/* ingredientes */}
-      <div>
-        <div style={{...CARD_TYPO.sectionHead,color:theme.accent,marginBottom:4}}>Ingredientes</div>
-        <div style={{...CARD_TYPO.bodyText,fontSize:10,color:"rgba(240,235,225,0.45)",whiteSpace:"nowrap",overflow:"hidden",WebkitMaskImage:"linear-gradient(to right,black 60%,transparent 100%)",maskImage:"linear-gradient(to right,black 60%,transparent 100%)"}}>
-          {recipe.ingredients.slice(0,3).map((ing,i)=>(
-            <span key={i}>{i>0&&<span style={{opacity:.4,margin:"0 4px"}}>·</span>}{ing}</span>
-          ))}{recipe.ingredients.length>3&&<span style={{opacity:.3}}> · …</span>}
+      {/* topo: tags + ações */}
+      <div style={{position:"absolute",top:14,left:16,right:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",gap:7,alignItems:"center"}}>
+          {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
+          {spiritTag&&<><span style={{...CARD_TYPO.tag,color:theme.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
+        </div>
+        <div style={{display:"flex",gap:0,alignItems:"center"}}>
+          <button onClick={e=>{e.stopPropagation();onComanda();}} style={{background:"none",border:"none",fontSize:13,color:isComanda?"#C8A96E":"rgba(255,255,255,0.18)",cursor:"pointer",padding:"4px 5px",transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none"}}>{isComanda?"◫":"◻"}</button>
+          <button onClick={e=>{e.stopPropagation();onFav();}} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 5px",transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.18)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none"}}>
+            {isFav?<svg width="14" height="11" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
+            :<svg width="14" height="11" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>}
+          </button>
         </div>
       </div>
 
-      {hasAll&&<div style={{...CARD_TYPO.counter,position:"absolute",bottom:8,right:30,color:"#4ADE80",opacity:.75}}>tenho tudo</div>}
-      <button onClick={e=>{e.stopPropagation();onTried();}} style={{position:"absolute",bottom:6,right:8,background:"none",border:"none",fontSize:14,color:isTried?"#4ADE80":"rgba(255,255,255,0.12)",cursor:"pointer",padding:4,lineHeight:1,transition:"color .15s"}}>
-        {isTried?"✓":"○"}
-      </button>
+      {/* fundo: nome + divisor + estrelas */}
+      <div style={{position:"absolute",bottom:14,left:16,right:14,display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{fontFamily:"'Gloock',serif",
+          fontSize:recipe.name.length>22?16:recipe.name.length>18?18:recipe.name.length>14?20:22,
+          fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.2px",
+          overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
+          textShadow:"0 1px 4px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.7)"}}>{recipe.name}</div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <div style={{height:2,width:24,background:theme.accent,borderRadius:2,opacity:0.9}}/>
+            <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
+            {recipe.rating>0&&<Stars n={recipe.rating} color={theme.accent}/>}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            {hasAll&&<span style={{...CARD_TYPO.counter,color:"#4ADE80",opacity:.8}}>tenho tudo</span>}
+            <button onClick={e=>{e.stopPropagation();onTried();}} style={{background:"none",border:"none",fontSize:16,color:isTried?"#4ADE80":"rgba(255,255,255,0.2)",cursor:"pointer",padding:"2px 4px",lineHeight:1,transition:"color .15s"}}>{isTried?"✓":"○"}</button>
+          </div>
+        </div>
+      </div>
 
       {/* ações rápidas (long press) */}
       {quickActions&&(
         <div onClick={e=>{e.stopPropagation();setQuickActions(false);}}
-          style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.85)",borderRadius:4,display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"center",gap:8,padding:"16px",zIndex:10}}>
-          <button onClick={e=>{e.stopPropagation();onTried();setQuickActions(false);}}
-            style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-              background:isTried?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.07)",
-              border:`1px solid ${isTried?"rgba(74,222,128,0.4)":"rgba(240,235,225,0.18)"}`,
-              color:isTried?"#4ADE80":"rgba(240,235,225,0.75)"}}>
-            {isTried?"Remover provado":"Já provei"}
-          </button>
-          <button onClick={e=>{e.stopPropagation();onComanda();setQuickActions(false);}}
-            style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-              background:isComanda?"rgba(200,169,110,0.12)":"rgba(240,235,225,0.07)",
-              border:`1px solid ${isComanda?"rgba(200,169,110,0.4)":"rgba(240,235,225,0.18)"}`,
-              color:isComanda?"#C8A96E":"rgba(240,235,225,0.75)"}}>
-            {isComanda?"Remover da comanda":"+ Comanda"}
-          </button>
-          <button onClick={e=>{e.stopPropagation();onFav();setQuickActions(false);}}
-            style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-              background:isFav?`${theme.accent}18`:"rgba(240,235,225,0.07)",
-              border:`1px solid ${isFav?theme.accent+"44":"rgba(240,235,225,0.18)"}`,
-              color:isFav?theme.accent:"rgba(240,235,225,0.75)"}}>
-            {isFav?"Desfavoritar":"Favoritar"}
-          </button>
-          <button onClick={e=>{e.stopPropagation();onDelete?.();setQuickActions(false);}}
-            style={{padding:"8px 14px",borderRadius:20,fontSize:11,fontWeight:600,letterSpacing:.3,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-              background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>
-            Excluir
-          </button>
+          style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.88)",borderRadius:12,display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"center",gap:8,padding:"16px",zIndex:10}}>
+          <button onClick={e=>{e.stopPropagation();onTried();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isTried?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.07)",border:`1px solid ${isTried?"rgba(74,222,128,0.4)":"rgba(240,235,225,0.18)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.75)"}}>{isTried?"Remover provado":"Já provei"}</button>
+          <button onClick={e=>{e.stopPropagation();onComanda();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isComanda?"rgba(200,169,110,0.12)":"rgba(240,235,225,0.07)",border:`1px solid ${isComanda?"rgba(200,169,110,0.4)":"rgba(240,235,225,0.18)"}`,color:isComanda?"#C8A96E":"rgba(240,235,225,0.75)"}}>{isComanda?"Remover da comanda":"+ Comanda"}</button>
+          <button onClick={e=>{e.stopPropagation();onFav();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isFav?`${theme.accent}18`:"rgba(240,235,225,0.07)",border:`1px solid ${isFav?theme.accent+"44":"rgba(240,235,225,0.18)"}`,color:isFav?theme.accent:"rgba(240,235,225,0.75)"}}>{isFav?"Desfavoritar":"Favoritar"}</button>
+          <button onClick={e=>{e.stopPropagation();onDelete?.();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>Excluir</button>
         </div>
       )}
     </div>
@@ -3785,33 +3756,47 @@ const RECIPE_PROFILES = {
                   <div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Adicione drinks pela ficha de cada receita</div>
                 </div>
               ):(
-                <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
                   {comanda.map(name=>allRecipes.find(r=>r.name===name)).filter(Boolean).map(r=>{
                     const th=getTheme(r.categories);
                     const styleTag=r.categories.find(c=>STYLE_CATS.has(c));
                     const spiritTag=r.categories.find(c=>spiritCatsAll.has(c));
+                    const cv=getCardVisual(r,spiritCatsAll);
+                    const dv=customBgs[r.name]?{...cv,bgImage:customBgs[r.name]}:cv;
                     return(
                       <div key={r.name} onClick={()=>setOpen(r)}
-                        style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:6,background:th.bg,border:`1px solid ${th.border}33`,cursor:"pointer",position:"relative"}}>
-                        <div style={{filter:`drop-shadow(0 0 10px ${th.accent}88)`,flexShrink:0}}>
-                          <GlassIcon categories={r.categories} color={th.accent} size={36} opacity={0.5}/>
+                        style={{position:"relative",height:120,borderRadius:12,backgroundColor:"#0A0906",...buildCardBgEditorial(dv),
+                          border:`1.5px solid ${th.accent}`,overflow:"hidden",cursor:"pointer",
+                          boxShadow:`0 4px 16px rgba(0,0,0,0.9), 0 0 30px ${th.accent}10`}}>
+                        {/* overlays */}
+                        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.18) 0%, rgba(3,1,0,0.0) 18%, rgba(3,1,0,0.6) 60%, rgba(3,1,0,0.96) 100%)",pointerEvents:"none"}}/>
+                        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.8) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
+                        <div style={{position:"absolute",inset:0,borderRadius:12,pointerEvents:"none",mixBlendMode:"screen",
+                          background:`radial-gradient(ellipse 80% 45% at -8% 108%, ${th.accent} 0%, ${th.accent}aa 5%, ${th.accent}55 22%, ${th.accent}18 45%, transparent 68%)`}}/>
+                        {/* tag topo */}
+                        <div style={{position:"absolute",top:12,left:14,display:"flex",gap:7,alignItems:"center"}}>
+                          {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
+                          {spiritTag&&<><span style={{...CARD_TYPO.tag,color:th.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
                         </div>
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.95)",lineHeight:1.15,marginBottom:4}}>{r.name}</div>
-                          <div style={{display:"flex",gap:6}}>
-                            {styleTag&&<span style={{...CARD_TYPO.tag,color:th.accent}}>{styleTag}</span>}
-                            {spiritTag&&<span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.4)"}}>{spiritTag}</span>}
+                        {/* nome + divisor */}
+                        <div style={{position:"absolute",bottom:12,left:14,right:48}}>
+                          <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.15,marginBottom:7,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{r.name}</div>
+                          <div style={{display:"flex",alignItems:"center",gap:6}}>
+                            <div style={{height:2,width:20,background:th.accent,borderRadius:2,opacity:0.9}}/>
+                            <div style={{width:4,height:2,borderRadius:1,background:th.accent,opacity:0.9}}/>
                           </div>
                         </div>
-                        {comandaReorder?(
-                          <div style={{display:"flex",flexDirection:"column",gap:3,flexShrink:0}}>
-                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.45)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
-                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.45)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
-                          </div>
-                        ):(
-                          <button onClick={e=>{e.stopPropagation();toggleComanda(r.name);}}
-                            style={{background:"none",border:"none",fontSize:16,color:"rgba(160,120,90,0.5)",cursor:"pointer",padding:"4px 6px",flexShrink:0}}>×</button>
-                        )}
+                        {/* reorder / remove */}
+                        <div style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4}}>
+                          {comandaReorder?(
+                            <>
+                              <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
+                              <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
+                            </>
+                          ):(
+                            <button onClick={e=>{e.stopPropagation();toggleComanda(r.name);}} style={{background:"rgba(0,0,0,0.45)",border:"1px solid rgba(240,235,225,0.12)",borderRadius:"50%",width:28,height:28,fontSize:15,color:"rgba(240,235,225,0.45)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -3934,7 +3919,7 @@ const RECIPE_PROFILES = {
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll}/>)}
+                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>setOpen(r)} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
                 </div>
               )}
             </>
