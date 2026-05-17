@@ -2210,7 +2210,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
       {/* card */}
       <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transition:visible?"opacity 1.4s ease":"none"}}>
+        transition:"opacity 1.4s ease"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
