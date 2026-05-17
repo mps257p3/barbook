@@ -1726,7 +1726,8 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const spiritTags=recipe.categories.filter(c=>spiritCats.has(c));
 
   return(
-    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
+    <div onClick={posEditMode?undefined:onClose} style={{position:"fixed",inset:0,background:posEditMode?"rgba(0,0,0,0.88)":"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
+      {posEditMode&&customBg&&<div style={{position:"absolute",inset:0,backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:heroBgPos,opacity:0.2,pointerEvents:"none"}}/>}
       <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO ── */}
@@ -1737,30 +1738,39 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           onPointerUp={posEditMode?onPosPointerUp:undefined}
           onPointerCancel={posEditMode?onPosPointerUp:undefined}
         >
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",pointerEvents:"none"}}/>
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 25%, rgba(6,4,2,0.55) 60%, rgba(10,9,6,1.0) 100%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",opacity:posEditMode?0.25:1,pointerEvents:"none",transition:"opacity .25s"}}/>
           <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
           {customBg&&(posEditMode?(
             <button onClick={()=>{setPosEditMode(false);onSetBgOffset?.(localOffset);}} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:`1px solid ${theme.accent}55`,background:`${theme.accent}22`,color:theme.accent,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>✓</button>
           ):(
-            <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>⊕</button>
+            <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.5)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+            </button>
           ))}
           {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
             <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
             <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
           </div>}
-          <div style={{position:"absolute",bottom:16,left:18,right:18}}>
-            {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
-            <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
-              <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
-              <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
+          {posEditMode?(
+            <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,pointerEvents:"none",zIndex:5}}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(240,235,225,0.55)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+              <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",fontFamily:"Archivo,sans-serif"}}>arraste para reposicionar</span>
             </div>
-            {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
-          </div>
+          ):(
+            <div style={{position:"absolute",bottom:16,left:18,right:18}}>
+              {styleTags[0]&&<div style={{...CARD_TYPO.heroEyebrow,color:theme.accent,opacity:0.8,marginBottom:6}}>{styleTags[0]}</div>}
+              <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?22:recipe.name.length>14?26:recipe.name.length>11?28:recipe.name.length>7?32:36,fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{recipe.name}</div>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginTop:8}}>
+                <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
+                <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
+              </div>
+              {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
+            </div>
+          )}
         </div>
         {profile?.perfil&&(
-          <div style={{backgroundColor:"#0A0906"}}>
+          <div style={{backgroundColor:"#0A0906",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
             <div style={{display:"flex",justifyContent:"space-between",padding:"9px 18px 8px"}}>
               {[["◈","Perfil",profile.perfil],["❋","Sensação",profile.sensacao],["✦","Ocasião",profile.ocasiao]].map((item,i)=>(
                 <div key={i} style={{display:"contents"}}>
@@ -1777,7 +1787,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           </div>
         )}
 
-        <div style={{padding:"16px 18px 32px",textAlign:"left"}}>
+        <div style={{padding:"16px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
 
           {/* estrelas + ações */}
           <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:12,alignItems:"center"}}>
@@ -1788,7 +1798,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:12}}>como você avaliaria?</div>}
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:18}}>
             {(()=>{
-              const btnBase={...CARD_TYPO.actionBtn,display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,cursor:"pointer",transition:"all .15s"};
+              const btnBase={...CARD_TYPO.actionBtn,display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,cursor:"pointer",transition:"all .15s",lineHeight:1,boxSizing:"border-box"};
               const dimBorder=`1px solid ${theme.accent}33`;
               const dimColor=`${theme.accent}66`;
               return(<>
@@ -3440,6 +3450,7 @@ const RECIPE_PROFILES = {
   useEffect(()=>{
     if(mobileTab==="descobrir"){
       document.documentElement.style.overflow="hidden";
+      window.scrollTo(0,0);
       setActiveOccasions([]);
       setFilterSheet(null);
     } else {
