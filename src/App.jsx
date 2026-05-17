@@ -1587,7 +1587,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
     <div
       onPointerDown={startLongPress} onPointerUp={endLongPress} onPointerLeave={endLongPress} onPointerCancel={endLongPress}
       onClick={()=>{if(wasLongPress.current)return;onClick();}}
-      style={{position:"relative",height:168,borderRadius:12,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),
+      style={{position:"relative",height:136,borderRadius:12,backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual),
         border:`1.5px solid ${theme.accent}`,overflow:"hidden",cursor:"pointer",
         boxShadow:`0 4px 16px rgba(0,0,0,0.9), 0 0 40px ${theme.accent}10`,
         transition:"transform .2s ease, box-shadow .2s ease"}}>
@@ -1603,10 +1603,10 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
       {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:14,right:-44,width:160,transform:"rotate(45deg)",background:`linear-gradient(to right,transparent,${theme.accent}40)`,textAlign:"center",fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
 
       {/* topo: tags + ações */}
-      <div style={{position:"absolute",top:14,left:16,right:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{display:"flex",gap:7,alignItems:"center"}}>
-          {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
-          {spiritTag&&<><span style={{...CARD_TYPO.tag,color:theme.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
+      <div style={{position:"absolute",top:10,left:12,right:10,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:3}}>
+          {styleTag&&<span style={{...CARD_TYPO.tag,color:"rgba(231,224,205,0.82)",background:"rgba(0,0,0,0.52)",backdropFilter:"blur(6px)",padding:"3px 7px",borderRadius:3}}>{styleTag}</span>}
+          {spiritTag&&<span style={{...CARD_TYPO.tag,color:theme.accent,background:`rgba(0,0,0,0.45)`,backdropFilter:"blur(6px)",padding:"3px 7px",borderRadius:3,opacity:1}}>{spiritTag}</span>}
         </div>
         <div style={{display:"flex",gap:0,alignItems:"center"}}>
           <button onClick={e=>{e.stopPropagation();onComanda();}} style={{background:"none",border:"none",fontSize:13,color:isComanda?"#C8A96E":"rgba(255,255,255,0.18)",cursor:"pointer",padding:"4px 5px",transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none"}}>{isComanda?"◫":"◻"}</button>
@@ -1618,7 +1618,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
       </div>
 
       {/* fundo: nome + divisor + estrelas */}
-      <div style={{position:"absolute",bottom:14,left:16,right:14,display:"flex",flexDirection:"column",gap:8}}>
+      <div style={{position:"absolute",bottom:10,left:12,right:12,display:"flex",flexDirection:"column",gap:6}}>
         <div style={{fontFamily:"'Gloock',serif",
           fontSize:recipe.name.length>22?16:recipe.name.length>18?18:recipe.name.length>14?20:22,
           fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.2px",
@@ -3786,17 +3786,13 @@ const RECIPE_PROFILES = {
                             <div style={{width:4,height:2,borderRadius:1,background:th.accent,opacity:0.9}}/>
                           </div>
                         </div>
-                        {/* reorder / remove */}
-                        <div style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4}}>
-                          {comandaReorder?(
-                            <>
-                              <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
-                              <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
-                            </>
-                          ):(
-                            <button onClick={e=>{e.stopPropagation();toggleComanda(r.name);}} style={{background:"rgba(0,0,0,0.45)",border:"1px solid rgba(240,235,225,0.12)",borderRadius:"50%",width:28,height:28,fontSize:15,color:"rgba(240,235,225,0.45)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
-                          )}
-                        </div>
+                        {/* reorder */}
+                        {comandaReorder&&(
+                          <div style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4}}>
+                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
+                            <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{background:"rgba(0,0,0,0.5)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,width:26,height:22,color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:11,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
