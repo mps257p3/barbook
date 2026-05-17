@@ -314,7 +314,7 @@ const BASE_RECIPES = [
   {name:"Paloma",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","15 ml suco de limão","suco de toranja para completar","sal na borda (opcional)"],steps:["Prepare a borda com sal.","Adicione gelo, tequila e limão.","Complete com suco de toranja. Decore."],notes:"No México é mais popular que a Margarita.",rating:0,servings:"",custom:false},
   {name:"Tequila Sunrise",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","120 ml suco de laranja","15 ml grenadine"],steps:["Encha com gelo. Adicione tequila e suco de laranja.","Despeje a grenadine devagar pela lateral — ela afunda criando o degradê."],notes:"Não mexa depois da grenadine — o efeito é o ponto.",rating:0,servings:"",custom:false},
   {name:"Piña Colada",categories:["Rum Branco","Frozen","Tiki","Blended"],ingredients:["60 ml rum branco","90 ml suco de abacaxi","45 ml creme de coco","1 xícara gelo picado"],steps:["Bata tudo no liquidificador até textura cremosa e homogênea.","Sirva em copo alto. Decore com abacaxi e cereja."],notes:"A consistência certa é cremosa, não aguada — ajuste o gelo.",rating:0,servings:"1",custom:false},
-  {name:"Mai Tai",categories:["Rum Envelhecido","Tiki","Sour","Shaken"],ingredients:["60 ml rum envelhecido","15 ml curaçao laranja","15 ml orgeat (xarope de amêndoa)","30 ml suco de limão"],steps:["Agite tudo com gelo.","Coe em rocks com gelo. Decore com hortelã e cereja."],notes:"Um clássico tiki. O orgeat é indispensável.",rating:0,servings:"",custom:false},
+  {name:"Mai Tai",categories:["Rum Envelhecido","Tiki","Sour","Shaken"],ingredients:["60 ml rum envelhecido","15 ml curaçao laranja","15 ml Xarope de amêndoa (Orgeat)","30 ml suco de limão"],steps:["Agite tudo com gelo.","Coe em rocks com gelo. Decore com hortelã e cereja."],notes:"Um clássico tiki. O orgeat é indispensável.",rating:0,servings:"",custom:false},
   {name:"Jungle Bird",categories:["Rum Envelhecido","Campari","Tiki","Sour","Shaken"],ingredients:["45 ml rum jamaicano escuro","22 ml Campari","45 ml suco de abacaxi","15 ml suco de limão","15 ml xarope demerara"],steps:["Combine tudo na coqueteleira com gelo.","Agite vigorosamente por 12s.","Coe em rocks. Decore com abacaxi."],notes:"O único clássico tiki com amaro. Surpreendente.",rating:0,servings:"1",custom:false},
   {name:"Irish Coffee",categories:["Whisky","Hot"],ingredients:["40 ml Irish whiskey","120 ml café quente","15 ml xarope simples","creme de leite levemente batido"],steps:["Aqueça a taça. Adicione whiskey e xarope.","Complete com café quente e mexa.","Despeje o creme por cima passando pelo dorso de uma colher."],notes:"O creme deve flutuar. Beba o café através do creme.",rating:0,servings:"",custom:false},
   {name:"Hot Toddy",categories:["Whisky","Hot"],ingredients:["60 ml whisky","25 ml mel","25 ml suco de limão","150 ml água quente","pau de canela","cravos"],steps:["Coloque mel, limão e especiarias na caneca.","Adicione o whisky.","Complete com água quente e mexa."],notes:"Perfeito para dias frios.",rating:0,servings:"",custom:false},
@@ -362,7 +362,7 @@ const BASE_RECIPES = [
   {name:"Maracujá Amargo",categories:["Campari","Highball"],ingredients:["30 ml Campari","30 ml gin","15 ml polpa de maracujá","soda"],steps:["Combine Campari, gin e maracujá no copo com gelo.","Complete com soda.","Mexa suavemente."],notes:"Bitter tropical, refrescante e adulto. Quase italiano-brasileiro.",rating:0,servings:"1",custom:false},
   {name:"Linha do Equador",categories:["Rum Branco","Shaken"],ingredients:["40 ml rum branco","10 ml rum de coco","15 ml polpa de maracujá","10 ml limão tahiti","2 gotas de salina"],steps:["Combine no shaker com gelo.","Shake e coe duplo em coupe."],notes:"Muito mais seco e elegante que piña colada. O rum de coco dá profundidade sem pesar.",rating:0,servings:"1",custom:false},
   {name:"Pornstar Martini",categories:["Vodka","Shaken"],ingredients:["45 ml vodka","15 ml licor de baunilha","15 ml polpa de maracujá","15 ml xarope simples","15 ml limão tahiti","shot de espumante (ao lado)"],steps:["Combine vodka, licor, maracujá, xarope e limão no shaker com gelo.","Dry shake, depois shake com gelo.","Coe duplo em coupe.","Sirva o shot de espumante separado."],notes:"Puxado com menos baunilha e espumante mais seco, vira quase um sour tropical elegante.",rating:0,servings:"1",custom:false},
-  {name:"Saturn",categories:["Gim","Tiki","Shaken"],ingredients:["45 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","15 ml orgeat","7 ml falernum"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico cult de tiki. Herbal, tropical e complexo — um dos drinks de maracujá mais sofisticados já feitos.",rating:0,servings:"1",custom:false},
+  {name:"Saturn",categories:["Gim","Tiki","Shaken"],ingredients:["45 ml gin","15 ml polpa de maracujá","15 ml limão siciliano","15 ml Xarope de amêndoa (Orgeat)","7 ml falernum"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico cult de tiki. Herbal, tropical e complexo — um dos drinks de maracujá mais sofisticados já feitos.",rating:0,servings:"1",custom:false},
   {name:"Hurricane",categories:["Rum Envelhecido","Tiki","Shaken"],ingredients:["60 ml rum escuro","30 ml polpa de maracujá","20 ml limão tahiti","10 ml xarope simples"],steps:["Combine no shaker com gelo.","Shake vigoroso e coe em copo Hurricane ou highball com gelo."],notes:"Clássico de New Orleans. A receita original, mais seca, é muito melhor que versões açucaradas.",rating:0,servings:"1",custom:false},
   {name:"Cobra's Fang",categories:["Rum Envelhecido","Tiki","Shaken"],ingredients:["45 ml rum envelhecido","15 ml rum overproof","20 ml polpa de maracujá","20 ml limão tahiti","15 ml falernum","1 dash absinto","1 dash Angostura"],steps:["Combine no shaker com gelo.","Shake e coe em copo Tiki ou highball com gelo britado."],notes:"Clássico Tiki. O absinto e o falernum criam camadas complexas — muito mais profundo do que parece.",rating:0,servings:"1",custom:false},
   {name:"Passion Fruit Margarita",categories:["Tequila","Sour","Shaken"],ingredients:["50 ml tequila blanco","20 ml polpa de maracujá","20 ml limão tahiti","10 ml xarope de agave","5 ml Cointreau (opcional)","pitada mínima de sal"],steps:["Combine no shaker com gelo.","Shake vigoroso e coe em rocks com gelo ou coupe."],notes:"Moderno praticamente obrigatório. O maracujá traz acidez tropical sem peso de sobremesa.",rating:0,servings:"1",custom:false},
@@ -648,7 +648,7 @@ const BASE_RECIPES = [
 
   // ── PREPAROS CASEIROS — MODIFICADORES COMPLEXOS ──
   {name:"Grenadine Caseira",categories:["Preparos Caseiros"],ingredients:["250 ml suco de romã puro (ou 4 romãs espremidas)","250g açúcar","10 ml suco de limão","splash de água de flor de laranjeira (opcional)"],steps:["Misture suco de romã e açúcar em fogo baixo.","Mexa até dissolver — não ferva (perde a cor).","Adicione limão e flor de laranjeira.","Deixe esfriar e armazene."],notes:"A grenadine industrial é corante e xarope de milho. A caseira tem cor e profundidade reais. Dura 3 semanas na geladeira.",rating:0,servings:"400 ml",custom:false},
-  {name:"Orgeat (Xarope de Amêndoa)",categories:["Preparos Caseiros"],ingredients:["200g amêndoas cruas sem sal","300g açúcar","250 ml água","30 ml água de flor de laranjeira","5 ml extrato de amêndoa (opcional)"],steps:["Cubra as amêndoas com água fervente por 1 min e retire a pele.","Triture as amêndoas com a água no liquidificador por 2 min.","Coe em pano de musselina espremendo bem — este é o leite de amêndoa.","Leve ao fogo com açúcar até dissolver.","Retire, adicione flor de laranjeira e extrato. Deixe esfriar."],notes:"Indispensável no Mai Tai e no Trinidad Sour. Espremer bem o bagaço é onde está o sabor.",rating:0,servings:"500 ml",custom:false},
+  {name:"Xarope de amêndoa (Orgeat)",categories:["Preparos Caseiros"],ingredients:["200g amêndoas cruas sem sal","300g açúcar","250 ml água","30 ml água de flor de laranjeira","5 ml extrato de amêndoa (opcional)"],steps:["Cubra as amêndoas com água fervente por 1 min e retire a pele.","Triture as amêndoas com a água no liquidificador por 2 min.","Coe em pano de musselina espremendo bem — este é o leite de amêndoa.","Leve ao fogo com açúcar até dissolver.","Retire, adicione flor de laranjeira e extrato. Deixe esfriar."],notes:"Indispensável no Mai Tai e no Trinidad Sour. Espremer bem o bagaço é onde está o sabor.",rating:0,servings:"500 ml",custom:false},
   {name:"Falernum Caseiro",categories:["Preparos Caseiros"],ingredients:["500 ml cachaça ou rum branco","60g amêndoas fatiadas","Casca de 5 limas","5 cravos-da-índia","1 col. chá extrato de baunilha","1 col. chá extrato de amêndoa","Suco de 2 limas","300g açúcar","200 ml água"],steps:["Infuse a cachaça com amêndoas, casca de lima e cravos por 24h.","Coe a infusão descartando os sólidos.","Prepare xarope simples com açúcar e água.","Misture a infusão com o xarope, suco de lima e extratos.","Armazene em frasco escuro."],notes:"Licor caribenho de cravo, amêndoa e lima. Essencial no Zombie e no Illegal Sour. Versão sem álcool: substitua a cachaça por água e infuse por 48h.",rating:0,servings:"750 ml",custom:false},
 
   // ── PREPAROS CASEIROS — COMPOTAS ──
@@ -667,7 +667,7 @@ const BASE_RECIPES = [
   {name:"Paradise",categories:["Gim","Sour","Shaken"],ingredients:["30 ml gim","20 ml apricot brandy (licor de damasco)","15 ml suco de laranja fresco"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"IBA classic. Proporção 3:2:1,5. Floral, frutado e direto.",rating:0,servings:"1",custom:false},
   {name:"Old Cuban",categories:["Rum Envelhecido","Espumante","Fizz","Shaken"],ingredients:["45 ml rum envelhecido","22 ml suco de lima","22 ml xarope simples","6 folhas de hortelã","2 dashes Angostura Bitters","60 ml champagne ou prosecco brut"],steps:["Macere levemente a hortelã na coqueteleira.","Agite rum, lima, xarope, hortelã e Angostura com gelo.","Coe em taça. Complete com espumante gelado.","Decore com folha de hortelã."],notes:"Criado por Audrey Saunders, c. 2001. Um Mojito elevado ao território do champagne.",rating:0,servings:"1",custom:false},
   {name:"Yellow Bird",categories:["Rum Branco","Triple Sec","Tiki","Licor","Sour","Shaken"],ingredients:["30 ml rum branco","15 ml Galliano","15 ml Cointreau","15 ml suco de lima"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe em taça coupe."],notes:"Drink caribenho dos anos 1950. O Galliano herbal é o segredo da personalidade.",rating:0,servings:"1",custom:false},
-  {name:"Trinidad Sour",categories:["Whisky","Sour","Shaken"],ingredients:["45 ml Angostura Bitters","30 ml orgeat (xarope de amêndoa)","22 ml suco de limão","15 ml whisky de centeio"],steps:["Mexa tudo com gelo no copo misturador.","Coe em coupe."],notes:"O Angostura como espírito base — não como acento. O orgeat doma o amargor. Surpreende a todos.",rating:0,servings:"1",custom:false},
+  {name:"Trinidad Sour",categories:["Whisky","Sour","Shaken"],ingredients:["45 ml Angostura Bitters","30 ml Xarope de amêndoa (Orgeat)","22 ml suco de limão","15 ml whisky de centeio"],steps:["Mexa tudo com gelo no copo misturador.","Coe em coupe."],notes:"O Angostura como espírito base — não como acento. O orgeat doma o amargor. Surpreende a todos.",rating:0,servings:"1",custom:false},
   {name:"Barracuda",categories:["Rum Envelhecido","Espumante","Licor","Highball","Shaken"],ingredients:["45 ml rum dourado","15 ml Galliano","60 ml suco de abacaxi fresco","10 ml suco de lima","prosecco para completar"],steps:["Agite rum, Galliano, abacaxi e lima com gelo.","Coe em copo alto.","Complete com prosecco gelado."],notes:"IBA official. Galliano + abacaxi + prosecco: tropical e elegante ao mesmo tempo.",rating:0,servings:"1",custom:false},
   {name:"Tipperary",categories:["Whisky","Vermute Rosso","Licor","Stirred"],ingredients:["50 ml Irish whiskey","25 ml vermute tinto doce","15 ml Green Chartreuse","2 dashes Angostura"],steps:["Mexa tudo com gelo no copo misturador.","Coe em taça coupe."],notes:"Um Manhattan com Green Chartreuse no lugar do Maraschino. A erva transforma tudo.",rating:0,servings:"1",custom:false},
   {name:"Suffering Bastard",categories:["Conhaque","Gim","Ginger Beer","Highball","Shaken"],ingredients:["30 ml conhaque","30 ml gim","15 ml suco de lima","2 dashes Angostura","cerveja de gengibre para completar"],steps:["Agite conhaque, gim, lima e Angostura com gelo.","Coe em copo alto.","Complete com ginger beer."],notes:"Criado no Cairo, 1942, como 'remédio' pós-festa. IBA official.",rating:0,servings:"1",custom:false},
@@ -1152,7 +1152,7 @@ const RECIPE_MOODS = {
   "Cordial de Abacaxi com Especiarias": "tropical_static",
   "Cordial de Pêra Assada": "frost_tide",
   "Grenadine Caseira": "frost_tide",
-  "Orgeat (Xarope de Amêndoa)": "frost_tide",
+  "Xarope de amêndoa (Orgeat)": "frost_tide",
   "Falernum Caseiro": "frost_tide",
   "Champagne Cocktail": "smoked_amber",
   "Mint Julep": "smoked_amber",
@@ -1233,14 +1233,6 @@ function getMood(recipe) {
   if (has("Gim"))                                                                    return "midnight_citrus";
   if (has("Vodka"))                                                                  return "frost_tide";
   return "frost_tide";
-}
-const PREPARO_CASEIRO_NAMES = BASE_RECIPES
-  .filter(r=>r.categories.includes("Preparos Caseiros"))
-  .map(r=>r.name.toLowerCase().replace(/\s*\(.*?\)\s*/g," ").replace(/\bcaseiro[a]?\b/g,"").replace(/\s+/g," ").trim())
-  .filter(k=>k.length>0);
-function isPreparoCaseiro(ing){
-  const lower=ing.toLowerCase();
-  return PREPARO_CASEIRO_NAMES.some(k=>lower.includes(k));
 }
 
 function getCardVisual(recipe, spiritCats=SPIRIT_CATS) {
@@ -1879,10 +1871,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
-                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>
-                    {capFirst(scaleIng(ing,qty))}
-                    {isPreparoCaseiro(ing)&&<span style={{fontSize:9,letterSpacing:0.8,textTransform:"uppercase",color:done?"rgba(240,235,225,0.15)":theme.accent,opacity:done?1:0.58,marginLeft:6,fontFamily:"Archivo,sans-serif",whiteSpace:"nowrap",fontWeight:500}}>(preparo caseiro)</span>}
-                  </span>
+                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(scaleIng(ing,qty))}</span>
                 </div>
               );
             })}
@@ -1965,7 +1954,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             background:`radial-gradient(ellipse 75% 42% at -10% 108%, ${theme.accent} 0%, ${theme.accent}aa 5%, ${theme.accent}55 21%, ${theme.accent}1c 45%, transparent 68%)`
           }}/>
           {/* wordmark */}
-          <div style={{position:"absolute",top:14,left:16,fontSize:7,letterSpacing:4,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>ON THE ROCKS</div>
+          <div style={{position:"absolute",top:14,left:16,fontSize:12,letterSpacing:4,textTransform:"uppercase",fontWeight:900,fontFamily:"Archivo,sans-serif",color:"rgba(240,235,225,0.92)",textShadow:"0 1px 6px rgba(0,0,0,0.9), 0 2px 20px rgba(0,0,0,0.75)"}}>ON THE ROCKS</div>
           {/* category chips */}
           <div style={{position:"absolute",top:30,left:14,display:"flex",gap:4}}>
             {styleTags[0]&&<span style={{...CARD_TYPO.tag,background:"rgba(0,0,0,0.52)",padding:"3px 7px",borderRadius:3}}>{styleTags[0]}</span>}
@@ -2017,10 +2006,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             {recipe.ingredients.slice(0,9).map((ing,i)=>(
               <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
                 <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:7}}/>
-                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.6)",lineHeight:1.4}}>
-                  {ing}
-                  {isPreparoCaseiro(ing)&&<span style={{fontSize:7.5,letterSpacing:0.8,textTransform:"uppercase",color:theme.accent,opacity:.6,marginLeft:5,fontFamily:"Archivo,sans-serif",whiteSpace:"nowrap",fontWeight:500}}>(preparo caseiro)</span>}
-                </span>
+                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.6)",lineHeight:1.4}}>{ing}</span>
               </div>
             ))}
           </div>
@@ -2222,7 +2208,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             cursor:dragging?"grabbing":"pointer",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
             transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
-            boxShadow:`0 2px 5px rgba(0,0,0,0.98), 0 6px 14px rgba(0,0,0,0.92), 0 16px 28px rgba(0,0,0,0.85), 0 32px 44px rgba(0,0,0,0.72), 0 0 36px ${theme.accent}16, 0 0 10px ${theme.accent}20`,
+            boxShadow:`0 2px 6px rgba(0,0,0,0.9), 0 8px 18px rgba(0,0,0,0.75), 0 0 28px ${theme.accent}12, 0 0 8px ${theme.accent}18`,
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
@@ -3440,7 +3426,7 @@ const RECIPE_PROFILES = {
   "Cordial de Abacaxi com Especiarias":{"flavors":"Tropical • Especiado • Ácido","perfil":"Encorpado","perfil_desc":"denso e envolvente","sensacao":"Quente","sensacao_desc":"picante e aquecedor","ocasiao":"Aperitivo","ocasiao_desc":"antes de refeições"},
   "Cordial de Pêra Assada":{"flavors":"Doce • Frutado • Especiado","perfil":"Rústico","perfil_desc":"Aconchego caseiro","sensacao":"Morninho","sensacao_desc":"Calor reconfortante","ocasiao":"Tarde","ocasiao_desc":"Pausa contemplativa"},
   "Grenadine Caseira":{"flavors":"Frutado • Doce • Floral","perfil":"Luxuoso","perfil_desc":"Romã sedosa e sofisticada","sensacao":"Terciopelado","sensacao_desc":"Suave e envolvente","ocasiao":"Aperitivo","ocasiao_desc":"Momentos elegantes e especiais"},
-  "Orgeat (Xarope de Amêndoa)":{"flavors":"Cremoso • Floral • Adocicado","perfil":"Clássico","perfil_desc":"elegância tropical ancestral","sensacao":"Aterciopelado","sensacao_desc":"macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"base versátil e sofisticada"},
+  "Xarope de amêndoa (Orgeat)":{"flavors":"Cremoso • Floral • Adocicado","perfil":"Clássico","perfil_desc":"elegância tropical ancestral","sensacao":"Aterciopelado","sensacao_desc":"macio e envolvente","ocasiao":"Coquetel","ocasiao_desc":"base versátil e sofisticada"},
   "Falernum Caseiro":{"flavors":"Adocicado • Especiado • Amêndoado","perfil":"Aromático","perfil_desc":"Intensamente perfumado e complexo","sensacao":"Envolvente","sensacao_desc":"Morno e reconfortante","ocasiao":"Digestivo","ocasiao_desc":"Encerramento sofisticado"},
   "Champagne Cocktail":{"flavors":"Sofisticado • Efervescente • Aromático","perfil":"Elegante","perfil_desc":"Refinado e celebratório","sensacao":"Delicado","sensacao_desc":"Espumante na língua","ocasiao":"Festivo","ocasiao_desc":"Momentos especiais"},
   "Mint Julep":{"flavors":"Fresco • Doce • Herbáceo","perfil":"Refrescante","perfil_desc":"Menta vibrante e suave","sensacao":"Gelado","sensacao_desc":"Frio estimulante","ocasiao":"Verão","ocasiao_desc":"Tarde ensolarada"},
@@ -3674,12 +3660,12 @@ const RECIPE_PROFILES = {
                       overflow:"hidden",position:"relative",
                       transform:"scale(0.88)",
                       WebkitMaskImage:isRight
-                        ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
-                        :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
+                        ?"linear-gradient(to left, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 18%, rgba(0,0,0,0.22) 40%, transparent 60%)"
+                        :"linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 18%, rgba(0,0,0,0.22) 40%, transparent 60%)",
                       maskImage:isRight
-                        ?"linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)"
-                        :"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.5) 55%, transparent 80%)",
-                      boxShadow:`0 1px 3px rgba(0,0,0,0.35)`,
+                        ?"linear-gradient(to left, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 18%, rgba(0,0,0,0.22) 40%, transparent 60%)"
+                        :"linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 18%, rgba(0,0,0,0.22) 40%, transparent 60%)",
+                      boxShadow:"none",
                     }}>
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)"}}/>
                       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.82) 100%)",mixBlendMode:"multiply"}}/>
