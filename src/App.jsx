@@ -201,7 +201,7 @@ function GlassIcon({ categories=[], color="#C8A96E", size=40, opacity=1 }) {
 
 // ─── RECEITAS ─────────────────────────────────────────────────────────────────
 const BASE_RECIPES = [
-  {name:"Aperol Spritz",categories:["Espumante","Spritz","Built"],ingredients:["150 ml prosecco","100 ml Aperol","50 ml água com gás","5 cubos gelo","1 rodela laranja"],steps:["Coloque os ingredientes em um copo largo","Obedeça à proporção 3:2:1 — prosecco, Aperol e água com gás"],notes:"",rating:0,servings:"",custom:false},
+  {name:"Aperol Spritz",categories:["Aperol","Espumante","Spritz","Built"],ingredients:["150 ml prosecco","100 ml Aperol","50 ml água com gás","5 cubos gelo","1 rodela laranja"],steps:["Coloque os ingredientes em um copo largo","Obedeça à proporção 3:2:1 — prosecco, Aperol e água com gás"],notes:"",rating:0,servings:"",custom:false},
   {name:"Aviation",categories:["Gim","Luxardo Maraschino","Licor","Sour","Shaken"],ingredients:["45 ml gim","15 ml Luxardo Maraschino","15 ml suco de limão","(opcional) 5 ml creme de violeta"],steps:["Combine tudo na coqueteleira com gelo.","Agite e coe duplo em coupe gelada.","Decore com cereja marrasquino."],notes:"Floral e levemente ácido. O creme de violeta é opcional mas dá a cor roxa característica.",rating:0,servings:"",custom:false},
   {name:"Beirão & Maracujá",categories:["Collins","Licor Beirão","Built"],ingredients:["40 ml Licor Beirão","30 ml suco de maracujá","10 ml limão","soda"],steps:["Combine Beirão, maracujá e limão com gelo num copo alto.","Complete com soda gelada.","Mexa suavemente e decore."],notes:"Tropical e refrescante. O maracujá equilibra o amargor do Beirão.",rating:0,servings:"",custom:false},
   {name:"Beirão + Campari",categories:["Campari","Licor Beirão","Stirred"],ingredients:["30 ml Beirão","30 ml Campari","gelo","casca de laranja"],steps:["Adicione Beirão e Campari num copo com gelo.","Mexa suavemente.","Expresse a casca de laranja sobre o drink e decore."],notes:"Dois amargos que se completam. Intenso e sem açúcar.",rating:0,servings:"",custom:false},
@@ -351,7 +351,7 @@ const BASE_RECIPES = [
   {name:"Caju Escuro",categories:["Rum Envelhecido","Sour","Shaken"],ingredients:["50 ml rum envelhecido","25 ml suco fresco de caju","10 ml limão-cravo","7 ml mel diluído","2 gotas de salina"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe duplo em coupe."],notes:"Tropical, macio e profundo. O mel e a salina arredondam o conjunto — quase um tiki sofisticado.",rating:0,servings:"1",custom:false},
   {name:"Caju Bianco",categories:["Gim","Sour","Shaken"],ingredients:["40 ml gin suave (ou vodka)","20 ml vermute branco seco","25 ml suco fresco de caju","10 ml limão siciliano"],steps:["Combine no shaker com gelo.","Shake leve e coe em coupe."],notes:"Vínico, herbal e delicado. O vermute seco e o caju criam uma combinação quase europeia.",rating:0,servings:"1",custom:false},
   {name:"Fumaça Tropical",categories:["Mezcal","Sour","Shaken"],ingredients:["40 ml mezcal","20 ml suco fresco de caju","10 ml limão tahiti","10 ml xarope de mel","pitada mínima de sal"],steps:["Combine todos os ingredientes no shaker com gelo.","Shake e coe duplo em coupe."],notes:"O caju segura muito bem o defumado. Salino, terroso e tropical seco — quase culinário.",rating:0,servings:"1",custom:false},
-  {name:"Caju Spritz",categories:["Campari","Spritz"],ingredients:["30 ml Aperol","20 ml suco fresco de caju","60 ml espumante brut","20 ml soda","casca de laranja"],steps:["Monte diretamente na taça com bastante gelo.","Adicione Aperol, caju e espumante.","Complete com soda.","Expresse a casca de laranja sobre o drink."],notes:"Amargo leve, efervescente e tropical elegante. Verão brasileiro sofisticado.",rating:0,servings:"1",custom:false},
+  {name:"Caju Spritz",categories:["Aperol","Spritz"],ingredients:["30 ml Aperol","20 ml suco fresco de caju","60 ml espumante brut","20 ml soda","casca de laranja"],steps:["Monte diretamente na taça com bastante gelo.","Adicione Aperol, caju e espumante.","Complete com soda.","Expresse a casca de laranja sobre o drink."],notes:"Amargo leve, efervescente e tropical elegante. Verão brasileiro sofisticado.",rating:0,servings:"1",custom:false},
   {name:"Caju Noturno",categories:["Rum Envelhecido","Shaken"],ingredients:["40 ml rum envelhecido","20 ml café frio forte","20 ml suco fresco de caju","5 ml xarope demerara"],steps:["Combine no shaker com gelo.","Shake e coe duplo em coupe ou copo baixo."],notes:"Seco, tostado e exótico. Mais interessante que um espresso martini tropical — o caju ilumina o café.",rating:0,servings:"1",custom:false},
   {name:"Caju Verde",categories:["Tequila","Sour","Shaken"],ingredients:["50 ml tequila blanco","25 ml suco fresco de caju","15 ml limão tahiti","10 ml xarope de agave","coentro ou capim-santo"],steps:["Macere levemente a erva no shaker.","Adicione os demais ingredientes com gelo.","Shake e coe duplo em coupe."],notes:"Verde, cítrico e vibrante. A acidez vegetal da tequila e do caju se complementam de forma inesperada.",rating:0,servings:"1",custom:false},
 
@@ -413,7 +413,7 @@ const BASE_RECIPES = [
   {name:"Spicy Margarita",categories:["Tequila","Triple Sec","Sour","Shaken"],ingredients:["60 ml tequila blanco","30 ml suco de limão","20 ml Cointreau","3 rodelas jalapeño","sal na borda"],steps:["Macere o jalapeño com a tequila.","Bata com os demais ingredientes e gelo.","Coe na borda salgada."],notes:"",rating:0,servings:"",custom:false},
   {name:"Ranch Water",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila blanco","30 ml suco de limão","150 ml água com gás (Topo Chico)"],steps:["Combine em copo alto com gelo.","Mexa delicadamente."],notes:"Clássico do Texas, simples e refrescante.",rating:0,servings:"",custom:false},
   {name:"Batanga",categories:["Tequila","Highball","Built"],ingredients:["60 ml tequila","30 ml suco de limão","Coca-Cola para completar","sal"],steps:["Borda o copo com sal.","Adicione gelo, limão e tequila.","Complete com Coca-Cola. Mexa com faca de cozinha."],notes:"Don Javier Delgado Corona, La Capilla, Tequila.",rating:0,servings:"",custom:false},
-  {name:"Naked and Famous",categories:["Mezcal","Licor","Sour","Shaken"],ingredients:["22 ml mezcal","22 ml Aperol","22 ml Yellow Chartreuse","22 ml suco de limão"],steps:["Bata tudo com gelo.","Coe em coupe."],notes:"Variação do Paper Plane com mezcal.",rating:0,servings:"",custom:false},
+  {name:"Naked and Famous",categories:["Mezcal","Aperol","Licor","Sour","Shaken"],ingredients:["22 ml mezcal","22 ml Aperol","22 ml Yellow Chartreuse","22 ml suco de limão"],steps:["Bata tudo com gelo.","Coe em coupe."],notes:"Variação do Paper Plane com mezcal.",rating:0,servings:"",custom:false},
   {name:"Mezcal Sour",categories:["Mezcal","Sour","Shaken"],ingredients:["60 ml mezcal","25 ml suco de limão","20 ml xarope de agave","1 clara de ovo"],steps:["Dry shake sem gelo.","Adicione gelo e agite.","Coe em coupe."],notes:"",rating:0,servings:"",custom:false},
   {name:"Matador",categories:["Tequila","Sour","Shaken"],ingredients:["45 ml tequila","90 ml suco de abacaxi","15 ml suco de limão"],steps:["Bata tudo com gelo.","Coe em coupe ou sirva com gelo."],notes:"",rating:0,servings:"",custom:false},
   {name:"Agave Spritz",categories:["Tequila","Spritz","Built"],ingredients:["50 ml tequila blanco","20 ml suco de limão siciliano","15 ml xarope de agave","água com gás para completar","rodela de laranja"],steps:["Adicione gelo em copo alto.","Despeje a tequila, o limão e o xarope de agave.","Complete com água com gás.","Decore com rodela de laranja e mexa levemente."],notes:"Leve, cítrico e refrescante. Mais elegante que parece.",rating:0,servings:"1",custom:false},
@@ -1955,11 +1955,6 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           }}/>
           {/* wordmark */}
           <div style={{position:"absolute",top:14,left:16,fontSize:12,letterSpacing:4,textTransform:"uppercase",fontWeight:900,fontFamily:"Archivo,sans-serif",color:"rgba(240,235,225,0.92)",textShadow:"0 1px 6px rgba(0,0,0,0.9), 0 2px 20px rgba(0,0,0,0.75)"}}>ON THE ROCKS</div>
-          {/* category chips */}
-          <div style={{position:"absolute",top:30,left:14,display:"flex",gap:4}}>
-            {styleTags[0]&&<span style={{...CARD_TYPO.tag,background:"rgba(0,0,0,0.52)",padding:"3px 7px",borderRadius:3}}>{styleTags[0]}</span>}
-            {spiritTags[0]&&<span style={{...CARD_TYPO.tag,color:theme.accent,background:"rgba(0,0,0,0.45)",padding:"3px 7px",borderRadius:3}}>{spiritTags[0]}</span>}
-          </div>
           {/* foto do usuário — canto superior direito */}
           {customBg&&(
             <div style={{position:"absolute",top:12,right:12,width:68,height:76,borderRadius:5,
@@ -1970,6 +1965,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           )}
           {/* nome + divider + flavor */}
           <div style={{position:"absolute",bottom:16,left:16,right:customBg?92:16}}>
+            {styleTags[0]&&<div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.5)",marginBottom:5,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{styleTags[0]}</div>}
             {(recipe.custom||recipe.adjusted)&&<div style={{display:"flex",alignItems:"center",gap:5,marginBottom:5}}>
               <span style={{width:10,height:1,background:theme.accent,display:"inline-block",opacity:0.8}}/>
               <span style={{fontSize:7,letterSpacing:2,textTransform:"uppercase",color:theme.accent,opacity:.8}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</span>
@@ -3777,24 +3773,24 @@ const RECIPE_PROFILES = {
           ) : mobileTab==="ingredientes" ? (
             <div style={{paddingBottom:100,display:"flex",flexDirection:"column",gap:0}}>
               {/* hero */}
-              <div style={{position:"relative",margin:"-18px -22px 24px",padding:"32px 24px 26px",overflow:"hidden",background:"linear-gradient(to bottom,rgba(30,16,4,0.98) 0%,rgba(8,5,1,0.99) 100%)"}}>
+              <div style={{position:"relative",margin:"-18px -22px 24px",padding:"16px 24px 14px",overflow:"hidden",background:"linear-gradient(to bottom,rgba(30,16,4,0.98) 0%,rgba(8,5,1,0.99) 100%)"}}>
                 <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 10% 120%,rgba(160,120,90,0.4) 0%,rgba(160,120,90,0.08) 45%,transparent 70%)",pointerEvents:"none"}}/>
                 <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 50% 35% at 90% -10%,rgba(160,120,90,0.12) 0%,transparent 65%)",pointerEvents:"none"}}/>
-                <div style={{...CARD_TYPO.heroEyebrow,color:"rgba(160,120,90,0.55)",marginBottom:8,letterSpacing:3,position:"relative"}}>O QUE VOCÊ TEM</div>
-                <div style={{fontFamily:"'Gloock',serif",fontSize:36,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.05,letterSpacing:"-0.5px",marginBottom:10,position:"relative",textShadow:"0 1px 12px rgba(0,0,0,0.9)"}}>Meu Bar</div>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,position:"relative"}}>
+                <div style={{...CARD_TYPO.heroEyebrow,color:"rgba(160,120,90,0.55)",marginBottom:4,letterSpacing:3,position:"relative"}}>O QUE VOCÊ TEM</div>
+                <div style={{fontFamily:"'Gloock',serif",fontSize:28,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.05,letterSpacing:"-0.5px",marginBottom:8,position:"relative",textShadow:"0 1px 12px rgba(0,0,0,0.9)"}}>Meu Bar</div>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8,position:"relative"}}>
                   <div style={{height:1.5,width:26,background:"#A0785A",borderRadius:2,opacity:0.9}}/>
                   <div style={{width:5,height:1.5,borderRadius:1,background:"#A0785A",opacity:0.9}}/>
                 </div>
                 <div style={{...CARD_TYPO.bodyText,fontSize:13,color:"rgba(240,235,225,0.4)",position:"relative"}}>Marque o que você tem e descubra o que pode fazer.</div>
-                {owned.length>0&&<button onClick={()=>setOwned([])} style={{position:"absolute",top:24,right:20,padding:"4px 12px",borderRadius:20,...CARD_TYPO.uiLabel,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer"}}>limpar</button>}
               </div>
 
               {/* spirits */}
               <div style={{marginBottom:20,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.06)",borderRadius:14,padding:"18px 16px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
                   <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
-                  <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Destilados</span>
+                  <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Bebidas</span>
+                  {owned.length>0&&<button onClick={()=>setOwned([])} style={{marginLeft:"auto",padding:"3px 10px",borderRadius:20,...CARD_TYPO.uiLabel,fontSize:10,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.35)",cursor:"pointer"}}>limpar</button>}
                 </div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                   {allSpirits.map(s=>{
