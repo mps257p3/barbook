@@ -3738,7 +3738,7 @@ const RECIPE_PROFILES = {
               <div style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,background:`radial-gradient(ellipse 100% 140% at 50% 100%, ${getTheme(swipeRecipe.categories).accent}1a 0%, ${getTheme(swipeRecipe.categories).accent}08 45%, transparent 75%)`,transition:"background 1.1s ease",position:"relative"}}>
 
                 {filterSheet==="ocasiao"&&(
-                  <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(42,28,14,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"12px 14px",zIndex:30,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(42,28,14,0.68)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"12px 14px",zIndex:30,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {OCCASION_LIST.map(tag=>{
                         const active=activeOccasions.includes(tag);
@@ -3983,7 +3983,7 @@ const RECIPE_PROFILES = {
                 </div>
                 {/* sheets como overlays absolutos */}
                 {filterSheet==="familia"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.68)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).map(s=>{
                         const active=activeStyle===s;
@@ -3997,7 +3997,7 @@ const RECIPE_PROFILES = {
                   </div>
                 )}
                 {filterSheet==="spirit"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.68)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {allSpirits.map(s=>{
                         const active=activeSpirits.includes(s);
@@ -4008,7 +4008,7 @@ const RECIPE_PROFILES = {
                   </div>
                 )}
                 {filterSheet==="ocasiao"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.95)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.68)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {OCCASION_LIST.map(tag=>{
                         const active=activeOccasions.includes(tag);
