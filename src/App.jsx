@@ -2735,12 +2735,6 @@ export default function OnTheRocks(){
       requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
     }
   },[open]);
-  useEffect(()=>{
-    if(mobileTab==="ingredientes"){
-      const pos=barScrollRef.current;
-      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
-    }
-  },[mobileTab]);
   const [editing,setEditing]=useState(null);
   const [showForm,setShowForm]=useState(false);
   const [sharedFiles,setSharedFiles]=useState(null);
@@ -2777,6 +2771,12 @@ export default function OnTheRocks(){
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState("descobrir");
   const prevTabRef=useRef("descobrir");
+  useEffect(()=>{
+    if(mobileTab==="ingredientes"){
+      const pos=barScrollRef.current;
+      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
+    }
+  },[mobileTab]);
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
   const [confirmDialog,setConfirmDialog]=useState(null);
