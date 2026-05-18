@@ -1,6 +1,6 @@
 ﻿import { useState, useMemo, useCallback, useEffect, useRef, useId } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db, signInWithGoogle, signOutUser, getRedirectResult } from "./firebase";
 import html2canvas from "html2canvas";
 
@@ -2430,8 +2430,8 @@ function Tutorial({ onClose, onTabChange }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial }) {
-  const topRated = [...allRecipes].filter(r=>r.rating>0&&!r.categories.includes("Preparos Caseiros")).sort((a,b)=>b.rating-a.rating).slice(0,5);
+function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks }) {
+  const [carouselIdx,setCarouselIdx]=useState(0);
   const [authError,setAuthError]=useState(null);
   const [restoreConfirm,setRestoreConfirm]=useState(null);
   const [versionTaps,setVersionTaps]=useState(0);
@@ -2456,32 +2456,40 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
   return (
     <div style={{paddingBottom:100}}>
 
-      {/* user card */}
-      {user ? (
-        <div style={{position:"relative",marginBottom:24,padding:"22px 18px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.07)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,120,90,0.2) 0%,transparent 65%)",pointerEvents:"none"}}/>
-          <div style={{display:"flex",alignItems:"center",gap:14,position:"relative"}}>
-            {user.photoURL&&(
-              <div style={{position:"relative",flexShrink:0}}>
-                <div style={{position:"absolute",inset:-3,borderRadius:"50%",background:"radial-gradient(circle,rgba(160,120,90,0.5) 0%,transparent 70%)",filter:"blur(5px)"}}/>
-                <img src={user.photoURL} alt="" style={{width:52,height:52,borderRadius:"50%",border:"1.5px solid rgba(160,120,90,0.45)",position:"relative"}}/>
-              </div>
-            )}
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.2,letterSpacing:"-0.2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName}</div>
-              <div style={{fontSize:11,color:"rgba(240,235,225,0.5)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:"Archivo,sans-serif"}}>{user.email}</div>
-              {syncing&&<div style={{...CARD_TYPO.counter,color:"#A0785A",marginTop:5,opacity:1}}>sincronizando…</div>}
-            </div>
-            <button onClick={signOutUser} style={{...CARD_TYPO.uiLabel,padding:"6px 14px",borderRadius:20,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.45)",cursor:"pointer",flexShrink:0}}>sair</button>
-          </div>
-        </div>
-      ) : (
+      {/* ── Carrossel de packs à venda ── */}
+      {availPacks.length>0&&(
         <div style={{marginBottom:24}}>
-          <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:0,padding:"16px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1,backdropFilter:"blur(10px)",boxSizing:"border-box"}}>
-            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.3z" fill="#EA4335"/></svg>
-            {authLoading?"Aguarde…":"Entrar com Google"}
-          </button>
-          {authError&&<div style={{marginTop:8,padding:"10px 12px",borderRadius:8,background:"rgba(180,60,60,0.15)",border:"1px solid rgba(180,60,60,0.3)",fontSize:11,color:"#e08080",fontFamily:"Archivo,sans-serif",wordBreak:"break-all"}}>{authError}</div>}
+          <SectionHead label="Packs disponíveis"/>
+          <div style={{position:"relative",overflow:"hidden",borderRadius:14}}>
+            {availPacks.map((pack,i)=>(
+              <div key={pack.id} style={{display:i===carouselIdx?"block":"none"}}>
+                {pack.coverImage?(
+                  <img src={pack.coverImage} alt={pack.name} style={{width:"100%",height:180,objectFit:"cover",borderRadius:14,display:"block"}}/>
+                ):(
+                  <div style={{width:"100%",height:180,borderRadius:14,background:"linear-gradient(135deg,rgba(160,120,90,0.3) 0%,rgba(0,0,0,0.6) 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"1px solid rgba(160,120,90,0.2)"}}>
+                    <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.9)"}}>{pack.name}</div>
+                    {pack.price>0&&<div style={{...CARD_TYPO.sectionHead,color:"#A0785A",fontSize:14}}>R$ {Number(pack.price).toFixed(2)}</div>}
+                  </div>
+                )}
+                <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"28px 16px 12px",background:"linear-gradient(transparent,rgba(0,0,0,0.75))",borderRadius:"0 0 14px 14px",pointerEvents:"none"}}>
+                  <div style={{fontFamily:"'Gloock',serif",fontSize:18,color:"rgba(231,224,205,0.97)"}}>{pack.name}</div>
+                  {pack.description&&<div style={{fontSize:11,color:"rgba(240,235,225,0.6)",marginTop:2,fontFamily:"Archivo,sans-serif"}}>{pack.description}</div>}
+                  {pack.price>0&&<div style={{marginTop:6,...CARD_TYPO.sectionHead,color:"#C8A96E",fontSize:12}}>R$ {Number(pack.price).toFixed(2)} · {(pack.recipeNames||[]).length} receitas</div>}
+                </div>
+              </div>
+            ))}
+            {availPacks.length>1&&(
+              <>
+                <button onClick={()=>setCarouselIdx(i=>(i-1+availPacks.length)%availPacks.length)} style={{position:"absolute",left:8,top:"50%",transform:"translateY(-50%)",background:"rgba(0,0,0,0.5)",border:"none",color:"#fff",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
+                <button onClick={()=>setCarouselIdx(i=>(i+1)%availPacks.length)} style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",background:"rgba(0,0,0,0.5)",border:"none",color:"#fff",width:32,height:32,borderRadius:"50%",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>
+                <div style={{position:"absolute",bottom:8,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5}}>
+                  {availPacks.map((_,i)=>(
+                    <div key={i} onClick={()=>setCarouselIdx(i)} style={{width:i===carouselIdx?16:6,height:6,borderRadius:3,background:i===carouselIdx?"#C8A96E":"rgba(255,255,255,0.35)",cursor:"pointer",transition:"width .2s"}}/>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -2506,25 +2514,25 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         </div>
       </div>
 
-      {/* top rated */}
-      {topRated.length>0&&(
-        <div style={{marginBottom:24}}>
-          <SectionHead label="Melhores avaliados"/>
-          <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
-            {topRated.map((r,i)=>{
-              const th=getTheme(r.categories);
-              return(
-                <button key={r.name} onClick={()=>onOpenRecipe(r)}
-                  style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",cursor:"pointer",textAlign:"left",width:"100%",background:"none",border:"none",borderBottom:i<topRated.length-1?"1px solid rgba(240,235,225,0.05)":"none",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>
-                  <div style={{width:3,height:22,borderRadius:2,background:th.accent,opacity:0.85,flexShrink:0}}/>
-                  <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.92)",lineHeight:1.2}}>{r.name}</div>
-                  <Stars n={r.rating} color={th.accent}/>
-                </button>
-              );
-            })}
-          </div>
+      {/* packs adquiridos */}
+      <div style={{marginBottom:24}}>
+        <SectionHead label="Packs adquiridos"/>
+        <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
+          {unlockedPacks.length>0?(
+            availPacks.filter(p=>unlockedPacks.includes(p.id)).map((pack,i,arr)=>(
+              <div key={pack.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<arr.length-1?"1px solid rgba(240,235,225,0.05)":"none"}}>
+                <div style={{width:3,height:22,borderRadius:2,background:"#C8A96E",opacity:0.85,flexShrink:0}}/>
+                <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.92)",lineHeight:1.2}}>{pack.name}</div>
+                <div style={{...CARD_TYPO.counter,color:"#A0785A",opacity:1}}>{(pack.recipeNames||[]).length} receitas</div>
+              </div>
+            ))
+          ):(
+            <div style={{padding:"20px 16px",textAlign:"center",color:"rgba(240,235,225,0.35)",fontSize:13,fontFamily:"Archivo,sans-serif"}}>
+              Você ainda não adquiriu nenhum pack.
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* dados */}
       <div style={{marginBottom:24}}>
@@ -2565,6 +2573,38 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
             )}
           </div>
         </div>
+      </div>
+
+      {/* conta */}
+      <div style={{marginBottom:24}}>
+        <SectionHead label="Conta"/>
+        {user ? (
+          <div style={{position:"relative",padding:"22px 18px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.07)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
+            <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,120,90,0.2) 0%,transparent 65%)",pointerEvents:"none"}}/>
+            <div style={{display:"flex",alignItems:"center",gap:14,position:"relative"}}>
+              {user.photoURL&&(
+                <div style={{position:"relative",flexShrink:0}}>
+                  <div style={{position:"absolute",inset:-3,borderRadius:"50%",background:"radial-gradient(circle,rgba(160,120,90,0.5) 0%,transparent 70%)",filter:"blur(5px)"}}/>
+                  <img src={user.photoURL} alt="" style={{width:52,height:52,borderRadius:"50%",border:"1.5px solid rgba(160,120,90,0.45)",position:"relative"}}/>
+                </div>
+              )}
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.2,letterSpacing:"-0.2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName}</div>
+                <div style={{fontSize:11,color:"rgba(240,235,225,0.5)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:"Archivo,sans-serif"}}>{user.email}</div>
+                {syncing&&<div style={{...CARD_TYPO.counter,color:"#A0785A",marginTop:5,opacity:1}}>sincronizando…</div>}
+              </div>
+              <button onClick={signOutUser} style={{...CARD_TYPO.uiLabel,padding:"6px 14px",borderRadius:20,background:"none",border:"1px solid rgba(240,235,225,0.1)",color:"rgba(240,235,225,0.45)",cursor:"pointer",flexShrink:0}}>sair</button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:0,padding:"16px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1,backdropFilter:"blur(10px)",boxSizing:"border-box"}}>
+              <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.3z" fill="#EA4335"/></svg>
+              {authLoading?"Aguarde…":"Entrar com Google"}
+            </button>
+            {authError&&<div style={{marginTop:8,padding:"10px 12px",borderRadius:8,background:"rgba(180,60,60,0.15)",border:"1px solid rgba(180,60,60,0.3)",fontSize:11,color:"#e08080",fontFamily:"Archivo,sans-serif",wordBreak:"break-all"}}>{authError}</div>}
+          </div>
+        )}
       </div>
 
       {/* sobre */}
@@ -2618,9 +2658,34 @@ export default function OnTheRocks(){
   const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
   const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
   const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
+  const [freeRecipeNames,setFreeRecipeNames]=useState(new Set());
+  const [availPacks,setAvailPacks]=useState([]);
+  const [unlockedPacks,setUnlockedPacks]=useState([]);
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
   const barScrollRef=useRef(0);
+
+  // ── Carrega config de packs (receitas livres + packs à venda) ──
+  useEffect(()=>{
+    async function loadPackConfig(){
+      try{
+        const [configSnap,packsSnap]=await Promise.all([
+          getDoc(doc(db,"manager","config")),
+          getDocs(collection(db,"packs"))
+        ]);
+        if(configSnap.exists()){
+          const names=configSnap.data().freeRecipes||[];
+          if(names.length>0) setFreeRecipeNames(new Set(names));
+        }
+        const ps=packsSnap.docs
+          .map(d=>({id:d.id,...d.data()}))
+          .filter(p=>p.active&&p.showBanner!==false)
+          .sort((a,b)=>(a.order||0)-(b.order||0));
+        setAvailPacks(ps);
+      }catch(e){console.error(e);}
+    }
+    loadPackConfig();
+  },[]);
 
   // ── Captura redirect do Google (mobile) ──
   useEffect(()=>{
@@ -2663,13 +2728,14 @@ export default function OnTheRocks(){
           const snap = await getDoc(ref);
           if(snap.exists()){
             const d = snap.data();
-            if(d.custom)    setCustomRecipes(d.custom);
-            if(d.favs)      setFavs(d.favs);
-            if(d.owned)     setOwned(d.owned);
-            if(d.tried)     setTried(d.tried);
-            if(d.spirits)   setCustomSpirits(d.spirits);
-            if(d.overrides) setOverrides(d.overrides);
-            if(d.comanda)   setComanda(d.comanda);
+            if(d.custom)         setCustomRecipes(d.custom);
+            if(d.favs)           setFavs(d.favs);
+            if(d.owned)          setOwned(d.owned);
+            if(d.tried)          setTried(d.tried);
+            if(d.spirits)        setCustomSpirits(d.spirits);
+            if(d.overrides)      setOverrides(d.overrides);
+            if(d.comanda)        setComanda(d.comanda);
+            if(d.unlockedPacks)  setUnlockedPacks(d.unlockedPacks);
           }
         }catch(e){console.error(e);}
         setSyncing(false);
@@ -2908,7 +2974,12 @@ export default function OnTheRocks(){
 
   const filtered=useMemo(()=>{
     let list=allRecipes.filter(r=>{
-      if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
+      if(freeRecipeNames.size>0&&!r.custom){
+      const inFree=freeRecipeNames.has(r.name);
+      const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));
+      if(!inFree&&!inUnlocked)return false;
+    }
+    if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
       if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
       if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
       if(effectiveFilterMode==="custom"&&!r.custom)return false;
@@ -2925,7 +2996,7 @@ export default function OnTheRocks(){
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
@@ -3943,7 +4014,7 @@ const RECIPE_PROFILES = {
               )}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks}/>
           ) : (
             <>
               {/* backdrop click-outside para fechar filtro */}
