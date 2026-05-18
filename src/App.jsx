@@ -2774,7 +2774,7 @@ export default function OnTheRocks(){
   useEffect(()=>{
     if(mobileTab==="ingredientes"){
       const pos=barScrollRef.current;
-      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
+      requestAnimationFrame(()=>{window.scrollTo(0,pos);});
     }
   },[mobileTab]);
   const [filterSheet,setFilterSheet]=useState(null);
@@ -4076,7 +4076,7 @@ const RECIPE_PROFILES = {
 
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=mainRef.current?.scrollTop||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))}/>}
