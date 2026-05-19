@@ -38,7 +38,7 @@ const FAMILY_GROUPS = [
 ];
 const TECHNIQUES = ["Stirred","Shaken","Built"];
 
-const OCCASION_LIST = ["Refrescante","Reconfortante","Festa","Introspectivo","Descomplicado","Complexo","Digestivo","Piscina","Churrasco","A dois","Inesperados","Clássicos","Baixo álcool","Tropical"];
+const OCCASION_LIST = ["Refrescante","Reconfortante","Festa","Introspectivo","Descomplicado","Complexo","Digestivo","Piscina","Churrasco","A dois","Inesperados","Baixo álcool","Tropical"];
 
 const OCCASION_TAGS = {
   "Pisco Sour":["Clássicos","Festa"],"Uva & Sal":["Introspectivo","Descomplicado"],"Flor de Pedra":["Introspectivo","A dois"],"Campo Seco":["Introspectivo","Inesperados"],"Pisco & Coco Tostado":["Inesperados"],"Verde Urbano":["Refrescante","Piscina"],"Noite em Lima":["Introspectivo"],"Pisco com Cerveja Branca":["Descomplicado","Churrasco"],"Seco de Maçã":["Digestivo","Inesperados"],"Pisco Terroso":["Inesperados"],
@@ -1236,7 +1236,7 @@ function getMood(recipe) {
 }
 
 function getCardVisual(recipe, spiritCats=SPIRIT_CATS) {
-  const mood         = RECIPE_MOODS[recipe.name] || getMood(recipe);
+  const mood         = recipe.mood || RECIPE_MOODS[recipe.name] || getMood(recipe);
   const cats         = recipe.categories || [];
   const ings         = (recipe.ingredients || []).join(" ").toLowerCase();
   const spiritCat    = cats.find(c => CARD_SPIRIT_TINTS[c]);
@@ -2661,6 +2661,7 @@ export default function OnTheRocks(){
   const [freeRecipeNames,setFreeRecipeNames]=useState(new Set());
   const [availPacks,setAvailPacks]=useState([]);
   const [unlockedPacks,setUnlockedPacks]=useState([]);
+  const [managerRecipes,setManagerRecipes]=useState([]);
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
   const barScrollRef=useRef(0);
@@ -2669,9 +2670,10 @@ export default function OnTheRocks(){
   useEffect(()=>{
     async function loadPackConfig(){
       try{
-        const [configSnap,packsSnap]=await Promise.all([
+        const [configSnap,packsSnap,mgrSnap]=await Promise.all([
           getDoc(doc(db,"manager","config")),
-          getDocs(collection(db,"packs"))
+          getDocs(collection(db,"packs")),
+          getDocs(collection(db,"managerRecipes"))
         ]);
         if(configSnap.exists()){
           const names=configSnap.data().freeRecipes||[];
@@ -2682,6 +2684,8 @@ export default function OnTheRocks(){
           .filter(p=>p.active&&p.showBanner!==false)
           .sort((a,b)=>(a.order||0)-(b.order||0));
         setAvailPacks(ps);
+        const mRecipes=mgrSnap.docs.map(d=>({...d.data(),fromManager:true}));
+        setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
     }
     loadPackConfig();
@@ -2779,7 +2783,14 @@ export default function OnTheRocks(){
     return()=>{clearTimeout(timer);events.forEach(e=>document.removeEventListener(e,resetTimer));document.removeEventListener("visibilitychange",onVisible);lock?.release();};
   },[]);
 
-  const allRecipes=useMemo(()=>[...BASE_RECIPES.map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r).filter(r=>!r.deleted),...customRecipes],[customRecipes,overrides]);
+  const allRecipes=useMemo(()=>{
+    const mgrNames=new Set(managerRecipes.map(r=>r.name));
+    const base=BASE_RECIPES
+      .filter(r=>!mgrNames.has(r.name))
+      .map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r)
+      .filter(r=>!r.deleted);
+    return [...base,...managerRecipes,...customRecipes];
+  },[customRecipes,overrides,managerRecipes]);
 
   const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
   useEffect(()=>{
