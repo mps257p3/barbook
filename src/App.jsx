@@ -2662,6 +2662,7 @@ export default function OnTheRocks(){
   const [availPacks,setAvailPacks]=useState([]);
   const [unlockedPacks,setUnlockedPacks]=useState([]);
   const [devMode,setDevMode]=useState(false);
+  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
   const [managerRecipes,setManagerRecipes]=useState([]);
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
@@ -2690,6 +2691,7 @@ export default function OnTheRocks(){
         const mRecipes=mgrSnap.docs.map(d=>({...d.data(),fromManager:true}));
         setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
+      finally{setPackConfigLoaded(true);}
     }
     loadPackConfig();
   },[]);
@@ -2987,6 +2989,7 @@ export default function OnTheRocks(){
   const effectiveFilterMode = filterMode;
 
   const filtered=useMemo(()=>{
+    if(!packConfigLoaded)return[];
     let list=allRecipes.filter(r=>{
       if(!devMode&&freeRecipeNames.size>0&&!r.custom){
       const inFree=freeRecipeNames.has(r.name);
@@ -3010,19 +3013,22 @@ export default function OnTheRocks(){
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks,devMode]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks,devMode,packConfigLoaded]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
 
-  const accessibleRecipes=useMemo(()=>allRecipes.filter(r=>{
-    if(!devMode&&freeRecipeNames.size>0&&!r.custom){
-      const inFree=freeRecipeNames.has(r.name);
-      const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));
-      if(!inFree&&!inUnlocked)return false;
-    }
-    return true;
-  }),[allRecipes,devMode,freeRecipeNames,availPacks,unlockedPacks]);
+  const accessibleRecipes=useMemo(()=>{
+    if(!packConfigLoaded)return[];
+    return allRecipes.filter(r=>{
+      if(!devMode&&freeRecipeNames.size>0&&!r.custom){
+        const inFree=freeRecipeNames.has(r.name);
+        const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));
+        if(!inFree&&!inUnlocked)return false;
+      }
+      return true;
+    });
+  },[allRecipes,devMode,freeRecipeNames,availPacks,unlockedPacks,packConfigLoaded]);
 
   const drinkRecipes=useMemo(()=>accessibleRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[accessibleRecipes]);
   const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
