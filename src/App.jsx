@@ -1236,7 +1236,7 @@ function getMood(recipe) {
 }
 
 function getCardVisual(recipe, spiritCats=SPIRIT_CATS) {
-  const mood         = recipe.mood || RECIPE_MOODS[recipe.name] || getMood(recipe);
+  const mood         = recipe.moodOverride || recipe.mood || RECIPE_MOODS[recipe.name] || getMood(recipe);
   const cats         = recipe.categories || [];
   const ings         = (recipe.ingredients || []).join(" ").toLowerCase();
   const spiritCat    = cats.find(c => CARD_SPIRIT_TINTS[c]);
@@ -1773,6 +1773,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
                   <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
                 </div>
+                {recipe.signature&&<div style={{fontSize:11,fontStyle:"italic",color:"rgba(231,224,205,0.55)",marginTop:5,letterSpacing:0.3}}>{recipe.signature}</div>}
                 {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
               </div>
             )}
