@@ -2658,11 +2658,11 @@ export default function OnTheRocks(){
   const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
   const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
   const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
-  const [freeRecipeNames,setFreeRecipeNames]=useState(new Set());
-  const [availPacks,setAvailPacks]=useState([]);
+  const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
+  const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
   const [unlockedPacks,setUnlockedPacks]=useState([]);
-  const [devMode,setDevMode]=useState(false);
-  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
+  const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_cfg_devmode')==='1');
+  const [packConfigLoaded,setPackConfigLoaded]=useState(()=>!!localStorage.getItem('otr_cfg_free'));
   const [managerRecipes,setManagerRecipes]=useState([]);
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
@@ -2680,14 +2680,17 @@ export default function OnTheRocks(){
         if(configSnap.exists()){
           const cfg=configSnap.data();
           const names=cfg.freeRecipes||[];
-          if(names.length>0) setFreeRecipeNames(new Set(names));
-          if(cfg.devMode) setDevMode(true);
+          setFreeRecipeNames(new Set(names));
+          setDevMode(!!cfg.devMode);
+          localStorage.setItem('otr_cfg_free',JSON.stringify(names));
+          localStorage.setItem('otr_cfg_devmode',cfg.devMode?'1':'0');
         }
         const ps=packsSnap.docs
           .map(d=>({id:d.id,...d.data()}))
           .filter(p=>p.active&&p.showBanner!==false)
           .sort((a,b)=>(a.order||0)-(b.order||0));
         setAvailPacks(ps);
+        localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
         const mRecipes=mgrSnap.docs.map(d=>({...d.data(),fromManager:true}));
         setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
