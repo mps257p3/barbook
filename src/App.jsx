@@ -2699,6 +2699,32 @@ export default function OnTheRocks(){
     loadPackConfig();
   },[]);
 
+  // ── Re-busca config quando app volta ao primeiro plano ──
+  useEffect(()=>{
+    const onVisible=()=>{ if(document.visibilityState==='visible') loadPackConfigSilent(); };
+    async function loadPackConfigSilent(){
+      try{
+        const [configSnap,packsSnap]=await Promise.all([
+          getDoc(doc(db,"manager","config")),
+          getDocs(collection(db,"packs"))
+        ]);
+        if(configSnap.exists()){
+          const cfg=configSnap.data();
+          const names=cfg.freeRecipes||[];
+          setFreeRecipeNames(new Set(names));
+          setDevMode(!!cfg.devMode);
+          localStorage.setItem('otr_cfg_free',JSON.stringify(names));
+          localStorage.setItem('otr_cfg_devmode',cfg.devMode?'1':'0');
+        }
+        const ps=packsSnap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
+        setAvailPacks(ps);
+        localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
+      }catch{}
+    }
+    document.addEventListener('visibilitychange',onVisible);
+    return()=>document.removeEventListener('visibilitychange',onVisible);
+  },[]);
+
   // ── Captura redirect do Google (mobile) ──
   useEffect(()=>{
     getRedirectResult(auth).catch(()=>{});
