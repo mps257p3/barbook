@@ -90,7 +90,7 @@ const FAMILY_DESC = {
   "Preparos Caseiros": "Os bastidores do bar: xaropes, tinturas, cordiais e infusões feitos em casa. Não são drinks prontos, mas são o que elevam uma receita comum e dão identidade a diversas famílias.",
 };
 
-const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const norm = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const capFirst = s => typeof s==="string"&&s.length ? s.charAt(0).toUpperCase()+s.slice(1) : s;
 
 // ─── SISTEMA TIPOGRÁFICO — Descobrir + Receita aberta ─────────────────────────
@@ -3035,7 +3035,7 @@ export default function OnTheRocks(){
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
       if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
-      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+r.ingredients.map(norm).join(" ")+" "+r.categories.map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
+      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
     if(sort==="rating")list=[...list].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating);
