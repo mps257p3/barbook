@@ -1,4 +1,20 @@
+const ALLOWED_ORIGINS = [
+  'https://on-the-rocks-manager.vercel.app',
+  'https://barbook-otyb.vercel.app',
+];
+
 export default async function handler(req, res) {
+  const origin = req.headers.origin || '';
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }

@@ -43,7 +43,7 @@ const OCCASION_LIST = ["Refrescante","Reconfortante","Festa","Introspectivo","De
 const OCCASION_TAGS = {
   "Pisco Sour":["Clássicos","Festa"],"Uva & Sal":["Introspectivo","Descomplicado"],"Flor de Pedra":["Introspectivo","A dois"],"Campo Seco":["Introspectivo","Inesperados"],"Pisco & Coco Tostado":["Inesperados"],"Verde Urbano":["Refrescante","Piscina"],"Noite em Lima":["Introspectivo"],"Pisco com Cerveja Branca":["Descomplicado","Churrasco"],"Seco de Maçã":["Digestivo","Inesperados"],"Pisco Terroso":["Inesperados"],
   "Sazerac":["Clássicos","Introspectivo"],"SAZERAC por Kennedy Nascimento":["Introspectivo","Complexo"],"Brandy Alexander":["Digestivo"],"Between the Sheets":["A dois"],"Stinger":["Digestivo","Descomplicado"],"French Connection":["Digestivo","Descomplicado"],"Brandy Crusta":["Clássicos","Complexo"],"Champs-Élysées":["Introspectivo","A dois"],
-  "Sevilla Sour":["Refrescante","A dois"],"Smokey Martini":["Introspectivo"],"Spring Martini":["Introspectivo","A dois"],"Tom Collins":["Refrescante","Clássicos"],"Tom Collins (20's B)":["Refrescante","Inesperados"],"Corpse Reviver #2":["Clássicos","Complexo"],"White Lady":["Clássicos","A dois"],"Hanky Panky":["Introspectivo","Inesperados"],"Southside":["Refrescante","Piscina"],"20th Century":["Introspectivo","Inesperados"],"Bee's Knees":["Clássicos","Refrescante"],"Last Word":["Clássicos","Complexo"],"Gimlet":["Clássicos","Descomplicado"],"Ramos Gim Fizz":["Complexo","Inesperados"],"The Clover Club":["Festa","A dois"],"Gibson":["Introspectivo","Clássicos"],"Angel Face":["Introspectivo","Inesperados"],"Casino":["Introspectivo","Clássicos"],"Paradise":["Refrescante"],"Monkey Gland":["Inesperados"],"Tuxedo":["Introspectivo","Complexo"],"Bijou":["Introspectivo","Complexo"],"Black Negroni":["Introspectivo"],"French Pearl":["Refrescante","Complexo"],"Alaska":["Introspectivo","Descomplicado"],"Pegu Club":["Introspectivo","Clássicos"],"Singapore Sling":["Clássicos","Complexo","Festa","Tropical"],"Industry Sour":["Inesperados"],"Vesper":["Clássicos","Introspectivo"],"Jardim Suspenso":["Refrescante","Piscina"],"Jardim Elétrico":["Refrescante","Piscina"],"Estufa":["Refrescante","Inesperados"],"Witch's Kiss":["Introspectivo"],"Strega Martini":["Introspectivo"],"French Gimlet":["Refrescante","A dois"],"Névoa Verde":["Introspectivo","Inesperados"],"Grapefruit Gimlet":["Refrescante","Descomplicado"],"Jardim Alto":["Refrescante","Piscina"],"Collins de Toranja com Ervas":["Refrescante"],"Rubi Tônico":["Refrescante"],
+  "Sevilla Sour":["Refrescante","A dois"],"Smokey Martini":["Introspectivo"],"Spring Martini":["Introspectivo","A dois"],"Tom Collins":["Refrescante","Clássicos"],"Tom Gatsby":["Refrescante","Inesperados"],"Corpse Reviver #2":["Clássicos","Complexo"],"White Lady":["Clássicos","A dois"],"Hanky Panky":["Introspectivo","Inesperados"],"Southside":["Refrescante","Piscina"],"20th Century":["Introspectivo","Inesperados"],"Bee's Knees":["Clássicos","Refrescante"],"Last Word":["Clássicos","Complexo"],"Gimlet":["Clássicos","Descomplicado"],"Ramos Gim Fizz":["Complexo","Inesperados"],"The Clover Club":["Festa","A dois"],"Gibson":["Introspectivo","Clássicos"],"Angel Face":["Introspectivo","Inesperados"],"Casino":["Introspectivo","Clássicos"],"Paradise":["Refrescante"],"Monkey Gland":["Inesperados"],"Tuxedo":["Introspectivo","Complexo"],"Bijou":["Introspectivo","Complexo"],"Black Negroni":["Introspectivo"],"French Pearl":["Refrescante","Complexo"],"Alaska":["Introspectivo","Descomplicado"],"Pegu Club":["Introspectivo","Clássicos"],"Singapore Sling":["Clássicos","Complexo","Festa","Tropical"],"Industry Sour":["Inesperados"],"Vesper":["Clássicos","Introspectivo"],"Jardim Suspenso":["Refrescante","Piscina"],"Jardim Elétrico":["Refrescante","Piscina"],"Estufa":["Refrescante","Inesperados"],"Witch's Kiss":["Introspectivo"],"Strega Martini":["Introspectivo"],"French Gimlet":["Refrescante","A dois"],"Névoa Verde":["Introspectivo","Inesperados"],"Grapefruit Gimlet":["Refrescante","Descomplicado"],"Jardim Alto":["Refrescante","Piscina"],"Collins de Toranja com Ervas":["Refrescante"],"Rubi Tônico":["Refrescante"],
   "Whiskey Sour":["Clássicos","Refrescante"],"New York Sour":["Clássicos","A dois"],"Penicillin":["Clássicos","Complexo"],"Gold Rush":["Reconfortante"],"Paper Plane":["Clássicos","Introspectivo"],"Amaretto Sour":["Festa","Reconfortante"],"Boulevardier":["Reconfortante","Clássicos"],"Rob Roy":["Introspectivo","Clássicos"],"Vieux Carré":["Introspectivo","Clássicos"],"Toronto":["Introspectivo","Inesperados"],"Black Manhattan":["Introspectivo","Inesperados"],"Horse's Neck":["Reconfortante","Churrasco"],"Blood and Sand":["Inesperados","Complexo"],"Godfather":["Reconfortante","Digestivo"],"Irish Coffee":["Reconfortante","Clássicos"],"Hot Toddy":["Reconfortante","Introspectivo"],"Rusty Nail":["Reconfortante","Digestivo"],"Brown Derby":["Reconfortante","Introspectivo"],"Mint Julep":["Clássicos","Refrescante"],"Trinidad Sour":["Inesperados","Complexo"],"Remember the Maine":["Introspectivo","Inesperados"],"Tipperary":["Introspectivo","Complexo"],"Smoked Apple Whiskey Tonic":["Reconfortante"],"Elder Fashion":["Reconfortante","Introspectivo"],"Benevento Old Fashioned":["Reconfortante","Introspectivo"],"Pera & Fumaça":["Introspectivo","A dois"],"Dourado Frio":["Reconfortante","Introspectivo"],"Shanksjillo":["Digestivo","Inesperados"],"Autumn Smoke":["Reconfortante","Introspectivo"],"Spiced Nightcap":["Digestivo","Reconfortante"],"Highland Orchard":["Reconfortante"],"Honey & Heather":["Introspectivo","Inesperados"],"Golden Citrus Fizz":["Refrescante"],"Bitter Hive":["Inesperados"],"Barley Highball":["Introspectivo","Inesperados"],"Tropical Heather":["Inesperados"],"Illegal Sour":["Inesperados","Complexo"],"Suffering Bastard":["Inesperados","Complexo"],"Highball de Toranja e Bourbon":["Refrescante","Churrasco"],
   "Tommy's Margarita":["Clássicos","Refrescante"],"Spicy Margarita":["Festa","Churrasco"],"Ranch Water":["Refrescante","Piscina"],"Batanga":["Descomplicado","Churrasco"],"Naked and Famous":["Introspectivo","Inesperados"],"Mezcal Sour":["Reconfortante","Introspectivo"],"Matador":["Refrescante","Piscina","Tropical"],"Agave Spritz":["Refrescante","Piscina"],"Verde Brisa":["Refrescante","Piscina","Tropical"],"Sol e Sal":["Refrescante","Piscina"],"Sombra na Areia":["Piscina","Introspectivo"],"Cacto Poético":["Refrescante","Piscina"],"Bruma de Agave":["Refrescante","Piscina"],"Fumaça de Frutas":["Inesperados"],"Oaxacan Old Fashioned":["Introspectivo","Inesperados"],"Mezcal Negroni":["Introspectivo","Clássicos"],"Paloma":["Refrescante","Piscina","Clássicos"],"Paloma Cordial":["Refrescante","Piscina"],"Tequila Sunrise":["Festa","Piscina"],"Frozen Margarita":["Piscina","Festa"],"El Diablo":["Refrescante","Piscina"],"Bloody Maria":["Churrasco","Inesperados"],"Margarita Laranja Sanguínea e Aperol":["Refrescante","Churrasco"],"Key Lime Pie Margarita":["Inesperados"],"Margarita Ancho Chili e Toranja":["Inesperados","Churrasco"],"Margarita Picante de Pepino":["Refrescante","Churrasco"],"Mezcal & Cenoura Queimada":["Inesperados"],"Linha Clara":["Introspectivo","Inesperados"],
   "Bloody Mary":["Clássicos","Churrasco"],"Harvey Wallbanger":["Festa","Inesperados"],"Sex on the Beach":["Piscina","Festa"],"Lemon Drop":["Festa","Refrescante"],"Mule de Framboesa":["Refrescante","Festa"],"Caipiroska":["Refrescante","Churrasco"],"White Russian":["Digestivo","Reconfortante"],"White Russian de abóbora":["Digestivo","Inesperados"],"Black Russian":["Digestivo","Descomplicado"],"Espresso Martini":["Digestivo","Festa"],"Cosmopolitan":["Festa","Clássicos"],"French Martini":["Festa","A dois"],"Rose":["A dois"],"Russian Spring Punch":["Festa","Refrescante"],"Vodka Tônica":["Descomplicado","Refrescante"],"Citrus Cloud":["Refrescante","A dois"],"Floral Mule Leve":["Refrescante","Piscina"],"Solar Fizz":["Refrescante","Piscina"],"Flor de Pressa":["Festa","Piscina"],"Bitter & Melão":["Inesperados"],"Salty Dog":["Refrescante","Piscina"],
@@ -275,7 +275,7 @@ const BASE_RECIPES = [
   {name:"St‑Germain Hugo Spritz",categories:["St‑Germain","Spritz","Espumante","Built"],ingredients:["40 ml St‑Germain","60 ml espumante","60 ml água com gás","8-10 folhas hortelã","1 fatia limão taiti"],steps:["Adicione as folhas de hortelã ao copo e cubra com gelo.","Adicione o St-Germain.","Complete com espumante e água com gás. Mexa suavemente.","Decore com fatia de limão."],notes:"Floral, refrescante e levemente herbáceo. O aperitivo italiano feito para dias quentes.",rating:0,servings:"",custom:false},
   {name:"St‑Germain Spritz",categories:["St‑Germain","Spritz","Espumante","Built"],ingredients:["40 ml St‑Germain","60 ml espumante brut","60 ml água com gás","casca limão siciliano"],steps:["Encha taça com gelo.","Adicione o St-Germain.","Complete com espumante e água com gás. Mexa.","Decore com casca de limão siciliano."],notes:"Elegante e floral, com borbulhas finas. Aperitivo leve e aromático.",rating:0,servings:"",custom:false},
   {name:"The Clover Club",categories:["Gim","Sour","Shaken"],ingredients:["45 ml Gim","20 ml suco de limão","15 ml xarope simples","4 framboesas","1 clara de ovo"],steps:["Agite tudo sem gelo por 15s.","Adicione gelo e agite por mais 15s.","Coe sem gelo.","Receita de Xarope Simples disponível em Preparos Caseiros."],notes:"",rating:0,servings:"1",custom:false},
-  {name:"Tom Collins (20's B)",categories:["Gim","Collins","Vermute Bianco","Built"],ingredients:["45 ml gim","15 ml Vermute branco","20 ml suco de limão","5 ml xarope simples (opcional)","2 dashes Angostura","1 fatia de pepino (opcional)","soda para completar"],steps:["Combine gim, Vermute branco, limão e xarope com gelo.","Complete com soda.","Adicione Angostura e decore com pepino.","Receita de Xarope Simples disponível em Preparos Caseiros."],notes:"Uma versão dos anos 20 do Collins — o Vermute branco no lugar do açúcar puro dá mais profundidade e menos doce.",rating:0,servings:"1",custom:false},
+  {name:"Tom Gatsby",categories:["Gim","Collins","Vermute Bianco","Built"],ingredients:["45 ml gim","15 ml Vermute branco","20 ml suco de limão","5 ml xarope simples (opcional)","2 dashes Angostura","1 fatia de pepino (opcional)","soda para completar"],steps:["Combine gim, Vermute branco, limão e xarope com gelo.","Complete com soda.","Adicione Angostura e decore com pepino.","Receita de Xarope Simples disponível em Preparos Caseiros."],notes:"Uma versão dos anos 20 do Collins — o Vermute branco no lugar do açúcar puro dá mais profundidade e menos doce.",rating:0,servings:"1",custom:false},
   {name:"Whiskey Mule de Romã",categories:["Whisky","Highball","Buck","Built"],ingredients:["60 ml whiskey","15 ml suco de limão","15 ml grenadine de romã","3 gotas bitter de laranja","cerveja de gengibre"],steps:["Misture tudo e complete com ginger beer.","Receita de Grenadine Caseira disponível em Preparos Caseiros."],notes:"",rating:0,servings:"",custom:false},
   {name:"Whiskey Sour",categories:["Whisky","Sour","Shaken"],ingredients:["60 ml whisky","30 ml suco de lima","22 ml xarope simples","1 clara de ovo","alecrim tostado"],steps:["Agite com gelo. Coe em rocks cheio de gelo.","Decore com cereja.","Receita de Xarope Simples disponível em Preparos Caseiros."],notes:"",rating:0,servings:"",custom:false},
   {name:"White Russian de abóbora",categories:["Vodka","Licor","Built"],ingredients:["45 ml vodka","30 ml Kahlúa","30 ml creme de leite batido com geleia de abóbora"],steps:["Coloque gelo num copo rocks.","Despeje a vodka e o Kahlúa sobre o gelo.","Bata levemente o creme com a geleia de abóbora e despeje por cima, deixando flutuante."],notes:"",rating:0,servings:"1",custom:false},
@@ -842,7 +842,7 @@ const RECIPE_MOODS = {
   "St‑Germain Hugo Spritz": "rose_static",
   "St‑Germain Spritz": "rose_static",
   "The Clover Club": "midnight_citrus",
-  "Tom Collins (20's B)": "midnight_citrus",
+  "Tom Gatsby": "midnight_citrus",
   "Whiskey Mule de Romã": "frost_tide",
   "Whiskey Sour": "smoked_amber",
   "White Russian de abóbora": "frost_tide",
@@ -2692,7 +2692,7 @@ export default function OnTheRocks(){
           .sort((a,b)=>(a.order||0)-(b.order||0));
         setAvailPacks(ps);
         localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-        const mRecipes=mgrSnap.docs.map(d=>({...d.data(),fromManager:true}));
+        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
         setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
       finally{setPackConfigLoaded(true);}
@@ -2804,33 +2804,31 @@ export default function OnTheRocks(){
   useEffect(()=>{
     if(!("wakeLock" in navigator))return;
     let lock=null;
-    let timer=null;
-    const TIMEOUT=3*60*1000;
-    const release=()=>{lock?.release();lock=null;};
     const request=async()=>{if(lock)return;try{lock=await navigator.wakeLock.request("screen");}catch{}};
-    const resetTimer=()=>{clearTimeout(timer);if(!lock)request();timer=setTimeout(release,TIMEOUT);};
-    const onVisible=()=>{if(document.visibilityState==="visible"){request();resetTimer();}};
-    const events=["touchstart","click","mousemove","keydown","scroll"];
-    events.forEach(e=>document.addEventListener(e,resetTimer,{passive:true}));
+    const onVisible=()=>{if(document.visibilityState==="visible")request();};
     document.addEventListener("visibilitychange",onVisible);
     request();
-    timer=setTimeout(release,TIMEOUT);
-    return()=>{clearTimeout(timer);events.forEach(e=>document.removeEventListener(e,resetTimer));document.removeEventListener("visibilitychange",onVisible);lock?.release();};
+    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
   },[]);
 
   const allRecipes=useMemo(()=>{
-    const mgrNames=new Set(managerRecipes.map(r=>r.name));
+    // Deduplica por nome (último prevalece = ID padrão, gerado após ID legado como _20th_century)
+    const dedupedMgr=Object.values(managerRecipes.reduce((a,r)=>{a[r.name]=r;return a;},{}));
+    // mgrNames inclui tombstones para excluir a versão de BASE_RECIPES correspondente
+    const mgrNames=new Set(dedupedMgr.map(r=>r.name));
     const base=BASE_RECIPES
       .filter(r=>!mgrNames.has(r.name))
       .map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r)
       .filter(r=>!r.deleted);
+    // activeMgr exclui tombstones (deleted:true) da lista visível
+    const activeMgr=dedupedMgr.filter(r=>!r.deleted);
     const normalize=r=>({...r,
       categories:Array.isArray(r.categories)?r.categories:[],
       ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
       steps:Array.isArray(r.steps)?r.steps:[],
       notes:r.notes||"",
     });
-    return [...base,...managerRecipes,...customRecipes].map(normalize);
+    return [...base,...activeMgr,...customRecipes].map(normalize);
   },[customRecipes,overrides,managerRecipes]);
 
   const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
@@ -3255,7 +3253,7 @@ const RECIPE_PROFILES = {
   "St‑Germain Hugo Spritz":{"flavors":"Floral • Cítrico • Refrescante","perfil":"Elegante","perfil_desc":"Sofisticado e leve","sensacao":"Espumante","sensacao_desc":"Bolhas refrescantes","ocasiao":"Início de noite","ocasiao_desc":"Momento social leve"},
   "St‑Germain Spritz":{"flavors":"Floral • Cítrico • Delicado","perfil":"Refrescante","perfil_desc":"leve e elegante","sensacao":"Efervescente","sensacao_desc":"borbulhante e sofisticada","ocasiao":"Início de noite","ocasiao_desc":"encontros vespertinos"},
   "The Clover Club":{"flavors":"Floral • Cítrico • Frutado","perfil":"Elegante","perfil_desc":"Sofisticado e delicado","sensacao":"Espumoso","sensacao_desc":"Aéreo e cremoso","ocasiao":"Coquetel","ocasiao_desc":"Festas e celebrações"},
-  "Tom Collins (20's B)":{"flavors":"Herbáceo • Cítrico • Amargo","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Início de noite","ocasiao_desc":"Tarde ensolarada"},
+  "Tom Gatsby":{"flavors":"Herbáceo • Cítrico • Amargo","perfil":"Sofisticado","perfil_desc":"Elegante e refinado","sensacao":"Refrescante","sensacao_desc":"Leve e estimulante","ocasiao":"Início de noite","ocasiao_desc":"Tarde ensolarada"},
   "Whiskey Mule de Romã":{"flavors":"Amadeirado • Frutado • Especiado","perfil":"Sofisticado","perfil_desc":"Elegância com aridez","sensacao":"Refrescante","sensacao_desc":"Picância suave prolongada","ocasiao":"Noite","ocasiao_desc":"Momento requintado"},
   "Whiskey Sour":{"flavors":"Cítrico • Amadeirado • Herbal","perfil":"Clássico","perfil_desc":"elegante e equilibrado","sensacao":"Aveludado","sensacao_desc":"sedoso e refrescante","ocasiao":"Coquetel","ocasiao_desc":"noite sofisticada"},
   "White Russian de abóbora":{"flavors":"Cremoso • Doce • Especiado","perfil":"Confortável","perfil_desc":"Abraço líquido quente","sensacao":"Aveludada","sensacao_desc":"Macio na boca","ocasiao":"Outono","ocasiao_desc":"Noites aconchegantes"},
@@ -4006,7 +4004,7 @@ const RECIPE_PROFILES = {
                       </button>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                      {possiveis.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
+                      {possiveis.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
                     </div>
                   </div>
                 );
@@ -4201,7 +4199,7 @@ const RECIPE_PROFILES = {
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
+                  {filtered.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
                 </div>
               )}
             </>
