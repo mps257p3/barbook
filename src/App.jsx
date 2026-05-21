@@ -2824,7 +2824,13 @@ export default function OnTheRocks(){
       .filter(r=>!mgrNames.has(r.name))
       .map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r)
       .filter(r=>!r.deleted);
-    return [...base,...managerRecipes,...customRecipes];
+    const normalize=r=>({...r,
+      categories:Array.isArray(r.categories)?r.categories:[],
+      ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
+      steps:Array.isArray(r.steps)?r.steps:[],
+      notes:r.notes||"",
+    });
+    return [...base,...managerRecipes,...customRecipes].map(normalize);
   },[customRecipes,overrides,managerRecipes]);
 
   const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
