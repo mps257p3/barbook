@@ -2254,11 +2254,12 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             )}
 
             {/* bottom content */}
-            <div style={{position:"absolute",bottom:24,left:20,right:20,display:"flex",flexDirection:"column",gap:11,textAlign:"left"}}>
+            <div style={{position:"absolute",top:72,bottom:24,left:20,right:20,display:"flex",flexDirection:"column",justifyContent:"flex-end",gap:11,textAlign:"left",overflow:"hidden"}}>
               <div style={{fontFamily:"'Gloock',serif",
-                fontSize:recipe.name.length>22?26:recipe.name.length>18?30:recipe.name.length>14?35:recipe.name.length>10?38:recipe.name.length>7?48:55,
+                fontSize:(()=>{const n=recipe.name.length;const hasP=!!(p?.perfil||p?.flavors);return hasP?(n>22?22:n>18?26:n>14?30:n>10?33:n>7?38:42):(n>22?26:n>18?30:n>14?35:n>10?38:n>7?48:55);})(),
                 fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
-                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",paddingBottom:2,
+                overflow:"hidden",display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",paddingBottom:2,
+                flexShrink:1,minHeight:0,
                 textShadow:"0 1px 4px rgba(0,0,0,0.8), 0 2px 14px rgba(0,0,0,0.6)"}}>{recipe.name}</div>
 
               {/* divider */}
