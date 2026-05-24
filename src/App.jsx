@@ -1577,7 +1577,7 @@ function NoiseOverlay({opacity=0.038}){
 }
 
 // ─── CARD ─────────────────────────────────────────────────────────────────────
-function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS,customBg}){
+function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS,customBg,packName}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
@@ -1624,6 +1624,10 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 
       {/* fundo: nome + divisor + estrelas */}
       <div style={{position:"absolute",bottom:10,left:12,right:12,display:"flex",flexDirection:"column",gap:6}}>
+        {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"2px 7px 2px 5px",borderRadius:20,background:"rgba(0,0,0,0.48)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+          <span style={{fontSize:7,color:theme.accent,opacity:0.8,lineHeight:1}}>◈</span>
+          <span style={{fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
+        </div>}
         <div style={{fontFamily:"'Gloock',serif",
           fontSize:recipe.name.length>22?19:recipe.name.length>18?21:recipe.name.length>14?24:27,
           fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
@@ -1657,7 +1661,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
 }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg,bgOffset,onSetBgOffset}){
+function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg,bgOffset,onSetBgOffset,packName}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
@@ -1773,6 +1777,10 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
                   <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
                 </div>
+                {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:7,padding:"3px 9px 3px 7px",borderRadius:20,background:"rgba(0,0,0,0.35)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+                  <span style={{fontSize:7,color:theme.accent,opacity:0.85,lineHeight:1}}>◈</span>
+                  <span style={{fontSize:7.5,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}BB`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
+                </div>}
                 {recipe.signature&&<div style={{fontSize:11,fontStyle:"italic",color:"rgba(231,224,205,0.55)",marginTop:5,letterSpacing:0.3}}>{recipe.signature}</div>}
                 {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
               </div>
@@ -2149,7 +2157,7 @@ function resizeImageToDataUrl(file,maxW=800,maxH=1200,quality=0.75){
 }
 
 // ─── SWIPE CARD ───────────────────────────────────────────────────────────────
-function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile,onDragChange,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg}){
+function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,hasPrev,onOpen,profile,onDragChange,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg,packName}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
@@ -2267,6 +2275,12 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
                 <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
                 <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
               </div>
+
+              {/* pack badge */}
+              {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"2px 8px 2px 6px",borderRadius:20,background:"rgba(0,0,0,0.42)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+                <span style={{fontSize:7,color:theme.accent,opacity:0.85,lineHeight:1}}>◈</span>
+                <span style={{fontSize:7.5,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
+              </div>}
 
               {/* flavor tags — cor da família */}
               {p?.flavors&&(
@@ -2822,7 +2836,7 @@ export default function OnTheRocks(){
       .map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r)
       .filter(r=>!r.deleted);
     // activeMgr exclui tombstones (deleted:true) da lista visível
-    const activeMgr=dedupedMgr.filter(r=>!r.deleted);
+    const activeMgr=dedupedMgr.filter(r=>!r.deleted).map(r=>{const ov=overrides[r.name];if(!ov)return r;const patch={};if(ov.rating!==undefined)patch.rating=ov.rating;if(ov.notes!==undefined)patch.notes=ov.notes;return Object.keys(patch).length?{...r,...patch}:r;});
     const normalize=r=>({...r,
       categories:Array.isArray(r.categories)?r.categories:[],
       ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
@@ -2905,6 +2919,7 @@ export default function OnTheRocks(){
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
   const [recipeProfiles,setRecipeProfiles]=useState({});
 
+  const recipePackMap=useMemo(()=>{const m={};for(const pk of availPacks){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}return m;},[availPacks]);
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...customSpirits]),[customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
@@ -3838,7 +3853,7 @@ const RECIPE_PROFILES = {
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})}/>
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})} packName={recipePackMap[swipeRecipe.name]}/>
                 {/* botões de ação — sobre o card */}
                 <div style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
@@ -4005,7 +4020,7 @@ const RECIPE_PROFILES = {
                       </button>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                      {possiveis.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
+                      {possiveis.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>)}
                     </div>
                   </div>
                 );
@@ -4200,7 +4215,7 @@ const RECIPE_PROFILES = {
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]}/>)}
+                  {filtered.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>)}
                 </div>
               )}
             </>
@@ -4214,7 +4229,7 @@ const RECIPE_PROFILES = {
       <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))}/>}
+      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
