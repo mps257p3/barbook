@@ -1,21 +1,19 @@
 {
   "name": "On the Rocks",
   "short_name": "On the Rocks",
-  "description": "Cocktail Recipes",
-  "start_url": "/",
+  "description": "Seu guia de coquetéis clássicos",
+  "theme_color": "#0A0906",
+  "background_color": "#0A0906",
   "display": "standalone",
-  "background_color": "#070707",
-  "theme_color": "#070707",
+  "orientation": "portrait",
+  "id": "/",
+  "start_url": "/",
+  "screenshots": [
+    { "src": "Icon.png", "sizes": "1024x1024", "type": "image/png", "form_factor": "narrow" }
+  ],
   "icons": [
-    {
-      "src": "/Icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/Icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "Icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "Icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "Icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
   ]
 }
