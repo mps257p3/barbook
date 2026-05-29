@@ -2,11 +2,13 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'node:fs'
+import os from 'node:os'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-  cacheDir: 'C:/Users/marce/.vite-cache/on-the-rocks',
+  cacheDir: `${os.homedir()}/.vite-cache/on-the-rocks`,
+  build: { emptyOutDir: false },
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
@@ -15,8 +17,11 @@ export default defineConfig(({ mode }) => {
       name: 'copy-dot-dirs',
       apply: 'build',
       closeBundle() {
-        if (fs.existsSync('public/.well-known'))
-          fs.cpSync('public/.well-known', 'dist/.well-known', { recursive: true });
+        if (fs.existsSync('public/.well-known')) {
+          fs.mkdirSync('dist/.well-known', { recursive: true });
+          for (const f of fs.readdirSync('public/.well-known'))
+            fs.copyFileSync(`public/.well-known/${f}`, `dist/.well-known/${f}`);
+        }
       }
     },
     react(),

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node -e \"const fs=require('fs');if(fs.existsSync('public/.well-known')){fs.mkdirSync('dist/.well-known',{recursive:true});fs.cpSync('public/.well-known','dist/.well-known',{recursive:true});console.log('[build] .well-known copied to dist')}else{console.error('[build] WARNING: public/.well-known not found')}\"",
     "lint": "eslint .",
     "preview": "vite preview"
   },
