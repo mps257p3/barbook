@@ -1604,45 +1604,52 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
         background:`radial-gradient(ellipse 80% 45% at -8% 108%, ${theme.accent} 0%, ${theme.accent}aa 5%, ${theme.accent}55 22%, ${theme.accent}18 45%, transparent 68%)`}}/>
       {visual.particleClass&&<div className={visual.particleClass} style={{position:"absolute",inset:0,pointerEvents:"none"}}/>}
 
-      {/* fita autoral */}
-      {(recipe.custom||recipe.adjusted)&&<div style={{position:"absolute",top:14,right:-44,width:160,transform:"rotate(45deg)",background:`linear-gradient(to right,transparent,${theme.accent}40)`,textAlign:"center",fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:theme.accent,fontFamily:"Archivo,sans-serif",fontWeight:700,padding:"1px 0",pointerEvents:"none"}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</div>}
-
-      {/* topo: tags + ações */}
-      <div style={{position:"absolute",top:10,left:12,right:10,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+      {/* topo: tags (esquerda) + badge pack/autoral (direita) */}
+      <div style={{position:"absolute",top:10,left:12,right:10,display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:6}}>
         <div style={{display:"flex",flexDirection:"column",gap:3}}>
           {styleTag&&<span style={{...CARD_TYPO.tag,color:"rgba(231,224,205,0.82)",background:"rgba(0,0,0,0.52)",backdropFilter:"blur(6px)",padding:"3px 7px",borderRadius:3}}>{styleTag}</span>}
           {spiritTag&&<span style={{...CARD_TYPO.tag,color:theme.accent,background:`rgba(0,0,0,0.45)`,backdropFilter:"blur(6px)",padding:"3px 7px",borderRadius:3,opacity:1}}>{spiritTag}</span>}
         </div>
-        <div style={{display:"flex",gap:0,alignItems:"center"}}>
-          <button onClick={e=>{e.stopPropagation();onComanda();}} style={{background:"none",border:"none",fontSize:13,color:isComanda?"#C8A96E":"rgba(255,255,255,0.18)",cursor:"pointer",padding:"4px 5px",transition:"color .2s",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none"}}>{isComanda?"◫":"◻"}</button>
-          <button onClick={e=>{e.stopPropagation();onFav();}} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 5px",transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.18)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none"}}>
-            {isFav?<svg width="14" height="11" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
-            :<svg width="14" height="11" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>}
-          </button>
-        </div>
+        {(recipe.custom||recipe.adjusted||packName)&&(
+          <div style={{display:"inline-flex",alignItems:"center",gap:4,flexShrink:0,padding:"1px 7px 1px 5px",borderRadius:20,background:"rgba(0,0,0,0.52)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+            <span style={{fontSize:7,color:theme.accent,opacity:0.8,lineHeight:1}}>◈</span>
+            <span style={{fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>
+              {recipe.custom?"AUTORAL":recipe.adjusted?"AJUSTADA":packName}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* fundo: nome + divisor + estrelas */}
-      <div style={{position:"absolute",bottom:10,left:12,right:12,display:"flex",flexDirection:"column",gap:6}}>
-        {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"2px 7px 2px 5px",borderRadius:20,background:"rgba(0,0,0,0.48)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
-          <span style={{fontSize:7,color:theme.accent,opacity:0.8,lineHeight:1}}>◈</span>
-          <span style={{fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
-        </div>}
-        <div style={{fontFamily:"'Gloock',serif",
-          fontSize:recipe.name.length>22?19:recipe.name.length>18?21:recipe.name.length>14?24:27,
-          fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
-          overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
-          textShadow:"0 1px 4px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.7)"}}>{recipe.name}</div>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      {/* fundo: nome + linha (esquerda) · fav + taça + check (direita) */}
+      <div style={{position:"absolute",bottom:10,left:12,right:10,display:"flex",alignItems:"flex-end",gap:8}}>
+        <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:5}}>
+          <div style={{fontFamily:"'Gloock',serif",
+            fontSize:recipe.name.length>22?19:recipe.name.length>18?21:recipe.name.length>14?24:27,
+            fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
+            overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
+            textShadow:"0 1px 4px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.7)"}}>{recipe.name}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{height:2,width:24,background:theme.accent,borderRadius:2,opacity:0.9}}/>
             <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
             {recipe.rating>0&&<Stars n={recipe.rating} color={theme.accent}/>}
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
             {hasAll&&<span style={{...CARD_TYPO.counter,color:"#4ADE80",opacity:.8}}>tenho tudo</span>}
-            <button onClick={e=>{e.stopPropagation();onTried();}} style={{background:"none",border:"none",fontSize:16,color:isTried?"#4ADE80":"rgba(255,255,255,0.2)",cursor:"pointer",padding:"2px 4px",lineHeight:1,transition:"color .15s"}}>{isTried?"✓":"○"}</button>
           </div>
+        </div>
+        <div style={{display:"flex",gap:2,alignItems:"center",flexShrink:0,paddingBottom:2}}>
+          <button onClick={e=>{e.stopPropagation();onFav();}} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 5px",transition:"all .2s",color:isFav?theme.accent:"rgba(255,255,255,0.22)",filter:isFav?`drop-shadow(0 0 5px ${theme.accent}88)`:"none"}}>
+            {isFav?<svg width="14" height="11" viewBox="0 0 20 15" fill={theme.accent}><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>
+            :<svg width="14" height="11" viewBox="0 0 20 15" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"><path d="M10 13.5C10 13.5 1 8 1 4C1 1.8 2.8.5 5.5.5 7.5.5 9 1.8 10 3.5 11 1.8 12.5.5 14.5.5 17.2.5 19 1.8 19 4 19 8 10 13.5 10 13.5z"/></svg>}
+          </button>
+          <button onClick={e=>{e.stopPropagation();onComanda();}} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 5px",transition:"all .2s",color:isComanda?"#C8A96E":"rgba(255,255,255,0.22)",filter:isComanda?"drop-shadow(0 0 5px rgba(200,169,110,0.7))":"none"}}>
+            <svg width="14" height="14" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 4 L19 4 L11 14 Z"/><line x1="11" y1="14" x2="11" y2="19"/><line x1="7" y1="19" x2="15" y2="19"/>
+            </svg>
+          </button>
+          <button onClick={e=>{e.stopPropagation();onTried();}} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 5px",transition:"all .2s",color:isTried?"#4ADE80":"rgba(255,255,255,0.22)",filter:isTried?"drop-shadow(0 0 5px rgba(74,222,128,0.6))":"none"}}>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="2,8 6,12 14,4"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -1777,7 +1784,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
                   <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
                 </div>
-                {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:7,padding:"3px 9px 3px 7px",borderRadius:20,background:"rgba(0,0,0,0.35)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+                {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:7,padding:"2px 9px 2px 7px",borderRadius:20,background:"rgba(0,0,0,0.35)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
                   <span style={{fontSize:7,color:theme.accent,opacity:0.85,lineHeight:1}}>◈</span>
                   <span style={{fontSize:7.5,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}BB`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
                 </div>}
@@ -2277,7 +2284,7 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               </div>
 
               {/* pack badge */}
-              {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"2px 8px 2px 6px",borderRadius:20,background:"rgba(0,0,0,0.42)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
+              {packName&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"1px 8px 1px 6px",borderRadius:20,background:"rgba(0,0,0,0.42)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)"}}>
                 <span style={{fontSize:7,color:theme.accent,opacity:0.85,lineHeight:1}}>◈</span>
                 <span style={{fontSize:7.5,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
               </div>}
@@ -2722,6 +2729,7 @@ export default function OnTheRocks(){
   const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
   const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
   const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
+  const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
   const [unlockedPacks,setUnlockedPacks]=useState([]);
   const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
   const [packConfigLoaded,setPackConfigLoaded]=useState(()=>!!localStorage.getItem('otr_cfg_free'));
@@ -2733,32 +2741,39 @@ export default function OnTheRocks(){
   // ── Carrega config de packs (receitas livres + packs à venda) ──
   useEffect(()=>{
     async function loadPackConfig(){
+      let allPs=[];
+      let freeNames=[];
       try{
-        const [configSnap,packsSnap,mgrSnap]=await Promise.all([
+        const [configSnap,packsSnap]=await Promise.all([
           getDoc(doc(db,"manager","config")),
-          getDocs(collection(db,"packs")),
-          getDocs(collection(db,"managerRecipes"))
+          getDocs(collection(db,"packs"))
         ]);
         if(configSnap.exists()){
           const cfg=configSnap.data();
-          const names=cfg.freeRecipes||[];
-          setFreeRecipeNames(new Set(names));
+          freeNames=cfg.freeRecipes||[];
+          setFreeRecipeNames(new Set(freeNames));
           const adminEmails=(cfg.adminEmails||[]).map(a=>a.email||a);
           const isAdmin=adminEmails.includes(auth.currentUser?.email||'');
           setDevMode(isAdmin);
           localStorage.setItem('otr_devmode',isAdmin?'1':'');
-          localStorage.setItem('otr_cfg_free',JSON.stringify(names));
+          localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
         }
-        const ps=packsSnap.docs
-          .map(d=>({id:d.id,...d.data()}))
-          .filter(p=>p.active&&p.showBanner!==false)
-          .sort((a,b)=>(a.order||0)-(b.order||0));
+        allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
+        setAllPacks(allPs);
+        localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));
+        const ps=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
         setAvailPacks(ps);
         localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
-        setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
       finally{setPackConfigLoaded(true);}
+      try{
+        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+        const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
+        const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
+        const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
+        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name));
+        setManagerRecipes(mRecipes);
+      }catch(e){console.error(e);}
     }
     loadPackConfig();
   },[]);
@@ -2767,26 +2782,36 @@ export default function OnTheRocks(){
   useEffect(()=>{
     const onVisible=()=>{ if(document.visibilityState==='visible') loadPackConfigSilent(); };
     async function loadPackConfigSilent(){
+      let allPs2=[];
+      let freeNames2=[];
       try{
-        const [configSnap,packsSnap,mgrSnap]=await Promise.all([
+        const [configSnap,packsSnap]=await Promise.all([
           getDoc(doc(db,"manager","config")),
-          getDocs(collection(db,"packs")),
-          getDocs(collection(db,"managerRecipes"))
+          getDocs(collection(db,"packs"))
         ]);
         if(configSnap.exists()){
           const cfg=configSnap.data();
-          const names=cfg.freeRecipes||[];
-          setFreeRecipeNames(new Set(names));
+          freeNames2=cfg.freeRecipes||[];
+          setFreeRecipeNames(new Set(freeNames2));
           const adminEmails=(cfg.adminEmails||[]).map(a=>a.email||a);
           const isAdmin=adminEmails.includes(auth.currentUser?.email||'');
           setDevMode(isAdmin);
           localStorage.setItem('otr_devmode',isAdmin?'1':'');
-          localStorage.setItem('otr_cfg_free',JSON.stringify(names));
+          localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames2));
         }
-        const ps=packsSnap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
+        allPs2=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
+        setAllPacks(allPs2);
+        localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs2));
+        const ps=allPs2.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
         setAvailPacks(ps);
         localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
+      }catch{}
+      try{
+        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+        const sysRecipeNames2=new Set(allPs2.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
+        const nonSysRecipeNames2=new Set([...freeNames2,...allPs2.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
+        const sysOnlyNames2=new Set([...sysRecipeNames2].filter(n=>!nonSysRecipeNames2.has(n)));
+        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames2.has(r.name));
         setManagerRecipes(mRecipes);
       }catch{}
     }
@@ -2953,6 +2978,7 @@ export default function OnTheRocks(){
   const [filterMode,setFilterMode]=useState("tudo");
   const [filterAnd,setFilterAnd]=useState(false);
   const [activeOccasions,setActiveOccasions]=useState([]);
+  const [activePack,setActivePack]=useState(null);
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState("descobrir");
   const prevTabRef=useRef("descobrir");
@@ -2973,7 +2999,7 @@ export default function OnTheRocks(){
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
   const [recipeProfiles,setRecipeProfiles]=useState({});
 
-  const recipePackMap=useMemo(()=>{const m={};for(const pk of availPacks){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}return m;},[availPacks]);
+  const recipePackMap=useMemo(()=>{const m={};for(const pk of allPacks){if(!pk.system){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}return m;},[allPacks]);
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...customSpirits]),[customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
@@ -3014,8 +3040,8 @@ export default function OnTheRocks(){
   },[allRecipes]);
   const toggleSpirit=s=>setActiveSpirits(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
   const toggleOccasion=t=>setActiveOccasions(p=>p.includes(t)?p.filter(x=>x!==t):[...p,t]);
-  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);};
-  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0);
+  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);};
+  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0||activePack);
 
   // ── Back button — navega dentro do app ──
   const backRef=useRef({});
@@ -3033,7 +3059,7 @@ export default function OnTheRocks(){
       peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
     }
   },[]);
-  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions};
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
     push();
@@ -3042,8 +3068,8 @@ export default function OnTheRocks(){
       if(s.open){setOpen(null);push();return;}
       if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
       if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
-      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length){
-        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);push();return;
+      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length||s.activePack){
+        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);push();return;
       }
     };
     window.addEventListener("popstate",onPop);
@@ -3125,6 +3151,7 @@ export default function OnTheRocks(){
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
       if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
+      if(activePack&&recipePackMap[r.name]!==activePack)return false;
       if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
@@ -3133,7 +3160,7 @@ export default function OnTheRocks(){
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks,devMode,packConfigLoaded]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks,devMode,packConfigLoaded,recipePackMap]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
@@ -3967,18 +3994,24 @@ const RECIPE_PROFILES = {
                   );})()}
                 </div>
               </div>
-              {/* controles bottom — ocasião sheet flutua sobre o layout sem empurrar */}
-              <div className="disc-controls" style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr",paddingTop:6,paddingBottom:14,background:`radial-gradient(ellipse 100% 140% at 50% 100%, ${getTheme(swipeRecipe.categories).accent}1a 0%, ${getTheme(swipeRecipe.categories).accent}08 45%, transparent 75%)`,transition:"background 1.1s ease",position:"relative"}}>
+              {/* controles bottom — sheets flutuam sobre o layout sem empurrar */}
+              <div className="disc-controls" style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",paddingTop:6,paddingBottom:14,background:`radial-gradient(ellipse 100% 140% at 50% 100%, ${getTheme(swipeRecipe.categories).accent}1a 0%, ${getTheme(swipeRecipe.categories).accent}08 45%, transparent 75%)`,transition:"background 1.1s ease",position:"relative"}}>
 
-                {filterSheet==="ocasiao"&&(
+                {(filterSheet==="ocasiao"||filterSheet==="pack")&&(
                   <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"12px 14px",zIndex:30,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                      {[...OCCASION_LIST].sort((a,b)=>a.localeCompare(b,"pt")).map(tag=>{
+                      {filterSheet==="ocasiao"?[...OCCASION_LIST].sort((a,b)=>a.localeCompare(b,"pt")).map(tag=>{
                         const active=activeOccasions.includes(tag);
                         return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                           border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                           color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                      }):allPacks.filter(pk=>!pk.system&&(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
+                        const active=activePack===pk.name;
+                        return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
+                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{pk.name}</button>);
                       })}
                     </div>
                   </div>
@@ -3993,12 +4026,18 @@ const RECIPE_PROFILES = {
                   </button>
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+                  <button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
+                    style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,cursor:"pointer",transition:"all .2s",
+                      background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
+                      color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.35)"}}>
+                    {activePack?activePack+" ×":"◈ Pack"}
+                  </button>
+                </div>
+                <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
-                    style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
-                    <div style={{width:22,height:13,borderRadius:7,background:swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.07)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.7)":"rgba(240,235,225,0.18)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
-                      <div style={{position:"absolute",top:2,left:swipeUnprovenOnly?9:2,width:7,height:7,borderRadius:4,background:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",transition:"left .2s"}}/>
-                    </div>
-                    Não provados
+                    style={{...CARD_TYPO.uiLabel,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
+                    {swipeUnprovenOnly?"Não provados ×":"◈ Não provados"}
                   </button>
                 </div>
               </div>
@@ -4046,7 +4085,7 @@ const RECIPE_PROFILES = {
                     <div style={{width:32,height:18,borderRadius:9,background:filterAnd?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)",border:`1px solid ${filterAnd?"rgba(160,120,90,0.8)":"rgba(240,235,225,0.15)"}`,position:"relative",transition:"all .2s",flexShrink:0}}>
                       <div style={{position:"absolute",top:3,left:filterAnd?14:3,width:10,height:10,borderRadius:5,background:filterAnd?"#C8A96E":"rgba(240,235,225,0.3)",transition:"left .2s"}}/>
                     </div>
-                    <span style={{fontSize:11,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.35)",transition:"color .2s",letterSpacing:.3}}>{filterAnd?"posso fazer":"qualquer um destes"}</span>
+                    <span style={{fontSize:11,color:filterAnd?"#C8A96E":"rgba(240,235,225,0.35)",transition:"color .2s",letterSpacing:.3}}>{filterAnd?"no mesmo drink":"qualquer um destes"}</span>
                   </button>
                 )}
               </div>
@@ -4080,7 +4119,7 @@ const RECIPE_PROFILES = {
               {/* receitas possíveis */}
               {owned.length>0&&(()=>{
                 const possiveis=filterAnd
-                  ?allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")&&hasAllIngredients(r))
+                  ?allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")&&owned.every(s=>r.categories.includes(s)))
                   :allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")&&owned.some(s=>r.categories.includes(s)));
                 if(!possiveis.length)return null;
                 return(
@@ -4088,9 +4127,9 @@ const RECIPE_PROFILES = {
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
                       <div style={{display:"flex",alignItems:"center",gap:10}}>
                         <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
-                        <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>{filterAnd?"Você pode fazer":"Drinks com estes"} <span style={{color:"#C8A96E",fontFamily:"'Gloock',serif",fontSize:14,letterSpacing:0,textTransform:"none",fontWeight:400}}>{possiveis.length}</span></span>
+                        <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>{filterAnd?"No mesmo drink":"Drinks com estes"} <span style={{color:"#C8A96E",fontFamily:"'Gloock',serif",fontSize:14,letterSpacing:0,textTransform:"none",fontWeight:400}}>{possiveis.length}</span></span>
                       </div>
-                      <button onClick={()=>{if(filterAnd){setFilterMode("tenho");}else{setActiveSpirits(owned);setFilterMode("tudo");}setMobileTab("explorar");}}
+                      <button onClick={()=>{setActiveSpirits(owned);setFilterAnd(filterAnd);setFilterMode("tudo");setMobileTab("explorar");}}
                         style={{...CARD_TYPO.uiLabel,color:"rgba(240,235,225,0.3)",background:"none",border:"none",cursor:"pointer"}}>
                         ver todos →
                       </button>
@@ -4133,7 +4172,7 @@ const RECIPE_PROFILES = {
               </div>
               {comanda.length===0?(
                 <div style={{textAlign:"center",padding:"80px 0",color:"rgba(240,235,225,0.3)"}}>
-                  <div style={{fontSize:44,marginBottom:14}}>◫</div>
+                  <div style={{marginBottom:14,opacity:0.4}}><svg width="44" height="44" viewBox="0 0 22 22" fill="none" stroke="rgba(200,169,110,0.9)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4 L19 4 L11 14 Z"/><line x1="11" y1="14" x2="11" y2="19"/><line x1="7" y1="19" x2="15" y2="19"/></svg></div>
                   <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontStyle:"italic",marginBottom:8}}>Comanda vazia</div>
                   <div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Adicione drinks pela ficha de cada receita</div>
                 </div>
@@ -4164,8 +4203,12 @@ const RECIPE_PROFILES = {
                         {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
                         {spiritTag&&<><span style={{...CARD_TYPO.tag,color:th.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
                       </div>
-                      <div style={{position:"absolute",bottom:12,left:14,right:comandaReorder?54:14}}>
-                        <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.15,marginBottom:7,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{r.name}</div>
+                      <div style={{position:"absolute",bottom:12,left:14,right:comandaReorder?54:14,display:"flex",flexDirection:"column",gap:5}}>
+                        {recipePackMap[r.name]&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"1px 7px 1px 5px",borderRadius:20,background:"rgba(0,0,0,0.48)",border:`1px solid ${th.accent}44`,backdropFilter:"blur(4px)"}}>
+                          <span style={{fontSize:7,color:th.accent,opacity:0.8,lineHeight:1}}>◈</span>
+                          <span style={{fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:`${th.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{recipePackMap[r.name]}</span>
+                        </div>}
+                        <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.15,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{r.name}</div>
                         <div style={{display:"flex",alignItems:"center",gap:6}}>
                           <div style={{height:2,width:20,background:th.accent,borderRadius:2,opacity:0.9}}/>
                           <div style={{width:4,height:2,borderRadius:1,background:th.accent,opacity:0.9}}/>
@@ -4291,6 +4334,14 @@ const RECIPE_PROFILES = {
                       color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                     {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                   </button>
+                  {/* pack */}
+                  <button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
+                    style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
+                      background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                      border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                      color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
+                    {activePack?activePack+" ×":"Pack"}
+                  </button>
                   {/* filtros rápidos */}
                   {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
                     <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
@@ -4300,7 +4351,7 @@ const RECIPE_PROFILES = {
                       {l}
                     </button>
                   ))}
-                  {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0)&&(
+                  {(activeStyle||activeSpirits.length||filterMode!=="tudo"||activeOccasions.length>0||activePack)&&(
                     <button onClick={clearAll} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",background:"none",border:"1px solid rgba(240,235,225,0.13)",color:"rgba(240,235,225,0.28)"}}>limpar</button>
                   )}
                 </div>
@@ -4339,6 +4390,19 @@ const RECIPE_PROFILES = {
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                           border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                           color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
+                      })}
+                    </div>
+                  </div>
+                )}
+                {filterSheet==="pack"&&(
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {allPacks.filter(pk=>!pk.system&&(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
+                        const active=activePack===pk.name;
+                        return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
+                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
+                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
+                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{pk.name}</button>);
                       })}
                     </div>
                   </div>
