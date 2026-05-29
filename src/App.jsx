@@ -1626,7 +1626,7 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
           <div style={{fontFamily:"'Gloock',serif",
             fontSize:recipe.name.length>22?19:recipe.name.length>18?21:recipe.name.length>14?24:27,
             fontWeight:400,lineHeight:1.15,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",
-            overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",
+            overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",paddingBottom:3,
             textShadow:"0 1px 4px rgba(0,0,0,0.9), 0 2px 16px rgba(0,0,0,0.7)"}}>{recipe.name}</div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{height:2,width:24,background:theme.accent,borderRadius:2,opacity:0.9}}/>
@@ -2771,7 +2771,8 @@ export default function OnTheRocks(){
         const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
         const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
         const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name));
+        const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
+        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
         setManagerRecipes(mRecipes);
       }catch(e){console.error(e);}
     }
@@ -2811,7 +2812,8 @@ export default function OnTheRocks(){
         const sysRecipeNames2=new Set(allPs2.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
         const nonSysRecipeNames2=new Set([...freeNames2,...allPs2.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
         const sysOnlyNames2=new Set([...sysRecipeNames2].filter(n=>!nonSysRecipeNames2.has(n)));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames2.has(r.name));
+        const deletarNames2=new Set(allPs2.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
+        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames2.has(r.name)&&!deletarNames2.has(r.name));
         setManagerRecipes(mRecipes);
       }catch{}
     }
@@ -4199,15 +4201,17 @@ const RECIPE_PROFILES = {
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.18) 0%, rgba(3,1,0,0.0) 18%, rgba(3,1,0,0.6) 60%, rgba(3,1,0,0.96) 100%)",pointerEvents:"none"}}/>
                       <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.8) 100%)",mixBlendMode:"multiply",pointerEvents:"none"}}/>
                       <div style={{position:"absolute",inset:0,borderRadius:12,pointerEvents:"none",mixBlendMode:"screen",background:`radial-gradient(ellipse 80% 45% at -8% 108%, ${th.accent} 0%, ${th.accent}aa 5%, ${th.accent}55 22%, ${th.accent}18 45%, transparent 68%)`}}/>
-                      <div style={{position:"absolute",top:12,left:14,display:"flex",gap:7,alignItems:"center"}}>
-                        {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
-                        {spiritTag&&<><span style={{...CARD_TYPO.tag,color:th.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
-                      </div>
-                      <div style={{position:"absolute",bottom:12,left:14,right:comandaReorder?54:14,display:"flex",flexDirection:"column",gap:5}}>
-                        {recipePackMap[r.name]&&<div style={{display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",padding:"1px 7px 1px 5px",borderRadius:20,background:"rgba(0,0,0,0.48)",border:`1px solid ${th.accent}44`,backdropFilter:"blur(4px)"}}>
+                      <div style={{position:"absolute",top:10,left:14,right:10,display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:6}}>
+                        <div style={{display:"flex",gap:7,alignItems:"center"}}>
+                          {styleTag&&<span style={CARD_TYPO.tag}>{styleTag}</span>}
+                          {spiritTag&&<><span style={{...CARD_TYPO.tag,color:th.accent,opacity:.3}}>·</span><span style={{...CARD_TYPO.tag,color:"rgba(240,235,225,0.42)"}}>{spiritTag}</span></>}
+                        </div>
+                        {recipePackMap[r.name]&&<div style={{display:"inline-flex",alignItems:"center",gap:4,flexShrink:0,padding:"1px 7px 1px 5px",borderRadius:20,background:"rgba(0,0,0,0.52)",border:`1px solid ${th.accent}44`,backdropFilter:"blur(4px)"}}>
                           <span style={{fontSize:7,color:th.accent,opacity:0.8,lineHeight:1}}>◈</span>
                           <span style={{fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:`${th.accent}CC`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{recipePackMap[r.name]}</span>
                         </div>}
+                      </div>
+                      <div style={{position:"absolute",bottom:12,left:14,right:comandaReorder?54:14,display:"flex",flexDirection:"column",gap:5}}>
                         <div style={{fontFamily:"'Gloock',serif",fontSize:r.name.length>22?15:r.name.length>16?17:19,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.15,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{r.name}</div>
                         <div style={{display:"flex",alignItems:"center",gap:6}}>
                           <div style={{height:2,width:20,background:th.accent,borderRadius:2,opacity:0.9}}/>
