@@ -3024,8 +3024,9 @@ export default function OnTheRocks(){
     if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
     return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
   },[devMode,allPacks,groupPackIds,unlockedPacks]);
-  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
-  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...customSpirits]),[customSpirits]);
+  const packSpirits=useMemo(()=>accessiblePacks.flatMap(pk=>pk.spirits||[]),[accessiblePacks]);
+  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,packSpirits,customSpirits]);
+  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...packSpirits,...customSpirits]),[packSpirits,customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
 
   const [ratingPopup,setRatingPopup]=useState(null);
@@ -3101,9 +3102,9 @@ export default function OnTheRocks(){
   },[]);
 
   const hasAllIngredients=useCallback(recipe=>{
-    const spirits=recipe.categories.filter(c=>SPIRIT_CATS.has(c)||customSpirits.includes(c));
+    const spirits=recipe.categories.filter(c=>SPIRIT_CATS.has(c)||customSpirits.includes(c)||packSpirits.includes(c));
     return spirits.length>0&&spirits.every(s=>owned.includes(s));
-  },[owned,customSpirits]);
+  },[owned,customSpirits,packSpirits]);
 
   const surpriseMe=useCallback(()=>{
     const pool=allRecipes.filter(r=>!tried.includes(r.name));
@@ -4141,8 +4142,8 @@ const RECIPE_PROFILES = {
               {/* receitas possíveis */}
               {owned.length>0&&(()=>{
                 const possiveis=filterAnd
-                  ?allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")&&owned.every(s=>r.categories.includes(s)))
-                  :allRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")&&owned.some(s=>r.categories.includes(s)));
+                  ?drinkRecipes.filter(r=>owned.every(s=>r.categories.includes(s)))
+                  :drinkRecipes.filter(r=>owned.some(s=>r.categories.includes(s)));
                 if(!possiveis.length)return null;
                 return(
                   <div>
