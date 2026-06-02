@@ -2732,6 +2732,7 @@ export default function OnTheRocks(){
   const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
   const [unlockedPacks,setUnlockedPacks]=useState([]);
   const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
+  const [groupPackIds,setGroupPackIds]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_group_packs')||'[]');}catch{return[];}});
   const [packConfigLoaded,setPackConfigLoaded]=useState(()=>!!localStorage.getItem('otr_cfg_free'));
   const [managerRecipes,setManagerRecipes]=useState([]);
   const mainRef=useRef();
@@ -2752,10 +2753,16 @@ export default function OnTheRocks(){
           const cfg=configSnap.data();
           freeNames=cfg.freeRecipes||[];
           setFreeRecipeNames(new Set(freeNames));
-          const adminEmails=(cfg.adminEmails||[]).map(a=>a.email||a);
-          const isAdmin=adminEmails.includes(auth.currentUser?.email||'');
-          setDevMode(isAdmin);
-          localStorage.setItem('otr_devmode',isAdmin?'1':'');
+          const userEmail=auth.currentUser?.email||'';
+          const ug=cfg.userGroups||{};
+          let isInGroup=false;let gPackIds=[];
+          for(const gd of Object.values(ug)){
+            if((gd.members||[]).some(m=>(m.email||m)===userEmail)){isInGroup=true;gPackIds=gd.packIds||[];break;}
+          }
+          setDevMode(isInGroup);
+          setGroupPackIds(gPackIds);
+          localStorage.setItem('otr_devmode',isInGroup?'1':'');
+          localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds));
           localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
         }
         allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
@@ -2794,10 +2801,16 @@ export default function OnTheRocks(){
           const cfg=configSnap.data();
           freeNames2=cfg.freeRecipes||[];
           setFreeRecipeNames(new Set(freeNames2));
-          const adminEmails=(cfg.adminEmails||[]).map(a=>a.email||a);
-          const isAdmin=adminEmails.includes(auth.currentUser?.email||'');
-          setDevMode(isAdmin);
-          localStorage.setItem('otr_devmode',isAdmin?'1':'');
+          const userEmail2=auth.currentUser?.email||'';
+          const ug2=cfg.userGroups||{};
+          let isInGroup2=false;let gPackIds2=[];
+          for(const gd of Object.values(ug2)){
+            if((gd.members||[]).some(m=>(m.email||m)===userEmail2)){isInGroup2=true;gPackIds2=gd.packIds||[];break;}
+          }
+          setDevMode(isInGroup2);
+          setGroupPackIds(gPackIds2);
+          localStorage.setItem('otr_devmode',isInGroup2?'1':'');
+          localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds2));
           localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames2));
         }
         allPs2=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
@@ -3139,11 +3152,10 @@ export default function OnTheRocks(){
   const filtered=useMemo(()=>{
     if(!packConfigLoaded)return[];
     let list=allRecipes.filter(r=>{
-      if(!devMode&&freeRecipeNames.size>0&&!r.custom){
-      const inFree=freeRecipeNames.has(r.name);
-      const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));
-      if(!inFree&&!inUnlocked)return false;
-    }
+      if(!r.custom){
+        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
+        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
+      }
     if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
       if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
       if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
@@ -3162,7 +3174,7 @@ export default function OnTheRocks(){
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,unlockedPacks,devMode,packConfigLoaded,recipePackMap]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded,recipePackMap]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
@@ -3170,14 +3182,13 @@ export default function OnTheRocks(){
   const accessibleRecipes=useMemo(()=>{
     if(!packConfigLoaded)return[];
     return allRecipes.filter(r=>{
-      if(!devMode&&freeRecipeNames.size>0&&!r.custom){
-        const inFree=freeRecipeNames.has(r.name);
-        const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));
-        if(!inFree&&!inUnlocked)return false;
+      if(!r.custom){
+        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
+        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
       }
       return true;
     });
-  },[allRecipes,devMode,freeRecipeNames,availPacks,unlockedPacks,packConfigLoaded]);
+  },[allRecipes,devMode,groupPackIds,freeRecipeNames,availPacks,allPacks,unlockedPacks,packConfigLoaded]);
 
   const drinkRecipes=useMemo(()=>accessibleRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[accessibleRecipes]);
   const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
