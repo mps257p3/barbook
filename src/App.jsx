@@ -3014,7 +3014,16 @@ export default function OnTheRocks(){
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
   const [recipeProfiles,setRecipeProfiles]=useState({});
 
-  const recipePackMap=useMemo(()=>{const m={};for(const pk of allPacks){if(!pk.system){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}return m;},[allPacks]);
+  const recipePackMap=useMemo(()=>{
+    const m={};
+    const accessibleIds=devMode?new Set(groupPackIds):new Set(unlockedPacks);
+    for(const pk of allPacks){if(!pk.system&&accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
+    return m;
+  },[allPacks,devMode,groupPackIds,unlockedPacks]);
+  const accessiblePacks=useMemo(()=>{
+    if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
+    return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
+  },[devMode,allPacks,groupPackIds,unlockedPacks]);
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...customSpirits])].sort(),[allRecipes,customSpirits]);
   const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...customSpirits]),[customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
@@ -4019,7 +4028,7 @@ const RECIPE_PROFILES = {
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                           border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                           color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
-                      }):allPacks.filter(pk=>!pk.system&&(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
+                      }):accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
                         const active=activePack===pk.name;
                         return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
@@ -4039,13 +4048,13 @@ const RECIPE_PROFILES = {
                   </button>
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-                  <button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
+                  {accessiblePacks.length>0&&<button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
                     style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,cursor:"pointer",transition:"all .2s",
                       background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                       border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
                       color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.35)"}}>
                     {activePack?activePack+" ×":"◈ Pack"}
-                  </button>
+                  </button>}
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
@@ -4350,13 +4359,13 @@ const RECIPE_PROFILES = {
                     {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                   </button>
                   {/* pack */}
-                  <button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
+                  {accessiblePacks.length>0&&<button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
                     style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
                       background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                       border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                       color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                     {activePack?activePack+" ×":"Pack"}
-                  </button>
+                  </button>}
                   {/* filtros rápidos */}
                   {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
                     <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
@@ -4412,7 +4421,7 @@ const RECIPE_PROFILES = {
                 {filterSheet==="pack"&&(
                   <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                      {allPacks.filter(pk=>!pk.system&&(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
+                      {accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
                         const active=activePack===pk.name;
                         return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
