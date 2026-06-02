@@ -2733,7 +2733,7 @@ export default function OnTheRocks(){
   const [unlockedPacks,setUnlockedPacks]=useState([]);
   const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
   const [groupPackIds,setGroupPackIds]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_group_packs')||'[]');}catch{return[];}});
-  const [packConfigLoaded,setPackConfigLoaded]=useState(()=>!!localStorage.getItem('otr_cfg_free'));
+  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
   const [managerRecipes,setManagerRecipes]=useState([]);
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
@@ -3849,7 +3849,7 @@ const RECIPE_PROFILES = {
         <div style={{display:"flex",alignItems:"center",gap:10,marginRight:4}}>
           <div style={{display:"flex",flexDirection:"column",gap:1,alignItems:"flex-end"}}>
             <button onClick={()=>{setFilterMode("tudo");setActiveStyle(null);setActiveSpirits([]);setSearch("");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
-              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{drinkRecipes.length} receitas</span>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{packConfigLoaded?`${drinkRecipes.length} receitas`:"—"}</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provados</span>
@@ -3897,7 +3897,7 @@ const RECIPE_PROFILES = {
           {mobileTab==="descobrir"&&!swipeRecipe ? (
             <div className="disc-stage" style={{position:"fixed",inset:"70px 0 65px 0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12,opacity:.45}}>
               <span style={{fontSize:28}}>🥃</span>
-              <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>nenhuma receita encontrada</span>
+              <span style={{fontSize:11,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.5)"}}>{packConfigLoaded?"nenhuma receita encontrada":"carregando…"}</span>
             </div>
           ) : mobileTab==="descobrir"&&swipeRecipe ? (
             <div className="disc-stage" style={{position:"fixed",inset:`70px 0 calc(50px + env(safe-area-inset-bottom, 8px)) 0`,display:"flex",flexDirection:"column",alignItems:"center",overflow:"hidden",touchAction:"none",backgroundColor:`${getTheme(swipeRecipe.categories).accent}06`,transition:"background-color 1.1s ease"}}>
@@ -4464,8 +4464,8 @@ const RECIPE_PROFILES = {
               {filtered.length===0?(
                 <div style={{textAlign:"center",padding:"80px 0",color:"rgba(240,235,225,0.52)"}}>
                   <div style={{fontSize:48,marginBottom:16}}>🍹</div>
-                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontStyle:"italic",marginBottom:8}}>Nenhum drink encontrado</div>
-                  <div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Tente outros filtros</div>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:22,fontStyle:"italic",marginBottom:8}}>{packConfigLoaded?"Nenhum drink encontrado":"Carregando receitas…"}</div>
+                  {packConfigLoaded&&<div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Tente outros filtros</div>}
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
