@@ -30,7 +30,7 @@ const TYPE_THEME = {
 
 const STYLE_PRIORITY = ["Não alcóolicos","Sour","Highball","Collins","Sparkling","Spritz","Fizz","Buck","Beer Highballs","Smash","Sling","Hot","Frozen","Tiki","Blended","Stirred","Shaken","Built","Preparos Caseiros"];
 const STYLE_CATS = new Set(STYLE_PRIORITY);
-const SPIRIT_CATS = new Set(["Gin","Rum Branco","Rum Envelhecido","Vodka","Whisky","Tequila","Mezcal","Pisco","Conhaque","Campari","Aperol","Cynar","Averna","Drambuie","Absinto","Amaretto","Amaro","St‑Germain","Licor","Licor Beirão","Luxardo Maraschino","Triple Sec","Espumante","Vermute Bianco","Vermute Rosso","Vermute seco","Ginger Beer","Cachaça","Cachaça Envelhecida","Fernet","Licor Strega","Jerez","Porto","Lillet","Vinho"]);
+const SPIRIT_CATS = new Set(["Absinto","Amaretto","Amaro","Aperol","Averna","Cachaça","Cachaça Envelhecida","Campari","Conhaque","Cynar","Drambuie","Espumante","Fernet","Gin","Ginger Beer","Jerez","Licor","Licor Beirão","Licor Strega","Lillet","Luxardo Maraschino","Mezcal","Pisco","Porto","Rum Branco","Rum Envelhecido","St‑Germain","Tequila","Triple Sec","Vermute Bianco","Vermute Rosso","Vermute seco","Vinho","Vodka","Whisky"]);
 const ALL_SPIRIT_OPTIONS = [...SPIRIT_CATS].sort();
 const FAMILY_GROUPS = [
   { label:"Família", items:["Sour","Highball","Collins","Sparkling","Spritz","Fizz","Sling","Buck","Beer Highballs","Smash","Hot","Frozen","Tiki","Blended","Não alcóolicos"] },
