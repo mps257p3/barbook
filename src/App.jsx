@@ -1770,8 +1770,9 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           onPointerUp={posEditMode?onPosPointerUp:undefined}
           onPointerCancel={posEditMode?onPosPointerUp:undefined}
         >
-          {/* foto do hero — assenta com leve zoom ao abrir (transição de cena) */}
-          <div className="otr-hero-settle" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual,heroBgPos)}}/>
+          {/* foto do hero — assenta com zoom ao abrir e segue com movimento
+              lento de câmera; fica estática no modo de reposicionamento */}
+          <div className={posEditMode?undefined:"otr-hero-live"} style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual,heroBgPos)}}/>
           {/* gradient fades bg image from hero through profile section, fully solid at yellow line */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.45) 52%, rgba(10,9,6,0.78) 72%, rgba(10,9,6,1.0) 90%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",opacity:posEditMode?0.25:1,pointerEvents:"none",transition:"opacity .25s"}}/>
@@ -2234,29 +2235,25 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
   return(
     <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"7% 16px 112px",userSelect:"none"}}>
 
-      {/* card — o transform do gesto fica NESTE wrapper (sem clipping/borda),
-          separado da camada da foto animada: evita o shimmer de transforms
-          aninhados dentro de elemento com border-radius+overflow no Android */}
+      {/* card */}
       <div className="disc-card" style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
-        transition:dragging?"opacity 0.4s ease":gone?"opacity 0.4s ease, transform .3s cubic-bezier(.4,0,.6,1)":"opacity 0.4s ease, transform .38s cubic-bezier(.34,1.56,.64,1)"}}>
+        transition:"opacity 0.4s ease"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
           style={{
             width:"100%",height:"100%",
             backgroundColor:"#0A0906",
+            ...buildCardBgEditorial(displayVisual),
             borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"pointer",
+            transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
+            transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
             boxShadow:`0 2px 6px rgba(0,0,0,0.9), 0 8px 18px rgba(0,0,0,0.75), 0 0 28px ${theme.accent}12, 0 0 8px ${theme.accent}18`,
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
-
-          {/* foto com movimento lento de câmera (Ken Burns) — pausa durante o
-              arrasto para o zoom não brigar com o transform do gesto (flicker) */}
-          <div className="otr-kenburns" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual),animationPlayState:(dragging||gone)?"paused":"running"}}/>
 
           {/* gradient overlay — cinematic */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)",pointerEvents:"none",zIndex:1}}/>
@@ -4544,7 +4541,7 @@ export default function OnTheRocks(){
               ):(
                 <div key={`stg|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
                   {filtered.map((r,i)=>(
-                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,12)*45}ms`}}>
+                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,10)*60}ms`}}>
                       <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>
                     </div>
                   ))}

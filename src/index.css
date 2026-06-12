@@ -27,14 +27,11 @@ body {
   from { transform: scale(1); }
   to   { transform: scale(1.07); }
 }
-.otr-kenburns {
-  animation: otrKenBurns 18s ease-in-out infinite alternate;
-}
 @keyframes otrCardIn {
-  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  from { opacity: 0; transform: translateY(32px) scale(0.96); }
   to   { opacity: 1; transform: none; }
 }
-.otr-stagger { animation: otrCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.otr-stagger { animation: otrCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes otrFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes otrSheetIn {
   from { opacity: 0; transform: translateY(52px) scale(0.93); }
@@ -46,9 +43,13 @@ body {
 }
 .otr-modal-backdrop { animation: otrFadeIn 0.3s ease both; }
 .otr-modal-sheet    { animation: otrSheetIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.otr-hero-settle    { animation: otrHeroSettle 0.95s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.otr-hero-live {
+  animation:
+    otrHeroSettle 0.95s cubic-bezier(0.22, 1, 0.36, 1) both,
+    otrKenBurns 22s ease-in-out 0.95s infinite alternate;
+}
 @media (prefers-reduced-motion: reduce) {
-  .otr-kenburns, .otr-stagger, .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-settle { animation: none; }
+  .otr-stagger, .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-live { animation: none; }
 }
 
 /* ── On the Rocks — card particle overlays ── */
