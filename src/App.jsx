@@ -2253,8 +2253,9 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             touchAction:"none",
           }}>
 
-          {/* foto com movimento lento de câmera (Ken Burns) */}
-          <div className="otr-kenburns" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual)}}/>
+          {/* foto com movimento lento de câmera (Ken Burns) — pausa durante o
+              arrasto para o zoom não brigar com o transform do gesto (flicker) */}
+          <div className="otr-kenburns" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual),animationPlayState:(dragging||gone)?"paused":"running"}}/>
 
           {/* gradient overlay — cinematic */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)",pointerEvents:"none",zIndex:1}}/>
@@ -4540,9 +4541,9 @@ export default function OnTheRocks(){
                   {packConfigLoaded&&<div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Tente outros filtros</div>}
                 </div>
               ):(
-                <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
+                <div key={`stg|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
                   {filtered.map((r,i)=>(
-                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,8)*30}ms`}}>
+                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,12)*45}ms`}}>
                       <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>
                     </div>
                   ))}
