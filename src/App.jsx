@@ -2234,10 +2234,13 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
   return(
     <div style={{position:"relative",width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"7% 16px 112px",userSelect:"none"}}>
 
-      {/* card */}
+      {/* card — o transform do gesto fica NESTE wrapper (sem clipping/borda),
+          separado da camada da foto animada: evita o shimmer de transforms
+          aninhados dentro de elemento com border-radius+overflow no Android */}
       <div className="disc-card" style={{position:"relative",zIndex:1,width:"100%",maxWidth:285,height:"100%",
         opacity:visible?1:0,
-        transition:"opacity 0.4s ease"}}>
+        transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
+        transition:dragging?"opacity 0.4s ease":gone?"opacity 0.4s ease, transform .3s cubic-bezier(.4,0,.6,1)":"opacity 0.4s ease, transform .38s cubic-bezier(.34,1.56,.64,1)"}}>
 
         <div ref={cardRef}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
@@ -2246,8 +2249,6 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             backgroundColor:"#0A0906",
             borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"pointer",
-            transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
-            transition:dragging?"none":gone?"transform .3s cubic-bezier(.4,0,.6,1)":"transform .38s cubic-bezier(.34,1.56,.64,1)",
             boxShadow:`0 2px 6px rgba(0,0,0,0.9), 0 8px 18px rgba(0,0,0,0.75), 0 0 28px ${theme.accent}12, 0 0 8px ${theme.accent}18`,
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
