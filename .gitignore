@@ -5,6 +5,9 @@ dist
 dist-ssr
 *.local
 
+# arquivos temporários de edição
+*.tmp.*
+
 .vercel
 
 # Signing keys - never commit these

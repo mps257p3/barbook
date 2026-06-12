@@ -8,7 +8,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
   cacheDir: `${os.homedir()}/.vite-cache/on-the-rocks`,
-  build: { emptyOutDir: false },
+  // limpa builds antigos — sem isso o precache do PWA acumula bundles obsoletos
+  build: { emptyOutDir: true },
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
@@ -27,6 +28,9 @@ export default defineConfig(({ mode }) => {
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       includeAssets: ['Icon.png'],
       manifest: {
         name: 'On the Rocks',
@@ -45,30 +49,20 @@ export default defineConfig(({ mode }) => {
           { src: 'Icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: 'Icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           { src: 'Icon.png', sizes: '1024x1024', type: 'image/png', purpose: 'any' }
-        ]
-      },
-      workbox: {
-        skipWaiting: true,
-        clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
-        globIgnores: ['bg/**'],
-        navigateFallbackDenylist: [/^\/\.well-known\//, /^\/api\//],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts', expiration: { maxEntries: 10, maxAgeSeconds: 60*60*24*365 } }
-          },
-          {
-            urlPattern: /\/\.well-known\//,
-            handler: 'NetworkOnly',
-          },
-          {
-            urlPattern: /\/bg\//,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'bg-images', expiration: { maxEntries: 15, maxAgeSeconds: 60*60*24*7 } }
+        ],
+        share_target: {
+          action: '/share-target',
+          method: 'POST',
+          enctype: 'multipart/form-data',
+          params: {
+            files: [{ name: 'images', accept: ['image/*'] }]
           }
-        ]
+        }
+      },
+      // runtime caching, navigation fallback e share-target vivem em src/sw.js
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        globIgnores: ['bg/**']
       }
     })
   ],

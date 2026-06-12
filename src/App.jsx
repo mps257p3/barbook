@@ -1,8 +1,7 @@
-﻿import { useState, useMemo, useCallback, useEffect, useRef, useId } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, memo } from "react";
 import { onAuthStateChanged, deleteUser } from "firebase/auth";
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 import { auth, db, signInWithGoogle, signOutUser, getRedirectResult } from "./firebase";
-import html2canvas from "html2canvas";
 
 // ─── TEMA POR FAMÍLIA ─────────────────────────────────────────────────────────
 const TYPE_THEME = {
@@ -92,6 +91,16 @@ const FAMILY_DESC = {
 
 const norm = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const capFirst = s => typeof s==="string"&&s.length ? s.charAt(0).toUpperCase()+s.slice(1) : s;
+// chave de override de uma receita base: o nome original, mesmo após renomear
+const ovKey = r => r._origName || r.name;
+
+// separa "60 ml suco de limão" em { amount:"60 ml", name:"suco de limão" } para
+// exibir com dot leaders; strings sem medida reconhecível rendem como texto puro
+const MEASURE_RE = /^([\d½¼¾⅓⅔][\d.,/½¼¾⅓⅔]*\s*(?:ml|cl|l|oz|g|kg|dashe?s?|gotas?|colher(?:es)?(?:\s+de\s+(?:chá|sopa))?|col\.?\s*(?:de\s*)?(?:chá|sopa)|pitadas?|partes?|barspoons?|xícaras?|cm))(?:\s+de)?\s+(.+)$/i;
+const splitMeasure = s => {
+  const m = (s||"").match(MEASURE_RE);
+  return m ? { amount:m[1].trim(), name:m[2] } : null;
+};
 
 // ─── SISTEMA TIPOGRÁFICO — Descobrir + Receita aberta ─────────────────────────
 // Fonte única de verdade. Altere aqui e afeta toda a tela.
@@ -1332,8 +1341,6 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
   const removeListItem = (k,i) => setForm(f=>({...f,[k]:f[k].filter((_,j)=>j!==i)}));
   const toggleCat = c => setField("categories", form.categories.includes(c) ? form.categories.filter(x=>x!==c) : [...form.categories, c]);
 
-  useEffect(()=>{if(sharedFiles?.length>0)scanPhoto(sharedFiles);},[]);// eslint-disable-line
-
   const scanPhoto = useCallback(async (files) => {
     const fileArr = Array.from(files||[]).filter(Boolean);
     if (!fileArr.length) return;
@@ -1345,7 +1352,6 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
       setScanErr("Você já usou as 10 leituras de imagem disponíveis por hoje. Volte amanhã — sua barra vai continuar aqui! 🍹");
       return;
     }
-    localStorage.setItem(rlKey, String(used + 1));
     setScanning(true); setScanErr(null);
     setPreviewImgs(fileArr.map(f=>URL.createObjectURL(f)));
     try {
@@ -1362,12 +1368,17 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
         if (response.status === 429) throw new Error("Limite de uso atingido. Tente novamente mais tarde.");
         throw new Error("Serviço indisponível no momento. Tente novamente em breve.");
       }
+      // só consome a cota diária quando a leitura de fato aconteceu
+      localStorage.setItem(rlKey, String(used + 1));
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       const newCats=[...new Set([...(parsed.styles||[]),...(parsed.spirits||[])])];
       setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
     } catch (e) { setScanErr(e?.message || "Não foi possível ler a receita. Tente novamente."); }
     setScanning(false);
   }, []);
+
+  // imagens vindas do Web Share Target (compartilhadas de outro app) já chegam prontas
+  useEffect(()=>{ if(sharedFiles?.length>0) scanPhoto(sharedFiles); },[]);// eslint-disable-line
 
   const suggestCategories = useCallback(async () => {
     if (!form.ingredients.filter(Boolean).length && !form.name) return;
@@ -1383,7 +1394,7 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
         throw new Error("Serviço indisponível.");
       }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
-      setField("categories", [...new Set([...form.categories,...(parsed.styles||[]),...(parsed.spirits||[])])]);
+      setForm(f=>({...f,categories:[...new Set([...f.categories,...(parsed.styles||[]),...(parsed.spirits||[])])]}));
       if (parsed.signature) {
         setForm(f=>({...f,
           ...(!f.flavors && parsed.signature.flavors ? {flavors:parsed.signature.flavors} : {}),
@@ -1419,7 +1430,7 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
 
   const handleSave = () => {
     if (!form.name.trim()) return;
-    onSave({ ...form, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), custom:initial?.custom??true, id:initial?.id||Date.now() });
+    onSave({ ...form, originalName:initial?.name, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), custom:initial?.custom??true, id:initial?.id||Date.now() });
   };
 
   const inp = (extra={}) => ({ style:{ width:"100%", background:"rgba(240,235,225,0.04)", border:"1px solid rgba(240,235,225,0.16)", borderRadius:3, padding:"8px 11px", color:"#F0EBE1", fontSize:13, outline:"none", fontFamily:"Archivo,sans-serif", ...extra.style }, ...extra });
@@ -1565,19 +1576,10 @@ function ConfirmDialog({ message, onConfirm, onCancel, danger=false }) {
   );
 }
 
-// ─── NOISE OVERLAY ────────────────────────────────────────────────────────────
-function NoiseOverlay({opacity=0.038}){
-  const id=useId();
-  return(
-    <svg aria-hidden="true" style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",opacity,mixBlendMode:"overlay"}}>
-      <filter id={id}><feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
-      <rect width="100%" height="100%" filter={`url(#${id})`}/>
-    </svg>
-  );
-}
-
 // ─── CARD ─────────────────────────────────────────────────────────────────────
-function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS,customBg,packName}){
+// memo: só re-renderiza quando os dados visíveis mudam — os handlers são
+// ignorados de propósito (seu comportamento é coberto pelos props comparados)
+const DrinkCard=memo(function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAll,onClick,onDelete,spiritCats=SPIRIT_CATS,customBg,packName}){
   const theme=getTheme(recipe.categories);
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
@@ -1665,7 +1667,16 @@ function DrinkCard({recipe,isFav,onFav,isTried,onTried,isComanda,onComanda,hasAl
       )}
     </div>
   );
-}
+},(prev,next)=>
+  prev.recipe===next.recipe&&
+  prev.isFav===next.isFav&&
+  prev.isTried===next.isTried&&
+  prev.isComanda===next.isComanda&&
+  prev.hasAll===next.hasAll&&
+  prev.customBg===next.customBg&&
+  prev.packName===next.packName&&
+  prev.spiritCats===next.spiritCats
+);
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
 function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,onRating,onNote,onFilter,onEdit,onDelete,onRepo,profile,spiritCats=SPIRIT_CATS,customBg,onSetCustomBg,onClearCustomBg,bgOffset,onSetBgOffset,packName}){
@@ -1694,11 +1705,12 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const [qty,setQty]=useState(1);
   const scaleIng=useCallback((ing,q)=>{
     if(q===1)return ing;
-    return ing.replace(/^([\d]+(?:[.,][\d]+)?(?:\/[\d]+)?)\s*/,(match,num)=>{
-      const n=parseFloat(num.replace(",",".").replace(/(\d+)\/(\d+)/,(_,a,b)=>a/b));
+    const FRAC={"½":0.5,"¼":0.25,"¾":0.75,"⅓":1/3,"⅔":2/3};
+    return ing.replace(/^([\d]+(?:[.,][\d]+)?(?:\/[\d]+)?|[½¼¾⅓⅔])\s*/,(match,num)=>{
+      const n=FRAC[num]!==undefined?FRAC[num]:parseFloat(num.replace(",",".").replace(/(\d+)\/(\d+)/,(_,a,b)=>a/b));
       if(isNaN(n))return match;
       const s=Math.round(n*q*10)/10;
-      return (s%1===0?s:s)+' ';
+      return s+' ';
     });
   },[]);
   const toggleCheck=i=>setChecked(p=>{const n=new Set(p);n.has(i)?n.delete(i):n.add(i);return n;});
@@ -1709,22 +1721,27 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
     if(!shareCardRef.current||sharing)return;
     setSharing(true);
     try{
+      // carregado sob demanda — html2canvas só é necessário ao compartilhar
+      const html2canvas=(await import("html2canvas")).default;
       const canvas=await html2canvas(shareCardRef.current,{backgroundColor:null,scale:2,logging:false,useCORS:true});
-      canvas.toBlob(async blob=>{
-        if(!blob){setSharing(false);return;}
+      const blob=await new Promise(res=>canvas.toBlob(res,"image/png"));
+      if(blob){
         const file=new File([blob],`${recipe.name.toLowerCase().replace(/\s+/g,"-")}.png`,{type:"image/png"});
+        let shared=false;
         if(navigator.canShare&&navigator.canShare({files:[file]})){
-          try{await navigator.share({files:[file],title:recipe.name});}
-          catch{}
-        } else {
+          try{await navigator.share({files:[file],title:recipe.name});shared=true;}
+          catch(err){if(err?.name==="AbortError")shared=true;}
+        }
+        if(!shared){
+          // fallback: baixa a imagem quando o share não está disponível ou falhou
           const url=URL.createObjectURL(blob);
           const a=document.createElement("a");
           a.href=url;a.download=file.name;a.click();
           setTimeout(()=>URL.revokeObjectURL(url),1000);
         }
-        setSharing(false);
-      },"image/png");
-    }catch{setSharing(false);}
+      }
+    }catch{}
+    setSharing(false);
   },[recipe,sharing]);
 
   const generateSteps=useCallback(async()=>{
@@ -1741,18 +1758,20 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const spiritTags=recipe.categories.filter(c=>spiritCats.has(c));
 
   return(
-    <div onClick={posEditMode?undefined:onClose} style={{position:"fixed",inset:0,background:posEditMode?"rgba(0,0,0,0.88)":"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
+    <div className="otr-modal-backdrop" onClick={posEditMode?undefined:onClose} style={{position:"fixed",inset:0,background:posEditMode?"rgba(0,0,0,0.88)":"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
       {posEditMode&&customBg&&<div style={{position:"absolute",inset:0,backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:heroBgPos,opacity:0.2,pointerEvents:"none"}}/>}
-      <div onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
+      <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
 
         {/* ── HERO + PROFILE wrapper — shared bg image fades through profile to yellow line ── */}
         <div
-          style={{position:"relative",backgroundColor:"#0A0906",...buildCardBgEditorial(displayVisual,heroBgPos),borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0,cursor:posEditMode?"crosshair":"default",touchAction:posEditMode?"none":"auto"}}
+          style={{position:"relative",backgroundColor:"#0A0906",borderRadius:"6px 6px 0 0",overflow:"hidden",flexShrink:0,cursor:posEditMode?"crosshair":"default",touchAction:posEditMode?"none":"auto"}}
           onPointerDown={posEditMode?onPosPointerDown:undefined}
           onPointerMove={posEditMode?onPosPointerMove:undefined}
           onPointerUp={posEditMode?onPosPointerUp:undefined}
           onPointerCancel={posEditMode?onPosPointerUp:undefined}
         >
+          {/* foto do hero — assenta com leve zoom ao abrir (transição de cena) */}
+          <div className="otr-hero-settle" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual,heroBgPos)}}/>
           {/* gradient fades bg image from hero through profile section, fully solid at yellow line */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.45) 52%, rgba(10,9,6,0.78) 72%, rgba(10,9,6,1.0) 90%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",opacity:posEditMode?0.25:1,pointerEvents:"none",transition:"opacity .25s"}}/>
@@ -1882,12 +1901,22 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{display:"flex",flexDirection:"column",gap:1,marginBottom:26}}>
             {recipe.ingredients.map((ing,i)=>{
               const done=checked.has(i);
+              const scaled=scaleIng(ing,qty);
+              const parts=splitMeasure(scaled);
               return(
                 <div key={i} onClick={()=>toggleCheck(i)} style={{display:"flex",gap:10,alignItems:"center",padding:"4px 10px",borderRadius:4,cursor:"pointer",background:done?"rgba(240,235,225,0.02)":"transparent",transition:"all .15s"}}>
                   <div style={{width:16,height:16,borderRadius:3,border:`1px solid ${done?theme.accent+"66":"rgba(240,235,225,0.15)"}`,background:done?theme.accent+"22":"transparent",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .15s"}}>
                     {done&&<span style={{fontSize:10,color:theme.accent,lineHeight:1}}>✓</span>}
                   </div>
-                  <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(scaleIng(ing,qty))}</span>
+                  {parts?(
+                    <span style={{flex:1,minWidth:0,display:"flex",alignItems:"baseline",gap:8}}>
+                      <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(parts.name)}</span>
+                      <span aria-hidden="true" style={{flex:1,minWidth:14,borderBottom:`1px dotted ${done?"rgba(231,224,205,0.10)":"rgba(231,224,205,0.22)"}`,transform:"translateY(-4px)"}}/>
+                      <span style={{...CARD_TYPO.bodyText,whiteSpace:"nowrap",color:done?"rgba(240,235,225,0.2)":theme.label,textDecoration:done?"line-through":"none",transition:"all .15s"}}>{parts.amount}</span>
+                    </span>
+                  ):(
+                    <span style={{...CARD_TYPO.bodyText,color:done?"rgba(240,235,225,0.2)":"rgba(231,224,205,0.70)",textDecoration:done?"line-through":"none",transition:"all .15s"}}>{capFirst(scaled)}</span>
+                  )}
                 </div>
               );
             })}
@@ -2215,7 +2244,6 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
           style={{
             width:"100%",height:"100%",
             backgroundColor:"#0A0906",
-            ...buildCardBgEditorial(displayVisual),
             borderRadius:16,position:"relative",overflow:"hidden",
             cursor:dragging?"grabbing":"pointer",
             transform:`translateX(${activeDrag}px) rotate(${rotate}deg) scale(${scale})`,
@@ -2224,6 +2252,9 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
             border:`1.5px solid ${theme.accent}`,
             touchAction:"none",
           }}>
+
+          {/* foto com movimento lento de câmera (Ken Burns) */}
+          <div className="otr-kenburns" style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual)}}/>
 
           {/* gradient overlay — cinematic */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(3,1,0,0.28) 0%, rgba(3,1,0,0.0) 22%, rgba(3,1,0,0.42) 55%, rgba(3,1,0,0.92) 100%)",pointerEvents:"none",zIndex:1}}/>
@@ -2300,14 +2331,14 @@ function SwipeCard({recipe,onComanda,isComanda,onTried,isTried,onNext,onPrev,has
               {p?.perfil&&(
                 <div style={{display:"flex",justifyContent:"space-between",paddingTop:10,borderTop:`1.5px solid ${theme.accent}30`}}>
                   {[["◈","Perfil",p.perfil,p.perfil_desc],["❋","Sensação",p.sensacao,p.sensacao_desc],["✦","Ocasião",p.ocasiao,p.ocasiao_desc]].map((item,i)=>(
-                    <>
-                      {i>0&&<div key={`sep${i}`} style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
-                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
+                    <div key={i} style={{display:"contents"}}>
+                      {i>0&&<div style={{width:1,alignSelf:"stretch",background:`${theme.accent}28`,flexShrink:0,margin:"0 2px"}}/>}
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,flex:1}}>
                         <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
                         <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
                         <span style={{...CARD_TYPO.sigValue,fontSize:item[2]?.length>10?7:item[2]?.length>7?8:9}}>{item[2]}</span>
                       </div>
-                    </>
+                    </div>
                   ))}
                 </div>
               )}
@@ -2477,9 +2508,10 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
     setAuthError(null);setAuthLoading(true);
     try{ await signInWithGoogle(); }
     catch(e){
-      if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"){
-        try{ await signInWithGoogle(); }catch(e2){ setAuthError(e2.message||e2.code); }
-      } else { setAuthError(e.message||e.code); }
+      // usuário fechou/cancelou o popup: não é erro nem motivo para reabrir
+      if(e.code!=="auth/popup-closed-by-user"&&e.code!=="auth/cancelled-popup-request"){
+        setAuthError(e.message||e.code);
+      }
     }
     setAuthLoading(false);
   };
@@ -2702,617 +2734,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
 }
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
-export default function OnTheRocks(){
-  const [user,setUser]=useState(null);
-  const [syncing,setSyncing]=useState(false);
-
-  const [showTutorial,setShowTutorial]=useState(()=>!localStorage.getItem("otr_tutorial_done"));
-  const closeTutorial=useCallback(()=>{localStorage.setItem("otr_tutorial_done","1");setShowTutorial(false);},[]);
-
-  const [customRecipes,setCustomRecipes]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom")||"[]");}catch{return[];}});
-  const [favs,setFavs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_favs")||"[]");}catch{return[];}});
-  const [comanda,setComanda]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_comanda")||"[]");}catch{return[];}});
-  const [comandaReorder,setComandaReorder]=useState(false);
-  const [comandaGroups,setComandaGroups]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_comanda_groups')||'[]');}catch{return[];}});
-  const [comandaLongPress,setComandaLongPress]=useState(null);
-  const [showNewGroupInput,setShowNewGroupInput]=useState(false);
-  const [newGroupName,setNewGroupName]=useState('');
-  const [editGroupId,setEditGroupId]=useState(null);
-  const [editGroupName,setEditGroupName]=useState('');
-  const [ungroupedCollapsed,setUngroupedCollapsed]=useState(false);
-  const pressTimerRef=useRef(null);
-  const [owned,setOwned]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_owned")||"[]");}catch{return[];}});
-  const [tried,setTried]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_tried")||"[]");}catch{return[];}});
-  const [customSpirits,setCustomSpirits]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_spirits")||"[]");}catch{return[];}});
-  const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
-  const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
-  const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
-  const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
-  const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
-  const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
-  const [unlockedPacks,setUnlockedPacks]=useState([]);
-  const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
-  const [groupPackIds,setGroupPackIds]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_group_packs')||'[]');}catch{return[];}});
-  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
-  const [managerRecipes,setManagerRecipes]=useState([]);
-  const mainRef=useRef();
-  const explorarScrollRef=useRef({pos:0,tab:"explorar"});
-  const barScrollRef=useRef(0);
-
-  // ── Carrega config de packs (receitas livres + packs à venda) ──
-  useEffect(()=>{
-    async function loadPackConfig(){
-      let allPs=[];
-      let freeNames=[];
-      try{
-        const [configSnap,packsSnap]=await Promise.all([
-          getDoc(doc(db,"manager","config")),
-          getDocs(collection(db,"packs"))
-        ]);
-        if(configSnap.exists()){
-          const cfg=configSnap.data();
-          freeNames=cfg.freeRecipes||[];
-          setFreeRecipeNames(new Set(freeNames));
-          const userEmail=auth.currentUser?.email||'';
-          const ug=cfg.userGroups||{};
-          let isInGroup=false;let gPackIds=[];
-          for(const gd of Object.values(ug)){
-            if((gd.members||[]).some(m=>(m.email||m)===userEmail)){isInGroup=true;gPackIds=gd.packIds||[];break;}
-          }
-          setDevMode(isInGroup);
-          setGroupPackIds(gPackIds);
-          localStorage.setItem('otr_devmode',isInGroup?'1':'');
-          localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds));
-          localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
-        }
-        allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
-        setAllPacks(allPs);
-        localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));
-        const ps=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
-        setAvailPacks(ps);
-        localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-      }catch(e){console.error(e);}
-      finally{setPackConfigLoaded(true);}
-      try{
-        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
-        const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
-        const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
-        const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
-        const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
-        setManagerRecipes(mRecipes);
-      }catch(e){console.error(e);}
-    }
-    loadPackConfig();
-  },[]);
-
-  // ── Re-busca config quando app volta ao primeiro plano ──
-  useEffect(()=>{
-    const onVisible=()=>{ if(document.visibilityState==='visible') loadPackConfigSilent(); };
-    async function loadPackConfigSilent(){
-      let allPs2=[];
-      let freeNames2=[];
-      try{
-        const [configSnap,packsSnap]=await Promise.all([
-          getDoc(doc(db,"manager","config")),
-          getDocs(collection(db,"packs"))
-        ]);
-        if(configSnap.exists()){
-          const cfg=configSnap.data();
-          freeNames2=cfg.freeRecipes||[];
-          setFreeRecipeNames(new Set(freeNames2));
-          const userEmail2=auth.currentUser?.email||'';
-          const ug2=cfg.userGroups||{};
-          let isInGroup2=false;let gPackIds2=[];
-          for(const gd of Object.values(ug2)){
-            if((gd.members||[]).some(m=>(m.email||m)===userEmail2)){isInGroup2=true;gPackIds2=gd.packIds||[];break;}
-          }
-          setDevMode(isInGroup2);
-          setGroupPackIds(gPackIds2);
-          localStorage.setItem('otr_devmode',isInGroup2?'1':'');
-          localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds2));
-          localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames2));
-        }
-        allPs2=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
-        setAllPacks(allPs2);
-        localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs2));
-        const ps=allPs2.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
-        setAvailPacks(ps);
-        localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-      }catch{}
-      try{
-        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
-        const sysRecipeNames2=new Set(allPs2.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
-        const nonSysRecipeNames2=new Set([...freeNames2,...allPs2.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
-        const sysOnlyNames2=new Set([...sysRecipeNames2].filter(n=>!nonSysRecipeNames2.has(n)));
-        const deletarNames2=new Set(allPs2.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
-        const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames2.has(r.name)&&!deletarNames2.has(r.name));
-        setManagerRecipes(mRecipes);
-      }catch{}
-    }
-    document.addEventListener('visibilitychange',onVisible);
-    return()=>document.removeEventListener('visibilitychange',onVisible);
-  },[]);
-
-  // ── Captura redirect do Google (mobile) ──
-  useEffect(()=>{
-    getRedirectResult(auth).catch(()=>{});
-  },[]);
-
-  // ── Trava orientação em portrait ──
-  useEffect(()=>{
-    const lock=async()=>{try{await screen.orientation?.lock?.('portrait');}catch{}};
-    lock();
-    window.addEventListener('orientationchange',lock);
-    return()=>window.removeEventListener('orientationchange',lock);
-  },[]);
-
-  // ── Altura real do viewport no mobile (fix para browser chrome) ──
-  useEffect(()=>{
-    const update=()=>{
-      const h=window.visualViewport?.height??window.innerHeight;
-      document.documentElement.style.setProperty('--vh',`${h*0.01}px`);
-    };
-    update();
-    window.visualViewport?.addEventListener('resize',update);
-    window.visualViewport?.addEventListener('scroll',update);
-    window.addEventListener('resize',update);
-    return()=>{
-      window.visualViewport?.removeEventListener('resize',update);
-      window.visualViewport?.removeEventListener('scroll',update);
-      window.removeEventListener('resize',update);
-    };
-  },[]);
-
-  // ── Auth listener ──
-  useEffect(()=>{
-    return onAuthStateChanged(auth, async u => {
-      setUser(u);
-      if(u){
-        setSyncing(true);
-        try{
-          const ref = doc(db,"users",u.uid);
-          const snap = await getDoc(ref);
-          if(snap.exists()){
-            const d = snap.data();
-            if(d.custom)         setCustomRecipes(d.custom);
-            if(d.favs)           setFavs(d.favs);
-            if(d.owned)          setOwned(d.owned);
-            if(d.tried)          setTried(d.tried);
-            if(d.spirits)        setCustomSpirits(d.spirits);
-            if(d.overrides)      setOverrides(d.overrides);
-            if(d.comanda)        setComanda(d.comanda);
-            if(d.unlockedPacks)  setUnlockedPacks(d.unlockedPacks);
-          }
-        }catch(e){console.error(e);}
-        setSyncing(false);
-      }
-      fsInitializedRef.current = true;
-    });
-  },[]);
-
-  // ── Sync to Firestore when data changes ──
-  const syncToFirestore = useCallback(async (data) => {
-    if(!auth.currentUser) return;
-    if(!fsInitializedRef.current) return;
-    try{ await setDoc(doc(db,"users",auth.currentUser.uid), data, {merge:true}); }
-    catch(e){ console.error(e); }
-  },[]);
-
-  useEffect(()=>{try{localStorage.setItem("otr_custom",JSON.stringify(customRecipes));}catch{}; syncToFirestore({custom:customRecipes});},[customRecipes]);
-  useEffect(()=>{try{localStorage.setItem("otr_favs",JSON.stringify(favs));}catch{}; syncToFirestore({favs});},[favs]);
-  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{}; syncToFirestore({comanda});},[comanda]);
-  useEffect(()=>{try{localStorage.setItem('otr_comanda_groups',JSON.stringify(comandaGroups));}catch{};},[comandaGroups]);
-  useEffect(()=>{try{localStorage.setItem("otr_owned",JSON.stringify(owned));}catch{}; syncToFirestore({owned});},[owned]);
-  useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
-  useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
-  useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
-  useEffect(()=>{try{localStorage.setItem("otr_custom_bgs",JSON.stringify(customBgs));}catch{}},[customBgs]);
-  useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
-
-  useEffect(()=>{
-    if(!("wakeLock" in navigator))return;
-    let lock=null;
-    const request=async()=>{if(lock)return;try{lock=await navigator.wakeLock.request("screen");}catch{}};
-    const onVisible=()=>{if(document.visibilityState==="visible")request();};
-    document.addEventListener("visibilitychange",onVisible);
-    request();
-    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
-  },[]);
-
-  const allRecipes=useMemo(()=>{
-    // Deduplica por nome (último prevalece = ID padrão, gerado após ID legado como _20th_century)
-    const dedupedMgr=Object.values(managerRecipes.reduce((a,r)=>{a[r.name]=r;return a;},{}));
-    // mgrNames inclui tombstones para excluir a versão de BASE_RECIPES correspondente
-    const mgrNames=new Set(dedupedMgr.map(r=>r.name));
-    const base=BASE_RECIPES
-      .filter(r=>!mgrNames.has(r.name))
-      .map(r=>overrides[r.name]?{...r,...overrides[r.name]}:r)
-      .filter(r=>!r.deleted);
-    // activeMgr exclui tombstones (deleted:true) da lista visível
-    const activeMgr=dedupedMgr.filter(r=>!r.deleted).map(r=>{const ov=overrides[r.name];if(!ov)return r;const patch={};if(ov.rating!==undefined)patch.rating=ov.rating;if(ov.notes!==undefined)patch.notes=ov.notes;return Object.keys(patch).length?{...r,...patch}:r;});
-    const normalize=r=>({...r,
-      categories:Array.isArray(r.categories)?r.categories:[],
-      ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
-      steps:Array.isArray(r.steps)?r.steps:[],
-      notes:r.notes||"",
-    });
-    return [...base,...activeMgr,...customRecipes].map(normalize);
-  },[customRecipes,overrides,managerRecipes]);
-
-  const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
-  useEffect(()=>{
-    if(!deepLinkNameRef.current||!allRecipes.length)return;
-    const name=decodeURIComponent(deepLinkNameRef.current);
-    deepLinkNameRef.current=null;
-    const recipe=allRecipes.find(r=>r.name===name);
-    if(recipe){window.history.replaceState({},"","/");setOpen(recipe);}
-  },[allRecipes]);
-
-  const [activeStyle,setActiveStyle]=useState(null);
-  const [activeSpirits,setActiveSpirits]=useState([]);
-  const [search,setSearch]=useState("");
-  const [spiritSearch,setSpiritSearch]=useState("");
-  const [open,setOpen]=useState(null);
-  useEffect(()=>{
-    if(!open){
-      const pos=explorarScrollRef.current.pos;
-      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
-    }
-  },[open]);
-  const [editing,setEditing]=useState(null);
-  const [showForm,setShowForm]=useState(false);
-  const [sharedFiles,setSharedFiles]=useState(null);
-
-  useEffect(()=>{
-    const params=new URLSearchParams(window.location.search);
-    if(params.get("share")==="pending"){
-      window.history.replaceState({},"","/");
-      (async()=>{
-        try{
-          const cache=await caches.open("otr-share-target");
-          const countRes=await cache.match("/shared-count");
-          if(!countRes)return;
-          const count=parseInt(await countRes.text());
-          const files=await Promise.all(Array.from({length:count},async(_,i)=>{
-            const res=await cache.match(`/shared-image-${i}`);
-            if(!res)return null;
-            const blob=await res.blob();
-            const type=res.headers.get("Content-Type")||"image/jpeg";
-            return new File([blob],`shared-${i}.jpg`,{type});
-          }));
-          await cache.delete("/shared-count");
-          for(let i=0;i<count;i++)await cache.delete(`/shared-image-${i}`);
-          const valid=files.filter(Boolean);
-          if(valid.length>0){setSharedFiles(valid);setShowForm(true);}
-        }catch(e){console.error("share retrieve error",e);}
-      })();
-    }
-  },[]);
-  const [sort,setSort]=useState("nome");
-  const [filterMode,setFilterMode]=useState("tudo");
-  const [filterAnd,setFilterAnd]=useState(false);
-  const [activeOccasions,setActiveOccasions]=useState([]);
-  const [activePack,setActivePack]=useState(null);
-  const [sidebarTab,setSidebarTab]=useState("família");
-  const [mobileTab,setMobileTab]=useState("descobrir");
-  const prevTabRef=useRef("descobrir");
-  useEffect(()=>{
-    if(mobileTab==="ingredientes"){
-      const pos=barScrollRef.current;
-      requestAnimationFrame(()=>{window.scrollTo(0,pos);});
-    }
-  },[mobileTab]);
-  const [filterSheet,setFilterSheet]=useState(null);
-  const importRef=useRef();
-  const [confirmDialog,setConfirmDialog]=useState(null);
-  const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
-  const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
-
-  const [swipeHistory,setSwipeHistory]=useState([]);
-  const [swipeHistIdx,setSwipeHistIdx]=useState(0);
-  const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
-  const [recipeProfiles,setRecipeProfiles]=useState({});
-
-  const recipePackMap=useMemo(()=>{
-    const m={};
-    const accessibleIds=devMode?new Set(groupPackIds):new Set(unlockedPacks);
-    for(const pk of allPacks){if(!pk.system&&accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
-    return m;
-  },[allPacks,devMode,groupPackIds,unlockedPacks]);
-  const accessiblePacks=useMemo(()=>{
-    if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
-    return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
-  },[devMode,allPacks,groupPackIds,unlockedPacks]);
-  const packSpirits=useMemo(()=>accessiblePacks.flatMap(pk=>pk.spirits||[]),[accessiblePacks]);
-  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,packSpirits,customSpirits]);
-  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...packSpirits,...customSpirits]),[packSpirits,customSpirits]);
-  const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
-
-  const [ratingPopup,setRatingPopup]=useState(null);
-
-  const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(100);}catch{}};
-  const toggleFav=n=>{haptic();setFavs(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
-  const toggleComanda=n=>{
-    haptic();
-    if(comanda.includes(n)){
-      setComanda(p=>p.filter(x=>x!==n));
-      setComandaGroups(p=>p.map(g=>({...g,drinks:g.drinks.filter(d=>d!==n)})));
-    } else {
-      setComanda(p=>[...p,n]);
-    }
-  };
-  const moveComanda=(name,dir)=>setComanda(prev=>{const idx=prev.indexOf(name);if(idx<0)return prev;const next=idx+dir;if(next<0||next>=prev.length)return prev;const arr=[...prev];[arr[idx],arr[next]]=[arr[next],arr[idx]];return arr;});
-  const addComandaGroup=name=>{const id=Math.random().toString(36).slice(2,8);setComandaGroups(p=>[...p,{id,name,collapsed:false,drinks:[]}]);};
-  const deleteComandaGroup=id=>setComandaGroups(p=>p.filter(g=>g.id!==id));
-  const toggleGroupCollapse=id=>setComandaGroups(p=>p.map(g=>g.id===id?{...g,collapsed:!g.collapsed}:g));
-  const renameGroup=(id,name)=>{if(name.trim())setComandaGroups(p=>p.map(g=>g.id===id?{...g,name:name.trim()}:g));};
-  const moveDrinkToGroup=(name,groupId)=>setComandaGroups(p=>p.map(g=>({...g,drinks:g.id===groupId?[...g.drinks.filter(n=>n!==name),name]:g.drinks.filter(n=>n!==name)})));
-  const moveDrinkToUngrouped=name=>setComandaGroups(p=>p.map(g=>({...g,drinks:g.drinks.filter(n=>n!==name)})));
-  const startLongPress=name=>{clearTimeout(pressTimerRef.current);pressTimerRef.current=setTimeout(()=>{haptic();setComandaLongPress(name);},500);};
-  const cancelLongPress=()=>clearTimeout(pressTimerRef.current);
-  const toggleOwned=s=>setOwned(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
-  const toggleTried=n=>setTried(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
-  const handleTried=useCallback(name=>{
-    setTried(p=>{
-      const alreadyTried=p.includes(name);
-      if(!alreadyTried){
-        const recipe=allRecipes.find(r=>r.name===name);
-        if(recipe&&recipe.rating===0) setTimeout(()=>setRatingPopup(recipe),0);
-      }
-      return alreadyTried?p.filter(x=>x!==name):[...p,name];
-    });
-  },[allRecipes]);
-  const toggleSpirit=s=>setActiveSpirits(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
-  const toggleOccasion=t=>setActiveOccasions(p=>p.includes(t)?p.filter(x=>x!==t):[...p,t]);
-  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);};
-  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0||activePack);
-
-  // ── Back button — navega dentro do app ──
-  const backRef=useRef({});
-  const searchInputRef=useRef(null);
-  const peekNextRef=useRef(null);
-  const peekPrevRef=useRef(null);
-  const fsInitializedRef=useRef(false);
-  const handleDragChange=useCallback(({nextPct,prevPct})=>{
-    if(peekNextRef.current){
-      peekNextRef.current.style.opacity=String(0.22+nextPct*0.78);
-      peekNextRef.current.style.transform=`translateX(${52*(1-nextPct)}px)`;
-    }
-    if(peekPrevRef.current){
-      peekPrevRef.current.style.opacity=String(0.22+prevPct*0.78);
-      peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
-    }
-  },[]);
-  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack};
-  useEffect(()=>{
-    const push=()=>window.history.pushState({otr:true},"");
-    push();
-    const onPop=()=>{
-      const s=backRef.current;
-      if(s.open){setOpen(null);push();return;}
-      if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
-      if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
-      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length||s.activePack){
-        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);push();return;
-      }
-    };
-    window.addEventListener("popstate",onPop);
-    return()=>window.removeEventListener("popstate",onPop);
-  },[]);
-
-  const hasAllIngredients=useCallback(recipe=>{
-    const spirits=recipe.categories.filter(c=>SPIRIT_CATS.has(c)||customSpirits.includes(c)||packSpirits.includes(c));
-    return spirits.length>0&&spirits.every(s=>owned.includes(s));
-  },[owned,customSpirits,packSpirits]);
-
-  const surpriseMe=useCallback(()=>{
-    const pool=allRecipes.filter(r=>!tried.includes(r.name));
-    if(!pool.length)return;
-    setOpen(pool[Math.floor(Math.random()*pool.length)]);
-  },[allRecipes,tried]);
-
-  const saveRecipe=useCallback(recipe=>{
-    if(!recipe.custom){
-      // receita base: salva como override para não criar duplicata
-      const {name,...fields}=recipe;
-      setOverrides(p=>({...p,[name]:{...(p[name]||{}),...fields,adjusted:true}}));
-    } else {
-      setCustomRecipes(p=>{const idx=p.findIndex(r=>r.id===recipe.id);if(idx>=0){const n=[...p];n[idx]=recipe;return n;}return[...p,recipe];});
-    }
-    setShowForm(false);setEditing(null);
-  },[]);
-
-  const deleteRecipe=useCallback(recipe=>{setCustomRecipes(p=>p.filter(r=>r.id!==recipe.id));setOpen(null);},[]);
-  const deleteBaseRecipe=useCallback(recipe=>{setOverrides(p=>({...p,[recipe.name]:{...(p[recipe.name]||{}),deleted:true}}));setOpen(null);},[]);
-  const repoRecipe=useCallback(name=>{setOverrides(p=>{const n={...p};delete n[name];return n;});setOpen(null);},[]);
-  const restoreAll=useCallback(()=>{setOverrides({});setCustomRecipes([]);setFavs([]);setTried([]);setComanda([]);},[]);
-  const restoreRecipes=useCallback(()=>setOverrides({}),[]);
-
-  const noteRecipe=useCallback((recipe,notes)=>{
-    if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,notes}:r));}
-    else{setOverrides(p=>({...p,[recipe.name]:{...(p[recipe.name]||{}),notes}}));}
-  },[]);
-
-  const rateRecipe=useCallback((recipe,rating)=>{
-    if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,rating}:r));}
-    else{setOverrides(p=>({...p,[recipe.name]:{...(p[recipe.name]||{}),rating}}));}
-    setOpen(prev=>prev?{...prev,rating}:prev);
-  },[]);
-
-  const exportJSON=()=>{
-    const data=JSON.stringify({custom:customRecipes},null,2);
-    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=`onthеrocks_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
-  };
-
-  const importJSON=e=>{
-    const file=e.target.files?.[0];if(!file)return;
-    e.target.value="";
-    const doImport=()=>{
-      const r=new FileReader();
-      r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.custom)setCustomRecipes(d.custom);if(d.favs)setFavs(d.favs);if(d.owned)setOwned(d.owned);}catch{showConfirm("Arquivo inválido ou corrompido.",null,false);}};
-      r.readAsText(file);
-    };
-    showConfirm("Importar vai substituir suas receitas personalizadas. Continuar?",doImport,true);
-  };
-
-  // filtro efetivo para mobile favoritos
-  const effectiveFilterMode = filterMode;
-
-  const filtered=useMemo(()=>{
-    if(!packConfigLoaded)return[];
-    let list=allRecipes.filter(r=>{
-      if(!r.custom){
-        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
-        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
-      }
-    if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
-      if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
-      if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
-      if(effectiveFilterMode==="custom"&&!r.custom)return false;
-      if(effectiveFilterMode==="naoprovei"&&tried.includes(r.name))return false;
-      if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
-      if(activeStyle&&!r.categories.includes(activeStyle))return false;
-      if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
-      if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
-      if(activePack&&recipePackMap[r.name]!==activePack)return false;
-      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
-      return true;
-    });
-    if(sort==="rating")list=[...list].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating);
-    else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
-    else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
-    else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
-    return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded,recipePackMap]);
-
-  // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
-  const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
-
-  const accessibleRecipes=useMemo(()=>{
-    if(!packConfigLoaded)return[];
-    return allRecipes.filter(r=>{
-      if(!r.custom){
-        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
-        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
-      }
-      return true;
-    });
-  },[allRecipes,devMode,groupPackIds,freeRecipeNames,availPacks,allPacks,unlockedPacks,packConfigLoaded]);
-
-  const drinkRecipes=useMemo(()=>accessibleRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[accessibleRecipes]);
-  const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
-
-  // inicializa histórico quando receitas carregam
-  useEffect(()=>{
-    if(drinkRecipes.length&&swipeHistory.length===0){
-      const first=drinkRecipes[Math.floor(Math.random()*drinkRecipes.length)];
-      setSwipeHistory([first.name]);
-    }
-  },[drinkRecipes.length]);// eslint-disable-line
-
-  const swipeRecipe=useMemo(()=>{
-    if(swipeFiltered){
-      if(!swipeFiltered.length)return null;
-      return swipeFiltered[Math.min(swipeHistIdx,swipeFiltered.length-1)];
-    }
-    if(!swipeHistory.length||!drinkRecipes.length)return null;
-    const name=swipeHistory[Math.min(swipeHistIdx,swipeHistory.length-1)];
-    return drinkRecipes.find(r=>r.name===name)||drinkRecipes[0];
-  },[drinkRecipes,swipeHistory,swipeHistIdx,swipeFiltered]);
-
-  const pickDifferentFamily=useCallback((currentRecipe)=>{
-    const currentFamily=currentRecipe?.categories.find(c=>STYLE_CATS.has(c));
-    const pool=swipePool.filter(r=>r.name!==currentRecipe?.name&&r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
-    const src=pool.length?pool:swipePool.filter(r=>r.name!==currentRecipe?.name);
-    if(!src.length)return currentRecipe;
-    return src[Math.floor(Math.random()*src.length)];
-  },[swipePool]);
-
-  const nextSwipeRecipe=useCallback(()=>{
-    if(swipeFiltered){
-      setSwipeHistIdx(i=>Math.min(i+1,swipeFiltered.length-1));
-      return;
-    }
-    setSwipeHistIdx(idx=>{
-      if(idx<swipeHistory.length-1)return idx+1;
-      const next=pickDifferentFamily(swipeRecipe);
-      if(next)setSwipeHistory(h=>[...h,next.name]);
-      return idx+1;
-    });
-  },[swipeHistory.length,swipeRecipe,pickDifferentFamily,swipeFiltered]);
-
-  const prevSwipeRecipe=useCallback(()=>{
-    setSwipeHistIdx(i=>Math.max(0,i-1));
-  },[]);
-
-  // Pré-popula o próximo item no histórico para que peek e navegação mostrem o mesmo card
-  useEffect(()=>{
-    if(swipeFiltered||!swipeRecipe||!swipePool.length)return;
-    if(swipeHistIdx>=swipeHistory.length-1){
-      const next=pickDifferentFamily(swipeRecipe);
-      if(next)setSwipeHistory(h=>[...h,next.name]);
-    }
-  },[swipeRecipe?.name,swipeHistIdx,swipeFiltered]);// eslint-disable-line
-
-  const prevPeekRecipe=useMemo(()=>{
-    if(swipeHistIdx>0){
-      if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
-      const name=swipeHistory[swipeHistIdx-1];
-      return drinkRecipes.find(r=>r.name===name)||null;
-    }
-    // sem histórico — mostra card decorativo para sensação de profundidade
-    if(!swipeRecipe||!swipePool.length)return null;
-    const pool=swipePool.filter(r=>r.name!==swipeRecipe.name);
-    if(!pool.length)return null;
-    const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-    return pool[(seed+3)%pool.length];
-  },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered,swipeRecipe,swipePool]);
-
-  const nextPeekRecipe=useMemo(()=>{
-    if(swipeFiltered)return swipeFiltered[swipeHistIdx+1]||null;
-    if(!swipeHistory.length||!drinkRecipes.length)return null;
-    const name=swipeHistory[swipeHistIdx+1];
-    if(!name)return null;
-    return drinkRecipes.find(r=>r.name===name)||null;
-  },[swipeFiltered,swipeHistIdx,swipeHistory,drinkRecipes]);
-
-  // ── background preload ──
-  const preloadedBgs=useRef(new Set());
-  useEffect(()=>{
-    if(!swipeRecipe)return;
-    const urls=new Set();
-    const addBg=r=>{if(!r)return;const mood=RECIPE_MOODS[r.name]||getMood(r);urls.add(CARD_BG_FILES[mood]||CARD_BG_FILES.frost_tide);};
-    if(swipeFiltered){
-      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+9,swipeFiltered.length);i++)addBg(swipeFiltered[i]);
-    } else {
-      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+4,swipeHistory.length);i++){
-        const r=drinkRecipes.find(r=>r.name===swipeHistory[i]);addBg(r);
-      }
-      let prev=swipeRecipe;
-      for(let i=0;i<7;i++){
-        const pool=swipePool.filter(r=>r.name!==prev?.name);
-        if(!pool.length)break;
-        const fam=prev?.categories.find(c=>STYLE_CATS.has(c));
-        const src=pool.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==fam);
-        const candidates=src.length?src:pool;
-        const seed=(prev?.name||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
-        prev=candidates[(seed+i*13)%candidates.length];
-        addBg(prev);
-      }
-    }
-    urls.forEach(url=>{
-      if(preloadedBgs.current.has(url))return;
-      preloadedBgs.current.add(url);
-      const img=new Image();img.src=url;
-    });
-  },[swipeRecipe?.name,swipeHistIdx]);// eslint-disable-line
-  // Reseta peek cards ao trocar de recipe
-  useEffect(()=>{
-    if(peekNextRef.current){ peekNextRef.current.style.opacity="0.22"; peekNextRef.current.style.transform="translateX(52px)"; }
-    if(peekPrevRef.current){ peekPrevRef.current.style.opacity="0.22"; peekPrevRef.current.style.transform="translateX(-52px)"; }
-  },[swipeRecipe?.name]);// eslint-disable-line
-
+// ─── PERFIS DAS RECEITAS BASE (dados estáticos — fora do componente) ─────────
 const RECIPE_PROFILES = {
   "Aperol Spritz":{"flavors":"Amargo • Cítrico • Floral","perfil":"Refrescante","perfil_desc":"Leve e espumante","sensacao":"Efervescente","sensacao_desc":"Bolhas frescas","ocasiao":"Início de noite","ocasiao_desc":"Início de celebração"},
   "Aviation":{"flavors":"floral • cítrico • amargado","perfil":"Delicado","perfil_desc":"elegância aromática leve","sensacao":"Refrescante","sensacao_desc":"toque fresco e seco","ocasiao":"Noite","ocasiao_desc":"coquetel sofisticado clássico"},
@@ -3751,6 +3173,651 @@ const RECIPE_PROFILES = {
   "Kingston Mineral":{"flavors":"Tanínico • Especiado • Mineral","perfil":"Elegante","perfil_desc":"Sofisticado e terroso","sensacao":"Refrescante","sensacao_desc":"Fresco com calor","ocasiao":"Início de noite","ocasiao_desc":"Final de tarde"}
 };
 
+export default function OnTheRocks(){
+  const [user,setUser]=useState(null);
+  const [syncing,setSyncing]=useState(false);
+
+  const [showTutorial,setShowTutorial]=useState(()=>!localStorage.getItem("otr_tutorial_done"));
+  const closeTutorial=useCallback(()=>{localStorage.setItem("otr_tutorial_done","1");setShowTutorial(false);},[]);
+
+  const [customRecipes,setCustomRecipes]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom")||"[]");}catch{return[];}});
+  const [favs,setFavs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_favs")||"[]");}catch{return[];}});
+  const [comanda,setComanda]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_comanda")||"[]");}catch{return[];}});
+  const [comandaReorder,setComandaReorder]=useState(false);
+  const [comandaGroups,setComandaGroups]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_comanda_groups')||'[]');}catch{return[];}});
+  const [comandaLongPress,setComandaLongPress]=useState(null);
+  const [showNewGroupInput,setShowNewGroupInput]=useState(false);
+  const [newGroupName,setNewGroupName]=useState('');
+  const [editGroupId,setEditGroupId]=useState(null);
+  const [editGroupName,setEditGroupName]=useState('');
+  const [ungroupedCollapsed,setUngroupedCollapsed]=useState(false);
+  const pressTimerRef=useRef(null);
+  const [owned,setOwned]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_owned")||"[]");}catch{return[];}});
+  const [tried,setTried]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_tried")||"[]");}catch{return[];}});
+  const [customSpirits,setCustomSpirits]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_spirits")||"[]");}catch{return[];}});
+  const [overrides,setOverrides]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_overrides")||"{}");}catch{return{};}});
+  const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
+  const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
+  const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
+  const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
+  const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
+  const [unlockedPacks,setUnlockedPacks]=useState([]);
+  const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
+  const [groupPackIds,setGroupPackIds]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_group_packs')||'[]');}catch{return[];}});
+  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
+  const [managerRecipes,setManagerRecipes]=useState([]);
+  const mainRef=useRef();
+  const explorarScrollRef=useRef({pos:0,tab:"explorar"});
+  const barScrollRef=useRef(0);
+  const fsInitializedRef=useRef(false);
+
+  // ── Carrega config de packs (receitas livres + packs à venda) ──
+  // Chamada após cada mudança de auth (garante e-mail correto para grupos) e ao voltar ao 1º plano.
+  // TTL: voltar ao 1º plano só re-busca após 5 min — evita re-baixar a coleção
+  // managerRecipes inteira (custo Firestore + dados móveis) a cada alternância de app.
+  const lastPackFetchRef=useRef(0);
+  const refreshPackConfig=useCallback(async(force=false)=>{
+    const now=Date.now();
+    if(!force&&now-lastPackFetchRef.current<5*60*1000)return;
+    lastPackFetchRef.current=now;
+    let allPs=[];
+    let freeNames=[];
+    let configOk=false;
+    try{
+      const [configSnap,packsSnap]=await Promise.all([
+        getDoc(doc(db,"manager","config")),
+        getDocs(collection(db,"packs"))
+      ]);
+      if(configSnap.exists()){
+        const cfg=configSnap.data();
+        freeNames=cfg.freeRecipes||[];
+        setFreeRecipeNames(new Set(freeNames));
+        const userEmail=auth.currentUser?.email||'';
+        const ug=cfg.userGroups||{};
+        let isInGroup=false;let gPackIds=[];
+        for(const gd of Object.values(ug)){
+          if((gd.members||[]).some(m=>(m.email||m)===userEmail)){isInGroup=true;gPackIds=gd.packIds||[];break;}
+        }
+        setDevMode(isInGroup);
+        setGroupPackIds(gPackIds);
+        localStorage.setItem('otr_devmode',isInGroup?'1':'');
+        localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds));
+        localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
+        configOk=true;
+      }
+      allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
+      setAllPacks(allPs);
+      localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));
+      const ps=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
+      setAvailPacks(ps);
+      localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
+    }catch(e){console.error(e);}
+    finally{setPackConfigLoaded(true);}
+    // se a config falhou, não carrega receitas do manager — evita exibir conteúdo
+    // de packs pagos quando o gate de acesso (freeRecipes) não está disponível
+    if(!configOk)return;
+    try{
+      const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+      const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
+      const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
+      const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
+      const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
+      const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
+      setManagerRecipes(mRecipes);
+    }catch(e){console.error(e);}
+  },[]);
+
+  // ── Re-busca config quando app volta ao primeiro plano ──
+  useEffect(()=>{
+    const onVisible=()=>{ if(document.visibilityState==='visible') refreshPackConfig(); };
+    document.addEventListener('visibilitychange',onVisible);
+    return()=>document.removeEventListener('visibilitychange',onVisible);
+  },[refreshPackConfig]);
+
+  // ── Captura redirect do Google (mobile) ──
+  useEffect(()=>{
+    getRedirectResult(auth).catch(()=>{});
+  },[]);
+
+  // ── Trava orientação em portrait ──
+  useEffect(()=>{
+    const lock=async()=>{try{await screen.orientation?.lock?.('portrait');}catch{}};
+    lock();
+    window.addEventListener('orientationchange',lock);
+    return()=>window.removeEventListener('orientationchange',lock);
+  },[]);
+
+  // ── Altura real do viewport no mobile (fix para browser chrome) ──
+  useEffect(()=>{
+    const update=()=>{
+      const h=window.visualViewport?.height??window.innerHeight;
+      document.documentElement.style.setProperty('--vh',`${h*0.01}px`);
+    };
+    update();
+    window.visualViewport?.addEventListener('resize',update);
+    window.visualViewport?.addEventListener('scroll',update);
+    window.addEventListener('resize',update);
+    return()=>{
+      window.visualViewport?.removeEventListener('resize',update);
+      window.visualViewport?.removeEventListener('scroll',update);
+      window.removeEventListener('resize',update);
+    };
+  },[]);
+
+  // ── Auth listener ──
+  useEffect(()=>{
+    return onAuthStateChanged(auth, async u => {
+      setUser(u);
+      // recarrega a config de packs com o e-mail correto (grupos/dev mode)
+      refreshPackConfig(true);
+      if(u){
+        setSyncing(true);
+        try{
+          const ref = doc(db,"users",u.uid);
+          const snap = await getDoc(ref);
+          if(snap.exists()){
+            const d = snap.data();
+            // registra o que veio do servidor para os effects de sync não
+            // re-gravarem os mesmos dados logo após o login (writes-eco)
+            const echo={};
+            if(d.custom)         {setCustomRecipes(d.custom);   echo.custom=JSON.stringify(d.custom);}
+            if(d.favs)           {setFavs(d.favs);              echo.favs=JSON.stringify(d.favs);}
+            if(d.owned)          {setOwned(d.owned);            echo.owned=JSON.stringify(d.owned);}
+            if(d.tried)          {setTried(d.tried);            echo.tried=JSON.stringify(d.tried);}
+            if(d.spirits)        {setCustomSpirits(d.spirits);  echo.spirits=JSON.stringify(d.spirits);}
+            if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
+            if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
+            if(d.unlockedPacks)  setUnlockedPacks(d.unlockedPacks);
+            serverEchoRef.current=echo;
+          }
+        }catch(e){console.error(e);}
+        setSyncing(false);
+      }
+      fsInitializedRef.current = true;
+    });
+  },[refreshPackConfig]);
+
+  // ── Sync to Firestore when data changes ──
+  const serverEchoRef=useRef({});
+  const syncToFirestore = useCallback(async (data) => {
+    if(!auth.currentUser) return;
+    if(!fsInitializedRef.current) return;
+    // pula o write se o valor é exatamente o que acabou de chegar do servidor
+    const [k,v]=Object.entries(data)[0];
+    if(serverEchoRef.current[k]!==undefined){
+      const same=serverEchoRef.current[k]===JSON.stringify(v);
+      delete serverEchoRef.current[k];
+      if(same) return;
+    }
+    try{ await setDoc(doc(db,"users",auth.currentUser.uid), data, {merge:true}); }
+    catch(e){ console.error(e); }
+  },[]);
+
+  useEffect(()=>{try{localStorage.setItem("otr_custom",JSON.stringify(customRecipes));}catch{}; syncToFirestore({custom:customRecipes});},[customRecipes]);
+  useEffect(()=>{try{localStorage.setItem("otr_favs",JSON.stringify(favs));}catch{}; syncToFirestore({favs});},[favs]);
+  useEffect(()=>{try{localStorage.setItem("otr_comanda",JSON.stringify(comanda));}catch{}; syncToFirestore({comanda});},[comanda]);
+  useEffect(()=>{try{localStorage.setItem('otr_comanda_groups',JSON.stringify(comandaGroups));}catch{};},[comandaGroups]);
+  useEffect(()=>{try{localStorage.setItem("otr_owned",JSON.stringify(owned));}catch{}; syncToFirestore({owned});},[owned]);
+  useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
+  useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
+  useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
+  useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
+
+  const allRecipes=useMemo(()=>{
+    // Deduplica por nome (último prevalece = ID padrão, gerado após ID legado como _20th_century)
+    const dedupedMgr=Object.values(managerRecipes.reduce((a,r)=>{a[r.name]=r;return a;},{}));
+    // mgrNames inclui tombstones para excluir a versão de BASE_RECIPES correspondente
+    const mgrNames=new Set(dedupedMgr.map(r=>r.name));
+    const base=BASE_RECIPES
+      .filter(r=>!mgrNames.has(r.name))
+      .map(r=>overrides[r.name]?{...r,...overrides[r.name],_origName:r.name}:r)
+      .filter(r=>!r.deleted);
+    // activeMgr exclui tombstones (deleted:true) da lista visível
+    const activeMgr=dedupedMgr.filter(r=>!r.deleted).map(r=>{const ov=overrides[r.name];if(!ov)return r;const patch={};if(ov.rating!==undefined)patch.rating=ov.rating;if(ov.notes!==undefined)patch.notes=ov.notes;return Object.keys(patch).length?{...r,...patch}:r;});
+    const normalize=r=>({...r,
+      categories:Array.isArray(r.categories)?r.categories:[],
+      ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
+      steps:Array.isArray(r.steps)?r.steps:[],
+      notes:r.notes||"",
+    });
+    return [...base,...activeMgr,...customRecipes].map(normalize);
+  },[customRecipes,overrides,managerRecipes]);
+
+  // receitas que o usuário pode acessar (livres + packs desbloqueados + autorais)
+  const accessibleRecipes=useMemo(()=>{
+    if(!packConfigLoaded)return[];
+    return allRecipes.filter(r=>{
+      if(!r.custom){
+        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
+        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
+      }
+      return true;
+    });
+  },[allRecipes,devMode,groupPackIds,freeRecipeNames,availPacks,allPacks,unlockedPacks,packConfigLoaded]);
+
+  const drinkRecipes=useMemo(()=>accessibleRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[accessibleRecipes]);
+
+  const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
+  useEffect(()=>{
+    if(!deepLinkNameRef.current||!accessibleRecipes.length)return;
+    const name=decodeURIComponent(deepLinkNameRef.current);
+    deepLinkNameRef.current=null;
+    const recipe=accessibleRecipes.find(r=>r.name===name);
+    if(recipe){window.history.replaceState({},"","/");setOpen(recipe);}
+  },[accessibleRecipes]);
+
+  const [activeStyle,setActiveStyle]=useState(null);
+  const [activeSpirits,setActiveSpirits]=useState([]);
+  const [search,setSearch]=useState("");
+  const [spiritSearch,setSpiritSearch]=useState("");
+  const [open,setOpen]=useState(null);
+  useEffect(()=>{
+    if(!open){
+      const pos=explorarScrollRef.current.pos;
+      requestAnimationFrame(()=>{if(mainRef.current)mainRef.current.scrollTop=pos;});
+    }
+  },[open]);
+  const [editing,setEditing]=useState(null);
+  const [showForm,setShowForm]=useState(false);
+  const [sharedFiles,setSharedFiles]=useState(null);
+
+  // ── Web Share Target: o SW grava as imagens compartilhadas no cache e
+  // redireciona para /?share=pending — aqui recuperamos e abrimos o form ──
+  useEffect(()=>{
+    const params=new URLSearchParams(window.location.search);
+    if(params.get("share")==="pending"){
+      window.history.replaceState({},"","/");
+      (async()=>{
+        try{
+          const cache=await caches.open("otr-share-target");
+          const countRes=await cache.match("/shared-count");
+          if(!countRes)return;
+          const count=parseInt(await countRes.text());
+          const files=await Promise.all(Array.from({length:count},async(_,i)=>{
+            const res=await cache.match(`/shared-image-${i}`);
+            if(!res)return null;
+            const blob=await res.blob();
+            const type=res.headers.get("Content-Type")||"image/jpeg";
+            return new File([blob],`shared-${i}.jpg`,{type});
+          }));
+          await cache.delete("/shared-count");
+          for(let i=0;i<count;i++)await cache.delete(`/shared-image-${i}`);
+          const valid=files.filter(Boolean);
+          if(valid.length>0){setSharedFiles(valid);setShowForm(true);}
+        }catch(e){console.error("share retrieve error",e);}
+      })();
+    }
+  },[]);
+  const [sort,setSort]=useState("nome");
+  const [filterMode,setFilterMode]=useState("tudo");
+  const [filterAnd,setFilterAnd]=useState(false);
+  const [activeOccasions,setActiveOccasions]=useState([]);
+  const [activePack,setActivePack]=useState(null);
+  const [sidebarTab,setSidebarTab]=useState("família");
+  const [mobileTab,setMobileTab]=useState("descobrir");
+  const prevTabRef=useRef("descobrir");
+  useEffect(()=>{
+    if(mobileTab==="ingredientes"){
+      const pos=barScrollRef.current;
+      requestAnimationFrame(()=>{window.scrollTo(0,pos);});
+    }
+  },[mobileTab]);
+  const [filterSheet,setFilterSheet]=useState(null);
+  const importRef=useRef();
+  const [confirmDialog,setConfirmDialog]=useState(null);
+  const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
+  const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
+
+  // ── Persiste fotos personalizadas e avisa quando o armazenamento estourar ──
+  const bgQuotaWarnedRef=useRef(false);
+  useEffect(()=>{
+    try{localStorage.setItem("otr_custom_bgs",JSON.stringify(customBgs));}
+    catch{
+      if(!bgQuotaWarnedRef.current){
+        bgQuotaWarnedRef.current=true;
+        showConfirm("Não foi possível salvar suas fotos personalizadas — o armazenamento do navegador está cheio. Remova algumas fotos de receitas para liberar espaço, ou elas serão perdidas ao fechar o app.",null,false);
+      }
+    }
+  },[customBgs,showConfirm]);
+
+  // ── Mantém a tela acesa apenas enquanto uma receita está aberta ──
+  const recipeOpen=!!open;
+  useEffect(()=>{
+    if(!recipeOpen||!("wakeLock" in navigator))return;
+    let lock=null;
+    const request=async()=>{try{lock=await navigator.wakeLock.request("screen");}catch{}};
+    const onVisible=()=>{if(document.visibilityState==="visible")request();};
+    document.addEventListener("visibilitychange",onVisible);
+    request();
+    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
+  },[recipeOpen]);
+
+  const [swipeHistory,setSwipeHistory]=useState([]);
+  const [swipeHistIdx,setSwipeHistIdx]=useState(0);
+  const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
+  const [recipeProfiles,setRecipeProfiles]=useState({});
+
+  const recipePackMap=useMemo(()=>{
+    const m={};
+    const accessibleIds=devMode?new Set(groupPackIds):new Set(unlockedPacks);
+    for(const pk of allPacks){if(!pk.system&&accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
+    return m;
+  },[allPacks,devMode,groupPackIds,unlockedPacks]);
+  const accessiblePacks=useMemo(()=>{
+    if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
+    return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
+  },[devMode,allPacks,groupPackIds,unlockedPacks]);
+  const packSpirits=useMemo(()=>accessiblePacks.flatMap(pk=>pk.spirits||[]),[accessiblePacks]);
+  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,packSpirits,customSpirits]);
+  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...packSpirits,...customSpirits]),[packSpirits,customSpirits]);
+  const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
+
+  const [ratingPopup,setRatingPopup]=useState(null);
+
+  const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(100);}catch{}};
+  const toggleFav=n=>{haptic();setFavs(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);};
+  const toggleComanda=n=>{
+    haptic();
+    if(comanda.includes(n)){
+      setComanda(p=>p.filter(x=>x!==n));
+      setComandaGroups(p=>p.map(g=>({...g,drinks:g.drinks.filter(d=>d!==n)})));
+    } else {
+      setComanda(p=>[...p,n]);
+    }
+  };
+  const moveDrinkInGroup=(name,dir)=>setComandaGroups(p=>p.map(g=>{const i=g.drinks.indexOf(name);if(i<0)return g;const j=i+dir;if(j<0||j>=g.drinks.length)return g;const a=[...g.drinks];[a[i],a[j]]=[a[j],a[i]];return{...g,drinks:a};}));
+  // reordena respeitando o contexto visível: dentro do grupo, ou entre os "sem grupo"
+  const moveInComanda=(name,dir)=>{
+    const grp=comandaGroups.find(g=>g.drinks.includes(name));
+    if(grp){moveDrinkInGroup(name,dir);return;}
+    const groupedNames=new Set(comandaGroups.flatMap(g=>g.drinks));
+    setComanda(prev=>{
+      const ung=prev.filter(n=>!groupedNames.has(n));
+      const i=ung.indexOf(name);const j=i+dir;
+      if(i<0||j<0||j>=ung.length)return prev;
+      const other=ung[j];
+      const arr=[...prev];
+      const ia=arr.indexOf(name),ib=arr.indexOf(other);
+      [arr[ia],arr[ib]]=[arr[ib],arr[ia]];
+      return arr;
+    });
+  };
+  const addComandaGroup=name=>{const id=Math.random().toString(36).slice(2,8);setComandaGroups(p=>[...p,{id,name,collapsed:false,drinks:[]}]);};
+  const deleteComandaGroup=id=>setComandaGroups(p=>p.filter(g=>g.id!==id));
+  const toggleGroupCollapse=id=>setComandaGroups(p=>p.map(g=>g.id===id?{...g,collapsed:!g.collapsed}:g));
+  const renameGroup=(id,name)=>{if(name.trim())setComandaGroups(p=>p.map(g=>g.id===id?{...g,name:name.trim()}:g));};
+  const moveDrinkToGroup=(name,groupId)=>setComandaGroups(p=>p.map(g=>({...g,drinks:g.id===groupId?[...g.drinks.filter(n=>n!==name),name]:g.drinks.filter(n=>n!==name)})));
+  const moveDrinkToUngrouped=name=>setComandaGroups(p=>p.map(g=>({...g,drinks:g.drinks.filter(n=>n!==name)})));
+  const startLongPress=name=>{clearTimeout(pressTimerRef.current);pressTimerRef.current=setTimeout(()=>{haptic();setComandaLongPress(name);},500);};
+  const cancelLongPress=()=>clearTimeout(pressTimerRef.current);
+  const toggleOwned=s=>setOwned(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
+  const toggleTried=n=>setTried(p=>p.includes(n)?p.filter(x=>x!==n):[...p,n]);
+  const handleTried=useCallback(name=>{
+    const alreadyTried=tried.includes(name);
+    setTried(p=>alreadyTried?p.filter(x=>x!==name):[...p,name]);
+    if(!alreadyTried){
+      const recipe=allRecipes.find(r=>r.name===name);
+      if(recipe&&recipe.rating===0) setRatingPopup(recipe);
+    }
+  },[tried,allRecipes]);
+  const toggleSpirit=s=>setActiveSpirits(p=>p.includes(s)?p.filter(x=>x!==s):[...p,s]);
+  const toggleOccasion=t=>setActiveOccasions(p=>p.includes(t)?p.filter(x=>x!==t):[...p,t]);
+  const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);};
+  const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0||activePack);
+
+  // ── Back button — navega dentro do app ──
+  const backRef=useRef({});
+  const searchInputRef=useRef(null);
+  const peekNextRef=useRef(null);
+  const peekPrevRef=useRef(null);
+  const handleDragChange=useCallback(({nextPct,prevPct})=>{
+    if(peekNextRef.current){
+      peekNextRef.current.style.opacity=String(0.22+nextPct*0.78);
+      peekNextRef.current.style.transform=`translateX(${52*(1-nextPct)}px)`;
+    }
+    if(peekPrevRef.current){
+      peekPrevRef.current.style.opacity=String(0.22+prevPct*0.78);
+      peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
+    }
+  },[]);
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack};
+  useEffect(()=>{
+    const push=()=>window.history.pushState({otr:true},"");
+    push();
+    const onPop=()=>{
+      const s=backRef.current;
+      if(s.open){setOpen(null);push();return;}
+      if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
+      if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
+      if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length||s.activePack){
+        setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);push();return;
+      }
+    };
+    window.addEventListener("popstate",onPop);
+    return()=>window.removeEventListener("popstate",onPop);
+  },[]);
+
+  const hasAllIngredients=useCallback(recipe=>{
+    const spirits=recipe.categories.filter(c=>SPIRIT_CATS.has(c)||customSpirits.includes(c)||packSpirits.includes(c));
+    return spirits.length>0&&spirits.every(s=>owned.includes(s));
+  },[owned,customSpirits,packSpirits]);
+
+  const surpriseMe=useCallback(()=>{
+    // sorteia apenas entre receitas acessíveis (não inclui packs bloqueados)
+    const pool=drinkRecipes.filter(r=>!tried.includes(r.name));
+    if(!pool.length)return;
+    setOpen(pool[Math.floor(Math.random()*pool.length)]);
+  },[drinkRecipes,tried]);
+
+  const saveRecipe=useCallback(recipe=>{
+    const {originalName,...rest}=recipe;
+    if(!rest.custom){
+      // receita base: salva como override chaveado pelo nome ORIGINAL,
+      // para a edição (inclusive renomear) ser aplicada corretamente
+      const {name,...fields}=rest;
+      const key=originalName||name;
+      setOverrides(p=>({...p,[key]:{...(p[key]||{}),...fields,name,adjusted:true}}));
+    } else {
+      setCustomRecipes(p=>{const idx=p.findIndex(r=>r.id===rest.id);if(idx>=0){const n=[...p];n[idx]=rest;return n;}return[...p,rest];});
+    }
+    setShowForm(false);setEditing(null);
+  },[]);
+
+  const deleteRecipe=useCallback(recipe=>{setCustomRecipes(p=>p.filter(r=>r.id!==recipe.id));setOpen(null);},[]);
+  const deleteBaseRecipe=useCallback(recipe=>{const k=ovKey(recipe);setOverrides(p=>({...p,[k]:{...(p[k]||{}),deleted:true}}));setOpen(null);},[]);
+  const repoRecipe=useCallback(name=>{setOverrides(p=>{const n={...p};delete n[name];return n;});setOpen(null);},[]);
+  const restoreAll=useCallback(()=>{setOverrides({});setCustomRecipes([]);setFavs([]);setTried([]);setComanda([]);},[]);
+  const restoreRecipes=useCallback(()=>setOverrides({}),[]);
+
+  const noteRecipe=useCallback((recipe,notes)=>{
+    if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,notes}:r));}
+    else{const k=ovKey(recipe);setOverrides(p=>({...p,[k]:{...(p[k]||{}),notes}}));}
+  },[]);
+
+  const rateRecipe=useCallback((recipe,rating)=>{
+    if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,rating}:r));}
+    else{const k=ovKey(recipe);setOverrides(p=>({...p,[k]:{...(p[k]||{}),rating}}));}
+    setOpen(prev=>prev?{...prev,rating}:prev);
+  },[]);
+
+  const exportJSON=()=>{
+    // backup completo: receitas autorais, favoritos, provados, bar, comanda, ajustes e bebidas custom
+    const data=JSON.stringify({custom:customRecipes,favs,tried,owned,comanda,comandaGroups,overrides,spirits:customSpirits},null,2);
+    const url=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+    const a=document.createElement("a");a.href=url;a.download=`ontherocks_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
+
+  const importJSON=e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    e.target.value="";
+    const doImport=()=>{
+      const r=new FileReader();
+      r.onload=ev=>{
+        try{
+          const d=JSON.parse(ev.target.result);
+          const strArr=x=>Array.isArray(x)?x.filter(s=>typeof s==="string"):null;
+          if(Array.isArray(d.custom))setCustomRecipes(d.custom.filter(x=>x&&typeof x.name==="string"));
+          const favsArr=strArr(d.favs);if(favsArr)setFavs(favsArr);
+          const triedArr=strArr(d.tried);if(triedArr)setTried(triedArr);
+          const ownedArr=strArr(d.owned);if(ownedArr)setOwned(ownedArr);
+          const comandaArr=strArr(d.comanda);if(comandaArr)setComanda(comandaArr);
+          if(Array.isArray(d.comandaGroups))setComandaGroups(d.comandaGroups.filter(g=>g&&typeof g.name==="string"&&Array.isArray(g.drinks)));
+          if(d.overrides&&typeof d.overrides==="object"&&!Array.isArray(d.overrides))setOverrides(d.overrides);
+          const spiritsArr=strArr(d.spirits);if(spiritsArr)setCustomSpirits(spiritsArr);
+        }catch{showConfirm("Arquivo inválido ou corrompido.",null,false);}
+      };
+      r.readAsText(file);
+    };
+    showConfirm("Importar substitui suas receitas, favoritos, avaliações e demais dados pelos do backup. Continuar?",doImport,true);
+  };
+
+  // filtro efetivo para mobile favoritos
+  const effectiveFilterMode = filterMode;
+
+  const filtered=useMemo(()=>{
+    if(!packConfigLoaded)return[];
+    let list=allRecipes.filter(r=>{
+      if(!r.custom){
+        if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
+        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
+      }
+    if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
+      if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
+      if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
+      if(effectiveFilterMode==="custom"&&!r.custom)return false;
+      if(effectiveFilterMode==="naoprovei"&&tried.includes(r.name))return false;
+      if(effectiveFilterMode==="provados"&&!tried.includes(r.name))return false;
+      if(activeStyle&&!r.categories.includes(activeStyle))return false;
+      if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
+      if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
+      if(activePack&&recipePackMap[r.name]!==activePack)return false;
+      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
+      return true;
+    });
+    if(sort==="rating")list=[...list].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating);
+    else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
+    else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
+    else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
+    return list;
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded,recipePackMap]);
+
+  // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
+  const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
+
+  const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
+
+  // inicializa histórico quando receitas carregam
+  useEffect(()=>{
+    if(drinkRecipes.length&&swipeHistory.length===0){
+      const first=drinkRecipes[Math.floor(Math.random()*drinkRecipes.length)];
+      setSwipeHistory([first.name]);
+    }
+  },[drinkRecipes.length]);// eslint-disable-line
+
+  const swipeRecipe=useMemo(()=>{
+    if(swipeFiltered){
+      if(!swipeFiltered.length)return null;
+      return swipeFiltered[Math.min(swipeHistIdx,swipeFiltered.length-1)];
+    }
+    if(!swipeHistory.length||!drinkRecipes.length)return null;
+    const name=swipeHistory[Math.min(swipeHistIdx,swipeHistory.length-1)];
+    return drinkRecipes.find(r=>r.name===name)||drinkRecipes[0];
+  },[drinkRecipes,swipeHistory,swipeHistIdx,swipeFiltered]);
+
+  const pickDifferentFamily=useCallback((currentRecipe)=>{
+    const currentFamily=currentRecipe?.categories.find(c=>STYLE_CATS.has(c));
+    const pool=swipePool.filter(r=>r.name!==currentRecipe?.name&&r.categories.find(c=>STYLE_CATS.has(c))!==currentFamily);
+    const src=pool.length?pool:swipePool.filter(r=>r.name!==currentRecipe?.name);
+    if(!src.length)return currentRecipe;
+    return src[Math.floor(Math.random()*src.length)];
+  },[swipePool]);
+
+  const nextSwipeRecipe=useCallback(()=>{
+    if(swipeFiltered){
+      setSwipeHistIdx(i=>Math.min(i+1,swipeFiltered.length-1));
+      return;
+    }
+    setSwipeHistIdx(idx=>{
+      if(idx<swipeHistory.length-1)return idx+1;
+      const next=pickDifferentFamily(swipeRecipe);
+      if(next)setSwipeHistory(h=>[...h,next.name]);
+      return idx+1;
+    });
+  },[swipeHistory.length,swipeRecipe,pickDifferentFamily,swipeFiltered]);
+
+  const prevSwipeRecipe=useCallback(()=>{
+    setSwipeHistIdx(i=>Math.max(0,i-1));
+  },[]);
+
+  // Pré-popula o próximo item no histórico para que peek e navegação mostrem o mesmo card
+  useEffect(()=>{
+    if(swipeFiltered||!swipeRecipe||!swipePool.length)return;
+    if(swipeHistIdx>=swipeHistory.length-1){
+      const next=pickDifferentFamily(swipeRecipe);
+      if(next)setSwipeHistory(h=>[...h,next.name]);
+    }
+  },[swipeRecipe?.name,swipeHistIdx,swipeFiltered]);// eslint-disable-line
+
+  const prevPeekRecipe=useMemo(()=>{
+    if(swipeHistIdx>0){
+      if(swipeFiltered)return swipeFiltered[swipeHistIdx-1]||null;
+      const name=swipeHistory[swipeHistIdx-1];
+      return drinkRecipes.find(r=>r.name===name)||null;
+    }
+    // sem histórico — mostra card decorativo para sensação de profundidade
+    if(!swipeRecipe||!swipePool.length)return null;
+    const pool=swipePool.filter(r=>r.name!==swipeRecipe.name);
+    if(!pool.length)return null;
+    const seed=swipeRecipe.name.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+    return pool[(seed+3)%pool.length];
+  },[swipeHistIdx,swipeHistory,drinkRecipes,swipeFiltered,swipeRecipe,swipePool]);
+
+  const nextPeekRecipe=useMemo(()=>{
+    if(swipeFiltered)return swipeFiltered[swipeHistIdx+1]||null;
+    if(!swipeHistory.length||!drinkRecipes.length)return null;
+    const name=swipeHistory[swipeHistIdx+1];
+    if(!name)return null;
+    return drinkRecipes.find(r=>r.name===name)||null;
+  },[swipeFiltered,swipeHistIdx,swipeHistory,drinkRecipes]);
+
+  // ── background preload ──
+  const preloadedBgs=useRef(new Set());
+  useEffect(()=>{
+    if(!swipeRecipe)return;
+    const urls=new Set();
+    const addBg=r=>{if(!r)return;const mood=r.moodOverride||r.mood||RECIPE_MOODS[r.name]||getMood(r);urls.add(CARD_BG_FILES[mood]||CARD_BG_FILES.frost_tide);};
+    if(swipeFiltered){
+      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+9,swipeFiltered.length);i++)addBg(swipeFiltered[i]);
+    } else {
+      for(let i=swipeHistIdx+1;i<Math.min(swipeHistIdx+4,swipeHistory.length);i++){
+        const r=drinkRecipes.find(r=>r.name===swipeHistory[i]);addBg(r);
+      }
+      let prev=swipeRecipe;
+      for(let i=0;i<7;i++){
+        const pool=swipePool.filter(r=>r.name!==prev?.name);
+        if(!pool.length)break;
+        const fam=prev?.categories.find(c=>STYLE_CATS.has(c));
+        const src=pool.filter(r=>r.categories.find(c=>STYLE_CATS.has(c))!==fam);
+        const candidates=src.length?src:pool;
+        const seed=(prev?.name||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+        prev=candidates[(seed+i*13)%candidates.length];
+        addBg(prev);
+      }
+    }
+    urls.forEach(url=>{
+      if(preloadedBgs.current.has(url))return;
+      preloadedBgs.current.add(url);
+      const img=new Image();img.src=url;
+    });
+  },[swipeRecipe?.name,swipeHistIdx]);// eslint-disable-line
+  // Reseta peek cards ao trocar de recipe
+  useEffect(()=>{
+    if(peekNextRef.current){ peekNextRef.current.style.opacity="0.22"; peekNextRef.current.style.transform="translateX(52px)"; }
+    if(peekPrevRef.current){ peekPrevRef.current.style.opacity="0.22"; peekPrevRef.current.style.transform="translateX(-52px)"; }
+  },[swipeRecipe?.name]);// eslint-disable-line
+
+
   // ── profile generation ──
   const profileLoadingRef=useRef(new Set());
   const loadProfile=useCallback(async(recipe)=>{
@@ -3810,7 +3877,6 @@ const RECIPE_PROFILES = {
   return(
     <div style={{fontFamily:"Archivo,sans-serif",minHeight:"100vh",background:"#070707",color:"#F0EBE1",overflowX:"hidden"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Archivo:wght@300;400;500;600;700&family=Gloock&display=swap');
         html,body{background:#070707}
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(240,235,225,0.08);border-radius:2px}
@@ -3919,7 +3985,7 @@ const RECIPE_PROFILES = {
                 ].map(({pr,pRef,dx},idx)=>{
                   if(!pr)return null;
                   const th=getTheme(pr.categories);
-                  const pv=getCardVisual(pr);
+                  const pv=getCardVisual(pr,spiritCatsAll);
                   const pp=pr.perfil?{perfil:pr.perfil,sensacao:pr.sensacao,ocasiao:pr.ocasiao,flavors:pr.flavors}:recipeProfiles[pr.name];
                   const isRight=dx>0;
                   return(
@@ -4239,12 +4305,17 @@ const RECIPE_PROFILES = {
                           <div style={{width:4,height:2,borderRadius:1,background:th.accent,opacity:0.9}}/>
                         </div>
                       </div>
-                      {comandaReorder&&(
+                      {comandaReorder&&(()=>{
+                        const grp=comandaGroups.find(g=>g.drinks.includes(r.name));
+                        const seq=grp?grp.drinks:comanda.filter(n=>!groupedNames.has(n));
+                        const pos=seq.indexOf(r.name);
+                        return(
                         <div style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4}}>
-                          <button onClick={e=>{e.stopPropagation();moveComanda(r.name,-1);}} disabled={comanda.indexOf(r.name)===0} style={{...btnBase,opacity:comanda.indexOf(r.name)===0?.3:1}}>↑</button>
-                          <button onClick={e=>{e.stopPropagation();moveComanda(r.name,1);}} disabled={comanda.indexOf(r.name)===comanda.length-1} style={{...btnBase,opacity:comanda.indexOf(r.name)===comanda.length-1?.3:1}}>↓</button>
+                          <button onClick={e=>{e.stopPropagation();moveInComanda(r.name,-1);}} disabled={pos<=0} style={{...btnBase,opacity:pos<=0?.3:1}}>↑</button>
+                          <button onClick={e=>{e.stopPropagation();moveInComanda(r.name,1);}} disabled={pos===seq.length-1} style={{...btnBase,opacity:pos===seq.length-1?.3:1}}>↓</button>
                         </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   );
                 };
@@ -4470,7 +4541,11 @@ const RECIPE_PROFILES = {
                 </div>
               ):(
                 <div style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
-                  {filtered.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>)}
+                  {filtered.map((r,i)=>(
+                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,8)*30}ms`}}>
+                      <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>
+                    </div>
+                  ))}
                 </div>
               )}
             </>
@@ -4484,7 +4559,7 @@ const RECIPE_PROFILES = {
       <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
-      {open&&<Modal recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[open.name]&&Object.keys(overrides[open.name]).some(k=>k!=="rating")?()=>repoRecipe(open.name):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
+      {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
