@@ -1576,6 +1576,22 @@ function ConfirmDialog({ message, onConfirm, onCancel, danger=false }) {
   );
 }
 
+// ─── SCROLL REVEAL ────────────────────────────────────────────────────────────
+// cada item revela (fade + sobe) quando entra na viewport durante a rolagem;
+// os primeiros, já visíveis ao montar, revelam em cascata por delay
+function Reveal({children,index=0}){
+  const ref=useRef();
+  const [shown,setShown]=useState(false);
+  useEffect(()=>{
+    const el=ref.current;
+    if(!el||typeof IntersectionObserver==="undefined"){setShown(true);return;}
+    const io=new IntersectionObserver(([e])=>{if(e.isIntersecting){setShown(true);io.disconnect();}},{rootMargin:"0px 0px -32px 0px",threshold:0.04});
+    io.observe(el);
+    return ()=>io.disconnect();
+  },[]);
+  return <div ref={ref} className={shown?"otr-reveal otr-reveal-in":"otr-reveal"} style={shown&&index<10?{transitionDelay:`${index*55}ms`}:undefined}>{children}</div>;
+}
+
 // ─── CARD ─────────────────────────────────────────────────────────────────────
 // memo: só re-renderiza quando os dados visíveis mudam — os handlers são
 // ignorados de propósito (seu comportamento é coberto pelos props comparados)
@@ -3405,8 +3421,13 @@ export default function OnTheRocks(){
     if(recipe){window.history.replaceState({},"","/");setOpen(recipe);}
   },[accessibleRecipes]);
 
-  const [activeStyle,setActiveStyle]=useState(null);
-  const [activeSpirits,setActiveSpirits]=useState([]);
+  // ── UI persistida entre sessões: última aba, ordenação e filtros do Explorar ──
+  const ui0=useRef(null);
+  if(ui0.current===null){try{ui0.current=JSON.parse(localStorage.getItem("otr_ui")||"{}");}catch{ui0.current={};}}
+  const savedUI=ui0.current;
+
+  const [activeStyle,setActiveStyle]=useState(savedUI.style??null);
+  const [activeSpirits,setActiveSpirits]=useState(Array.isArray(savedUI.spirits)?savedUI.spirits:[]);
   const [search,setSearch]=useState("");
   const [spiritSearch,setSpiritSearch]=useState("");
   const [open,setOpen]=useState(null);
@@ -3447,13 +3468,13 @@ export default function OnTheRocks(){
       })();
     }
   },[]);
-  const [sort,setSort]=useState("nome");
-  const [filterMode,setFilterMode]=useState("tudo");
-  const [filterAnd,setFilterAnd]=useState(false);
-  const [activeOccasions,setActiveOccasions]=useState([]);
-  const [activePack,setActivePack]=useState(null);
+  const [sort,setSort]=useState(savedUI.sort??"nome");
+  const [filterMode,setFilterMode]=useState(savedUI.mode??"tudo");
+  const [filterAnd,setFilterAnd]=useState(!!savedUI.and);
+  const [activeOccasions,setActiveOccasions]=useState(Array.isArray(savedUI.occasions)?savedUI.occasions:[]);
+  const [activePack,setActivePack]=useState(savedUI.pack??null);
   const [sidebarTab,setSidebarTab]=useState("família");
-  const [mobileTab,setMobileTab]=useState("descobrir");
+  const [mobileTab,setMobileTab]=useState(savedUI.tab??"descobrir");
   const prevTabRef=useRef("descobrir");
   useEffect(()=>{
     if(mobileTab==="ingredientes"){
@@ -3461,6 +3482,10 @@ export default function OnTheRocks(){
       requestAnimationFrame(()=>{window.scrollTo(0,pos);});
     }
   },[mobileTab]);
+  // persiste a UI (aba, ordenação e filtros) para reabrir onde o usuário parou
+  useEffect(()=>{
+    try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,mode:filterMode,pack:activePack,and:filterAnd}));}catch{}
+  },[mobileTab,sort,activeStyle,activeSpirits,activeOccasions,filterMode,activePack,filterAnd]);
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
   const [confirmDialog,setConfirmDialog]=useState(null);
@@ -4223,7 +4248,7 @@ export default function OnTheRocks(){
                       </button>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                      {possiveis.map(r=><DrinkCard key={r._docId??r.id??r.name} recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>)}
+                      {possiveis.map((r,i)=><Reveal key={r._docId??r.id??r.name} index={i}><DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:mobileTab};setOpen(r);}} onDelete={null} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/></Reveal>)}
                     </div>
                   </div>
                 );
@@ -4539,11 +4564,11 @@ export default function OnTheRocks(){
                   {packConfigLoaded&&<div style={{fontSize:10,letterSpacing:2,textTransform:"uppercase"}}>Tente outros filtros</div>}
                 </div>
               ):(
-                <div key={`stg|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
+                <div key={`rev|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
                   {filtered.map((r,i)=>(
-                    <div key={r._docId??r.id??r.name} className="otr-stagger" style={{animationDelay:`${Math.min(i,10)*60}ms`}}>
+                    <Reveal key={r._docId??r.id??r.name} index={i}>
                       <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>
-                    </div>
+                    </Reveal>
                   ))}
                 </div>
               )}
@@ -4554,8 +4579,13 @@ export default function OnTheRocks(){
 
 
 
+      {/* ── fade inferior — os cards se dissolvem perto da nav e "surgem" na rolagem ── */}
+      {(mobileTab==="explorar"||mobileTab==="ingredientes"||mobileTab==="comanda")&&(
+        <div className="mnv" style={{position:"fixed",left:0,right:0,bottom:0,height:176,background:"linear-gradient(to bottom, rgba(7,7,7,0) 0%, rgba(7,7,7,0.45) 30%, rgba(7,7,7,0.82) 60%, #070707 86%)",pointerEvents:"none",zIndex:9998}}/>
+      )}
+
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(t==="explorar"){if(activeStyle!==null)setActiveStyle(null);if(activeSpirits.length>0)setActiveSpirits([]);if(activeOccasions.length>0)setActiveOccasions([]);if(filterMode!=="tudo")setFilterMode("tudo");if(search!=="")setSearch("");}else{if(search!=="")setSearch("");}if(t==="descobrir"&&filterMode!=="tudo")setFilterMode("tudo");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(search!=="")setSearch("");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}

@@ -27,11 +27,8 @@ body {
   from { transform: scale(1); }
   to   { transform: scale(1.07); }
 }
-@keyframes otrCardIn {
-  from { opacity: 0; transform: translateY(32px) scale(0.96); }
-  to   { opacity: 1; transform: none; }
-}
-.otr-stagger { animation: otrCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.otr-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); will-change: opacity, transform; }
+.otr-reveal-in { opacity: 1; transform: none; }
 @keyframes otrFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes otrSheetIn {
   from { opacity: 0; transform: translateY(52px) scale(0.93); }
@@ -49,7 +46,8 @@ body {
     otrKenBurns 22s ease-in-out 0.95s infinite alternate;
 }
 @media (prefers-reduced-motion: reduce) {
-  .otr-stagger, .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-live { animation: none; }
+  .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-live { animation: none; }
+  .otr-reveal { opacity: 1; transform: none; transition: none; }
 }
 
 /* ── On the Rocks — card particle overlays ── */
