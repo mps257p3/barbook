@@ -3472,7 +3472,10 @@ export default function OnTheRocks(){
   const [filterMode,setFilterMode]=useState(savedUI.mode??"tudo");
   const [filterAnd,setFilterAnd]=useState(!!savedUI.and);
   const [activeOccasions,setActiveOccasions]=useState(Array.isArray(savedUI.occasions)?savedUI.occasions:[]);
-  const [activePack,setActivePack]=useState(savedUI.pack??null);
+  // activePack NÃO é restaurado entre sessões: depende do acesso (grupo/packs
+  // desbloqueados) que carrega de forma assíncrona — restaurá-lo cedo deixava a
+  // lista vazia ("436 receitas / nenhuma encontrada") até o acesso chegar
+  const [activePack,setActivePack]=useState(null);
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState(savedUI.tab??"descobrir");
   const prevTabRef=useRef("descobrir");
@@ -3484,8 +3487,8 @@ export default function OnTheRocks(){
   },[mobileTab]);
   // persiste a UI (aba, ordenação e filtros) para reabrir onde o usuário parou
   useEffect(()=>{
-    try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,mode:filterMode,pack:activePack,and:filterAnd}));}catch{}
-  },[mobileTab,sort,activeStyle,activeSpirits,activeOccasions,filterMode,activePack,filterAnd]);
+    try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,mode:filterMode,and:filterAnd}));}catch{}
+  },[mobileTab,sort,activeStyle,activeSpirits,activeOccasions,filterMode,filterAnd]);
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
   const [confirmDialog,setConfirmDialog]=useState(null);
