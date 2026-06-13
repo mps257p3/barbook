@@ -3706,7 +3706,9 @@ export default function OnTheRocks(){
         if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
         else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
       }
-    if(!search&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
+    // esconde Preparos Caseiros da navegação geral — exceto ao buscar, ao abrir a
+    // família "Preparos Caseiros" ou ao filtrar por um pack (que pode contê-los)
+    if(!search&&!activePack&&activeStyle!=="Preparos Caseiros"&&r.categories.includes("Preparos Caseiros"))return false;
       if(effectiveFilterMode==="favs"&&!favs.includes(r.name))return false;
       if(effectiveFilterMode==="tenho"&&!hasAllIngredients(r))return false;
       if(effectiveFilterMode==="custom"&&!r.custom)return false;
