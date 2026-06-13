@@ -3729,7 +3729,9 @@ export default function OnTheRocks(){
   },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded,recipePackMap]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
-  const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered]);
+  // ao filtrar por um pack, o deck mostra tudo do pack (inclusive preparos);
+  // nos demais filtros os preparos seguem fora do swipe
+  const swipeFiltered=useMemo(()=>hasFilters?filtered.filter(r=>activePack||!r.categories.includes("Preparos Caseiros")):null,[hasFilters,filtered,activePack]);
 
   const swipePool=useMemo(()=>swipeUnprovenOnly?drinkRecipes.filter(r=>!tried.includes(r.name)):drinkRecipes,[drinkRecipes,swipeUnprovenOnly,tried]);
 
