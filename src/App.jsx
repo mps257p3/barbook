@@ -3534,6 +3534,13 @@ export default function OnTheRocks(){
     if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
     return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
   },[devMode,allPacks,groupPackIds,unlockedPacks]);
+  // nomes das receitas do pack filtrado — uma receita pode estar em vários packs
+  // (multipack), então o filtro checa pertencimento ao pack, não um único mapa 1:1
+  const activePackNames=useMemo(()=>{
+    if(!activePack)return null;
+    const pk=accessiblePacks.find(p=>p.name===activePack);
+    return new Set(pk?.recipeNames||[]);
+  },[activePack,accessiblePacks]);
   const packSpirits=useMemo(()=>accessiblePacks.flatMap(pk=>pk.spirits||[]),[accessiblePacks]);
   const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,packSpirits,customSpirits]);
   const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...packSpirits,...customSpirits]),[packSpirits,customSpirits]);
@@ -3720,7 +3727,7 @@ export default function OnTheRocks(){
       if(activeStyle&&!r.categories.includes(activeStyle))return false;
       if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
       if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
-      if(activePack&&recipePackMap[r.name]!==activePack)return false;
+      if(activePack&&!(activePackNames&&activePackNames.has(r.name)))return false;
       if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
       return true;
     });
@@ -3729,7 +3736,7 @@ export default function OnTheRocks(){
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
     return list;
-  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded,recipePackMap]);
+  },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,activePackNames,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded]);
 
   // swipe filtrado: quando há filtro ativo usa a lista filtrada em ordem
   // ao filtrar por um pack, o deck mostra tudo do pack (inclusive preparos);
@@ -4076,7 +4083,7 @@ export default function OnTheRocks(){
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})} packName={recipePackMap[swipeRecipe.name]}/>
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})} packName={activePack&&activePackNames?.has(swipeRecipe.name)?activePack:recipePackMap[swipeRecipe.name]}/>
                 {/* botões de ação — sobre o card */}
                 <div className="disc-actions" style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
@@ -4574,7 +4581,7 @@ export default function OnTheRocks(){
                 <div key={`rev|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
                   {filtered.map((r,i)=>(
                     <Reveal key={r._docId??r.id??r.name} index={i}>
-                      <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={recipePackMap[r.name]}/>
+                      <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={activePack&&activePackNames?.has(r.name)?activePack:recipePackMap[r.name]}/>
                     </Reveal>
                   ))}
                 </div>
