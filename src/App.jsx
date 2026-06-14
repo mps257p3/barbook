@@ -1675,7 +1675,7 @@ const DrinkCard=memo(function DrinkCard({recipe,isFav,onFav,isTried,onTried,isCo
       {quickActions&&(
         <div onClick={e=>{e.stopPropagation();setQuickActions(false);}}
           style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.88)",borderRadius:12,display:"flex",flexWrap:"wrap",alignItems:"center",justifyContent:"center",gap:8,padding:"16px",zIndex:10}}>
-          <button onClick={e=>{e.stopPropagation();onTried();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isTried?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.07)",border:`1px solid ${isTried?"rgba(74,222,128,0.4)":"rgba(240,235,225,0.18)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.75)"}}>{isTried?"Remover provado":"Já provei"}</button>
+          <button onClick={e=>{e.stopPropagation();onTried();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isTried?"rgba(74,222,128,0.12)":"rgba(240,235,225,0.07)",border:`1px solid ${isTried?"rgba(74,222,128,0.4)":"rgba(240,235,225,0.18)"}`,color:isTried?"#4ADE80":"rgba(240,235,225,0.75)"}}>{isTried?"Remover provada":"Já provei"}</button>
           <button onClick={e=>{e.stopPropagation();onComanda();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isComanda?"rgba(200,169,110,0.12)":"rgba(240,235,225,0.07)",border:`1px solid ${isComanda?"rgba(200,169,110,0.4)":"rgba(240,235,225,0.18)"}`,color:isComanda?"#C8A96E":"rgba(240,235,225,0.75)"}}>{isComanda?"Remover da comanda":"+ Comanda"}</button>
           <button onClick={e=>{e.stopPropagation();onFav();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:isFav?`${theme.accent}18`:"rgba(240,235,225,0.07)",border:`1px solid ${isFav?theme.accent+"44":"rgba(240,235,225,0.18)"}`,color:isFav?theme.accent:"rgba(240,235,225,0.75)"}}>{isFav?"Desfavoritar":"Favoritar"}</button>
           <button onClick={e=>{e.stopPropagation();onDelete?.();setQuickActions(false);}} style={{...CARD_TYPO.actionBtn,padding:"8px 14px",borderRadius:20,cursor:"pointer",background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.35)",color:"#F87171"}}>Excluir</button>
@@ -1871,7 +1871,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                 </button>
                 <button onClick={onFav} style={{...btnBase,background:isFav?`${theme.accent}14`:"transparent",border:isFav?`1px solid ${theme.accent}`:dimBorder,color:isFav?theme.accent:dimColor}}>
                   <svg width="11" height="10" viewBox="0 0 20 18" fill={isFav?"currentColor":"none"} stroke="currentColor" strokeWidth="2"><path d="M10 16.5C10 16.5 1 10 1 5C1 2.8 2.8 1 5.5 1C7.5 1 9 2.3 10 4C11 2.3 12.5 1 14.5 1C17.2 1 19 2.8 19 5C19 10 10 16.5 10 16.5z"/></svg>
-                  favorito
+                  favorita
                 </button>
                 <button onClick={onComanda} style={{...btnBase,background:isComanda?"rgba(200,169,110,0.12)":"transparent",border:isComanda?"1px solid rgba(200,169,110,0.5)":dimBorder,color:isComanda?"#C8A96E":dimColor}}>
                   <svg width="10" height="13" viewBox="0 0 16 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 2 L14 2 L8.5 10 L8.5 17"/><line x1="5.5" y1="17" x2="11.5" y2="17"/><circle cx="8.5" cy="5.5" r="1.5" fill="currentColor" opacity="0.7" stroke="none"/></svg>
@@ -2436,7 +2436,7 @@ const TUTORIAL_STEPS = [
   { icon:"⊞",   label:"Explorar",  tab:"explorar",      desc:"Todas as receitas em um lugar. Filtre por família — Sour, Spritz, Collins — ou busque direto pelo nome ou ingrediente." },
   { icon:"⊙",   label:"Bar",       tab:"ingredientes",  desc:"Diga o que tem em casa. O app mostra os drinks que você já pode preparar agora, sem falta de ingrediente." },
   { icon:"◫",   label:"Comanda",   tab:"comanda",       desc:"Adicione drinks e veja tudo numa lista — útil pra um jantar ou uma mesa de amigos." },
-  { icon:"⊛",   label:"Perfil",    tab:"perfil",        desc:"Acompanhe o que já provou, seus favoritos e avaliações. Aqui também fica o backup dos seus dados." },
+  { icon:"⊛",   label:"Perfil",    tab:"perfil",        desc:"Acompanhe o que já provou, suas favoritas e avaliações. Aqui também fica o backup dos seus dados." },
 ];
 function Tutorial({ onClose, onTabChange }) {
   const [step,setStep]=useState(0);
@@ -2582,8 +2582,8 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[
             ["Receitas",drinkCount,"tudo"],
-            ["Provados",tried.length,"provados"],
-            ["Favoritos",favs.length,"favs"],
+            ["Provadas",tried.length,"provados"],
+            ["Favoritas",favs.length,"favs"],
             ["Minhas receitas",customRecipes.length,"custom"],
           ].map(([l,v,filter])=>(
             <button key={l} onClick={()=>onGoTo(filter)}
@@ -3721,7 +3721,7 @@ export default function OnTheRocks(){
       };
       r.readAsText(file);
     };
-    showConfirm("Importar substitui suas receitas, favoritos, avaliações e demais dados pelos do backup. Continuar?",doImport,true);
+    showConfirm("Importar substitui suas receitas, favoritas, avaliações e demais dados pelos do backup. Continuar?",doImport,true);
   };
 
   // filtro efetivo para mobile favoritos
@@ -3975,10 +3975,10 @@ export default function OnTheRocks(){
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.38)",fontWeight:500}}>{packConfigLoaded?`${drinkRecipes.length} receitas`:"—"}</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
-              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provados</span>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provadas</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
-              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favs.length} favoritos</span>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favs.length} favoritas</span>
             </button>
           </div>
           {/* botão adicionar receita — ao lado dos contadores */}
@@ -3994,7 +3994,7 @@ export default function OnTheRocks(){
         </div>
 
         <div className="hdr-filters" style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-          {[["tudo","Todos"],["favs",`Favoritos${favs.length?` ${favs.length}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
+          {[["tudo","Todas"],["favs",`Favoritas${favs.length?` ${favs.length}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
             <button key={v} onClick={()=>setFilterMode(v)} style={{padding:"5px 11px",borderRadius:3,fontSize:10,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.08)"}`,color:filterMode===v?"#A0785A":"rgba(240,235,225,0.3)",transition:"all .15s"}}>{l}</button>
           ))}
         </div>
@@ -4182,7 +4182,7 @@ export default function OnTheRocks(){
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
                     style={{...CARD_TYPO.uiLabel,padding:"5px 13px",borderRadius:20,background:swipeUnprovenOnly?"rgba(74,222,128,0.1)":"rgba(240,235,225,0.04)",border:`1px solid ${swipeUnprovenOnly?"rgba(74,222,128,0.35)":"rgba(240,235,225,0.12)"}`,color:swipeUnprovenOnly?"#4ADE80":"rgba(240,235,225,0.35)",cursor:"pointer",transition:"all .2s"}}>
-                    {swipeUnprovenOnly?"Não provados ×":"◈ Não provados"}
+                    {swipeUnprovenOnly?"Não provadas ×":"◈ Não provadas"}
                   </button>
                 </div>
               </div>
@@ -4502,7 +4502,7 @@ export default function OnTheRocks(){
                     {activePack?activePack+" ×":"Pack"}
                   </button>}
                   {/* filtros rápidos */}
-                  {[["favs","Favoritos"],["naoprovei","Não provei"]].map(([v,l])=>(
+                  {[["favs","Favoritas"],["naoprovei","Não provei"]].map(([v,l])=>(
                     <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
                       background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                       border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
@@ -4581,7 +4581,7 @@ export default function OnTheRocks(){
 
               {(filterMode==="favs"||filterMode==="provados"||filterMode==="custom")&&(
                 <div style={{fontFamily:"'Gloock',serif",fontSize:28,fontWeight:400,color:"rgba(231,224,205,0.92)",letterSpacing:"-0.3px",marginBottom:20,lineHeight:1.2}}>
-                  {filterMode==="favs"?"Favoritos":filterMode==="provados"?"Provados":"Minhas Receitas"}
+                  {filterMode==="favs"?"Favoritas":filterMode==="provados"?"Provadas":"Minhas Receitas"}
                 </div>
               )}
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
@@ -4624,7 +4624,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}else if(id==="perfil"&&profileView){backToProfile();}}}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
