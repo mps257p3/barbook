@@ -3599,6 +3599,23 @@ export default function OnTheRocks(){
   const clearAll=()=>{setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);};
   const hasFilters=!!(activeStyle||activeSpirits.length>0||search||filterMode!=="tudo"||activeOccasions.length>0||activePack);
 
+  // ── Sub-tela do Perfil: atalhos (favoritos/provados/minhas) abrem a lista
+  // filtrada mantendo "Perfil" como contexto (nav destacada + voltar ao perfil) ──
+  const [profileView,setProfileView]=useState(false);
+  const preProfileRef=useRef(null);
+  const openProfileList=f=>{
+    preProfileRef.current={filterMode,activeStyle,activeSpirits,activeOccasions,activePack,search};
+    setActiveStyle(null);setActiveSpirits([]);setActiveOccasions([]);setActivePack(null);setSearch("");
+    setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");
+    setMobileTab("explorar");setProfileView(true);
+  };
+  const exitProfileView=()=>{
+    setProfileView(false);
+    const p=preProfileRef.current;
+    if(p){setFilterMode(p.filterMode);setActiveStyle(p.activeStyle);setActiveSpirits(p.activeSpirits);setActiveOccasions(p.activeOccasions);setActivePack(p.activePack);setSearch(p.search);preProfileRef.current=null;}
+  };
+  const backToProfile=()=>{exitProfileView();setMobileTab("perfil");window.scrollTo(0,0);};
+
   // ── Back button — navega dentro do app ──
   const backRef=useRef({});
   const searchInputRef=useRef(null);
@@ -3614,7 +3631,7 @@ export default function OnTheRocks(){
       peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
     }
   },[]);
-  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack};
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack,profileView};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
     push();
@@ -3622,6 +3639,7 @@ export default function OnTheRocks(){
       const s=backRef.current;
       if(s.open){setOpen(null);push();return;}
       if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
+      if(s.profileView){backToProfile();push();return;}
       if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
       if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length||s.activePack){
         setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);push();return;
@@ -3941,7 +3959,7 @@ export default function OnTheRocks(){
 
       {/* ── HEADER ── */}
       <header style={{padding:"14px 22px 12px",borderBottom:"1px solid rgba(240,235,225,0.05)",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",background:"#070707",position:"sticky",top:0,zIndex:200}}>
-        <button onClick={()=>{setMobileTab("descobrir");setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}} style={{marginRight:"auto",lineHeight:1,background:"none",border:"none",cursor:"pointer",padding:0,textAlign:"left"}}>
+        <button onClick={()=>{setProfileView(false);preProfileRef.current=null;setMobileTab("descobrir");setActiveStyle(null);setActiveSpirits([]);setFilterMode("tudo");setSearch("");}} style={{marginRight:"auto",lineHeight:1,background:"none",border:"none",cursor:"pointer",padding:0,textAlign:"left"}}>
           <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
             <div style={{height:1,width:18,background:"rgba(240,235,225,0.2)"}}/>
             <span style={{fontSize:9,letterSpacing:5,textTransform:"uppercase",color:"rgba(240,235,225,0.58)",fontWeight:300}}>ON THE</span>
@@ -4436,9 +4454,16 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={f=>{setFilterMode(["naoprovei","favs","custom","tenho","provados","tudo"].includes(f)?f:"tudo");setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} devMode={devMode}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} devMode={devMode}/>
           ) : (
             <>
+              {/* sub-tela do Perfil: cabeçalho para voltar mantendo o contexto */}
+              {profileView&&(
+                <button className="mnv" onClick={backToProfile} style={{display:"flex",alignItems:"center",gap:7,background:"none",border:"none",padding:"0 0 14px",cursor:"pointer",color:"rgba(200,169,110,0.9)",fontFamily:"Archivo,sans-serif"}}>
+                  <span style={{fontSize:17,lineHeight:1,marginTop:-1}}>‹</span>
+                  <span style={{fontSize:10,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700}}>Perfil</span>
+                </button>
+              )}
               {/* backdrop click-outside para fechar filtro */}
               {filterSheet&&<div onClick={()=>setFilterSheet(null)} style={{position:"fixed",inset:0,zIndex:98}}/>}
               {/* mobile: botões família + spirit + filtros */}
@@ -4599,7 +4624,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);setMobileTab(t);setOpen(null);if(search!=="")setSearch("");}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}}}/>
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
