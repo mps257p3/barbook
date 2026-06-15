@@ -3389,6 +3389,13 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
   useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
 
+  // nomes das receitas dos packs liberados ao grupo dev — essas devem aparecer
+  // mesmo marcadas "deleted" (staging "Novas Receitas" etc.), para revisão
+  const groupRecipeNameSet=useMemo(()=>{
+    if(!devMode)return new Set();
+    return new Set(allPacks.filter(p=>groupPackIds.includes(p.id)).flatMap(p=>p.recipeNames||[]));
+  },[devMode,allPacks,groupPackIds]);
+
   const allRecipes=useMemo(()=>{
     // Deduplica por nome (último prevalece = ID padrão, gerado após ID legado como _20th_century)
     const dedupedMgr=Object.values(managerRecipes.reduce((a,r)=>{a[r.name]=r;return a;},{}));
@@ -3398,8 +3405,9 @@ export default function OnTheRocks(){
       .filter(r=>!mgrNames.has(r.name))
       .map(r=>overrides[r.name]?{...r,...overrides[r.name],_origName:r.name}:r)
       .filter(r=>!r.deleted);
-    // activeMgr exclui tombstones (deleted:true) da lista visível
-    const activeMgr=dedupedMgr.filter(r=>!r.deleted).map(r=>{const ov=overrides[r.name];if(!ov)return r;const patch={};if(ov.rating!==undefined)patch.rating=ov.rating;if(ov.notes!==undefined)patch.notes=ov.notes;return Object.keys(patch).length?{...r,...patch}:r;});
+    // activeMgr exclui tombstones (deleted:true) — exceto receitas de packs do
+    // grupo dev (rascunhos de "Novas Receitas" que o dev quer revisar no app)
+    const activeMgr=dedupedMgr.filter(r=>!r.deleted||groupRecipeNameSet.has(r.name)).map(r=>{const ov=overrides[r.name];if(!ov)return r;const patch={};if(ov.rating!==undefined)patch.rating=ov.rating;if(ov.notes!==undefined)patch.notes=ov.notes;return Object.keys(patch).length?{...r,...patch}:r;});
     const normalize=r=>({...r,
       categories:Array.isArray(r.categories)?r.categories:[],
       ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
@@ -3407,7 +3415,7 @@ export default function OnTheRocks(){
       notes:r.notes||"",
     });
     return [...base,...activeMgr,...customRecipes].map(normalize);
-  },[customRecipes,overrides,managerRecipes]);
+  },[customRecipes,overrides,managerRecipes,groupRecipeNameSet]);
 
   // receitas que o usuário pode acessar (livres + packs desbloqueados + autorais)
   const accessibleRecipes=useMemo(()=>{
