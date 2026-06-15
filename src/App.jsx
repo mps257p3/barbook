@@ -3538,15 +3538,17 @@ export default function OnTheRocks(){
   const [swipeUnprovenOnly,setSwipeUnprovenOnly]=useState(()=>localStorage.getItem("otr_swipe_unproven")==="1");
   const [recipeProfiles,setRecipeProfiles]=useState({});
 
+  // badge e filtro por pack: incluem packs system QUANDO liberados ao grupo dev
+  // (accessibleIds nunca contém packs system para usuários comuns — só compras)
   const recipePackMap=useMemo(()=>{
     const m={};
     const accessibleIds=devMode?new Set(groupPackIds):new Set(unlockedPacks);
-    for(const pk of allPacks){if(!pk.system&&accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
+    for(const pk of allPacks){if(accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
     return m;
   },[allPacks,devMode,groupPackIds,unlockedPacks]);
   const accessiblePacks=useMemo(()=>{
-    if(devMode) return allPacks.filter(pk=>!pk.system&&groupPackIds.includes(pk.id));
-    return allPacks.filter(pk=>!pk.system&&unlockedPacks.includes(pk.id));
+    if(devMode) return allPacks.filter(pk=>groupPackIds.includes(pk.id));
+    return allPacks.filter(pk=>unlockedPacks.includes(pk.id));
   },[devMode,allPacks,groupPackIds,unlockedPacks]);
   // nomes das receitas do pack filtrado — uma receita pode estar em vários packs
   // (multipack), então o filtro checa pertencimento ao pack, não um único mapa 1:1
