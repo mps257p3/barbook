@@ -3476,7 +3476,10 @@ export default function OnTheRocks(){
     }
   },[]);
   const [sort,setSort]=useState(savedUI.sort??"nome");
-  const [filterMode,setFilterMode]=useState(savedUI.mode??"tudo");
+  // filterMode (Minhas Receitas/Favoritas/Provadas/etc) NÃO persiste entre
+  // sessões: é um recorte contextual — restaurá-lo deixava o Explorar abrindo
+  // "grudado" num filtro do Perfil sem o contexto de sub-tela
+  const [filterMode,setFilterMode]=useState("tudo");
   const [filterAnd,setFilterAnd]=useState(!!savedUI.and);
   const [activeOccasions,setActiveOccasions]=useState(Array.isArray(savedUI.occasions)?savedUI.occasions:[]);
   // activePack NÃO é restaurado entre sessões: depende do acesso (grupo/packs
@@ -3494,7 +3497,7 @@ export default function OnTheRocks(){
   },[mobileTab]);
   // persiste a UI (aba, ordenação e filtros) para reabrir onde o usuário parou
   useEffect(()=>{
-    try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,mode:filterMode,and:filterAnd}));}catch{}
+    try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,and:filterAnd}));}catch{}
   },[mobileTab,sort,activeStyle,activeSpirits,activeOccasions,filterMode,filterAnd]);
   const [filterSheet,setFilterSheet]=useState(null);
   const importRef=useRef();
