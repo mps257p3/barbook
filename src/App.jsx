@@ -3239,6 +3239,7 @@ export default function OnTheRocks(){
     lastPackFetchRef.current=now;
     let allPs=[];
     let freeNames=[];
+    let gPackIds=[];
     let configOk=false;
     try{
       const [configSnap,packsSnap]=await Promise.all([
@@ -3251,7 +3252,7 @@ export default function OnTheRocks(){
         setFreeRecipeNames(new Set(freeNames));
         const userEmail=auth.currentUser?.email||'';
         const ug=cfg.userGroups||{};
-        let isInGroup=false;let gPackIds=[];
+        let isInGroup=false;
         for(const gd of Object.values(ug)){
           if((gd.members||[]).some(m=>(m.email||m)===userEmail)){isInGroup=true;gPackIds=gd.packIds||[];break;}
         }
@@ -3276,7 +3277,10 @@ export default function OnTheRocks(){
     try{
       const mgrSnap=await getDocs(collection(db,"managerRecipes"));
       const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
-      const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[])]);
+      // receitas de packs liberados ao grupo do usuário (dev) — mesmo packs system,
+      // como "Novas Receitas" — não devem ser tratadas como system-only e removidas
+      const groupRecipeNames=new Set(allPs.filter(p=>gPackIds.includes(p.id)).flatMap(p=>p.recipeNames||[]));
+      const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[]),...groupRecipeNames]);
       const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
       const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
       const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
