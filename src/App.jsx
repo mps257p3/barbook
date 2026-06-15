@@ -4435,8 +4435,8 @@ export default function OnTheRocks(){
                 const currentGroupId=comandaGroups.find(g=>g.drinks.includes(comandaLongPress))?.id||null;
                 const ovBtnSt={display:"block",width:"100%",padding:"12px 16px",background:"none",border:"none",borderRadius:10,fontSize:14,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif"};
                 return(
-                  <div style={{position:"fixed",inset:0,zIndex:9999,display:"flex",flexDirection:"column",justifyContent:"flex-end",background:"rgba(0,0,0,0.5)"}} onClick={()=>setComandaLongPress(null)}>
-                    <div onClick={e=>e.stopPropagation()} style={{background:"#111008",borderRadius:"18px 18px 0 0",padding:"12px 8px 32px",border:"1px solid rgba(160,120,90,0.25)",borderBottom:"none"}}>
+                  <div style={{position:"fixed",inset:0,zIndex:10001,display:"flex",flexDirection:"column",justifyContent:"flex-end",background:"rgba(0,0,0,0.5)"}} onClick={()=>setComandaLongPress(null)}>
+                    <div onClick={e=>e.stopPropagation()} style={{background:"#111008",borderRadius:"18px 18px 0 0",padding:"12px 8px calc(24px + env(safe-area-inset-bottom, 12px))",border:"1px solid rgba(160,120,90,0.25)",borderBottom:"none"}}>
                       <div style={{textAlign:"center",marginBottom:12}}>
                         <div style={{width:36,height:4,borderRadius:2,background:"rgba(240,235,225,0.15)",margin:"0 auto 14px"}}/>
                         <div style={{fontFamily:"'Gloock',serif",fontSize:17,color:"rgba(231,224,205,0.92)"}}>{comandaLongPress}</div>
