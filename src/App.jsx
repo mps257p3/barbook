@@ -3216,11 +3216,13 @@ export default function OnTheRocks(){
   const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
   const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
   const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
-  const [unlockedPacks,setUnlockedPacks]=useState([]);
+  const [unlockedPacks,setUnlockedPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_unlocked')||'[]');}catch{return[];}});
   const [devMode,setDevMode]=useState(()=>localStorage.getItem('otr_devmode')==='1');
   const [groupPackIds,setGroupPackIds]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_group_packs')||'[]');}catch{return[];}});
-  const [packConfigLoaded,setPackConfigLoaded]=useState(false);
-  const [managerRecipes,setManagerRecipes]=useState([]);
+  // receitas do Manager e flag de "carregado" partem do cache local: o app abre
+  // instantâneo com o último snapshot e revalida com o Firestore em segundo plano
+  const [managerRecipes,setManagerRecipes]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_mgr')||'[]');}catch{return[];}});
+  const [packConfigLoaded,setPackConfigLoaded]=useState(()=>{try{return localStorage.getItem('otr_cfg_mgr')!==null;}catch{return false;}});
   const mainRef=useRef();
   const explorarScrollRef=useRef({pos:0,tab:"explorar"});
   const barScrollRef=useRef(0);
@@ -3279,6 +3281,7 @@ export default function OnTheRocks(){
       const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
       const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
       setManagerRecipes(mRecipes);
+      try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));}catch{/* quota: segue só em memória */}
     }catch(e){console.error(e);}
   },[]);
 
@@ -3342,11 +3345,15 @@ export default function OnTheRocks(){
             if(d.spirits)        {setCustomSpirits(d.spirits);  echo.spirits=JSON.stringify(d.spirits);}
             if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
             if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
-            if(d.unlockedPacks)  setUnlockedPacks(d.unlockedPacks);
+            if(d.unlockedPacks)  {setUnlockedPacks(d.unlockedPacks);try{localStorage.setItem('otr_unlocked',JSON.stringify(d.unlockedPacks));}catch{}}
             serverEchoRef.current=echo;
           }
         }catch(e){console.error(e);}
         setSyncing(false);
+      } else {
+        // logout: zera packs desbloqueados e o cache, para não vazar entre contas
+        setUnlockedPacks([]);
+        try{localStorage.removeItem('otr_unlocked');}catch{}
       }
       fsInitializedRef.current = true;
     });
