@@ -1708,6 +1708,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const onPosPointerMove=e=>{if(!posStartRef.current)return;const dx=e.clientX-posStartRef.current.x;const dy=e.clientY-posStartRef.current.y;setLocalOffset({x:Math.max(0,Math.min(100,posStartRef.current.ox-dx*0.4)),y:Math.max(0,Math.min(100,posStartRef.current.oy-dy*0.4))});};
   const onPosPointerUp=()=>{posStartRef.current=null;};
   const [steps,setSteps]=useState(recipe.steps);
+  const [openSub,setOpenSub]=useState({});
   const [generating,setGenerating]=useState(false);
   const [genErr,setGenErr]=useState(null);
   const [confirmDelete,setConfirmDelete]=useState(false);
@@ -1958,6 +1959,59 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           ):!generating&&(
             <div style={{padding:"18px 0 26px",textAlign:"center",color:"rgba(240,235,225,0.55)",fontSize:13,fontStyle:"italic"}}>
               Sem modo de preparo.<br/><span style={{fontSize:11}}>Use o botão acima para gerar com IA.</span>
+            </div>
+          )}
+
+          {recipe.subPreparations?.length>0&&(
+            <div style={{marginBottom:26}}>
+              <div style={{...CARD_TYPO.sectionHead,color:theme.accent,marginBottom:12}}>Pré-preparos</div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {recipe.subPreparations.map((sp,si)=>{
+                  const isOpen=!!openSub[si];
+                  return(
+                    <div key={si} style={{border:`1px solid ${theme.border}`,borderRadius:8,overflow:"hidden",background:"rgba(240,235,225,0.02)"}}>
+                      <button onClick={()=>setOpenSub(o=>({...o,[si]:!o[si]}))} style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:"11px 13px",background:"none",border:"none",cursor:"pointer",textAlign:"left"}}>
+                        <span style={{display:"inline-block",transition:"transform .15s",transform:isOpen?"rotate(90deg)":"none",color:theme.accent,fontSize:15,lineHeight:1}}>›</span>
+                        <span style={{flex:1,...CARD_TYPO.bodyText,color:"rgba(231,224,205,0.85)",fontWeight:700}}>{capFirst(sp.name)}</span>
+                        <span style={{fontSize:11,color:"rgba(240,235,225,0.4)"}}>{(sp.ingredients||[]).length} ingr</span>
+                      </button>
+                      {isOpen&&(
+                        <div style={{padding:"0 14px 14px 34px"}}>
+                          {(sp.ingredients||[]).length>0&&(
+                            <div style={{display:"flex",flexDirection:"column",gap:2,marginBottom:14}}>
+                              {sp.ingredients.map((ing,ii)=>{
+                                const parts=splitMeasure(ing);
+                                return(
+                                  <div key={ii} style={{display:"flex",alignItems:"baseline",gap:8}}>
+                                    {parts?(<>
+                                      <span style={{...CARD_TYPO.bodyText,color:"rgba(231,224,205,0.70)"}}>{capFirst(parts.name)}</span>
+                                      <span aria-hidden="true" style={{flex:1,minWidth:14,borderBottom:"1px dotted rgba(231,224,205,0.20)",transform:"translateY(-4px)"}}/>
+                                      <span style={{...CARD_TYPO.bodyText,whiteSpace:"nowrap",color:theme.label}}>{parts.amount}</span>
+                                    </>):(
+                                      <span style={{...CARD_TYPO.bodyText,color:"rgba(231,224,205,0.70)"}}>{capFirst(ing)}</span>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                          {(sp.steps||[]).length>0&&(
+                            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                              {sp.steps.map((st,sti)=>(
+                                <div key={sti} style={{display:"grid",gridTemplateColumns:"20px 1fr",gap:10,alignItems:"start"}}>
+                                  <div style={{width:20,height:20,borderRadius:3,border:`1px solid ${theme.border}`,color:theme.label,fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{sti+1}</div>
+                                  <div style={{...CARD_TYPO.bodyText,paddingTop:1}}>{capFirst(st)}</div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {sp.yield&&<div style={{fontSize:11,color:"rgba(240,235,225,0.45)",fontStyle:"italic",marginTop:12}}>rende {sp.yield}</div>}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -3432,6 +3486,7 @@ export default function OnTheRocks(){
       categories:Array.isArray(r.categories)?r.categories:[],
       ingredients:Array.isArray(r.ingredients)?r.ingredients:[],
       steps:Array.isArray(r.steps)?r.steps:[],
+      subPreparations:Array.isArray(r.subPreparations)?r.subPreparations:[],
       notes:r.notes||"",
     });
     return [...base,...activeMgr,...customRecipes].map(normalize);
