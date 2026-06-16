@@ -1316,7 +1316,7 @@ const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], notes:"", rating:0, 
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
 const addBtnSt = { marginTop:4, padding:"5px 12px", borderRadius:3, background:"none", border:"1px solid rgba(240,235,225,0.1)", color:"rgba(240,235,225,0.58)", cursor:"pointer", fontSize:11, letterSpacing:.5, fontFamily:"Archivo,sans-serif" };
 
-function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpirits=[], sharedFiles=null }) {
+function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpirits=[], baseSpirits=ALL_SPIRIT_OPTIONS, sharedFiles=null }) {
   const [form, setForm] = useState(()=>{
     const base = initial || EMPTY_FORM;
     if (!base.perfil && initialProfile?.perfil) {
@@ -1497,7 +1497,7 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
             </div>
             <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.45)",marginBottom:6}}>Spirits / Ingredientes principais</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-              {[...new Set([...ALL_SPIRIT_OPTIONS,...customSpirits])].sort().map(s=>{const on=form.categories.includes(s);return <button key={s} onClick={()=>toggleCat(s)} style={{padding:"3px 10px",borderRadius:20,fontSize:11,background:on?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",border:`1px solid ${on?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)"}`,color:on?"#A0785A":"rgba(240,235,225,0.48)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s}</button>;})}
+              {[...new Set([...baseSpirits,...customSpirits])].sort().map(s=>{const on=form.categories.includes(s);return <button key={s} onClick={()=>toggleCat(s)} style={{padding:"3px 10px",borderRadius:20,fontSize:11,background:on?"rgba(160,120,90,0.15)":"rgba(240,235,225,0.04)",border:`1px solid ${on?"rgba(160,120,90,0.5)":"rgba(240,235,225,0.08)"}`,color:on?"#A0785A":"rgba(240,235,225,0.48)",cursor:"pointer",fontFamily:"Archivo,sans-serif"}}>{s}</button>;})}
             </div>
           </div>
 
@@ -3227,6 +3227,8 @@ export default function OnTheRocks(){
   const [customBgs,setCustomBgs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_custom_bgs")||"{}");}catch{return{};}});
   const [customBgOffsets,setCustomBgOffsets]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_bg_offsets")||"{}");}catch{return{};}});
   const [freeRecipeNames,setFreeRecipeNames]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_free')||'null');return a?new Set(a):new Set();}catch{return new Set();}});
+  // Spirits base do app — configuráveis pelo Manager (appConfig/spirits). Fallback: SPIRIT_CATS hardcoded.
+  const [baseSpirits,setBaseSpirits]=useState(()=>{try{const a=JSON.parse(localStorage.getItem('otr_cfg_base_spirits')||'null');return a&&a.length?a:[...SPIRIT_CATS];}catch{return[...SPIRIT_CATS];}});
   const [availPacks,setAvailPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_packs')||'[]');}catch{return[];}});
   const [allPacks,setAllPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{return[];}});
   const [unlockedPacks,setUnlockedPacks]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_unlocked')||'[]');}catch{return[];}});
@@ -3255,10 +3257,15 @@ export default function OnTheRocks(){
     let gPackIds=[];
     let configOk=false;
     try{
-      const [configSnap,packsSnap]=await Promise.all([
+      const [configSnap,packsSnap,baseSpiritsSnap]=await Promise.all([
         getDoc(doc(db,"manager","config")),
-        getDocs(collection(db,"packs"))
+        getDocs(collection(db,"packs")),
+        getDoc(doc(db,"appConfig","spirits")).catch(()=>null)
       ]);
+      if(baseSpiritsSnap&&baseSpiritsSnap.exists()){
+        const bs=baseSpiritsSnap.data().spirits||[];
+        if(bs.length){setBaseSpirits(bs);try{localStorage.setItem('otr_cfg_base_spirits',JSON.stringify(bs));}catch{}}
+      }
       if(configSnap.exists()){
         const cfg=configSnap.data();
         freeNames=cfg.freeRecipes||[];
@@ -3581,8 +3588,10 @@ export default function OnTheRocks(){
     return new Set(pk?.recipeNames||[]);
   },[activePack,accessiblePacks]);
   const packSpirits=useMemo(()=>accessiblePacks.flatMap(pk=>pk.spirits||[]),[accessiblePacks]);
-  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>SPIRIT_CATS.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,packSpirits,customSpirits]);
-  const spiritCatsAll=useMemo(()=>new Set([...SPIRIT_CATS,...packSpirits,...customSpirits]),[packSpirits,customSpirits]);
+  // Base = spirits configurados no Manager (appConfig/spirits); fallback p/ a lista hardcoded.
+  const baseSpiritSet=useMemo(()=>new Set(baseSpirits&&baseSpirits.length?baseSpirits:[...SPIRIT_CATS]),[baseSpirits]);
+  const allSpirits=useMemo(()=>[...new Set([...allRecipes.flatMap(r=>r.categories.filter(c=>baseSpiritSet.has(c))),...packSpirits,...customSpirits])].sort(),[allRecipes,baseSpiritSet,packSpirits,customSpirits]);
+  const spiritCatsAll=useMemo(()=>new Set([...baseSpiritSet,...packSpirits,...customSpirits]),[baseSpiritSet,packSpirits,customSpirits]);
   const visibleSpirits=useMemo(()=>allSpirits.filter(s=>s.toLowerCase().includes(spiritSearch.toLowerCase())),[allSpirits,spiritSearch]);
 
   const [ratingPopup,setRatingPopup]=useState(null);
@@ -4818,7 +4827,7 @@ export default function OnTheRocks(){
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
-      {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} sharedFiles={!editing?sharedFiles:null}/>}
+      {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} baseSpirits={[...baseSpiritSet].sort((a,b)=>a.localeCompare(b))} sharedFiles={!editing?sharedFiles:null}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
       {confirmDialog&&<ConfirmDialog message={confirmDialog.message} danger={confirmDialog.danger} onConfirm={()=>{confirmDialog.onConfirm?.();closeConfirm();}} onCancel={confirmDialog.onConfirm?closeConfirm:null}/>}
