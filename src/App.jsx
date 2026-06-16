@@ -1845,7 +1845,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   </div>
                 ))}
               </div>
-              <div style={{height:1,background:`linear-gradient(90deg,transparent,${theme.accent}55,transparent)`,margin:"0 18px"}}/>
+              <div style={{height:1,background:`linear-gradient(90deg,#0A0906,${theme.accent}55,#0A0906)`,margin:"0 18px"}}/>
             </div>
           )}
         </div>
@@ -2499,8 +2499,9 @@ function Tutorial({ onClose, onTabChange }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, devMode }) {
+function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
   const [carouselIdx,setCarouselIdx]=useState(0);
+  const [collectionsOpen,setCollectionsOpen]=useState(false);
   const [authError,setAuthError]=useState(null);
   const [restoreConfirm,setRestoreConfirm]=useState(null);
   const [versionTaps,setVersionTaps]=useState(0);
@@ -2597,31 +2598,43 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         </div>
       </div>
 
-      {/* packs adquiridos */}
+      {/* coleções */}
       <div style={{marginBottom:24}}>
-        <SectionHead label="Packs adquiridos"/>
-        <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.13)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
-          {devMode?(
-            <div style={{padding:"18px 16px",display:"flex",gap:12,alignItems:"flex-start"}}>
-              <div style={{width:3,height:"100%",minHeight:36,borderRadius:2,background:"#C8A96E",opacity:0.85,flexShrink:0,alignSelf:"stretch"}}/>
-              <div style={{fontFamily:"'Gloock',serif",fontSize:15,color:"rgba(231,224,205,0.88)",lineHeight:1.5}}>
-                Obrigado por estar aqui antes das luzes acenderem.<br/>Você possui acesso total liberado.
-              </div>
-            </div>
-          ):unlockedPacks.length>0?(
-            availPacks.filter(p=>unlockedPacks.includes(p.id)).map((pack,i,arr)=>(
-              <div key={pack.id} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderBottom:i<arr.length-1?"1px solid rgba(240,235,225,0.05)":"none"}}>
-                <div style={{width:3,height:22,borderRadius:2,background:"#C8A96E",opacity:0.85,flexShrink:0}}/>
-                <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.92)",lineHeight:1.2}}>{pack.name}</div>
-                <div style={{...CARD_TYPO.counter,color:"#A0785A",opacity:1}}>{(pack.recipeNames||[]).length} receitas</div>
-              </div>
-            ))
-          ):(
-            <div style={{padding:"20px 16px",textAlign:"center",color:"rgba(240,235,225,0.52)",fontSize:13,fontFamily:"Archivo,sans-serif"}}>
-              Você ainda não adquiriu nenhum pack.
-            </div>
-          )}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,cursor:"pointer"}} onClick={()=>setCollectionsOpen(o=>!o)}>
+          <SectionHead label="Coleções" style={{margin:0}}/>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            {accessiblePacks.length>0&&<span style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(160,120,90,0.6)",fontFamily:"Archivo,sans-serif"}}>{accessiblePacks.length}</span>}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(240,235,225,0.35)" strokeWidth="1.8" strokeLinecap="round" style={{transition:"transform .25s",transform:collectionsOpen?"rotate(90deg)":"rotate(0deg)"}}>
+              <polyline points="4 2 10 7 4 12"/>
+            </svg>
+          </div>
         </div>
+        {collectionsOpen&&(
+          <>
+            {devMode&&(
+              <div style={{marginBottom:10,padding:"12px 14px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:10,alignItems:"flex-start"}}>
+                <div style={{width:3,minHeight:28,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
+                <div style={{fontFamily:"'Gloock',serif",fontSize:13,color:"rgba(231,224,205,0.7)",lineHeight:1.55}}>Obrigado por estar aqui antes das luzes acenderem.</div>
+              </div>
+            )}
+            <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.13)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
+              {accessiblePacks.length>0?(
+                accessiblePacks.map((pack,i,arr)=>(
+                  <button key={pack.id} onClick={()=>onGoToCollection&&onGoToCollection(pack.name)} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",width:"100%",background:"none",border:"none",borderBottom:i<arr.length-1?"1px solid rgba(240,235,225,0.05)":"none",cursor:"pointer",textAlign:"left",boxSizing:"border-box"}}>
+                    <div style={{width:3,height:22,borderRadius:2,background:"#C8A96E",opacity:0.85,flexShrink:0}}/>
+                    <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.92)",lineHeight:1.2}}>{pack.name}</div>
+                    <div style={{...CARD_TYPO.counter,color:"#A0785A",opacity:1}}>{(pack.recipeNames||[]).length} drinks</div>
+                    <div style={{color:"rgba(240,235,225,0.25)",fontSize:14,marginLeft:2}}>›</div>
+                  </button>
+                ))
+              ):(
+                <div style={{padding:"20px 16px",textAlign:"center",color:"rgba(240,235,225,0.52)",fontSize:13,fontFamily:"Archivo,sans-serif"}}>
+                  Você ainda não possui nenhuma coleção.
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* dados */}
@@ -3498,6 +3511,8 @@ export default function OnTheRocks(){
   // desbloqueados) que carrega de forma assíncrona — restaurá-lo cedo deixava a
   // lista vazia ("436 receitas / nenhuma encontrada") até o acesso chegar
   const [activePack,setActivePack]=useState(null);
+  const [collectionsView,setCollectionsView]=useState(false);
+  const [infoPackId,setInfoPackId]=useState(null);
   const [sidebarTab,setSidebarTab]=useState("família");
   const [mobileTab,setMobileTab]=useState(savedUI.tab??"descobrir");
   const prevTabRef=useRef("descobrir");
@@ -3550,14 +3565,14 @@ export default function OnTheRocks(){
   // (accessibleIds nunca contém packs system para usuários comuns — só compras)
   const recipePackMap=useMemo(()=>{
     const m={};
-    const accessibleIds=devMode?new Set(groupPackIds):new Set(unlockedPacks);
+    const accessibleIds=new Set([...unlockedPacks,...(groupPackIds||[])]);
     for(const pk of allPacks){if(accessibleIds.has(pk.id)){for(const n of(pk.recipeNames||[])){m[n]=pk.name;}}}
     return m;
-  },[allPacks,devMode,groupPackIds,unlockedPacks]);
+  },[allPacks,groupPackIds,unlockedPacks]);
   const accessiblePacks=useMemo(()=>{
-    if(devMode) return allPacks.filter(pk=>groupPackIds.includes(pk.id));
-    return allPacks.filter(pk=>unlockedPacks.includes(pk.id));
-  },[devMode,allPacks,groupPackIds,unlockedPacks]);
+    const ids=new Set([...unlockedPacks,...(groupPackIds||[])]);
+    return allPacks.filter(pk=>ids.has(pk.id));
+  },[allPacks,groupPackIds,unlockedPacks]);
   // nomes das receitas do pack filtrado — uma receita pode estar em vários packs
   // (multipack), então o filtro checa pertencimento ao pack, não um único mapa 1:1
   const activePackNames=useMemo(()=>{
@@ -3655,7 +3670,7 @@ export default function OnTheRocks(){
       peekPrevRef.current.style.transform=`translateX(${-52*(1-prevPct)}px)`;
     }
   },[]);
-  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack,profileView};
+  backRef.current={open,showForm,editing,mobileTab,activeStyle,activeSpirits,search,filterMode,activeOccasions,activePack,profileView,collectionsView,infoPackId,filterSheet};
   useEffect(()=>{
     const push=()=>window.history.pushState({otr:true},"");
     push();
@@ -3663,7 +3678,10 @@ export default function OnTheRocks(){
       const s=backRef.current;
       if(s.open){setOpen(null);push();return;}
       if(s.showForm||s.editing){setShowForm(false);setEditing(null);push();return;}
+      if(s.infoPackId){setInfoPackId(null);push();return;}
+      if(s.filterSheet){setFilterSheet(null);push();return;}
       if(s.profileView){backToProfile();push();return;}
+      if(s.collectionsView){setCollectionsView(false);push();return;}
       if(s.mobileTab!=="descobrir"){const prev=prevTabRef.current;prevTabRef.current=s.mobileTab;setMobileTab(prev!==s.mobileTab?prev:"descobrir");push();return;}
       if(s.activeStyle||s.activeSpirits.length||s.search||s.filterMode!=="tudo"||s.activeOccasions.length||s.activePack){
         setActiveStyle(null);setActiveSpirits([]);setSearch("");setFilterMode("tudo");setActiveOccasions([]);setActivePack(null);push();return;
@@ -4166,21 +4184,15 @@ export default function OnTheRocks(){
               {/* controles bottom — sheets flutuam sobre o layout sem empurrar */}
               <div className="disc-controls" style={{flexShrink:0,width:"100%",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",paddingTop:6,paddingBottom:14,background:`radial-gradient(ellipse 100% 140% at 50% 100%, ${getTheme(swipeRecipe.categories).accent}1a 0%, ${getTheme(swipeRecipe.categories).accent}08 45%, transparent 75%)`,transition:"background 1.1s ease",position:"relative"}}>
 
-                {(filterSheet==="ocasiao"||filterSheet==="pack")&&(
+                {filterSheet==="ocasiao"&&(
                   <div style={{position:"absolute",bottom:"100%",left:12,right:12,marginBottom:6,background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"12px 14px",zIndex:30,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                      {filterSheet==="ocasiao"?[...OCCASION_LIST].sort((a,b)=>a.localeCompare(b,"pt")).map(tag=>{
+                      {[...OCCASION_LIST].sort((a,b)=>a.localeCompare(b,"pt")).map(tag=>{
                         const active=activeOccasions.includes(tag);
                         return(<button key={tag} onClick={()=>toggleOccasion(tag)} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
                           background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
                           border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
                           color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{tag}</button>);
-                      }):accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
-                        const active=activePack===pk.name;
-                        return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 13px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",
-                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{pk.name}</button>);
                       })}
                     </div>
                   </div>
@@ -4195,13 +4207,19 @@ export default function OnTheRocks(){
                   </button>
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-                  {accessiblePacks.length>0&&<button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
-                    style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:6,padding:"5px 13px",borderRadius:20,cursor:"pointer",transition:"all .2s",
-                      background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                      border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.12)"}`,
-                      color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.35)"}}>
-                    {activePack?activePack+" ×":"◈ Pack"}
-                  </button>}
+                  {(true)&&(
+                    <div style={{display:"flex",alignItems:"center",gap:0}}>
+                      <button onClick={()=>setCollectionsView(true)}
+                        style={{...CARD_TYPO.uiLabel,display:"flex",alignItems:"center",gap:5,padding:"5px 13px",borderRadius:20,cursor:"pointer",transition:"all .2s",
+                          background:activePack?"rgba(160,120,90,0.18)":"rgba(160,120,90,0.07)",
+                          border:`1px solid ${activePack?"rgba(160,120,90,0.6)":"rgba(160,120,90,0.3)"}`,
+                          color:activePack?"#C8A96E":"rgba(160,120,90,0.7)"}}>
+                        <span style={{fontSize:11}}>◈</span> Coleções{activePack&&<span style={{opacity:0.6,marginLeft:2}}>·</span>}
+                        {activePack&&<span onClick={e=>{e.stopPropagation();setActivePack(null);}}
+                          style={{marginLeft:2,opacity:0.7,cursor:"pointer"}}>×</span>}
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                   <button onClick={()=>{setSwipeUnprovenOnly(v=>{const n=!v;if(n)localStorage.setItem("otr_swipe_unproven","1");else localStorage.removeItem("otr_swipe_unproven");return n;})}}
@@ -4478,7 +4496,7 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} devMode={devMode}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
           ) : (
             <>
               {/* sub-tela do Perfil: cabeçalho para voltar mantendo o contexto */}
@@ -4517,14 +4535,21 @@ export default function OnTheRocks(){
                       color:activeOccasions.length||filterSheet==="ocasiao"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
                     {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                   </button>
-                  {/* pack */}
-                  {accessiblePacks.length>0&&<button onClick={()=>activePack?setActivePack(null):setFilterSheet(filterSheet==="pack"?null:"pack")}
-                    style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,cursor:"pointer",transition:"all .15s",
-                      background:activePack||filterSheet==="pack"?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                      border:`1px solid ${activePack||filterSheet==="pack"?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                      color:activePack||filterSheet==="pack"?"#C8A96E":"rgba(240,235,225,0.45)"}}>
-                    {activePack?activePack+" ×":"Pack"}
-                  </button>}
+                  {/* coleções */}
+                  {(true)&&(
+                    <div style={{display:"flex",alignItems:"center",gap:0,flexShrink:0}}>
+                      <button onClick={()=>setCollectionsView(true)}
+                        style={{...CARD_TYPO.uiLabel,padding:"7px 14px",borderRadius:20,cursor:"pointer",transition:"all .15s",
+                          background:activePack?"rgba(160,120,90,0.18)":"rgba(160,120,90,0.07)",
+                          border:`1px solid ${activePack?"rgba(160,120,90,0.6)":"rgba(160,120,90,0.3)"}`,
+                          color:activePack?"#C8A96E":"rgba(160,120,90,0.7)",
+                          display:"flex",alignItems:"center",gap:5}}>
+                        <span style={{fontSize:11}}>◈</span> Coleções{activePack&&<span style={{opacity:0.6,marginLeft:2}}>·</span>}
+                        {activePack&&<button onClick={e=>{e.stopPropagation();setActivePack(null);}}
+                          style={{background:"none",border:"none",color:"#C8A96E",cursor:"pointer",padding:"0 0 0 2px",fontSize:13,lineHeight:1,opacity:0.7}}>×</button>}
+                      </button>
+                    </div>
+                  )}
                   {/* filtros rápidos */}
                   {[["favs","Favoritas"],["naoprovei","Não provei"]].map(([v,l])=>(
                     <button key={v} onClick={()=>setFilterMode(filterMode===v?"tudo":v)} style={{...CARD_TYPO.uiLabel,padding:"8px 16px",borderRadius:20,flexShrink:0,whiteSpace:"nowrap",cursor:"pointer",transition:"all .15s",
@@ -4577,19 +4602,6 @@ export default function OnTheRocks(){
                     </div>
                   </div>
                 )}
-                {filterSheet==="pack"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
-                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                      {accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
-                        const active=activePack===pk.name;
-                        return(<button key={pk.id} onClick={()=>{setActivePack(active?null:pk.name);setFilterSheet(null);}} style={{padding:"7px 14px",borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:"Archivo,sans-serif",transition:"all .12s",
-                          background:active?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",
-                          border:`1px solid ${active?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.09)"}`,
-                          color:active?"#C8A96E":"rgba(240,235,225,0.45)"}}>{pk.name}</button>);
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
               {/* family description */}
               {activeStyle&&FAMILY_DESC[activeStyle]&&(
@@ -4628,6 +4640,11 @@ export default function OnTheRocks(){
                 </div>
               ):(
                 <div key={`rev|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
+                  {activePack&&(()=>{const pk=accessiblePacks.find(p=>p.name===activePack);return pk?.coverImage?(
+                    <div style={{borderRadius:12,overflow:"hidden",marginBottom:8}}>
+                      <img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:"auto",display:"block"}}/>
+                    </div>
+                  ):null;})()}
                   {filtered.map((r,i)=>(
                     <Reveal key={r._docId??r.id??r.name} index={i}>
                       <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={activePack&&activePackNames?.has(r.name)?activePack:recipePackMap[r.name]}/>
@@ -4648,7 +4665,156 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}else if(id==="perfil"&&profileView){backToProfile();}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setCollectionsView(false);setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}else if(id==="perfil"&&profileView){backToProfile();}}}/>
+
+      {/* ── TELA COLEÇÕES ── */}
+      {collectionsView&&(
+        <div className="otr-modal-backdrop" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.92)",zIndex:9990,display:"flex",flexDirection:"column",backdropFilter:"blur(12px)"}}>
+          <div className="otr-modal-sheet" style={{flex:1,display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",paddingBottom:100}}>
+            {/* header */}
+            <div style={{position:"sticky",top:0,zIndex:10,background:"rgba(7,7,7,0.96)",backdropFilter:"blur(12px)",padding:"16px 20px 14px",borderBottom:"1px solid rgba(240,235,225,0.07)",display:"flex",alignItems:"center",gap:14}}>
+              <button onClick={()=>setCollectionsView(false)} style={{background:"none",border:"none",color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 4px",display:"flex",alignItems:"center"}}>‹</button>
+              <div style={{fontFamily:"'Gloock',serif",fontSize:22,fontWeight:400,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px"}}>Coleções</div>
+            </div>
+            <div style={{padding:"24px 20px 0"}}>
+              {/* agradecimento dev/convidado */}
+              {devMode&&(
+                <div style={{marginBottom:20,padding:"14px 16px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:12,alignItems:"flex-start"}}>
+                  <div style={{width:3,minHeight:32,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
+                  <div style={{fontFamily:"'Gloock',serif",fontSize:14,color:"rgba(231,224,205,0.75)",lineHeight:1.55}}>
+                    Obrigado por estar aqui antes das luzes acenderem.
+                  </div>
+                </div>
+              )}
+              {/* minhas coleções */}
+              {accessiblePacks.length>0&&(
+                <div style={{marginBottom:32}}>
+                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:14}}>
+                    {accessiblePacks.length===1?"1 Coleção obtida":`${accessiblePacks.length} Coleções obtidas`}
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).map(pk=>{
+                      const pkSpirits=(pk.spirits||[]).slice(0,5);
+                      return(
+                      <div key={pk.id} style={{background:"rgba(0,0,0,0.3)",border:`1px solid ${activePack===pk.name?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.1)"}`,borderRadius:12,overflow:"hidden",transition:"border-color .15s"}}>
+                        <div onClick={()=>{setActivePack(pk.name);setCollectionsView(false);setMobileTab("explorar");}} style={{cursor:"pointer",display:"block"}}>
+                          {pk.coverImage
+                            ?<img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:"auto",display:"block"}}/>
+                            :<div style={{height:80,background:"linear-gradient(135deg,rgba(160,120,90,0.22) 0%,rgba(0,0,0,0.5) 100%)",display:"flex",alignItems:"center",paddingLeft:16}}>
+                              <div style={{fontFamily:"'Gloock',serif",fontSize:18,color:"rgba(231,224,205,0.6)"}}>◈</div>
+                            </div>}
+                        </div>
+                        <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
+                          <div style={{flex:1}}>
+                            {pkSpirits.length>0&&<div style={{fontSize:10,letterSpacing:1,textTransform:"uppercase",color:"rgba(160,120,90,0.65)",fontFamily:"Archivo,sans-serif",marginBottom:4}}>{pkSpirits.join(" · ")}</div>}
+                            <div style={{display:"flex",alignItems:"center",gap:8}}>
+                              <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
+                              <div style={{fontSize:10,letterSpacing:1,color:"rgba(160,120,90,0.5)",fontFamily:"Archivo,sans-serif"}}>· {pk.price>0?`R$ ${Number(pk.price).toFixed(2)}`:"R$ XX,XX"}</div>
+                            </div>
+                          </div>
+                          <button onClick={()=>setInfoPackId(pk.id)}
+                            style={{...CARD_TYPO.uiLabel,padding:"8px 14px",borderRadius:20,cursor:"pointer",flexShrink:0,transition:"all .15s",
+                              background:"rgba(240,235,225,0.06)",border:"1px solid rgba(240,235,225,0.15)",
+                              color:"rgba(240,235,225,0.6)"}}>
+                            Informações
+                          </button>
+                        </div>
+                      </div>
+                    );})}
+                  </div>
+                </div>
+              )}
+              {/* disponíveis para obter */}
+              {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).length>0&&(
+                <div style={{marginBottom:32}}>
+                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:14}}>Disponíveis</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).map(pk=>(
+                      <div key={pk.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75}}>
+                        {pk.coverImage&&<img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:100,objectFit:"cover",display:"block",filter:"brightness(0.7)"}}/>}
+                        {!pk.coverImage&&<div style={{height:52,background:"linear-gradient(135deg,rgba(80,60,40,0.18) 0%,rgba(0,0,0,0.4) 100%)"}}/>}
+                        <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
+                          <div style={{flex:1}}>
+                            <div style={{fontFamily:"'Gloock',serif",fontSize:17,fontWeight:400,color:"rgba(231,224,205,0.7)",lineHeight:1.2,marginBottom:2}}>{pk.name}</div>
+                            {pk.description&&<div style={{fontSize:11,color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif",lineHeight:1.4,marginBottom:4}}>{pk.description}</div>}
+                            <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(160,120,90,0.4)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
+                          </div>
+                          {pk.price>0&&<div style={{...CARD_TYPO.uiLabel,padding:"8px 14px",borderRadius:20,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.25)",color:"rgba(160,120,90,0.6)",flexShrink:0}}>R$ {Number(pk.price).toFixed(2)}</div>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {!devMode&&accessiblePacks.length===0&&availPacks.filter(p=>!unlockedPacks.includes(p.id)).length===0&&(
+                <div style={{textAlign:"center",padding:"40px 0",color:"rgba(240,235,225,0.3)",fontSize:13,fontFamily:"Archivo,sans-serif"}}>Nenhuma coleção disponível no momento.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── INFORMAÇÕES DO PACK ── */}
+      {infoPackId&&(()=>{
+        const pk=allPacks.find(p=>p.id===infoPackId);
+        if(!pk)return null;
+        const pkSpirits=(pk.spirits||[]);
+        const isOwned=accessiblePacks.some(p=>p.id===pk.id);
+        return(
+          <div className="otr-modal-backdrop" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.95)",zIndex:9991,display:"flex",flexDirection:"column",backdropFilter:"blur(16px)"}}>
+            <div className="otr-modal-sheet" style={{flex:1,display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",paddingBottom:100}}>
+              {/* header */}
+              <div style={{position:"sticky",top:0,zIndex:10,background:"rgba(7,7,7,0.96)",backdropFilter:"blur(12px)",padding:"16px 20px 14px",borderBottom:"1px solid rgba(240,235,225,0.07)",display:"flex",alignItems:"center",gap:14}}>
+                <button onClick={()=>setInfoPackId(null)} style={{background:"none",border:"none",color:"rgba(240,235,225,0.55)",cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 4px",display:"flex",alignItems:"center"}}>‹</button>
+                <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",flex:1}}>{pk.name}</div>
+                {isOwned&&<div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontFamily:"Archivo,sans-serif",fontWeight:700}}>Obtida</div>}
+              </div>
+              {/* capa */}
+              {pk.coverImage&&<img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:"auto",display:"block"}}/>}
+              <div style={{padding:"24px 20px"}}>
+                {/* spirits */}
+                {pkSpirits.length>0&&(
+                  <div style={{marginBottom:20}}>
+                    <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.6)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:10}}>Bebidas</div>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                      {pkSpirits.map(s=>(
+                        <div key={s} style={{padding:"5px 12px",borderRadius:20,background:"rgba(160,120,90,0.1)",border:"1px solid rgba(160,120,90,0.25)",fontSize:11,color:"rgba(160,120,90,0.85)",fontFamily:"Archivo,sans-serif"}}>{s}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* descrição */}
+                {pk.description&&(
+                  <div style={{marginBottom:20}}>
+                    <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:8}}>Sobre</div>
+                    <p style={{margin:0,fontSize:14,color:"rgba(240,235,225,0.65)",lineHeight:1.7,fontFamily:"Archivo,sans-serif"}}>{pk.description}</p>
+                  </div>
+                )}
+                {/* meta */}
+                <div style={{display:"flex",gap:16,marginBottom:28}}>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.9)"}}>{(pk.recipeNames||[]).length}</div>
+                    <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif"}}>drinks</div>
+                  </div>
+                  {pk.price>0&&(
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.9)"}}>R$ {Number(pk.price).toFixed(2)}</div>
+                      <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.3)",fontFamily:"Archivo,sans-serif"}}>valor</div>
+                    </div>
+                  )}
+                </div>
+                {/* ação */}
+                {isOwned&&(
+                  <button onClick={()=>{setActivePack(pk.name);setInfoPackId(null);setCollectionsView(false);setMobileTab("explorar");}}
+                    style={{width:"100%",padding:"14px",borderRadius:10,background:"rgba(160,120,90,0.15)",border:"1px solid rgba(160,120,90,0.4)",color:"#C8A96E",fontSize:13,fontFamily:"Archivo,sans-serif",fontWeight:700,letterSpacing:1,cursor:"pointer"}}>
+                    Explorar drinks desta coleção
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
