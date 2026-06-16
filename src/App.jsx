@@ -1312,7 +1312,7 @@ function Stars({n,color}){
 }
 
 // ─── FORM ─────────────────────────────────────────────────────────────────────
-const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], notes:"", rating:0, servings:"", categories:[], perfil:"", sensacao:"", ocasiao:"", flavors:"" };
+const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], subPreparations:[], notes:"", rating:0, servings:"", categories:[], perfil:"", sensacao:"", ocasiao:"", flavors:"" };
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
 const addBtnSt = { marginTop:4, padding:"5px 12px", borderRadius:3, background:"none", border:"1px solid rgba(240,235,225,0.1)", color:"rgba(240,235,225,0.58)", cursor:"pointer", fontSize:11, letterSpacing:.5, fontFamily:"Archivo,sans-serif" };
 
@@ -1339,6 +1339,13 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
   const setListItem = (k,i,v) => setForm(f=>({...f,[k]:f[k].map((x,j)=>j===i?v:x)}));
   const addListItem = k => setForm(f=>({...f,[k]:[...f[k],""]}));
   const removeListItem = (k,i) => setForm(f=>({...f,[k]:f[k].filter((_,j)=>j!==i)}));
+  const subs = () => form.subPreparations || [];
+  const addSub = () => setForm(f=>({...f,subPreparations:[...(f.subPreparations||[]),{name:"",ingredients:[""],steps:[""],yield:""}]}));
+  const removeSub = i => setForm(f=>({...f,subPreparations:(f.subPreparations||[]).filter((_,j)=>j!==i)}));
+  const setSubField = (i,k,v) => setForm(f=>({...f,subPreparations:(f.subPreparations||[]).map((s,j)=>j===i?{...s,[k]:v}:s)}));
+  const setSubItem = (i,k,j,v) => setForm(f=>({...f,subPreparations:(f.subPreparations||[]).map((s,si)=>si!==i?s:{...s,[k]:s[k].map((x,xi)=>xi===j?v:x)})}));
+  const addSubItem = (i,k) => setForm(f=>({...f,subPreparations:(f.subPreparations||[]).map((s,si)=>si===i?{...s,[k]:[...s[k],""]}:s)}));
+  const removeSubItem = (i,k,j) => setForm(f=>({...f,subPreparations:(f.subPreparations||[]).map((s,si)=>si===i?{...s,[k]:s[k].filter((_,xi)=>xi!==j)}:s)}));
   const toggleCat = c => setField("categories", form.categories.includes(c) ? form.categories.filter(x=>x!==c) : [...form.categories, c]);
 
   const scanPhoto = useCallback(async (files) => {
@@ -1361,7 +1368,7 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
       }));
       const response = await fetch("/api/anthropic", {
         method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink ${fileArr.length>1?"das imagens (podem ser partes diferentes de uma mesma receita longa)":"da imagem"} e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml). IMPORTANTE: preserve nomes de marcas, siglas e destilados EXATAMENTE como aparecem na imagem — não substitua, não adicione alternativas entre parênteses, não tente explicar o ingrediente.\n- "steps": array de strings em português, descrevendo o preparo\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[...imageContents,{type:"text",text:`Extraia a receita ${fileArr.length>1?"destas imagens":"desta imagem"} e retorne o JSON.`}]}] }),
+        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink ${fileArr.length>1?"das imagens (podem ser partes diferentes de uma mesma receita longa)":"da imagem"} e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml). IMPORTANTE: preserve nomes de marcas, siglas e destilados EXATAMENTE como aparecem na imagem — não substitua, não adicione alternativas entre parênteses, não tente explicar o ingrediente.\n- "steps": array de strings em português, descrevendo o preparo\n- "subPreparations": array de pré-preparos/bases auxiliares (xaropes, infusões, conservas, fat-wash etc.), cada um {"name":"...","ingredients":["..."],"steps":["..."],"yield":""}. NÃO misture os ingredientes/passos dos pré-preparos com os do drink principal. Sem pré-preparos, use [].\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[...imageContents,{type:"text",text:`Extraia a receita ${fileArr.length>1?"destas imagens":"desta imagem"} e retorne o JSON.`}]}] }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -1372,7 +1379,7 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
       localStorage.setItem(rlKey, String(used + 1));
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       const newCats=[...new Set([...(parsed.styles||[]),...(parsed.spirits||[])])];
-      setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
+      setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, subPreparations:parsed.subPreparations?.length?parsed.subPreparations.map(s=>({name:s.name||"",ingredients:s.ingredients?.length?s.ingredients:[""],steps:s.steps?.length?s.steps:[""],yield:s.yield||""})):f.subPreparations, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
     } catch (e) { setScanErr(e?.message || "Não foi possível ler a receita. Tente novamente."); }
     setScanning(false);
   }, []);
@@ -1430,7 +1437,8 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
 
   const handleSave = () => {
     if (!form.name.trim()) return;
-    onSave({ ...form, originalName:initial?.name, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), custom:initial?.custom??true, id:initial?.id||Date.now() });
+    const cleanSubs=(form.subPreparations||[]).map(s=>({name:(s.name||"").trim(),ingredients:(s.ingredients||[]).filter(x=>x&&x.trim()),steps:(s.steps||[]).filter(x=>x&&x.trim()),yield:(s.yield||"").trim()})).filter(s=>s.name||s.ingredients.length||s.steps.length);
+    onSave({ ...form, originalName:initial?.name, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), subPreparations:cleanSubs, custom:initial?.custom??true, id:initial?.id||Date.now() });
   };
 
   const inp = (extra={}) => ({ style:{ width:"100%", background:"rgba(240,235,225,0.04)", border:"1px solid rgba(240,235,225,0.16)", borderRadius:3, padding:"8px 11px", color:"#F0EBE1", fontSize:13, outline:"none", fontFamily:"Archivo,sans-serif", ...extra.style }, ...extra });
@@ -1530,6 +1538,36 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
             </div>
           ))}
           <button onClick={()=>addListItem("steps")} style={addBtnSt}>+ passo</button>
+
+          {subs().length>0&&<label style={{...labelSt,marginTop:18}}>Pré-preparos</label>}
+          {subs().map((sp,i)=>(
+            <div key={i} style={{border:`1px solid ${theme.border}55`,borderRadius:6,padding:"10px 12px",marginBottom:8,marginTop:8,background:"rgba(240,235,225,0.02)"}}>
+              <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:8}}>
+                <input {...inp()} value={sp.name} onChange={e=>setSubField(i,"name",e.target.value)} placeholder="Nome do pré-preparo (ex.: Xarope de tomate)" style={{...inp().style,fontWeight:700}}/>
+                <button onClick={()=>removeSub(i)} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,color:"rgba(240,235,225,0.52)",width:32,height:32,flexShrink:0,cursor:"pointer",fontSize:14}}>×</button>
+              </div>
+              <label style={labelSt}>Ingredientes</label>
+              {sp.ingredients.map((ing,j)=>(
+                <div key={j} style={{display:"flex",gap:6,marginBottom:6}}>
+                  <input {...inp()} value={ing} onChange={e=>setSubItem(i,"ingredients",j,e.target.value)} placeholder={`Ingrediente ${j+1}`}/>
+                  {sp.ingredients.length>1&&<button onClick={()=>removeSubItem(i,"ingredients",j)} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,color:"rgba(240,235,225,0.52)",width:32,flexShrink:0,cursor:"pointer",fontSize:14}}>×</button>}
+                </div>
+              ))}
+              <button onClick={()=>addSubItem(i,"ingredients")} style={addBtnSt}>+ ingrediente</button>
+              <label style={{...labelSt,marginTop:12}}>Preparo</label>
+              {sp.steps.map((st,j)=>(
+                <div key={j} style={{display:"flex",gap:6,marginBottom:6,alignItems:"flex-start"}}>
+                  <div style={{width:22,height:22,borderRadius:3,border:`1px solid ${theme.border}55`,color:theme.label,fontSize:9,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:5,fontWeight:700}}>{j+1}</div>
+                  <textarea {...inp()} value={st} onChange={e=>setSubItem(i,"steps",j,e.target.value)} placeholder={`Passo ${j+1}`} rows={2} style={{...inp().style,resize:"none",lineHeight:1.5}}/>
+                  {sp.steps.length>1&&<button onClick={()=>removeSubItem(i,"steps",j)} style={{background:"none",border:"1px solid rgba(240,235,225,0.1)",borderRadius:3,color:"rgba(240,235,225,0.52)",width:32,height:32,flexShrink:0,cursor:"pointer",fontSize:14,marginTop:2}}>×</button>}
+                </div>
+              ))}
+              <button onClick={()=>addSubItem(i,"steps")} style={addBtnSt}>+ passo</button>
+              <label style={{...labelSt,marginTop:12}}>Rendimento (opcional)</label>
+              <input {...inp()} value={sp.yield||""} onChange={e=>setSubField(i,"yield",e.target.value)} placeholder="ex.: ≈1 xícara"/>
+            </div>
+          ))}
+          <button onClick={addSub} style={{...addBtnSt,marginTop:8,borderColor:theme.accent+"55",color:theme.accent}}>+ pré-preparo</button>
 
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginTop:18}}>
             <div>
