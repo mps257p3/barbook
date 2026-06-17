@@ -3348,6 +3348,7 @@ export default function OnTheRocks(){
     let freeNames=[];
     let gPackIds=[];
     let configOk=false;
+    let dataVersion='';
     try{
       const [configSnap,packsSnap,baseSpiritsSnap]=await Promise.all([
         getDoc(doc(db,"manager","config")),
@@ -3362,6 +3363,7 @@ export default function OnTheRocks(){
         const cfg=configSnap.data();
         freeNames=cfg.freeRecipes||[];
         setFreeRecipeNames(new Set(freeNames));
+        dataVersion=String((cfg.dataVersion&&(cfg.dataVersion.seconds??cfg.dataVersion))||'');
         const userEmail=auth.currentUser?.email||'';
         const ug=cfg.userGroups||{};
         let isInGroup=false;
@@ -3387,14 +3389,30 @@ export default function OnTheRocks(){
     // de packs pagos quando o gate de acesso (freeRecipes) não está disponível
     if(!configOk)return;
     try{
-      const mgrSnap=await getDocs(collection(db,"managerRecipes"));
-      // Resolve referências de packs/freeRecipes para o NOME ATUAL da receita.
-      // Os packs guardam o nome ORIGINAL; ao renomear via Manager, o slug (id do
-      // doc) não muda mas o `name` sim. O app casa receita↔pack por nome, então
-      // sem isto uma receita renomeada (ex.: "Orchard Cynar"→"Bromélia") some.
+      // Gate de leitura das receitas (cada full load = ~638 leituras Firestore).
+      // Só rebaixa quando: dev/admin, sem cache, a versão dos dados mudou (o Manager
+      // bumpa manager/config.dataVersion ao sincronizar) ou passou o TTL de segurança.
+      const MGR_TTL=6*60*60*1000;
+      let cachedMgr=[]; try{cachedMgr=JSON.parse(localStorage.getItem('otr_cfg_mgr')||'[]');}catch{}
+      const cachedVer=localStorage.getItem('otr_data_version')||'';
+      const lastFetch=parseInt(localStorage.getItem('otr_mgr_fetch_at')||'0',10);
+      const versionSame=!!dataVersion&&dataVersion===cachedVer;
+      const useCache=!isInGroup&&cachedMgr.length>0&&(versionSame||(!dataVersion&&Date.now()-lastFetch<MGR_TTL));
+
+      // slugToName (cache traz _docId+name; fresco vem do fetch). Resolve referências
+      // de packs/freeRecipes para o NOME ATUAL — sem isto uma receita renomeada
+      // (ex.: "Orchard Cynar"→"Bromélia") some, pois o app casa receita↔pack por nome.
       const slugifyRef=n=>(n||"").toLowerCase().replace(/[^a-z0-9]/g,"_");
       const slugToName={};
-      mgrSnap.docs.forEach(d=>{const nm=d.data().name;if(nm)slugToName[d.id]=nm;});
+      let mRecipes;
+      if(useCache){
+        cachedMgr.forEach(r=>{if(r.name&&r._docId)slugToName[r._docId]=r.name;});
+        mRecipes=cachedMgr;
+      }else{
+        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+        mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
+        mRecipes.forEach(r=>{if(r.name)slugToName[r._docId]=r.name;});
+      }
       const resolveRef=n=>slugToName[slugifyRef(n)]||n;
       allPs=allPs.map(p=>({...p,recipeNames:(p.recipeNames||[]).map(resolveRef)}));
       setAllPacks(allPs);
@@ -3403,16 +3421,16 @@ export default function OnTheRocks(){
       freeNames=freeNames.map(resolveRef);
       setFreeRecipeNames(new Set(freeNames));
       try{localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));localStorage.setItem('otr_cfg_packs',JSON.stringify(psResolved));localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));}catch{/* quota */}
-      const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
-      // receitas de packs liberados ao grupo do usuário (dev) — mesmo packs system,
-      // como "Novas Receitas" — não devem ser tratadas como system-only e removidas
-      const groupRecipeNames=new Set(allPs.filter(p=>gPackIds.includes(p.id)).flatMap(p=>p.recipeNames||[]));
-      const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[]),...groupRecipeNames]);
-      const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
-      const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
-      const mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true})).filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
+      if(!useCache){
+        const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
+        const groupRecipeNames=new Set(allPs.filter(p=>gPackIds.includes(p.id)).flatMap(p=>p.recipeNames||[]));
+        const nonSysRecipeNames=new Set([...freeNames,...allPs.filter(p=>!p.system).flatMap(p=>p.recipeNames||[]),...groupRecipeNames]);
+        const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
+        const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
+        mRecipes=mRecipes.filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
+        try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');localStorage.setItem('otr_mgr_fetch_at',String(Date.now()));}catch{/* quota */}
+      }
       setManagerRecipes(mRecipes);
-      try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));}catch{/* quota: segue só em memória */}
     }catch(e){console.error(e);}
   },[]);
 
