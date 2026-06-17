@@ -2161,6 +2161,27 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             ))}
           </div>
         </div>
+        {/* modo de preparo */}
+        {steps.length>0&&(
+          <div style={{padding:"2px 16px 10px"}}>
+            <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:8}}>Modo de preparo</div>
+            <div style={{display:"flex",flexDirection:"column",gap:7}}>
+              {steps.slice(0,10).map((s,i)=>(
+                <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
+                  <span style={{fontSize:9,fontWeight:700,color:theme.accent,opacity:.75,flexShrink:0,minWidth:11}}>{i+1}</span>
+                  <span style={{fontSize:11,color:"rgba(240,235,225,0.6)",lineHeight:1.45}}>{capFirst(s)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* nota */}
+        {noteVal&&(
+          <div style={{padding:"2px 16px 12px"}}>
+            <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:6}}>Nota</div>
+            <div style={{fontSize:11,fontStyle:"italic",color:"rgba(240,235,225,0.55)",lineHeight:1.5}}>{noteVal}</div>
+          </div>
+        )}
         {/* rodapé */}
         <div style={{padding:"8px 16px 13px",borderTop:`1px solid ${theme.accent}15`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:11,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
