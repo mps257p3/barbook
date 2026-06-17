@@ -3391,14 +3391,14 @@ export default function OnTheRocks(){
     if(!configOk)return;
     try{
       // Gate de leitura das receitas (cada full load = ~638 leituras Firestore).
-      // Só rebaixa quando: dev/admin, sem cache, a versão dos dados mudou (o Manager
-      // bumpa manager/config.dataVersion ao sincronizar) ou passou o TTL de segurança.
-      const MGR_TTL=6*60*60*1000;
+      // Reaproveita o cache enquanto a versão dos dados não muda. A versão só muda
+      // quando VOCÊ publica (botão Sincronizar Firestore / auto-sync ao abrir o
+      // Manager). Sem TTL: depois de publicar uma vez, o app baixa as receitas 1x
+      // por aparelho e NÃO rebaixa mais até a próxima publicação. dev/admin sempre
+      // vê fresco; sem cache ou sem versão ainda, baixa uma vez.
       let cachedMgr=[]; try{cachedMgr=JSON.parse(localStorage.getItem('otr_cfg_mgr')||'[]');}catch{}
       const cachedVer=localStorage.getItem('otr_data_version')||'';
-      const lastFetch=parseInt(localStorage.getItem('otr_mgr_fetch_at')||'0',10);
-      const versionSame=!!dataVersion&&dataVersion===cachedVer;
-      const useCache=!isInGroup&&cachedMgr.length>0&&(versionSame||(!dataVersion&&Date.now()-lastFetch<MGR_TTL));
+      const useCache=!isInGroup&&cachedMgr.length>0&&!!dataVersion&&dataVersion===cachedVer;
 
       // slugToName (cache traz _docId+name; fresco vem do fetch). Resolve referências
       // de packs/freeRecipes para o NOME ATUAL — sem isto uma receita renomeada
@@ -3429,7 +3429,7 @@ export default function OnTheRocks(){
         const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
         const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
         mRecipes=mRecipes.filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
-        try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');localStorage.setItem('otr_mgr_fetch_at',String(Date.now()));}catch{/* quota */}
+        try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');}catch{/* quota */}
       }
       setManagerRecipes(mRecipes);
     }catch(e){console.error(e);}
