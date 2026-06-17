@@ -3349,6 +3349,7 @@ export default function OnTheRocks(){
     let gPackIds=[];
     let configOk=false;
     let dataVersion='';
+    let isInGroup=false;
     try{
       const [configSnap,packsSnap,baseSpiritsSnap]=await Promise.all([
         getDoc(doc(db,"manager","config")),
@@ -3366,7 +3367,7 @@ export default function OnTheRocks(){
         dataVersion=String((cfg.dataVersion&&(cfg.dataVersion.seconds??cfg.dataVersion))||'');
         const userEmail=auth.currentUser?.email||'';
         const ug=cfg.userGroups||{};
-        let isInGroup=false;
+        isInGroup=false;
         for(const gd of Object.values(ug)){
           if((gd.members||[]).some(m=>(m.email||m)===userEmail)){isInGroup=true;gPackIds=gd.packIds||[];break;}
         }
