@@ -3388,6 +3388,21 @@ export default function OnTheRocks(){
     if(!configOk)return;
     try{
       const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+      // Resolve referências de packs/freeRecipes para o NOME ATUAL da receita.
+      // Os packs guardam o nome ORIGINAL; ao renomear via Manager, o slug (id do
+      // doc) não muda mas o `name` sim. O app casa receita↔pack por nome, então
+      // sem isto uma receita renomeada (ex.: "Orchard Cynar"→"Bromélia") some.
+      const slugifyRef=n=>(n||"").toLowerCase().replace(/[^a-z0-9]/g,"_");
+      const slugToName={};
+      mgrSnap.docs.forEach(d=>{const nm=d.data().name;if(nm)slugToName[d.id]=nm;});
+      const resolveRef=n=>slugToName[slugifyRef(n)]||n;
+      allPs=allPs.map(p=>({...p,recipeNames:(p.recipeNames||[]).map(resolveRef)}));
+      setAllPacks(allPs);
+      const psResolved=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
+      setAvailPacks(psResolved);
+      freeNames=freeNames.map(resolveRef);
+      setFreeRecipeNames(new Set(freeNames));
+      try{localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));localStorage.setItem('otr_cfg_packs',JSON.stringify(psResolved));localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));}catch{/* quota */}
       const sysRecipeNames=new Set(allPs.filter(p=>p.system).flatMap(p=>p.recipeNames||[]));
       // receitas de packs liberados ao grupo do usuário (dev) — mesmo packs system,
       // como "Novas Receitas" — não devem ser tratadas como system-only e removidas
