@@ -4136,23 +4136,15 @@ export default function OnTheRocks(){
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(240,235,225,0.08);border-radius:2px}
         input,button,textarea{font-family:Archivo,sans-serif;outline:none;cursor:pointer}textarea{cursor:text}
-        .dsb{display:flex!important}
-        .mnv{display:none}
-        @media(max-width:700px){
-          .dsb{display:none!important}
-          .mnv{display:flex!important}
-          .lay{grid-template-columns:1fr!important;min-height:unset!important}
-          .hdr-actions{display:none!important}
-          .hdr-filters{display:none!important}
-          .hdr-search{display:none!important}
-          body{padding-bottom:65px}
-        }
-        @media(min-width:701px){
-          .disc-stage{left:240px!important}
-          .disc-card{max-width:400px!important}
-          .disc-actions{left:calc(50% - 250px)!important;right:calc(50% - 250px)!important}
-          .disc-controls{max-width:560px!important}
-        }
+        /* Layout do celular em todas as larguras (no desktop ele fica numa moldura
+           estreita, centralizada — definida no index.css). */
+        .dsb{display:none!important}
+        .mnv{display:flex!important}
+        .lay{grid-template-columns:1fr!important;min-height:unset!important}
+        .hdr-actions{display:none!important}
+        .hdr-filters{display:none!important}
+        .hdr-search{display:none!important}
+        body{padding-bottom:65px}
       `}</style>
       <input ref={importRef} type="file" accept=".json" onChange={importJSON} style={{display:"none"}}/>
 

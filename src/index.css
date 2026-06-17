@@ -2,6 +2,44 @@ html {
   background: #070707;
 }
 
+/* trava de orientação: bloqueia o app na horizontal em celulares */
+#rotate-lock { display: none; }
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
+  #root { display: none !important; }
+  #rotate-lock {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    background: #070707;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .rotate-lock-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+  }
+  .rotate-lock-icon {
+    font-size: 56px;
+    color: rgba(160,120,90,0.7);
+    animation: rotateLockSpin 2.4s ease-in-out infinite;
+  }
+  .rotate-lock-text {
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: rgba(231,224,205,0.85);
+  }
+}
+@keyframes rotateLockSpin {
+  0%, 40% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(-90deg); }
+}
+
 body {
   margin: 0;
   background: #070707;
@@ -20,6 +58,33 @@ body {
   flex-direction: column;
   box-sizing: border-box;
   background: #070707;
+}
+
+/* ── Desktop: mostra o app na largura de um celular, centralizado ──
+   (o app usa o layout mobile em qualquer tela; aqui só enquadramos no desktop).
+   Elementos position:fixed são viewport-relativos, então centralizamos os
+   principais (menu inferior e tela do Descobrir) na mesma moldura. */
+@media (min-width: 701px) {
+  body { background: #070707; }
+  #root {
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 0 1px rgba(240,235,225,0.06);
+  }
+  .mnv {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: 440px !important;
+    max-width: 440px !important;
+  }
+  .disc-stage {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: 440px !important;
+  }
 }
 
 /* ── On the Rocks — refinamentos de movimento ── */
