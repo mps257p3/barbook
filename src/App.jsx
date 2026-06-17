@@ -3522,9 +3522,19 @@ export default function OnTheRocks(){
         }catch(e){console.error(e);}
         setSyncing(false);
       } else {
-        // logout: zera packs desbloqueados e o cache, para não vazar entre contas
+        // logout: zera packs desbloqueados E o catálogo em cache, para não vazar
+        // o conteúdo de uma conta para a próxima. Sem config, o filtro fica trancado.
         setUnlockedPacks([]);
-        try{localStorage.removeItem('otr_unlocked');}catch{}
+        setManagerRecipes([]);
+        setAllPacks([]);
+        setAvailPacks([]);
+        setFreeRecipeNames(new Set());
+        setDevMode(false);
+        setGroupPackIds([]);
+        try{
+          ['otr_unlocked','otr_cfg_mgr','otr_cfg_allpacks','otr_cfg_packs','otr_cfg_free','otr_data_version','otr_devmode','otr_group_packs']
+            .forEach(k=>localStorage.removeItem(k));
+        }catch{}
       }
       fsInitializedRef.current = true;
     });
@@ -3591,7 +3601,7 @@ export default function OnTheRocks(){
     return allRecipes.filter(r=>{
       if(!r.custom){
         if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
-        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
+        else{ if(freeRecipeNames.size===0) return false; const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
       }
       return true;
     });
@@ -3931,7 +3941,7 @@ export default function OnTheRocks(){
     let list=allRecipes.filter(r=>{
       if(!r.custom){
         if(devMode){const inFree=freeRecipeNames.has(r.name);const inGroup=allPacks.some(p=>groupPackIds.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inGroup)return false;}
-        else if(freeRecipeNames.size>0){const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
+        else{ if(freeRecipeNames.size===0) return false; const inFree=freeRecipeNames.has(r.name);const inUnlocked=availPacks.some(p=>unlockedPacks.includes(p.id)&&(p.recipeNames||[]).includes(r.name));if(!inFree&&!inUnlocked)return false;}
       }
     // esconde Preparos Caseiros da navegação geral — exceto ao buscar, ao abrir a
     // família "Preparos Caseiros" ou ao filtrar por um pack (que pode contê-los)
