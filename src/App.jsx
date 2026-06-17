@@ -1316,7 +1316,8 @@ const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], subPreparations:[], 
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
 const addBtnSt = { marginTop:4, padding:"5px 12px", borderRadius:3, background:"none", border:"1px solid rgba(240,235,225,0.1)", color:"rgba(240,235,225,0.58)", cursor:"pointer", fontSize:11, letterSpacing:.5, fontFamily:"Archivo,sans-serif" };
 
-function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpirits=[], baseSpirits=ALL_SPIRIT_OPTIONS, sharedFiles=null }) {
+function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpirits=[], baseSpirits=ALL_SPIRIT_OPTIONS, sharedFiles=null, existingNames=null }) {
+  const [nameErr,setNameErr]=useState("");
   const [form, setForm] = useState(()=>{
     const base = initial || EMPTY_FORM;
     if (!base.perfil && initialProfile?.perfil) {
@@ -1437,6 +1438,12 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
 
   const handleSave = () => {
     if (!form.name.trim()) return;
+    const nm=form.name.trim().toLowerCase();
+    const editingName=(initial?.name||"").trim().toLowerCase();
+    if(existingNames && nm!==editingName && existingNames.has(nm)){
+      setNameErr("Já existe uma receita com esse nome. Use outro.");
+      return;
+    }
     const cleanSubs=(form.subPreparations||[]).map(s=>({name:(s.name||"").trim(),ingredients:(s.ingredients||[]).filter(x=>x&&x.trim()),steps:(s.steps||[]).filter(x=>x&&x.trim()),yield:(s.yield||"").trim()})).filter(s=>s.name||s.ingredients.length||s.steps.length);
     onSave({ ...form, originalName:initial?.name, ingredients:form.ingredients.filter(Boolean), steps:form.steps.filter(Boolean), subPreparations:cleanSubs, custom:initial?.custom??true, id:initial?.id||Date.now() });
   };
@@ -1479,7 +1486,8 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
           {scanErr&&<div style={{marginBottom:14,padding:"9px 13px",borderRadius:3,background:"rgba(239,68,68,0.07)",border:"1px solid rgba(239,68,68,0.2)",color:"#F87171",fontSize:12}}>{scanErr}</div>}
 
           <label style={labelSt}>Nome do drink</label>
-          <input {...inp()} value={form.name} onChange={e=>setField("name",e.target.value)} placeholder="ex: Gin Sour de Lavanda" style={{...inp().style,marginBottom:18,fontSize:15}}/>
+          <input {...inp()} value={form.name} onChange={e=>{setField("name",e.target.value);if(nameErr)setNameErr("");}} placeholder="ex: Gin Sour de Lavanda" style={{...inp().style,marginBottom:nameErr?6:18,fontSize:15,...(nameErr?{borderColor:"rgba(239,68,68,0.5)"}:{})}}/>
+          {nameErr&&<div style={{marginBottom:18,fontSize:12,color:"#F87171"}}>⚠ {nameErr}</div>}
 
           <label style={labelSt}>Ingredientes</label>
           {form.ingredients.map((ing,i)=>(
@@ -4977,7 +4985,7 @@ export default function OnTheRocks(){
 
       {/* ── MODALS ── */}
       {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
-      {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} baseSpirits={[...baseSpiritSet].sort((a,b)=>a.localeCompare(b))} sharedFiles={!editing?sharedFiles:null}/>}
+      {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} baseSpirits={[...baseSpiritSet].sort((a,b)=>a.localeCompare(b))} sharedFiles={!editing?sharedFiles:null} existingNames={new Set(allRecipes.map(r=>(r.name||"").trim().toLowerCase()))}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
       {confirmDialog&&<ConfirmDialog message={confirmDialog.message} danger={confirmDialog.danger} onConfirm={()=>{confirmDialog.onConfirm?.();closeConfirm();}} onCancel={confirmDialog.onConfirm?closeConfirm:null}/>}
