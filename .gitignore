@@ -13,3 +13,4 @@ dist-ssr
 # Signing keys - never commit these
 *.keystore
 signing-key-info.txt
+.env*.local
