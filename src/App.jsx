@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, useRef, memo } from "react";
 import { onAuthStateChanged, deleteUser } from "firebase/auth";
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
-import { auth, db, signInWithGoogle, signOutUser, getRedirectResult } from "./firebase";
+import { ref as storageRef, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
+import { auth, db, storage, signInWithGoogle, signOutUser, getRedirectResult } from "./firebase";
 
 // ─── TEMA POR FAMÍLIA ─────────────────────────────────────────────────────────
 const TYPE_THEME = {
@@ -3559,6 +3560,8 @@ export default function OnTheRocks(){
             if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
             if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
             if(d.comandaGroups)  {setComandaGroups(d.comandaGroups);echo.comandaGroups=JSON.stringify(d.comandaGroups);}
+            if(d.customBgs)      {setCustomBgs(prev=>({...prev,...d.customBgs}));echo.customBgs=JSON.stringify(d.customBgs);}
+            if(d.customBgOffsets){setCustomBgOffsets(d.customBgOffsets);echo.customBgOffsets=JSON.stringify(d.customBgOffsets);}
             if(d.unlockedPacks)  {setUnlockedPacks(d.unlockedPacks);try{localStorage.setItem('otr_unlocked',JSON.stringify(d.unlockedPacks));}catch{}}
             serverEchoRef.current=echo;
           }
@@ -3607,7 +3610,7 @@ export default function OnTheRocks(){
   useEffect(()=>{try{localStorage.setItem("otr_tried",JSON.stringify(tried));}catch{}; syncToFirestore({tried});},[tried]);
   useEffect(()=>{try{localStorage.setItem("otr_spirits",JSON.stringify(customSpirits));}catch{}; syncToFirestore({spirits:customSpirits});},[customSpirits]);
   useEffect(()=>{try{localStorage.setItem("otr_overrides",JSON.stringify(overrides));}catch{}; syncToFirestore({overrides});},[overrides]);
-  useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}},[customBgOffsets]);
+  useEffect(()=>{try{localStorage.setItem("otr_bg_offsets",JSON.stringify(customBgOffsets));}catch{}; syncToFirestore({customBgOffsets});},[customBgOffsets]);
 
   // nomes das receitas dos packs liberados ao grupo dev — essas devem aparecer
   // mesmo marcadas "deleted" (staging "Novas Receitas" etc.), para revisão
@@ -3740,6 +3743,29 @@ export default function OnTheRocks(){
   const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
   const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
 
+  // ── Fotos personalizadas das receitas ──────────────────────────────────────
+  // Sobem para o Firebase Storage (users/{uid}/recipeBg/{slug}.jpg) e guardamos
+  // só a URL — leve o suficiente para sincronizar no Firestore e sobreviver à
+  // limpeza de cache. Sem login (anônimo/offline), a foto fica só no aparelho.
+  const bgKey=useCallback(name=>name.toLowerCase().replace(/[^a-z0-9]/g,'_'),[]);
+  const handleSetCustomBg=useCallback(async(name,dataUrl)=>{
+    setCustomBgs(p=>({...p,[name]:dataUrl})); // mostra na hora
+    const u=auth.currentUser;
+    if(!u)return; // sem login: permanece local
+    try{
+      const r=storageRef(storage,`users/${u.uid}/recipeBg/${bgKey(name)}.jpg`);
+      await uploadString(r,dataUrl,"data_url");
+      const url=await getDownloadURL(r);
+      setCustomBgs(p=>p[name]===dataUrl?{...p,[name]:url}:p); // troca o dataURL pela URL
+    }catch(e){console.error("uploadCustomBg",e);}
+  },[bgKey]);
+  const handleClearCustomBg=useCallback(async(name)=>{
+    setCustomBgs(p=>{const n={...p};delete n[name];return n;});
+    const u=auth.currentUser;
+    if(!u)return;
+    try{await deleteObject(storageRef(storage,`users/${u.uid}/recipeBg/${bgKey(name)}.jpg`));}catch{}
+  },[bgKey]);
+
   // ── Persiste fotos personalizadas e avisa quando o armazenamento estourar ──
   const bgQuotaWarnedRef=useRef(false);
   useEffect(()=>{
@@ -3751,6 +3777,12 @@ export default function OnTheRocks(){
       }
     }
   },[customBgs,showConfirm]);
+  // Sincroniza no Firestore apenas as fotos que já viraram URL do Storage —
+  // nunca os dataURLs base64 (grandes demais para o documento do usuário).
+  useEffect(()=>{
+    const urls=Object.fromEntries(Object.entries(customBgs).filter(([,v])=>typeof v==="string"&&/^https?:/.test(v)));
+    syncToFirestore({customBgs:urls});
+  },[customBgs]);
 
   // ── Mantém a tela acesa apenas enquanto uma receita está aberta ──
   const recipeOpen=!!open;
@@ -4345,7 +4377,7 @@ export default function OnTheRocks(){
                   );
                 })}
                 {/* sem sombra central — o maskImage dos peek cards já garante a separação */}
-                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[swipeRecipe.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[swipeRecipe.name];return n;})} packName={activePack&&activePackNames?.has(swipeRecipe.name)?activePack:recipePackMap[swipeRecipe.name]}/>
+                <SwipeCard key={swipeRecipe.name} recipe={swipeRecipe} onComanda={()=>toggleComanda(swipeRecipe.name)} isComanda={comanda.includes(swipeRecipe.name)} onTried={()=>{const wasTried=tried.includes(swipeRecipe.name);handleTried(swipeRecipe.name);if(!wasTried)setTimeout(nextSwipeRecipe,380);}} isTried={tried.includes(swipeRecipe.name)} onNext={nextSwipeRecipe} onPrev={prevSwipeRecipe} hasPrev={swipeHistIdx>0} onOpen={r=>setOpen(r)} onDragChange={handleDragChange} profile={swipeRecipe.perfil?{perfil:swipeRecipe.perfil,sensacao:swipeRecipe.sensacao,ocasiao:swipeRecipe.ocasiao,flavors:swipeRecipe.flavors}:recipeProfiles[swipeRecipe.name]} spiritCats={spiritCatsAll} customBg={customBgs[swipeRecipe.name]} onSetCustomBg={url=>handleSetCustomBg(swipeRecipe.name,url)} onClearCustomBg={()=>handleClearCustomBg(swipeRecipe.name)} packName={activePack&&activePackNames?.has(swipeRecipe.name)?activePack:recipePackMap[swipeRecipe.name]}/>
                 {/* botões de ação — sobre o card */}
                 <div className="disc-actions" style={{position:"absolute",bottom:24,left:0,right:0,zIndex:10,display:"grid",gridTemplateColumns:"1fr 1fr",pointerEvents:"none"}}>
                   {(()=>{const isTried=tried.includes(swipeRecipe.name);return(
@@ -5014,7 +5046,7 @@ export default function OnTheRocks(){
       })()}
 
       {/* ── MODALS ── */}
-      {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>setCustomBgs(p=>({...p,[open.name]:url}))} onClearCustomBg={()=>setCustomBgs(p=>{const n={...p};delete n[open.name];return n;})} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
+      {open&&<Modal key={open.name} recipe={open} profile={open.perfil?{perfil:open.perfil,sensacao:open.sensacao,ocasiao:open.ocasiao,flavors:open.flavors}:recipeProfiles[open.name]} onClose={()=>setOpen(null)} isFav={favs.includes(open.name)} onFav={()=>toggleFav(open.name)} isTried={tried.includes(open.name)} onTried={()=>handleTried(open.name)} isComanda={comanda.includes(open.name)} onComanda={()=>toggleComanda(open.name)} onRating={r=>rateRecipe(open,r)} onNote={n=>noteRecipe(open,n)} onFilter={(type,val)=>{if(type==="style"){setActiveStyle(val);setActiveSpirits([]);}else{setActiveSpirits([val]);setActiveStyle(null);}setOpen(null);setMobileTab("explorar");}} onEdit={()=>{setEditing(open);setOpen(null);}} onDelete={()=>open.custom?deleteRecipe(open):deleteBaseRecipe(open)} onRepo={!open.custom&&overrides[ovKey(open)]&&Object.keys(overrides[ovKey(open)]).some(k=>k!=="rating")?()=>repoRecipe(ovKey(open)):undefined} spiritCats={spiritCatsAll} customBg={customBgs[open.name]} onSetCustomBg={url=>handleSetCustomBg(open.name,url)} onClearCustomBg={()=>handleClearCustomBg(open.name)} bgOffset={customBgOffsets[open.name]} onSetBgOffset={o=>setCustomBgOffsets(p=>({...p,[open.name]:o}))} packName={recipePackMap[open.name]}/>}
       {(showForm||editing)&&<RecipeForm initial={editing} initialProfile={editing?recipeProfiles[editing.name]:null} onSave={saveRecipe} onClose={()=>{setShowForm(false);setEditing(null);setSharedFiles(null);}} customSpirits={customSpirits} baseSpirits={[...baseSpiritSet].sort((a,b)=>a.localeCompare(b))} sharedFiles={!editing?sharedFiles:null} existingNames={new Set(allRecipes.map(r=>(r.name||"").trim().toLowerCase()))}/>}
       {ratingPopup&&<RatingPopup recipe={ratingPopup} currentRating={allRecipes.find(r=>r.name===ratingPopup.name)?.rating||0} onRate={n=>rateRecipe(ratingPopup,n)} onClose={()=>setRatingPopup(null)}/>}
       {showTutorial&&<Tutorial onClose={closeTutorial} onTabChange={t=>setMobileTab(t)}/>}
