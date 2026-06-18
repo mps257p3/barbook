@@ -1311,6 +1311,18 @@ function Stars({n,color}){
   return <span style={{fontSize:11,color:color||"#C8A96E",letterSpacing:1}}>{"★".repeat(n)}<span style={{opacity:.15}}>{"★".repeat(5-n)}</span></span>;
 }
 
+// Capa de coleção: mostra a imagem; na ausência OU falha de carregamento,
+// exibe o nome da coleção no lugar. `fallbackHeight` e `imgStyle` ajustam o visual.
+function PackCover({src,name,imgStyle,fallbackHeight=80,dim=false}){
+  const [err,setErr]=useState(false);
+  if(src&&!err) return <img src={src} alt={name} style={imgStyle} onError={()=>setErr(true)}/>;
+  return(
+    <div style={{height:fallbackHeight,background:"linear-gradient(135deg,rgba(160,120,90,0.22) 0%,rgba(0,0,0,0.5) 100%)",display:"flex",alignItems:"center",padding:"0 18px",opacity:dim?0.85:1}}>
+      <div style={{fontFamily:"'Gloock',serif",fontSize:fallbackHeight>=80?20:16,lineHeight:1.15,color:"rgba(231,224,205,0.92)"}}>{name}</div>
+    </div>
+  );
+}
+
 // ─── FORM ─────────────────────────────────────────────────────────────────────
 const EMPTY_FORM = { name:"", ingredients:[""], steps:[""], subPreparations:[], notes:"", rating:0, servings:"", categories:[], perfil:"", sensacao:"", ocasiao:"", flavors:"" };
 const labelSt = { display:"block", fontSize:9, letterSpacing:2.5, textTransform:"uppercase", color:"rgba(240,235,225,0.52)", fontWeight:700, marginBottom:7 };
@@ -4865,11 +4877,7 @@ export default function OnTheRocks(){
                       return(
                       <div key={pk.id} style={{background:"rgba(0,0,0,0.3)",border:`1px solid ${activePack===pk.name?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.1)"}`,borderRadius:12,overflow:"hidden",transition:"border-color .15s"}}>
                         <div onClick={()=>{setActivePack(pk.name);setCollectionsView(false);setMobileTab("explorar");}} style={{cursor:"pointer",display:"block"}}>
-                          {pk.coverImage
-                            ?<img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:"auto",display:"block"}}/>
-                            :<div style={{height:80,background:"linear-gradient(135deg,rgba(160,120,90,0.22) 0%,rgba(0,0,0,0.5) 100%)",display:"flex",alignItems:"center",paddingLeft:16}}>
-                              <div style={{fontFamily:"'Gloock',serif",fontSize:18,color:"rgba(231,224,205,0.6)"}}>◈</div>
-                            </div>}
+                          <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
                         </div>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
                           <div style={{flex:1}}>
@@ -4898,8 +4906,7 @@ export default function OnTheRocks(){
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
                     {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).map(pk=>(
                       <div key={pk.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75}}>
-                        {pk.coverImage&&<img src={pk.coverImage} alt={pk.name} style={{width:"100%",height:100,objectFit:"cover",display:"block",filter:"brightness(0.7)"}}/>}
-                        {!pk.coverImage&&<div style={{height:52,background:"linear-gradient(135deg,rgba(80,60,40,0.18) 0%,rgba(0,0,0,0.4) 100%)"}}/>}
+                        <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:100,objectFit:"cover",display:"block",filter:"brightness(0.7)"}} fallbackHeight={64} dim/>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
                           <div style={{flex:1}}>
                             <div style={{fontFamily:"'Gloock',serif",fontSize:17,fontWeight:400,color:"rgba(231,224,205,0.7)",lineHeight:1.2,marginBottom:2}}>{pk.name}</div>
