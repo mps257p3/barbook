@@ -2770,7 +2770,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
             {devMode&&(
               <div style={{marginBottom:10,padding:"12px 14px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:10,alignItems:"flex-start"}}>
                 <div style={{width:3,minHeight:28,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
-                <div style={{fontFamily:"'Gloock',serif",fontSize:13,color:"rgba(231,224,205,0.75)",lineHeight:1.55}}>Obrigado por estar aqui antes<br/>das luzes se acenderem.</div>
+                <div style={{flex:1,textAlign:"center",fontFamily:"'Gloock',serif",fontSize:13,color:"rgba(231,224,205,0.75)",lineHeight:1.55}}>Obrigado por estar aqui antes<br/>das luzes se acenderem.</div>
               </div>
             )}
             <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.13)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
@@ -4876,7 +4876,7 @@ export default function OnTheRocks(){
                 <div key={`rev|${activeStyle}|${filterMode}|${activePack}|${activeOccasions.join("+")}|${sort}`} style={{display:"grid",gridTemplateColumns:"1fr",gap:8,paddingBottom:80}}>
                   {activePack&&(()=>{const pk=accessiblePacks.find(p=>p.name===activePack);return pk?(
                     <div style={{borderRadius:12,overflow:"hidden",marginBottom:8}}>
-                      <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
+                      <PackCover src={pk.bannerImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
                     </div>
                   ):null;})()}
                   {filtered.map((r,i)=>(
@@ -4915,7 +4915,7 @@ export default function OnTheRocks(){
               {devMode&&(
                 <div style={{marginBottom:20,padding:"14px 16px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:12,alignItems:"flex-start"}}>
                   <div style={{width:3,minHeight:32,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
-                  <div style={{fontFamily:"'Gloock',serif",fontSize:14,color:"rgba(231,224,205,0.8)",lineHeight:1.55}}>
+                  <div style={{flex:1,textAlign:"center",fontFamily:"'Gloock',serif",fontSize:14,color:"rgba(231,224,205,0.8)",lineHeight:1.55}}>
                     Obrigado por estar aqui antes<br/>das luzes se acenderem.
                   </div>
                 </div>
@@ -4999,7 +4999,7 @@ export default function OnTheRocks(){
                 {isOwned&&<div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontFamily:"Archivo,sans-serif",fontWeight:700}}>Obtida</div>}
               </div>
               {/* capa */}
-              <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
+              <PackCover src={pk.bannerImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
               <div style={{padding:"24px 20px"}}>
                 {/* spirits */}
                 {pkSpirits.length>0&&(
