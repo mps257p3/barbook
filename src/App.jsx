@@ -4939,7 +4939,6 @@ export default function OnTheRocks(){
                             {pkSpirits.length>0&&<div style={{fontSize:10,letterSpacing:1,textTransform:"uppercase",color:"rgba(160,120,90,0.65)",fontFamily:"Archivo,sans-serif",marginBottom:4}}>{pkSpirits.join(" · ")}</div>}
                             <div style={{display:"flex",alignItems:"center",gap:8}}>
                               <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.43)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
-                              <div style={{fontSize:10,letterSpacing:1,color:"rgba(160,120,90,0.5)",fontFamily:"Archivo,sans-serif"}}>· {pk.price>0?`R$ ${Number(pk.price).toFixed(2)}`:"R$ XX,XX"}</div>
                             </div>
                           </div>
                           <button onClick={()=>setInfoPackId(pk.id)}
@@ -5025,7 +5024,7 @@ export default function OnTheRocks(){
                     <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.92)"}}>{(pk.recipeNames||[]).length}</div>
                     <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.43)",fontFamily:"Archivo,sans-serif"}}>drinks</div>
                   </div>
-                  {pk.price>0&&(
+                  {!isOwned&&pk.price>0&&(
                     <div style={{textAlign:"center"}}>
                       <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.92)"}}>R$ {Number(pk.price).toFixed(2)}</div>
                       <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.43)",fontFamily:"Archivo,sans-serif"}}>valor</div>
