@@ -1868,7 +1868,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
               lento de câmera; fica estática no modo de reposicionamento */}
           <div className={posEditMode?undefined:"otr-hero-live"} style={{position:"absolute",inset:0,...buildCardBgEditorial(displayVisual,heroBgPos)}}/>
           {/* gradient fades bg image from hero through profile section, fully solid at yellow line */}
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.42) 52%, rgba(10,9,6,0.72) 72%, rgba(10,9,6,0.84) 100%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(6,4,2,0.1) 0%, rgba(6,4,2,0.0) 22%, rgba(6,4,2,0.45) 52%, rgba(10,9,6,0.78) 72%, rgba(10,9,6,1.0) 90%)",opacity:posEditMode?0.3:1,pointerEvents:"none",transition:"opacity .25s"}}/>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 70% 75% at 50% 50%, transparent 28%, rgba(0,0,0,0.88) 100%)",mixBlendMode:"multiply",opacity:posEditMode?0.25:1,pointerEvents:"none",transition:"opacity .25s"}}/>
 
           {/* hero content area */}
@@ -1928,7 +1928,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           )}
         </div>
 
-        <div style={{padding:"16px 18px 32px",textAlign:"left",position:"relative",backgroundImage:`linear-gradient(to bottom, rgba(10,9,6,0.82) 0%, rgba(10,9,6,0.9) 45%, rgba(10,9,6,0.95) 100%), url('${displayVisual.bgImage}')`,backgroundSize:"100% 100%, cover",backgroundPosition:"center, center",backgroundRepeat:"no-repeat",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
+        <div style={{padding:"16px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
 
           {/* estrelas + ações */}
           <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:12,alignItems:"center"}}>
