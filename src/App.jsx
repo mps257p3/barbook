@@ -1777,6 +1777,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const visual=getCardVisual(recipe,spiritCats);
   const displayVisual=customBg?{...visual,bgImage:customBg}:visual;
   const [posEditMode,setPosEditMode]=useState(false);
+  const [menuOpen,setMenuOpen]=useState(false);
   const [localOffset,setLocalOffset]=useState(bgOffset||{x:50,y:50});
   useEffect(()=>{setLocalOffset(bgOffset||{x:50,y:50});},[bgOffset]);
   const posStartRef=useRef(null);
@@ -1850,11 +1851,54 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
   const styleTags=recipe.categories.filter(c=>STYLE_CATS.has(c));
   const spiritTags=recipe.categories.filter(c=>spiritCats.has(c));
+  const menuItem={display:"flex",alignItems:"center",gap:10,width:"100%",padding:"11px 15px",background:"none",border:"none",borderBottom:`1px solid ${theme.accent}14`,color:"rgba(231,224,205,0.85)",fontSize:12.5,fontFamily:"Archivo,sans-serif",cursor:"pointer",textAlign:"left",letterSpacing:.3,boxSizing:"border-box"};
 
   return(
     <div className="otr-modal-backdrop" onClick={posEditMode?undefined:onClose} style={{position:"fixed",inset:0,background:posEditMode?"rgba(0,0,0,0.88)":"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
       {posEditMode&&customBg&&<div style={{position:"absolute",inset:0,backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:heroBgPos,opacity:0.2,pointerEvents:"none"}}/>}
       <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
+
+        {/* topo: menu de utilidades + fechar (nível do sheet p/ o menu não ser cortado) */}
+        {!posEditMode&&(
+          <div style={{position:"absolute",top:12,right:12,display:"flex",gap:7,zIndex:40}}>
+            <div style={{position:"relative"}}>
+              <button onClick={e=>{e.stopPropagation();setMenuOpen(o=>!o);}} aria-label="Mais opções" style={{width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.59)",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1}}>⋯</button>
+              {menuOpen&&(<>
+                <div onClick={()=>setMenuOpen(false)} style={{position:"fixed",inset:0,zIndex:39}}/>
+                <div style={{position:"absolute",top:34,right:0,zIndex:41,minWidth:178,background:"rgba(16,13,9,0.98)",border:`1px solid ${theme.accent}33`,borderRadius:8,overflow:"hidden",boxShadow:"0 14px 36px rgba(0,0,0,0.65)",backdropFilter:"blur(8px)"}}>
+                  <button onClick={()=>{setMenuOpen(false);shareAsImage();}} style={menuItem}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                    Compartilhar
+                  </button>
+                  <button onClick={()=>{setMenuOpen(false);onEdit();}} style={menuItem}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editar
+                  </button>
+                  {onSetCustomBg&&(
+                    <label style={{...menuItem,cursor:"pointer"}}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                      {customBg?"Trocar foto":"Adicionar foto"}
+                      <input type="file" accept="image/*" style={{display:"none"}} onChange={async e=>{const f=e.target.files?.[0];if(f){const url=await resizeImageToDataUrl(f);if(url)onSetCustomBg(url);}e.target.value="";setMenuOpen(false);}}/>
+                    </label>
+                  )}
+                  {customBg&&(
+                    <button onClick={()=>{setMenuOpen(false);setPosEditMode(true);}} style={menuItem}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+                      Reposicionar foto
+                    </button>
+                  )}
+                  {customBg&&(
+                    <button onClick={()=>{setMenuOpen(false);onClearCustomBg();}} style={{...menuItem,borderBottom:"none",color:"#F87171"}}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      Excluir foto
+                    </button>
+                  )}
+                </div>
+              </>)}
+            </div>
+            <button onClick={onClose} aria-label="Fechar" style={{width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.59)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
+          </div>
+        )}
 
         {/* ── HERO + PROFILE wrapper — shared bg image fades through profile to yellow line ── */}
         <div
@@ -1873,14 +1917,9 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
 
           {/* hero content area */}
           <div style={{position:"relative",height:220,zIndex:1}}>
-            <button onClick={onClose} style={{position:"absolute",top:12,right:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.59)",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>×</button>
-            {customBg&&(posEditMode?(
+            {customBg&&posEditMode&&(
               <button onClick={()=>{setPosEditMode(false);onSetBgOffset?.(localOffset);}} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:`1px solid ${theme.accent}55`,background:`${theme.accent}22`,color:theme.accent,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>✓</button>
-            ):(
-              <button onClick={()=>setPosEditMode(true)} style={{position:"absolute",top:12,left:12,width:28,height:28,borderRadius:3,border:"1px solid rgba(240,235,225,0.12)",background:"rgba(0,0,0,0.45)",color:"rgba(240,235,225,0.59)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 15 22 12 19 9"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
-              </button>
-            ))}
+            )}
             {recipe.custom&&<div style={{position:"absolute",top:42,left:18,display:"inline-flex",alignItems:"center",gap:5,padding:"3px 10px 3px 8px",borderRadius:20,background:"rgba(120,85,40,0.18)",border:"1px solid rgba(200,160,90,0.28)",boxShadow:"0 0 14px rgba(160,120,60,0.22)"}}>
               <span style={{fontSize:8,color:"#C8A96E",opacity:0.8,lineHeight:1}}>◆</span>
               <span style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,160,90,0.75)",fontWeight:600,fontFamily:"Archivo,sans-serif"}}>autoral</span>
@@ -1918,7 +1957,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                     <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
                       <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
                       <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
-                      <span style={{...CARD_TYPO.sigValue,fontSize:8}}>{item[2]}</span>
+                      <span style={{...CARD_TYPO.sigValue,fontSize:11}}>{item[2]}</span>
                     </div>
                   </div>
                 ))}
@@ -1931,51 +1970,30 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
         <div style={{padding:"16px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
 
           {/* estrelas + ações */}
-          <div style={{display:"flex",gap:2,marginBottom:isTried&&recipe.rating===0?4:12,alignItems:"center"}}>
+          <div style={{display:"flex",gap:2,marginBottom:18,alignItems:"center"}}>
+            <span style={{fontSize:9.5,letterSpacing:1.5,textTransform:"uppercase",color:isTried&&localRating===0?theme.accent:"rgba(240,235,225,0.4)",opacity:isTried&&localRating===0?0.75:1,marginRight:7,fontFamily:"Archivo,sans-serif"}}>{isTried&&localRating===0?"como avaliaria?":"sua nota"}</span>
             {[1,2,3,4,5].map(n=>(
-              <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:24,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.1)",transition:"color .1s",padding:"2px 3px"}}>★</button>
+              <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:16,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.14)",transition:"color .1s",padding:"0 1px"}}>★</button>
             ))}
           </div>
-          {isTried&&recipe.rating===0&&<div style={{fontSize:10,color:theme.accent,opacity:.55,letterSpacing:1,marginBottom:12}}>como você avaliaria?</div>}
-          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:18}}>
+          <div style={{display:"flex",gap:7,marginBottom:24}}>
             {(()=>{
-              const btnBase={...CARD_TYPO.actionBtn,display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:20,cursor:"pointer",transition:"all .15s",lineHeight:1,boxSizing:"border-box"};
+              const chip={...CARD_TYPO.actionBtn,flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:5,padding:"9px 0",borderRadius:20,cursor:"pointer",transition:"all .15s",lineHeight:1,boxSizing:"border-box"};
               const dimBorder=`1px solid ${theme.accent}33`;
-              const dimColor=`${theme.accent}66`;
+              const dimColor=`${theme.accent}88`;
               return(<>
-                <button onClick={onTried} style={{...btnBase,background:isTried?"rgba(74,222,128,0.08)":"transparent",border:isTried?"1px solid rgba(74,222,128,0.4)":dimBorder,color:isTried?"#4ADE80":dimColor}}>
+                <button onClick={onTried} style={{...chip,background:isTried?"rgba(74,222,128,0.08)":"transparent",border:isTried?"1px solid rgba(74,222,128,0.4)":dimBorder,color:isTried?"#4ADE80":dimColor}}>
                   <svg width="11" height="9" viewBox="0 0 12 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 5 4.5 8.5 11 1.5"/></svg>
-                  já provei
+                  provei
                 </button>
-                <button onClick={onFav} style={{...btnBase,background:isFav?`${theme.accent}14`:"transparent",border:isFav?`1px solid ${theme.accent}`:dimBorder,color:isFav?theme.accent:dimColor}}>
+                <button onClick={onFav} style={{...chip,background:isFav?`${theme.accent}14`:"transparent",border:isFav?`1px solid ${theme.accent}`:dimBorder,color:isFav?theme.accent:dimColor}}>
                   <svg width="11" height="10" viewBox="0 0 20 18" fill={isFav?"currentColor":"none"} stroke="currentColor" strokeWidth="2"><path d="M10 16.5C10 16.5 1 10 1 5C1 2.8 2.8 1 5.5 1C7.5 1 9 2.3 10 4C11 2.3 12.5 1 14.5 1C17.2 1 19 2.8 19 5C19 10 10 16.5 10 16.5z"/></svg>
                   favorita
                 </button>
-                <button onClick={onComanda} style={{...btnBase,background:isComanda?"rgba(200,169,110,0.12)":"transparent",border:isComanda?"1px solid rgba(200,169,110,0.5)":dimBorder,color:isComanda?"#C8A96E":dimColor}}>
+                <button onClick={onComanda} style={{...chip,background:isComanda?"rgba(200,169,110,0.12)":"transparent",border:isComanda?"1px solid rgba(200,169,110,0.5)":dimBorder,color:isComanda?"#C8A96E":dimColor}}>
                   <svg width="10" height="13" viewBox="0 0 16 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 2 L14 2 L8.5 10 L8.5 17"/><line x1="5.5" y1="17" x2="11.5" y2="17"/><circle cx="8.5" cy="5.5" r="1.5" fill="currentColor" opacity="0.7" stroke="none"/></svg>
                   comanda
                 </button>
-                <button onClick={shareAsImage} disabled={sharing} style={{...btnBase,background:"transparent",border:dimBorder,color:sharing?`${theme.accent}33`:dimColor,cursor:sharing?"default":"pointer"}}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-                  compartilhar
-                </button>
-                <button onClick={onEdit} style={{...btnBase,background:"transparent",border:dimBorder,color:dimColor}}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  editar
-                </button>
-                {customBg?(
-                  <button onClick={onClearCustomBg} style={{...btnBase,background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.25)",color:"#F87171"}}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                    excluir foto
-                  </button>
-                ):(onSetCustomBg&&(
-                  <label style={{...btnBase,background:"transparent",border:dimBorder,color:dimColor,cursor:"pointer"}}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    trocar foto
-                    <input type="file" accept="image/*" style={{display:"none"}}
-                      onChange={async e=>{const f=e.target.files?.[0];if(f){const url=await resizeImageToDataUrl(f);if(url)onSetCustomBg(url);}e.target.value="";}}/>
-                  </label>
-                ))}
               </>);
             })()}
           </div>
@@ -1983,10 +2001,11 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           {/* divisor */}
           <div style={{height:1,background:`linear-gradient(90deg,${theme.accent}44,transparent)`,marginBottom:22}}/>
 
-          {recipe.servings&&recipe.servings!=="1"&&<div style={{fontSize:12,color:"rgba(240,235,225,0.57)",fontStyle:"italic",marginBottom:18}}>rende {recipe.servings}</div>}
-
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-            <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Ingredientes</div>
+            <div style={{display:"flex",alignItems:"baseline",gap:9}}>
+              <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Ingredientes</div>
+              {recipe.servings&&recipe.servings!=="1"&&<span style={{fontSize:10,letterSpacing:.5,color:"rgba(240,235,225,0.45)",padding:"2px 9px",borderRadius:20,background:"rgba(240,235,225,0.05)",fontFamily:"Archivo,sans-serif"}}>rende {recipe.servings}</span>}
+            </div>
             <div style={{display:"flex",alignItems:"center",gap:0,border:`1px solid ${theme.border}44`,borderRadius:20,overflow:"hidden"}}>
               <button onClick={()=>setQty(q=>Math.max(1,q-1))} style={{width:28,height:26,background:"none",border:"none",color:qty>1?theme.accent:"rgba(240,235,225,0.2)",fontSize:16,cursor:qty>1?"pointer":"default",lineHeight:1}}>−</button>
               <span style={{fontSize:11,color:theme.accent,fontWeight:700,minWidth:28,textAlign:"center",letterSpacing:.5}}>{qty}×</span>
