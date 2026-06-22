@@ -4974,9 +4974,7 @@ export default function OnTheRocks(){
                         </div>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
                           <div style={{flex:1,minWidth:0}}>
-                            {pkSpirits.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:9}}>
-                              {pkSpirits.slice(0,4).map(s=><span key={s} style={{...chip("neutral"),padding:"4px 10px",fontSize:10,letterSpacing:.8}}>{s}</span>)}
-                            </div>}
+                            {pkSpirits.length>0&&<div style={{fontSize:10,letterSpacing:1,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontFamily:"Archivo,sans-serif",marginBottom:5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{pkSpirits.join(" · ")}</div>}
                             <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
                           </div>
                           <button onClick={()=>setInfoPackId(pk.id)}
