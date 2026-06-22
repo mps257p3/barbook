@@ -4961,7 +4961,7 @@ export default function OnTheRocks(){
               {/* minhas coleções */}
               {accessiblePacks.length>0&&(
                 <div style={{marginBottom:32}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.7)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:14}}>
+                  <div style={{fontSize:11,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.7)",fontFamily:"Archivo,sans-serif",fontWeight:500,marginBottom:13}}>
                     {accessiblePacks.length===1?"1 Coleção obtida":`${accessiblePacks.length} Coleções obtidas`}
                   </div>
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
@@ -4973,16 +4973,16 @@ export default function OnTheRocks(){
                           <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
                         </div>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
-                          <div style={{flex:1}}>
-                            {pkSpirits.length>0&&<div style={{fontSize:10,letterSpacing:1,textTransform:"uppercase",color:"rgba(160,120,90,0.65)",fontFamily:"Archivo,sans-serif",marginBottom:4}}>{pkSpirits.join(" · ")}</div>}
-                            <div style={{display:"flex",alignItems:"center",gap:8}}>
-                              <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
-                            </div>
+                          <div style={{flex:1,minWidth:0}}>
+                            {pkSpirits.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:9}}>
+                              {pkSpirits.slice(0,4).map(s=><span key={s} style={{...chip("neutral"),padding:"4px 10px",fontSize:10,letterSpacing:.8}}>{s}</span>)}
+                            </div>}
+                            <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
                           </div>
                           <button onClick={()=>setInfoPackId(pk.id)}
-                            style={{...CARD_TYPO.uiLabel,padding:"8px 14px",borderRadius:20,cursor:"pointer",flexShrink:0,transition:"all .15s",
-                              background:"rgba(240,235,225,0.06)",border:"1px solid rgba(240,235,225,0.15)",
-                              color:"rgba(240,235,225,0.67)"}}>
+                            style={{...CARD_TYPO.uiLabel,padding:"8px 15px",borderRadius:RADII.pill,cursor:"pointer",flexShrink:0,transition:"all .15s",
+                              background:"rgba(240,235,225,0.06)",border:"1px solid rgba(240,235,225,0.18)",
+                              color:"rgba(240,235,225,0.7)"}}>
                             Informações
                           </button>
                         </div>
@@ -4994,7 +4994,7 @@ export default function OnTheRocks(){
               {/* disponíveis para obter */}
               {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).length>0&&(
                 <div style={{marginBottom:32}}>
-                  <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:14}}>Disponíveis</div>
+                  <div style={{fontSize:11,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",fontWeight:500,marginBottom:13}}>Disponíveis</div>
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
                     {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).map(pk=>(
                       <div key={pk.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75}}>
@@ -5003,9 +5003,9 @@ export default function OnTheRocks(){
                           <div style={{flex:1}}>
                             <div style={{fontFamily:"'Gloock',serif",fontSize:17,fontWeight:400,color:"rgba(231,224,205,0.75)",lineHeight:1.2,marginBottom:2}}>{pk.name}</div>
                             {pk.description&&<div style={{fontSize:11,color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",lineHeight:1.4,marginBottom:4}}>{pk.description}</div>}
-                            <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(160,120,90,0.4)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
+                            <div style={{fontSize:10,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(160,120,90,0.55)",fontFamily:"Archivo,sans-serif"}}>{(pk.recipeNames||[]).length} drinks</div>
                           </div>
-                          {pk.price>0&&<div style={{...CARD_TYPO.uiLabel,padding:"8px 14px",borderRadius:20,background:"rgba(160,120,90,0.08)",border:"1px solid rgba(160,120,90,0.25)",color:"rgba(160,120,90,0.6)",flexShrink:0}}>R$ {Number(pk.price).toFixed(2)}</div>}
+                          {pk.price>0&&<div style={{...chip("accent"),padding:"5px 11px",letterSpacing:.5,textTransform:"none",flexShrink:0}}>R$ {Number(pk.price).toFixed(2)}</div>}
                         </div>
                       </div>
                     ))}
@@ -5041,10 +5041,10 @@ export default function OnTheRocks(){
                 {/* spirits */}
                 {pkSpirits.length>0&&(
                   <div style={{marginBottom:20}}>
-                    <div style={{fontSize:8,letterSpacing:3,textTransform:"uppercase",color:"rgba(160,120,90,0.6)",fontFamily:"Archivo,sans-serif",fontWeight:700,marginBottom:10}}>Bebidas</div>
+                    <div style={{fontSize:11,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(160,120,90,0.66)",fontFamily:"Archivo,sans-serif",fontWeight:500,marginBottom:11}}>Bebidas</div>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {pkSpirits.map(s=>(
-                        <div key={s} style={{padding:"5px 12px",borderRadius:20,background:"rgba(160,120,90,0.1)",border:"1px solid rgba(160,120,90,0.25)",fontSize:11,color:"rgba(160,120,90,0.85)",fontFamily:"Archivo,sans-serif"}}>{s}</div>
+                        <div key={s} style={chip("neutral")}>{s}</div>
                       ))}
                     </div>
                   </div>
