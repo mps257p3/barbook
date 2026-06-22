@@ -132,6 +132,25 @@ const CARD_TYPO = {
   counter:     { fontSize:8, letterSpacing:2, textTransform:"uppercase", opacity:0.55, fontFamily:"Archivo,sans-serif" },
 };
 
+// ─── TOKENS DE LAYOUT (espaçamento, cantos, cor, chip) ────────────────────────
+// Escala única: substitui valores avulsos por uma régua consistente.
+const SPACE = { xs:4, sm:8, md:12, lg:16, xl:24, xxl:32 };
+const RADII = { btn:6, card:12, pill:20 };
+const ROLE = {
+  text1: "rgba(231,224,205,0.95)",   // títulos / destaque
+  text2: "rgba(240,235,225,0.62)",   // corpo
+  text3: "rgba(240,235,225,0.42)",   // legendas / apoio
+  border:"rgba(240,235,225,0.10)",
+  surface:"rgba(0,0,0,0.28)",
+};
+// Chip unificado — variantes "neutral" | "accent" | "active". `accent` = cor do tema.
+function chip(variant="neutral", accent="#C8A96E"){
+  const base={display:"inline-flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:RADII.pill,fontSize:11,letterSpacing:1,textTransform:"uppercase",fontFamily:"Archivo,sans-serif",fontWeight:600,lineHeight:1,boxSizing:"border-box",transition:"all .15s"};
+  if(variant==="accent") return {...base,background:`${accent}1A`,border:`1px solid ${accent}44`,color:accent};
+  if(variant==="active") return {...base,background:`${accent}2E`,border:`1px solid ${accent}`,color:"#E5C99E"};
+  return {...base,background:"rgba(240,235,225,0.05)",border:"1px solid rgba(240,235,225,0.12)",color:"rgba(240,235,225,0.55)"};
+}
+
 // ─── SISTEMA DE COPOS ─────────────────────────────────────────────────────────
 const FAMILY_GLASS = {
   "Sour":"coupe","Shaken":"coupe",
@@ -1937,9 +1956,9 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{height:2,width:36,background:theme.accent,borderRadius:2,opacity:0.9}}/>
                   <div style={{width:7,height:2,borderRadius:1,background:theme.accent,opacity:0.9}}/>
                 </div>
-                {packName&&<div onClick={e=>{e.stopPropagation();onFilter&&onFilter("pack",packName);}} style={{display:"inline-flex",alignItems:"center",gap:4,margin:"13px 0 7px",padding:"4px 11px 4px 9px",borderRadius:20,background:"rgba(0,0,0,0.35)",border:`1px solid ${theme.accent}44`,backdropFilter:"blur(4px)",cursor:"pointer"}}>
-                  <span style={{fontSize:7,color:theme.accent,opacity:0.85,lineHeight:1}}>◈</span>
-                  <span style={{fontSize:7.5,letterSpacing:1.5,textTransform:"uppercase",color:`${theme.accent}BB`,fontFamily:"Archivo,sans-serif",fontWeight:600}}>{packName}</span>
+                {packName&&<div onClick={e=>{e.stopPropagation();onFilter&&onFilter("pack",packName);}} style={{...chip("accent",theme.accent),margin:"13px 0 7px",backdropFilter:"blur(4px)",cursor:"pointer"}}>
+                  <span style={{fontSize:9,opacity:0.85,lineHeight:1}}>◈</span>
+                  {packName}
                 </div>}
                 {recipe.signature&&<div style={{fontSize:11,fontStyle:"italic",color:"rgba(231,224,205,0.63)",marginTop:5,letterSpacing:0.3}}>{recipe.signature}</div>}
                 {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
