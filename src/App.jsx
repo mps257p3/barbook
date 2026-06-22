@@ -1967,16 +1967,16 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           )}
         </div>
 
-        <div style={{padding:"16px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
+        <div style={{padding:"8px 18px 32px",textAlign:"left",filter:posEditMode?"blur(2px) brightness(0.25)":"none",transition:"filter .25s",pointerEvents:posEditMode?"none":"auto"}}>
 
           {/* estrelas + ações */}
-          <div style={{display:"flex",gap:2,marginBottom:18,alignItems:"center"}}>
+          <div style={{display:"flex",gap:2,marginBottom:8,alignItems:"center"}}>
             <span style={{fontSize:9.5,letterSpacing:1.5,textTransform:"uppercase",color:isTried&&localRating===0?theme.accent:"rgba(240,235,225,0.4)",opacity:isTried&&localRating===0?0.75:1,marginRight:7,fontFamily:"Archivo,sans-serif"}}>{isTried&&localRating===0?"como avaliaria?":"sua nota"}</span>
             {[1,2,3,4,5].map(n=>(
               <button key={n} onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)} onClick={()=>{const r=n===localRating?0:n;setLocalRating(r);onRating(r);setHoverStar(r);}} style={{background:"none",border:"none",fontSize:16,cursor:"pointer",color:n<=(hoverStar||localRating)?theme.accent:"rgba(240,235,225,0.14)",transition:"color .1s",padding:"0 1px"}}>★</button>
             ))}
           </div>
-          <div style={{display:"flex",gap:7,marginBottom:24}}>
+          <div style={{display:"flex",gap:7,marginBottom:12}}>
             {(()=>{
               const chip={...CARD_TYPO.actionBtn,flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:5,padding:"9px 0",borderRadius:20,cursor:"pointer",transition:"all .15s",lineHeight:1,boxSizing:"border-box"};
               const dimBorder=`1px solid ${theme.accent}33`;
