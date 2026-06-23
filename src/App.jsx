@@ -3406,7 +3406,7 @@ export default function OnTheRocks(){
   const [favs,setFavs]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_favs")||"[]");}catch{return[];}});
   const [comanda,setComanda]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_comanda")||"[]");}catch{return[];}});
   const [comandaReorder,setComandaReorder]=useState(false);
-  const [comandaGroups,setComandaGroups]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_comanda_groups')||'[]');}catch{return[];}});
+  const [comandaGroups,setComandaGroups]=useState(()=>{try{return JSON.parse(localStorage.getItem('otr_comanda_groups')||'[]').map(g=>({...g,collapsed:true}));}catch{return[];}});
   const [comandaLongPress,setComandaLongPress]=useState(null);
   const [showNewGroupInput,setShowNewGroupInput]=useState(false);
   const [newGroupName,setNewGroupName]=useState('');
@@ -3597,7 +3597,7 @@ export default function OnTheRocks(){
             if(d.spirits)        {setCustomSpirits(d.spirits);  echo.spirits=JSON.stringify(d.spirits);}
             if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
             if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
-            if(d.comandaGroups)  {setComandaGroups(d.comandaGroups);echo.comandaGroups=JSON.stringify(d.comandaGroups);}
+            if(d.comandaGroups)  {const cg=d.comandaGroups.map(g=>({...g,collapsed:true}));setComandaGroups(cg);echo.comandaGroups=JSON.stringify(cg);}
             if(d.customBgs)      {setCustomBgs(prev=>({...prev,...d.customBgs}));echo.customBgs=JSON.stringify(d.customBgs);}
             if(d.customBgOffsets){setCustomBgOffsets(d.customBgOffsets);echo.customBgOffsets=JSON.stringify(d.customBgOffsets);}
             if(d.unlockedPacks)  {setUnlockedPacks(d.unlockedPacks);try{localStorage.setItem('otr_unlocked',JSON.stringify(d.unlockedPacks));}catch{}}
@@ -4036,7 +4036,7 @@ export default function OnTheRocks(){
           const triedArr=strArr(d.tried);if(triedArr)setTried(triedArr);
           const ownedArr=strArr(d.owned);if(ownedArr)setOwned(ownedArr);
           const comandaArr=strArr(d.comanda);if(comandaArr)setComanda(comandaArr);
-          if(Array.isArray(d.comandaGroups))setComandaGroups(d.comandaGroups.filter(g=>g&&typeof g.name==="string"&&Array.isArray(g.drinks)));
+          if(Array.isArray(d.comandaGroups))setComandaGroups(d.comandaGroups.filter(g=>g&&typeof g.name==="string"&&Array.isArray(g.drinks)).map(g=>({...g,collapsed:true})));
           if(d.overrides&&typeof d.overrides==="object"&&!Array.isArray(d.overrides))setOverrides(d.overrides);
           const spiritsArr=strArr(d.spirits);if(spiritsArr)setCustomSpirits(spiritsArr);
         }catch{showConfirm("Arquivo inválido ou corrompido.",null,false);}
@@ -4693,19 +4693,6 @@ export default function OnTheRocks(){
                 const chevronSt=(open)=>({fontSize:16,color:"rgba(160,120,90,0.8)",transition:"transform .2s",display:"inline-block",transform:open?"rotate(90deg)":"rotate(0deg)",lineHeight:1});
                 return(
                   <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                    {/* sem grupo */}
-                    {ungrouped.length>0&&(
-                      <div>
-                        {comandaGroups.length>0&&(
-                          <div style={groupHeaderSt} onClick={()=>setUngroupedCollapsed(v=>!v)}>
-                            <span style={chevronSt(!ungroupedCollapsed)}>›</span>
-                            <span style={{fontFamily:"Archivo,sans-serif",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.6)",fontWeight:700}}>Sem grupo</span>
-                            <span style={{fontSize:10,color:"rgba(240,235,225,0.53)",marginLeft:4}}>{ungrouped.length}</span>
-                          </div>
-                        )}
-                        {!ungroupedCollapsed&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{ungrouped.map(renderCard)}</div>}
-                      </div>
-                    )}
                     {/* grupos nomeados */}
                     {comandaGroups.map(group=>{
                       const gDrinks=group.drinks.map(n=>allRecipes.find(r=>r.name===n)).filter(Boolean);
@@ -4734,6 +4721,19 @@ export default function OnTheRocks(){
                         </div>
                       );
                     })}
+                    {/* sem grupo (no final) */}
+                    {ungrouped.length>0&&(
+                      <div>
+                        {comandaGroups.length>0&&(
+                          <div style={groupHeaderSt} onClick={()=>setUngroupedCollapsed(v=>!v)}>
+                            <span style={chevronSt(!ungroupedCollapsed)}>›</span>
+                            <span style={{fontFamily:"Archivo,sans-serif",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(240,235,225,0.6)",fontWeight:700}}>Sem grupo</span>
+                            <span style={{fontSize:10,color:"rgba(240,235,225,0.53)",marginLeft:4}}>{ungrouped.length}</span>
+                          </div>
+                        )}
+                        {!ungroupedCollapsed&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{ungrouped.map(renderCard)}</div>}
+                      </div>
+                    )}
                   </div>
                 );
               })()}
