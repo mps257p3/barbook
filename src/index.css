@@ -160,3 +160,15 @@ body {
   animation: otr-grain 0.15s steps(1) infinite;
   pointer-events: none;
 }
+
+/* ── On the Rocks — estados de toque e foco ──────────────────────────────────
+   Feedback tátil unificado: o toque escurece levemente o elemento; sem o flash
+   cinza padrão do mobile; anel de foco visível só para teclado (acessibilidade). */
+* { -webkit-tap-highlight-color: transparent; }
+button, [role="button"], label { transition: opacity .15s ease, background-color .18s ease, border-color .18s ease; }
+button:active:not(:disabled), [role="button"]:active, label:active { opacity: 0.6; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid rgba(200,169,110,0.6); outline-offset: 2px; border-radius: 5px; }
+@media (prefers-reduced-motion: reduce) {
+  button:active:not(:disabled), [role="button"]:active, label:active { opacity: 1; }
+}

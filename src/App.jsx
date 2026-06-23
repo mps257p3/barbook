@@ -2637,7 +2637,7 @@ function Tutorial({ onClose, onTabChange }) {
   const goTo=s=>{setStep(s);window.scrollTo(0,0);onTabChange(TUTORIAL_STEPS[s].tab||"descobrir");};
   return(
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.1)",zIndex:10000,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"0 24px 100px"}}>
-      <div style={{width:"100%",maxWidth:380,background:"rgba(8,9,6,0.92)",border:"3px solid rgba(200,169,110,0.45)",borderRadius:10,padding:"24px 24px 20px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",gap:18,boxShadow:"0 -8px 40px rgba(0,0,0,0.4)"}}>
+      <div style={{width:"100%",maxWidth:380,background:"rgba(8,9,6,0.92)",border:"3px solid rgba(200,169,110,0.45)",borderRadius:12,padding:"24px 24px 20px",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",gap:18,boxShadow:"0 -8px 40px rgba(0,0,0,0.4)"}}>
 
         {/* dots */}
         <div style={{display:"flex",gap:6}}>
@@ -2653,7 +2653,7 @@ function Tutorial({ onClose, onTabChange }) {
             <div style={{height:1,background:"linear-gradient(90deg,transparent,rgba(200,169,110,0.4),transparent)",marginTop:12}}/>
           </div>
         ):(
-          <div style={{width:76,height:76,borderRadius:18,background:"rgba(200,169,110,0.07)",border:"1px solid rgba(200,169,110,0.18)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,marginTop:8}}>
+          <div style={{width:76,height:76,borderRadius:20,background:"rgba(200,169,110,0.07)",border:"1px solid rgba(200,169,110,0.18)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,marginTop:8}}>
             <span style={{fontSize:30,color:"#C8A96E",lineHeight:1}}>{cur.icon}</span>
             <span style={{fontSize:8,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.65)",fontFamily:"Archivo,sans-serif",fontWeight:700}}>{cur.label}</span>
           </div>
@@ -2734,13 +2734,13 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
       {availPacks.length>0&&(
         <div style={{marginBottom:24}}>
           <SectionHead label="Packs disponíveis"/>
-          <div style={{position:"relative",overflow:"hidden",borderRadius:14}}>
+          <div style={{position:"relative",overflow:"hidden",borderRadius:12}}>
             {availPacks.map((pack,i)=>(
               <div key={pack.id} style={{display:i===carouselIdx?"block":"none"}}>
                 <PackCover src={pack.coverImage} name={pack.name}
-                  imgStyle={{width:"100%",height:180,objectFit:"cover",borderRadius:14,display:"block"}}
+                  imgStyle={{width:"100%",height:180,objectFit:"cover",borderRadius:12,display:"block"}}
                   fallback={
-                    <div style={{width:"100%",height:180,borderRadius:14,background:"linear-gradient(135deg,rgba(160,120,90,0.3) 0%,rgba(0,0,0,0.6) 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"1px solid rgba(160,120,90,0.2)"}}>
+                    <div style={{width:"100%",height:180,borderRadius:12,background:"linear-gradient(135deg,rgba(160,120,90,0.3) 0%,rgba(0,0,0,0.6) 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:"1px solid rgba(160,120,90,0.2)"}}>
                       <div style={{fontFamily:"'Gloock',serif",fontSize:22,color:"rgba(231,224,205,0.92)"}}>{pack.name}</div>
                       {pack.price>0&&<div style={{...CARD_TYPO.sectionHead,color:"#A0785A",fontSize:14}}>R$ {Number(pack.price).toFixed(2)}</div>}
                     </div>
@@ -2806,7 +2806,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         {collectionsOpen&&(
           <>
             {devMode&&(
-              <div style={{marginBottom:10,padding:"12px 14px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:10,alignItems:"flex-start"}}>
+              <div style={{marginBottom:10,padding:"12px 14px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:12,display:"flex",gap:10,alignItems:"flex-start"}}>
                 <div style={{width:3,minHeight:28,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
                 <div style={{flex:1,textAlign:"center",fontFamily:"'Gloock',serif",fontSize:13,color:"rgba(231,224,205,0.75)",lineHeight:1.55}}>Obrigado por estar aqui antes<br/>das luzes se acenderem.</div>
               </div>
@@ -2877,7 +2877,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         <SectionHead label="Conta"/>
         {user ? (
           <>
-            <div style={{position:"relative",padding:"22px 18px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.13)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
+            <div style={{position:"relative",padding:"22px 18px",borderRadius:12,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.13)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
               <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,120,90,0.2) 0%,transparent 65%)",pointerEvents:"none"}}/>
               <div style={{display:"flex",alignItems:"center",gap:14,position:"relative"}}>
                 {user.photoURL&&(
@@ -2906,14 +2906,14 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
                 {authError&&<div style={{marginTop:8,fontSize:11,color:"#e08080",fontFamily:"Archivo,sans-serif"}}>{authError}</div>}
               </div>
             ):(
-              <button onClick={()=>setDeleteConfirm(true)} style={{width:"100%",marginTop:8,padding:"10px",borderRadius:10,background:"none",border:"1px solid rgba(180,60,60,0.28)",color:"rgba(239,68,68,0.65)",fontSize:12,textAlign:"center",cursor:"pointer",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>
+              <button onClick={()=>setDeleteConfirm(true)} style={{width:"100%",marginTop:8,padding:"10px",borderRadius:12,background:"none",border:"1px solid rgba(180,60,60,0.28)",color:"rgba(239,68,68,0.65)",fontSize:12,textAlign:"center",cursor:"pointer",fontFamily:"Archivo,sans-serif",boxSizing:"border-box"}}>
                 deletar conta
               </button>
             )}
           </>
         ) : (
           <div>
-            <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:0,padding:"16px",borderRadius:14,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1,backdropFilter:"blur(10px)",boxSizing:"border-box"}}>
+            <button onClick={handleSignIn} disabled={authLoading} style={{width:"100%",marginBottom:authError?8:0,padding:"16px",borderRadius:12,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.1)",color:"#F0EBE1",fontSize:14,cursor:authLoading?"not-allowed":"pointer",fontFamily:"Archivo,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:12,opacity:authLoading?0.6:1,backdropFilter:"blur(10px)",boxSizing:"border-box"}}>
               <svg width="18" height="18" viewBox="0 0 18 18"><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"/><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z" fill="#34A853"/><path d="M4.5 10.52a4.8 4.8 0 010-3.04V5.41H1.83a8 8 0 000 7.18l2.67-2.07z" fill="#FBBC05"/><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.4L4.5 7.49a4.77 4.77 0 014.48-3.3z" fill="#EA4335"/></svg>
               {authLoading?"Aguarde…":"Entrar com Google"}
             </button>
@@ -4517,7 +4517,7 @@ export default function OnTheRocks(){
               </div>
 
               {/* spirits */}
-              <div style={{marginBottom:20,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.11)",borderRadius:14,padding:"18px 16px"}}>
+              <div style={{marginBottom:20,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.11)",borderRadius:12,padding:"18px 16px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
                   <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
                   <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Bebidas</span>
@@ -4550,7 +4550,7 @@ export default function OnTheRocks(){
               </div>
 
               {/* adicionar bebida */}
-              <div style={{marginBottom:24,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.11)",borderRadius:14,padding:"18px 16px"}}>
+              <div style={{marginBottom:24,background:"rgba(0,0,0,0.28)",border:"1px solid rgba(240,235,225,0.11)",borderRadius:12,padding:"18px 16px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
                   <div style={{height:1,width:14,background:"#A0785A",opacity:0.6,borderRadius:1}}/>
                   <span style={{...CARD_TYPO.sectionHead,color:"rgba(160,120,90,0.75)"}}>Adicionar bebida</span>
@@ -4740,7 +4740,7 @@ export default function OnTheRocks(){
               {/* long press overlay */}
               {comandaLongPress&&(()=>{
                 const currentGroupId=comandaGroups.find(g=>g.drinks.includes(comandaLongPress))?.id||null;
-                const ovBtnSt={display:"block",width:"100%",padding:"12px 16px",background:"none",border:"none",borderRadius:10,fontSize:14,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif"};
+                const ovBtnSt={display:"block",width:"100%",padding:"12px 16px",background:"none",border:"none",borderRadius:12,fontSize:14,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif"};
                 return(
                   <div style={{position:"fixed",inset:0,zIndex:10001,display:"flex",flexDirection:"column",justifyContent:"flex-end",background:"rgba(0,0,0,0.5)"}} onClick={()=>setComandaLongPress(null)}>
                     <div onClick={e=>e.stopPropagation()} style={{background:"#111008",borderRadius:"18px 18px 0 0",padding:"12px 8px calc(24px + env(safe-area-inset-bottom, 12px))",border:"1px solid rgba(160,120,90,0.25)",borderBottom:"none"}}>
@@ -4837,7 +4837,7 @@ export default function OnTheRocks(){
                 </div>
                 {/* sheets como overlays absolutos */}
                 {filterSheet==="familia"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {[...FAMILY_GROUPS.flatMap(g=>g.items),...TECHNIQUES].filter(s=>allRecipes.some(r=>r.categories.includes(s))).sort((a,b)=>a.localeCompare(b,"pt")).map(s=>{
                         const active=activeStyle===s;
@@ -4851,7 +4851,7 @@ export default function OnTheRocks(){
                   </div>
                 )}
                 {filterSheet==="spirit"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {allSpirits.map(s=>{
                         const active=activeSpirits.includes(s);
@@ -4862,7 +4862,7 @@ export default function OnTheRocks(){
                   </div>
                 )}
                 {filterSheet==="ocasiao"&&(
-                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:10,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+                  <div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,display:"flex",flexDirection:"column",background:"rgba(42,28,14,0.52)",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"1px solid rgba(160,120,90,0.28)",borderRadius:12,padding:"14px 14px 12px",marginTop:4,gap:8,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                       {[...OCCASION_LIST].sort((a,b)=>a.localeCompare(b,"pt")).map(tag=>{
                         const active=activeOccasions.includes(tag);
@@ -4951,7 +4951,7 @@ export default function OnTheRocks(){
             <div style={{padding:"24px 20px 0"}}>
               {/* agradecimento dev/convidado */}
               {devMode&&(
-                <div style={{marginBottom:20,padding:"14px 16px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:10,display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div style={{marginBottom:20,padding:"14px 16px",background:"rgba(160,120,90,0.07)",border:"1px solid rgba(160,120,90,0.2)",borderRadius:12,display:"flex",gap:12,alignItems:"flex-start"}}>
                   <div style={{width:3,minHeight:32,borderRadius:2,background:"#C8A96E",opacity:0.7,flexShrink:0,alignSelf:"stretch"}}/>
                   <div style={{flex:1,textAlign:"center",fontFamily:"'Gloock',serif",fontSize:14,color:"rgba(231,224,205,0.8)",lineHeight:1.55}}>
                     Obrigado por estar aqui antes<br/>das luzes se acenderem.
@@ -5070,7 +5070,7 @@ export default function OnTheRocks(){
                 {/* ação */}
                 {isOwned&&(
                   <button onClick={()=>{setActivePack(pk.name);setInfoPackId(null);setCollectionsView(false);setMobileTab("explorar");}}
-                    style={{width:"100%",padding:"14px",borderRadius:10,background:"rgba(160,120,90,0.15)",border:"1px solid rgba(160,120,90,0.4)",color:"#C8A96E",fontSize:13,fontFamily:"Archivo,sans-serif",fontWeight:700,letterSpacing:1,cursor:"pointer"}}>
+                    style={{width:"100%",padding:"14px",borderRadius:12,background:"rgba(160,120,90,0.15)",border:"1px solid rgba(160,120,90,0.4)",color:"#C8A96E",fontSize:13,fontFamily:"Archivo,sans-serif",fontWeight:700,letterSpacing:1,cursor:"pointer"}}>
                     Explorar drinks desta coleção
                   </button>
                 )}
