@@ -4941,8 +4941,8 @@ export default function OnTheRocks(){
 
       {/* ── TELA COLEÇÕES ── */}
       {collectionsView&&(
-        <div className="otr-modal-backdrop" onClick={()=>setCollectionsView(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.68)",zIndex:10004,display:"flex",alignItems:"center",justifyContent:"center",padding:16,backdropFilter:"blur(10px)"}}>
-          <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:540,maxHeight:"90vh",display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",overflowX:"hidden",borderRadius:16,border:"1px solid rgba(200,169,110,0.18)",boxShadow:"0 32px 80px rgba(0,0,0,0.85)",paddingBottom:16}}>
+        <div className="otr-modal-backdrop" onClick={()=>setCollectionsView(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.68)",zIndex:10004,display:"flex",alignItems:"center",justifyContent:"center",padding:16,backdropFilter:"blur(2px)"}}>
+          <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:460,maxHeight:"82vh",display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",overflowX:"hidden",borderRadius:16,border:"1px solid rgba(200,169,110,0.18)",boxShadow:"0 32px 80px rgba(0,0,0,0.85)",paddingBottom:16}}>
             {/* header */}
             <div style={{position:"sticky",top:0,zIndex:10,background:"rgba(7,7,7,0.96)",backdropFilter:"blur(12px)",padding:"16px 20px 14px",borderBottom:"1px solid rgba(240,235,225,0.07)",display:"flex",alignItems:"center",gap:14}}>
               <button onClick={()=>setCollectionsView(false)} style={{background:"none",border:"none",color:"rgba(240,235,225,0.63)",cursor:"pointer",fontSize:22,lineHeight:1,padding:"0 4px",display:"flex",alignItems:"center"}}>×</button>
@@ -5025,8 +5025,8 @@ export default function OnTheRocks(){
         const pkSpirits=(pk.spirits||[]);
         const isOwned=accessiblePacks.some(p=>p.id===pk.id);
         return(
-          <div className="otr-modal-backdrop" onClick={()=>setInfoPackId(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:10005,display:"flex",alignItems:"center",justifyContent:"center",padding:16,backdropFilter:"blur(10px)"}}>
-            <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:540,maxHeight:"90vh",display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",overflowX:"hidden",borderRadius:16,border:"1px solid rgba(200,169,110,0.18)",boxShadow:"0 32px 80px rgba(0,0,0,0.85)",paddingBottom:16}}>
+          <div className="otr-modal-backdrop" onClick={()=>setInfoPackId(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",zIndex:10005,display:"flex",alignItems:"center",justifyContent:"center",padding:16,backdropFilter:"blur(2px)"}}>
+            <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:460,maxHeight:"82vh",display:"flex",flexDirection:"column",background:"#070707",overflowY:"auto",overflowX:"hidden",borderRadius:16,border:"1px solid rgba(200,169,110,0.18)",boxShadow:"0 32px 80px rgba(0,0,0,0.85)",paddingBottom:16}}>
               {/* header */}
               <div style={{position:"sticky",top:0,zIndex:10,background:"rgba(7,7,7,0.96)",backdropFilter:"blur(12px)",padding:"16px 20px 14px",borderBottom:"1px solid rgba(240,235,225,0.07)",display:"flex",alignItems:"center",gap:14}}>
                 <button onClick={()=>setInfoPackId(null)} style={{background:"none",border:"none",color:"rgba(240,235,225,0.63)",cursor:"pointer",fontSize:22,lineHeight:1,padding:"0 4px",display:"flex",alignItems:"center"}}>×</button>
