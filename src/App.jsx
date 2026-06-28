@@ -3452,10 +3452,12 @@ export default function OnTheRocks(){
     let configOk=false;
     let dataVersion='';
     let isInGroup=false;
+    let packsVersion='';
     try{
-      const [configSnap,packsSnap,baseSpiritsSnap]=await Promise.all([
+      // Lê config + spirits (pequenos, sempre). Os packs ficam para depois,
+      // atrás do gate de versão — assim corta ~N leituras por abertura.
+      const [configSnap,baseSpiritsSnap]=await Promise.all([
         getDoc(doc(db,"manager","config")),
-        getDocs(collection(db,"packs")),
         getDoc(doc(db,"appConfig","spirits")).catch(()=>null)
       ]);
       if(baseSpiritsSnap&&baseSpiritsSnap.exists()){
@@ -3467,6 +3469,7 @@ export default function OnTheRocks(){
         freeNames=cfg.freeRecipes||[];
         setFreeRecipeNames(new Set(freeNames));
         dataVersion=String((cfg.dataVersion&&(cfg.dataVersion.seconds??cfg.dataVersion))||'');
+        packsVersion=String((cfg.packsVersion&&(cfg.packsVersion.seconds??cfg.packsVersion))||'');
         const userEmail=auth.currentUser?.email||'';
         const ug=cfg.userGroups||{};
         isInGroup=false;
@@ -3480,7 +3483,19 @@ export default function OnTheRocks(){
         localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
         configOk=true;
       }
-      allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
+      // Gate de leitura dos packs: só rebaixa a coleção quando packsVersion muda
+      // (bumpado no Manager a cada alteração de pack). dev/admin sempre vê fresco;
+      // sem versão ainda, baixa normalmente.
+      let cachedAllpacks=[]; try{cachedAllpacks=JSON.parse(localStorage.getItem('otr_cfg_allpacks')||'[]');}catch{}
+      const cachedPacksVer=localStorage.getItem('otr_packs_version')||'';
+      const usePacksCache=!isInGroup&&cachedAllpacks.length>0&&!!packsVersion&&packsVersion===cachedPacksVer;
+      if(usePacksCache){
+        allPs=cachedAllpacks;
+      }else{
+        const packsSnap=await getDocs(collection(db,"packs"));
+        allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
+        try{localStorage.setItem('otr_packs_version',packsVersion||'');}catch{}
+      }
       setAllPacks(allPs);
       localStorage.setItem('otr_cfg_allpacks',JSON.stringify(allPs));
       const ps=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
