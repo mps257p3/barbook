@@ -105,13 +105,15 @@ body {
 }
 .otr-modal-backdrop { animation: otrFadeIn 0.3s ease both; }
 .otr-modal-sheet    { animation: otrSheetIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes otrSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.otr-bottom-sheet   { animation: otrSheetUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .otr-hero-live {
   animation:
     otrHeroSettle 0.95s cubic-bezier(0.22, 1, 0.36, 1) both,
     otrKenBurns 22s ease-in-out 0.95s infinite alternate;
 }
 @media (prefers-reduced-motion: reduce) {
-  .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-live { animation: none; }
+  .otr-modal-backdrop, .otr-modal-sheet, .otr-hero-live, .otr-bottom-sheet { animation: none; }
   .otr-reveal { opacity: 1; transform: none; transition: none; }
 }
 

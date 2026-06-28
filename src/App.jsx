@@ -3413,6 +3413,8 @@ export default function OnTheRocks(){
   const [editGroupId,setEditGroupId]=useState(null);
   const [editGroupName,setEditGroupName]=useState('');
   const [ungroupedCollapsed,setUngroupedCollapsed]=useState(false);
+  const [ovAdding,setOvAdding]=useState(false); // "adicionar pasta" no long-press
+  const [ovGroupName,setOvGroupName]=useState('');
   const pressTimerRef=useRef(null);
   const [owned,setOwned]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_owned")||"[]");}catch{return[];}});
   const [tried,setTried]=useState(()=>{try{return JSON.parse(localStorage.getItem("otr_tried")||"[]");}catch{return[];}});
@@ -3848,6 +3850,9 @@ export default function OnTheRocks(){
     const timer=setTimeout(()=>{expired=true;try{lock?.release();}catch{}lock=null;},3*60*1000);
     return()=>{clearTimeout(timer);document.removeEventListener("visibilitychange",onVisible);try{lock?.release();}catch{}};
   },[open]);
+
+  // Reseta o "adicionar pasta" sempre que o long-press abre/fecha/troca
+  useEffect(()=>{setOvAdding(false);setOvGroupName('');},[comandaLongPress]);
 
   const [swipeHistory,setSwipeHistory]=useState([]);
   const [swipeHistIdx,setSwipeHistIdx]=useState(0);
@@ -4756,27 +4761,39 @@ export default function OnTheRocks(){
               {comandaLongPress&&(()=>{
                 const currentGroupId=comandaGroups.find(g=>g.drinks.includes(comandaLongPress))?.id||null;
                 const ovBtnSt={display:"block",width:"100%",padding:"12px 16px",background:"none",border:"none",borderRadius:12,fontSize:14,textAlign:"left",cursor:"pointer",fontFamily:"Archivo,sans-serif"};
+                const createGroupAndMove=name=>{
+                  const id=Math.random().toString(36).slice(2,8);
+                  setComandaGroups(p=>[...p.map(g=>({...g,drinks:g.drinks.filter(n=>n!==comandaLongPress)})),{id,name,collapsed:false,drinks:[comandaLongPress]}]);
+                  setComandaLongPress(null);
+                };
                 return(
-                  <div style={{position:"fixed",inset:0,zIndex:10001,display:"flex",flexDirection:"column",justifyContent:"flex-end",background:"rgba(0,0,0,0.5)"}} onClick={()=>setComandaLongPress(null)}>
-                    <div onClick={e=>e.stopPropagation()} style={{background:"#111008",borderRadius:"18px 18px 0 0",padding:"12px 8px calc(24px + env(safe-area-inset-bottom, 12px))",border:"1px solid rgba(160,120,90,0.25)",borderBottom:"none"}}>
+                  <div className="otr-modal-backdrop" style={{position:"fixed",inset:0,zIndex:10001,display:"flex",flexDirection:"column",justifyContent:"flex-end",background:"rgba(0,0,0,0.5)"}} onClick={()=>setComandaLongPress(null)}>
+                    <div className="otr-bottom-sheet" onClick={e=>e.stopPropagation()} style={{background:"#111008",borderRadius:"18px 18px 0 0",padding:"12px 8px calc(24px + env(safe-area-inset-bottom, 12px))",border:"1px solid rgba(160,120,90,0.25)",borderBottom:"none"}}>
                       <div style={{textAlign:"center",marginBottom:12}}>
                         <div style={{width:36,height:4,borderRadius:2,background:"rgba(240,235,225,0.15)",margin:"0 auto 14px"}}/>
                         <div style={{fontFamily:"'Gloock',serif",fontSize:17,color:"rgba(231,224,205,0.93)"}}>{comandaLongPress}</div>
                       </div>
                       <div style={{height:"1px",background:"rgba(240,235,225,0.08)",margin:"0 8px 8px"}}/>
                       <button style={{...ovBtnSt,color:"rgba(239,68,68,0.8)"}} onClick={()=>{toggleComanda(comandaLongPress);setComandaLongPress(null);}}>✕  Remover da comanda</button>
-                      {comandaGroups.length>0&&(
-                        <>
-                          <div style={{height:"1px",background:"rgba(240,235,225,0.08)",margin:"4px 8px"}}/>
-                          <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.57)",padding:"6px 16px 2px",fontFamily:"Archivo,sans-serif"}}>Mover para</div>
-                          {currentGroupId&&(
-                            <button style={{...ovBtnSt,color:"rgba(240,235,225,0.67)"}} onClick={()=>{moveDrinkToUngrouped(comandaLongPress);setComandaLongPress(null);}}>◌  Sem grupo</button>
-                          )}
-                          {comandaGroups.filter(g=>g.id!==currentGroupId).map(g=>(
-                            <button key={g.id} style={{...ovBtnSt,color:"rgba(200,169,110,0.85)"}} onClick={()=>{moveDrinkToGroup(comandaLongPress,g.id);setComandaLongPress(null);}}>›  {g.name}</button>
-                          ))}
-                        </>
+                      <div style={{height:"1px",background:"rgba(240,235,225,0.08)",margin:"4px 8px"}}/>
+                      <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(240,235,225,0.57)",padding:"6px 16px 2px",fontFamily:"Archivo,sans-serif"}}>Mover para</div>
+                      {ovAdding?(
+                        <div style={{display:"flex",gap:6,padding:"6px 16px 8px"}}>
+                          <input autoFocus value={ovGroupName} onChange={e=>setOvGroupName(e.target.value)}
+                            onKeyDown={e=>{if(e.key==="Enter"&&ovGroupName.trim())createGroupAndMove(ovGroupName.trim());if(e.key==="Escape")setOvAdding(false);}}
+                            placeholder="Nome da pasta…"
+                            style={{flex:1,background:"rgba(240,235,225,0.05)",border:"1px solid rgba(160,120,90,0.4)",borderRadius:8,padding:"10px 12px",color:"#F0EBE1",fontSize:14,outline:"none",fontFamily:"Archivo,sans-serif"}}/>
+                          <button onClick={()=>{if(ovGroupName.trim())createGroupAndMove(ovGroupName.trim());}} style={{padding:"10px 14px",borderRadius:8,background:"rgba(160,120,90,0.15)",border:"1px solid rgba(160,120,90,0.4)",color:"#C8A96E",fontSize:13,cursor:"pointer",fontFamily:"Archivo,sans-serif",whiteSpace:"nowrap"}}>Criar</button>
+                        </div>
+                      ):(
+                        <button style={{...ovBtnSt,color:"#C8A96E"}} onClick={()=>setOvAdding(true)}>+  Adicionar pasta</button>
                       )}
+                      {currentGroupId&&(
+                        <button style={{...ovBtnSt,color:"rgba(240,235,225,0.67)"}} onClick={()=>{moveDrinkToUngrouped(comandaLongPress);setComandaLongPress(null);}}>◌  Sem grupo</button>
+                      )}
+                      {comandaGroups.filter(g=>g.id!==currentGroupId).map(g=>(
+                        <button key={g.id} style={{...ovBtnSt,color:"rgba(200,169,110,0.85)"}} onClick={()=>{moveDrinkToGroup(comandaLongPress,g.id);setComandaLongPress(null);}}>›  {g.name}</button>
+                      ))}
                     </div>
                   </div>
                 );
