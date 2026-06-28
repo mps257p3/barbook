@@ -3837,17 +3837,17 @@ export default function OnTheRocks(){
     syncToFirestore({customBgs:urls});
   },[customBgs]);
 
-  // ── Mantém a tela acesa apenas enquanto uma receita está aberta ──
-  const recipeOpen=!!open;
+  // ── Mantém a tela acesa por até 3 minutos ao abrir uma receita ──
   useEffect(()=>{
-    if(!recipeOpen||!("wakeLock" in navigator))return;
-    let lock=null;
-    const request=async()=>{try{lock=await navigator.wakeLock.request("screen");}catch{}};
+    if(!open||!("wakeLock" in navigator))return;
+    let lock=null,expired=false;
+    const request=async()=>{if(expired)return;try{lock=await navigator.wakeLock.request("screen");}catch{}};
     const onVisible=()=>{if(document.visibilityState==="visible")request();};
     document.addEventListener("visibilitychange",onVisible);
     request();
-    return()=>{document.removeEventListener("visibilitychange",onVisible);lock?.release();};
-  },[recipeOpen]);
+    const timer=setTimeout(()=>{expired=true;try{lock?.release();}catch{}lock=null;},3*60*1000);
+    return()=>{clearTimeout(timer);document.removeEventListener("visibilitychange",onVisible);try{lock?.release();}catch{}};
+  },[open]);
 
   const [swipeHistory,setSwipeHistory]=useState([]);
   const [swipeHistIdx,setSwipeHistIdx]=useState(0);
