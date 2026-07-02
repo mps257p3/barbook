@@ -3,6 +3,7 @@ import { onAuthStateChanged, deleteUser } from "firebase/auth";
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 import { ref as storageRef, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 import { auth, db, storage, signInWithGoogle, signOutUser, getRedirectResult, signInAnonymouslyIfNeeded } from "./firebase";
+import { billingAvailable, purchasePack, listOwnedSkus } from "./billing";
 
 // ─── TEMA POR FAMÍLIA ─────────────────────────────────────────────────────────
 const TYPE_THEME = {
@@ -2737,7 +2738,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
           <SectionHead label="Packs disponíveis"/>
           <div style={{position:"relative",overflow:"hidden",borderRadius:12}}>
             {availPacks.map((pack,i)=>(
-              <div key={pack.id} style={{display:i===carouselIdx?"block":"none"}}>
+              <div key={pack.id} onClick={()=>setInfoPackId(pack.id)} style={{display:i===carouselIdx?"block":"none",cursor:"pointer"}}>
                 <PackCover src={pack.coverImage} name={pack.name}
                   imgStyle={{width:"100%",height:180,objectFit:"cover",borderRadius:12,display:"block"}}
                   fallback={
@@ -3518,7 +3519,12 @@ export default function OnTheRocks(){
       // vê fresco; sem cache ou sem versão ainda, baixa uma vez.
       let cachedMgr=[]; try{cachedMgr=JSON.parse(localStorage.getItem('otr_cfg_mgr')||'[]');}catch{}
       const cachedVer=localStorage.getItem('otr_data_version')||'';
-      const useCache=!isInGroup&&cachedMgr.length>0&&!!dataVersion&&dataVersion===cachedVer;
+      // conjunto de packs desbloqueados no momento do fetch — entra na chave do
+      // cache: comprar um pack invalida o cache mesmo sem publicação nova
+      let unlockedNow=[]; try{unlockedNow=JSON.parse(localStorage.getItem('otr_unlocked')||'[]');}catch{}
+      const unlockedKey=JSON.stringify([...unlockedNow].sort());
+      const useCache=!isInGroup&&cachedMgr.length>0&&!!dataVersion&&dataVersion===cachedVer
+        &&(localStorage.getItem('otr_cfg_mgr_unlocked')||'[]')===unlockedKey;
 
       // slugToName (cache traz _docId+name; fresco vem do fetch). Resolve referências
       // de packs/freeRecipes para o NOME ATUAL — sem isto uma receita renomeada
@@ -3529,10 +3535,27 @@ export default function OnTheRocks(){
       if(useCache){
         cachedMgr.forEach(r=>{if(r.name&&r._docId)slugToName[r._docId]=r.name;});
         mRecipes=cachedMgr;
-      }else{
+      }else if(isInGroup){
+        // grupo dev: lê a coleção completa (as regras liberam via devEmails)
         const mgrSnap=await getDocs(collection(db,"managerRecipes"));
         mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
         mRecipes.forEach(r=>{if(r.name)slugToName[r._docId]=r.name;});
+      }else{
+        // usuário comum: lê os bundles de conteúdo (packContent/free + um por
+        // pack desbloqueado). managerRecipes é admin/dev-only nas regras —
+        // receitas pagas ficam ILEGÍVEIS para quem não comprou o pack.
+        const bundleIds=['free',...unlockedNow];
+        const snaps=await Promise.all(bundleIds.map(id=>getDoc(doc(db,'packContent',id)).catch(()=>null)));
+        if(snaps[0]&&snaps[0].exists()){
+          const merged=snaps.flatMap(s=>(s&&s.exists()&&s.data().recipes)||[]).map(r=>({...r,fromManager:true}));
+          // dedupe por slug (receita presente na Biblioteca E num pack)
+          mRecipes=Object.values(merged.reduce((a,r)=>{a[r._docId||r.name]=r;return a;},{}));
+        }else{
+          // fallback legado: bundles ainda não publicados pelo Manager
+          const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+          mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
+        }
+        mRecipes.forEach(r=>{if(r.name&&r._docId)slugToName[r._docId]=r.name;});
       }
       const resolveRef=n=>slugToName[slugifyRef(n)]||n;
       allPs=allPs.map(p=>({...p,recipeNames:(p.recipeNames||[]).map(resolveRef)}));
@@ -3549,7 +3572,7 @@ export default function OnTheRocks(){
         const sysOnlyNames=new Set([...sysRecipeNames].filter(n=>!nonSysRecipeNames.has(n)));
         const deletarNames=new Set(allPs.filter(p=>p.name?.toLowerCase().includes('deletar')||p.deletar===true).flatMap(p=>p.recipeNames||[]));
         mRecipes=mRecipes.filter(r=>!sysOnlyNames.has(r.name)&&!deletarNames.has(r.name));
-        try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');}catch{/* quota */}
+        try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');localStorage.setItem('otr_cfg_mgr_unlocked',unlockedKey);}catch{/* quota */}
       }
       setManagerRecipes(mRecipes);
     }catch(e){console.error(e);}
@@ -3625,10 +3648,9 @@ export default function OnTheRocks(){
         fsInitializedRef.current = true;
         return;
       }
-      // recarrega a config de packs com o e-mail correto (grupos/dev mode)
-      refreshPackConfig(true);
-      // carrega os dados do próprio usuário (vale para conta Google e para
-      // sessão anônima — ambas têm uid válido e permissão nas regras)
+      // carrega os dados do próprio usuário ANTES da config de packs (vale para
+      // conta Google e sessão anônima) — o fetch dos bundles de conteúdo precisa
+      // saber os packs desbloqueados (otr_unlocked), que vêm deste doc
       setSyncing(true);
       try{
         const ref = doc(db,"users",u.uid);
@@ -3653,6 +3675,8 @@ export default function OnTheRocks(){
         }
       }catch(e){console.error(e);}
       setSyncing(false);
+      // agora sim: config de packs + receitas (com o e-mail e os desbloqueios corretos)
+      refreshPackConfig(true);
       fsInitializedRef.current = true;
     });
   },[refreshPackConfig]);
@@ -3813,6 +3837,58 @@ export default function OnTheRocks(){
   const [confirmDialog,setConfirmDialog]=useState(null);
   const showConfirm=useCallback((message,onConfirm,danger=false)=>setConfirmDialog({message,onConfirm,danger}),[]);
   const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
+
+  // ── Compra de pack via Google Play Billing ──────────────────────────────────
+  // Registra o desbloqueio localmente + no doc do usuário e rebaixa o bundle do
+  // pack recém-comprado (refreshPackConfig força e o cache invalida pela chave
+  // otr_cfg_mgr_unlocked). Verificação de compra é no cliente (sem servidor).
+  const [buyingPackId,setBuyingPackId]=useState(null);
+  const unlockPack=useCallback(async packId=>{
+    const next=[...new Set([...unlockedPacks,packId])];
+    setUnlockedPacks(next);
+    try{localStorage.setItem('otr_unlocked',JSON.stringify(next));}catch{}
+    if(auth.currentUser){
+      try{await setDoc(doc(db,"users",auth.currentUser.uid),{unlockedPacks:next},{merge:true});}catch(e){console.error(e);}
+    }
+    refreshPackConfig(true);
+  },[unlockedPacks,refreshPackConfig]);
+  const buyPack=useCallback(async pk=>{
+    if(buyingPackId)return;
+    setBuyingPackId(pk.id);
+    try{
+      await purchasePack(pk.id);
+      await unlockPack(pk.id);
+      showConfirm(`"${pk.name}" desbloqueada! Bons drinks. 🥂`,null,false);
+    }catch(e){
+      // AbortError = usuário fechou o fluxo de pagamento — não é erro
+      if(e?.name!=="AbortError"){
+        showConfirm(`Não foi possível concluir a compra: ${e?.message||e}`,null,false);
+      }
+    }
+    setBuyingPackId(null);
+  },[buyingPackId,unlockPack,showConfirm]);
+
+  // Restaura compras do Google Play (novo aparelho/reinstalação): compras ativas
+  // na conta Play viram desbloqueios que ainda não constem no perfil.
+  useEffect(()=>{
+    if(!user||!billingAvailable())return;
+    (async()=>{
+      try{
+        const owned=await listOwnedSkus();
+        const missing=owned.filter(id=>!unlockedPacks.includes(id));
+        if(missing.length){
+          const next=[...new Set([...unlockedPacks,...missing])];
+          setUnlockedPacks(next);
+          try{localStorage.setItem('otr_unlocked',JSON.stringify(next));}catch{}
+          if(auth.currentUser){setDoc(doc(db,"users",auth.currentUser.uid),{unlockedPacks:next},{merge:true}).catch(()=>{});}
+          refreshPackConfig(true);
+        }
+      }catch{/* Play indisponível no momento — segue sem restaurar */}
+    })();
+    // roda quando a sessão fica pronta; unlockedPacks fora das deps de propósito
+    // (senão loop: restaurar muda unlockedPacks que re-dispara o efeito)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[user]);
 
   // ── Fotos personalizadas das receitas ──────────────────────────────────────
   // Sobem para o Firebase Storage (users/{uid}/recipeBg/{slug}.jpg) e guardamos
@@ -5043,7 +5119,7 @@ export default function OnTheRocks(){
                   <div style={{fontSize:11,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",fontWeight:500,marginBottom:13}}>Disponíveis</div>
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
                     {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).map(pk=>(
-                      <div key={pk.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75}}>
+                      <div key={pk.id} onClick={()=>setInfoPackId(pk.id)} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75,cursor:"pointer"}}>
                         <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:100,objectFit:"cover",display:"block",filter:"brightness(0.7)"}} fallbackHeight={64} dim/>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
                           <div style={{flex:1}}>
@@ -5122,6 +5198,16 @@ export default function OnTheRocks(){
                     Explorar drinks desta coleção
                   </button>
                 )}
+                {!isOwned&&pk.price>0&&(billingAvailable()?(
+                  <button onClick={()=>buyPack(pk)} disabled={buyingPackId===pk.id}
+                    style={{width:"100%",padding:"14px",borderRadius:12,background:"rgba(200,169,110,0.22)",border:"1px solid #C8A96E",color:"#E5C99E",fontSize:13,fontFamily:"Archivo,sans-serif",fontWeight:700,letterSpacing:1,cursor:buyingPackId===pk.id?"default":"pointer",opacity:buyingPackId===pk.id?0.6:1}}>
+                    {buyingPackId===pk.id?"Processando…":`Comprar por R$ ${Number(pk.price).toFixed(2)}`}
+                  </button>
+                ):(
+                  <div style={{textAlign:"center",fontSize:12,color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",lineHeight:1.6,padding:"6px 4px"}}>
+                    Disponível para compra no app Android (Google Play).
+                  </div>
+                ))}
               </div>
             </div>
           </div>
