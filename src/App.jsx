@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect, useRef, memo } from "react";
 import { onAuthStateChanged, deleteUser } from "firebase/auth";
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 import { ref as storageRef, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
-import { auth, db, storage, signInWithGoogle, signOutUser, getRedirectResult } from "./firebase";
+import { auth, db, storage, signInWithGoogle, signOutUser, getRedirectResult, signInAnonymouslyIfNeeded } from "./firebase";
 
 // ─── TEMA POR FAMÍLIA ─────────────────────────────────────────────────────────
 const TYPE_THEME = {
@@ -1960,7 +1960,8 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <span style={{fontSize:9,opacity:0.85,lineHeight:1}}>◈</span>
                   {packName}
                 </div>}
-                {recipe.signature&&<div style={{fontSize:11,fontStyle:"italic",color:"rgba(231,224,205,0.63)",marginTop:5,letterSpacing:0.3}}>{recipe.signature}</div>}
+                {/* Exibição da assinatura desativada no app (decisão pendente do admin
+                    — o campo continua editável no Manager, ver página Alertas) */}
                 {profile?.flavors&&<div style={{...CARD_TYPO.flavor,color:theme.accent,marginTop:6}}>{profile.flavors.replace(/·/g,"•")}</div>}
               </div>
             )}
@@ -2875,7 +2876,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
       {/* conta */}
       <div style={{marginBottom:24}}>
         <SectionHead label="Conta"/>
-        {user ? (
+        {user&&!user.isAnonymous ? (
           <>
             <div style={{position:"relative",padding:"22px 18px",borderRadius:12,background:"rgba(0,0,0,0.35)",border:"1px solid rgba(240,235,225,0.13)",backdropFilter:"blur(10px)",overflow:"hidden"}}>
               <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,120,90,0.2) 0%,transparent 65%)",pointerEvents:"none"}}/>
@@ -3592,39 +3593,16 @@ export default function OnTheRocks(){
   },[]);
 
   // ── Auth listener ──
+  // Sem nenhuma sessão (nem Google, nem anônima), as regras do Firestore negam
+  // toda leitura — inclusive a Biblioteca Inicial — e o app mostra 0 receitas.
+  // Login anônimo garante uma sessão sempre presente para quem não loga no Google.
+  const anonAttemptedRef=useRef(false);
   useEffect(()=>{
     return onAuthStateChanged(auth, async u => {
       setUser(u);
-      // recarrega a config de packs com o e-mail correto (grupos/dev mode)
-      refreshPackConfig(true);
-      if(u){
-        setSyncing(true);
-        try{
-          const ref = doc(db,"users",u.uid);
-          const snap = await getDoc(ref);
-          if(snap.exists()){
-            const d = snap.data();
-            // registra o que veio do servidor para os effects de sync não
-            // re-gravarem os mesmos dados logo após o login (writes-eco)
-            const echo={};
-            if(d.custom)         {setCustomRecipes(d.custom);   echo.custom=JSON.stringify(d.custom);}
-            if(d.favs)           {setFavs(d.favs);              echo.favs=JSON.stringify(d.favs);}
-            if(d.owned)          {setOwned(d.owned);            echo.owned=JSON.stringify(d.owned);}
-            if(d.tried)          {setTried(d.tried);            echo.tried=JSON.stringify(d.tried);}
-            if(d.spirits)        {setCustomSpirits(d.spirits);  echo.spirits=JSON.stringify(d.spirits);}
-            if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
-            if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
-            if(d.comandaGroups)  {const cg=d.comandaGroups.map(g=>({...g,collapsed:true}));setComandaGroups(cg);echo.comandaGroups=JSON.stringify(cg);}
-            if(d.customBgs)      {setCustomBgs(prev=>({...prev,...d.customBgs}));echo.customBgs=JSON.stringify(d.customBgs);}
-            if(d.customBgOffsets){setCustomBgOffsets(d.customBgOffsets);echo.customBgOffsets=JSON.stringify(d.customBgOffsets);}
-            if(d.unlockedPacks)  {setUnlockedPacks(d.unlockedPacks);try{localStorage.setItem('otr_unlocked',JSON.stringify(d.unlockedPacks));}catch{}}
-            serverEchoRef.current=echo;
-          }
-        }catch(e){console.error(e);}
-        setSyncing(false);
-      } else {
-        // logout: zera packs desbloqueados E o catálogo em cache, para não vazar
-        // o conteúdo de uma conta para a próxima. Sem config, o filtro fica trancado.
+      if(!u){
+        // logout (ou 1ª visita, ainda sem sessão): zera packs/catálogo em cache
+        // para não vazar conteúdo de uma conta para a próxima
         setUnlockedPacks([]);
         setManagerRecipes([]);
         setAllPacks([]);
@@ -3636,7 +3614,45 @@ export default function OnTheRocks(){
           ['otr_unlocked','otr_cfg_mgr','otr_cfg_allpacks','otr_cfg_packs','otr_cfg_free','otr_data_version','otr_devmode','otr_group_packs']
             .forEach(k=>localStorage.removeItem(k));
         }catch{}
+        // NÃO chama refreshPackConfig aqui: sem sessão nenhuma, as leituras do
+        // Firestore são negadas pelas regras (exigem auth). Garante uma sessão
+        // anônima; o próprio login anônimo dispara este listener de novo com
+        // um usuário válido, que aí sim carrega a config.
+        if(!anonAttemptedRef.current){
+          anonAttemptedRef.current=true;
+          try{ await signInAnonymouslyIfNeeded(); }catch(e){ console.error(e); }
+        }
+        fsInitializedRef.current = true;
+        return;
       }
+      // recarrega a config de packs com o e-mail correto (grupos/dev mode)
+      refreshPackConfig(true);
+      // carrega os dados do próprio usuário (vale para conta Google e para
+      // sessão anônima — ambas têm uid válido e permissão nas regras)
+      setSyncing(true);
+      try{
+        const ref = doc(db,"users",u.uid);
+        const snap = await getDoc(ref);
+        if(snap.exists()){
+          const d = snap.data();
+          // registra o que veio do servidor para os effects de sync não
+          // re-gravarem os mesmos dados logo após o login (writes-eco)
+          const echo={};
+          if(d.custom)         {setCustomRecipes(d.custom);   echo.custom=JSON.stringify(d.custom);}
+          if(d.favs)           {setFavs(d.favs);              echo.favs=JSON.stringify(d.favs);}
+          if(d.owned)          {setOwned(d.owned);            echo.owned=JSON.stringify(d.owned);}
+          if(d.tried)          {setTried(d.tried);            echo.tried=JSON.stringify(d.tried);}
+          if(d.spirits)        {setCustomSpirits(d.spirits);  echo.spirits=JSON.stringify(d.spirits);}
+          if(d.overrides)      {setOverrides(d.overrides);    echo.overrides=JSON.stringify(d.overrides);}
+          if(d.comanda)        {setComanda(d.comanda);        echo.comanda=JSON.stringify(d.comanda);}
+          if(d.comandaGroups)  {const cg=d.comandaGroups.map(g=>({...g,collapsed:true}));setComandaGroups(cg);echo.comandaGroups=JSON.stringify(cg);}
+          if(d.customBgs)      {setCustomBgs(prev=>({...prev,...d.customBgs}));echo.customBgs=JSON.stringify(d.customBgs);}
+          if(d.customBgOffsets){setCustomBgOffsets(d.customBgOffsets);echo.customBgOffsets=JSON.stringify(d.customBgOffsets);}
+          if(d.unlockedPacks)  {setUnlockedPacks(d.unlockedPacks);try{localStorage.setItem('otr_unlocked',JSON.stringify(d.unlockedPacks));}catch{}}
+          serverEchoRef.current=echo;
+        }
+      }catch(e){console.error(e);}
+      setSyncing(false);
       fsInitializedRef.current = true;
     });
   },[refreshPackConfig]);
