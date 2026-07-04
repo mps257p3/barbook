@@ -1403,6 +1403,10 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
   const scanPhoto = useCallback(async (files) => {
     const fileArr = Array.from(files||[]).filter(Boolean);
     if (!fileArr.length) return;
+    if (fileArr.length > 3) {
+      setScanErr("Máximo de 3 imagens por receita. Selecione até 3 prints da mesma receita. 🍹");
+      return;
+    }
     const uid = auth.currentUser?.uid || "anon";
     const today = new Date().toISOString().slice(0, 10);
     const rlKey = `otr_scan_${uid}_${today}`;
@@ -3828,6 +3832,8 @@ export default function OnTheRocks(){
       requestAnimationFrame(()=>{window.scrollTo(0,pos);});
     }
   },[mobileTab]);
+  // Ao mudar de aba, volta a ordenação pro padrão (A–Z)
+  useEffect(()=>{setSort("nome");},[mobileTab]);
   // persiste a UI (aba, ordenação e filtros) para reabrir onde o usuário parou
   useEffect(()=>{
     try{localStorage.setItem("otr_ui",JSON.stringify({tab:mobileTab,sort,style:activeStyle,spirits:activeSpirits,occasions:activeOccasions,and:filterAnd}));}catch{}
@@ -4180,13 +4186,31 @@ export default function OnTheRocks(){
       if(activeSpirits.length>0&&!(filterAnd?activeSpirits.every(s=>r.categories.includes(s)):activeSpirits.some(s=>r.categories.includes(s))))return false;
       if(activeOccasions.length>0&&!activeOccasions.some(t=>(OCCASION_TAGS[r.name]||[]).includes(t)))return false;
       if(activePack&&!(activePackNames&&activePackNames.has(r.name)))return false;
-      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ")+" "+norm(r.notes);return words.every(w=>hay.includes(w));}
+      if(search){const words=norm(search).split(/\s+/).filter(Boolean);const hay=norm(r.name)+" "+(r.ingredients||[]).map(norm).join(" ")+" "+(r.categories||[]).map(norm).join(" ");return words.every(w=>hay.includes(w));}
       return true;
     });
-    if(sort==="rating")list=[...list].filter(r=>r.rating>0).sort((a,b)=>b.rating-a.rating);
+    if(sort==="rating")list=[...list].sort((a,b)=>(b.rating||0)-(a.rating||0));
     else if(sort==="ingredientes")list=[...list].sort((a,b)=>a.ingredients.length-b.ingredients.length);
     else if(sort==="recentes")list=[...list].sort((a,b)=>(b.id||0)-(a.id||0));
     else list=[...list].sort((a,b)=>a.name.localeCompare(b.name,"pt"));
+    // Ao buscar, reordena por relevância: nome exato primeiro, depois nome que
+    // começa/contém o termo, e por último receitas onde o termo é só ingrediente
+    // (ex.: "xarope de mel" → o preparo "Xarope de Mel" no topo, drinks que o usam
+    // abaixo). O sort acima vira critério de desempate (Array.sort é estável).
+    if(search.trim()){
+      const sTerm=norm(search.trim());
+      const sWords=sTerm.split(/\s+/).filter(Boolean);
+      const score=r=>{
+        const n=norm(r.name);
+        if(n===sTerm)return 0;
+        if(n.startsWith(sTerm))return 1;
+        if(n.includes(sTerm))return 2;
+        if(sWords.every(w=>n.includes(w)))return 3;
+        if((r.ingredients||[]).some(i=>norm(i).includes(sTerm)))return 4;
+        return 5;
+      };
+      list=[...list].sort((a,b)=>score(a)-score(b));
+    }
     return list;
   },[allRecipes,activeStyle,activeSpirits,activeOccasions,activePack,activePackNames,search,favs,owned,tried,sort,effectiveFilterMode,hasAllIngredients,filterAnd,freeRecipeNames,availPacks,allPacks,unlockedPacks,devMode,groupPackIds,packConfigLoaded]);
 
@@ -4425,7 +4449,7 @@ export default function OnTheRocks(){
           ))}
         </div>
 
-        <input className="hdr-search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="buscar drink, ingrediente ou técnica…" style={{background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,padding:"7px 12px",color:"#F0EBE1",fontSize:12,width:220}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
+        <input className="hdr-search" value={search} onChange={e=>{setSearch(e.target.value);setSort("nome");}} placeholder="buscar drink, ingrediente ou técnica…" style={{background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,padding:"7px 12px",color:"#F0EBE1",fontSize:12,width:220}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
 
         <div className="hdr-actions" style={{display:"flex",gap:6}}>
           <button onClick={surpriseMe} style={{padding:"7px 12px",borderRadius:3,background:"rgba(139,92,246,0.1)",border:"1px solid rgba(139,92,246,0.3)",color:"#A78BFA",fontSize:10,fontWeight:700,letterSpacing:2,textTransform:"uppercase"}}>✦ Surpreenda-me</button>
@@ -5007,7 +5031,7 @@ export default function OnTheRocks(){
                 </div>
               )}              {/* mobile: busca */}
               <div className="mnv" style={{marginBottom:14,position:"relative"}}>
-                <input ref={searchInputRef} value={search} onChange={e=>setSearch(e.target.value)} placeholder="buscar drink, ingrediente…" style={{width:"100%",background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,padding:"9px 36px 9px 12px",color:"#F0EBE1",fontSize:13,boxSizing:"border-box"}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
+                <input ref={searchInputRef} value={search} onChange={e=>{setSearch(e.target.value);setSort("nome");}} placeholder="buscar drink, ingrediente…" style={{width:"100%",background:"rgba(240,235,225,0.04)",border:"1px solid rgba(240,235,225,0.15)",borderRadius:3,padding:"9px 36px 9px 12px",color:"#F0EBE1",fontSize:13,boxSizing:"border-box"}} onFocus={e=>e.target.style.borderColor="rgba(160,120,90,0.35)"} onBlur={e=>e.target.style.borderColor="rgba(240,235,225,0.08)"}/>
                 {search&&<button onClick={()=>{setSearch("");searchInputRef.current?.focus();}} style={{position:"absolute",right:8,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",color:"rgba(240,235,225,0.59)",cursor:"pointer",fontSize:18,lineHeight:1,padding:"4px 6px"}}>×</button>}
               </div>
 
@@ -5041,11 +5065,29 @@ export default function OnTheRocks(){
                       <PackCover src={pk.bannerImage} name={pk.name} imgStyle={{width:"100%",height:"auto",display:"block"}} fallbackHeight={80}/>
                     </div>
                   ):null;})()}
-                  {filtered.map((r,i)=>(
-                    <Reveal key={r._docId??r.id??r.name} index={i}>
-                      <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={activePack&&activePackNames?.has(r.name)?activePack:recipePackMap[r.name]}/>
-                    </Reveal>
-                  ))}
+                  {(()=>{
+                    const term=search.trim();
+                    const words=term?norm(term).split(/\s+/).filter(Boolean):[];
+                    const isName=r=>words.length>0&&words.every(w=>norm(r.name).includes(w));
+                    const nameG=term?filtered.filter(isName):filtered;
+                    const relG=term?filtered.filter(r=>!isName(r)):[];
+                    const card=(r,i)=>(
+                      <Reveal key={r._docId??r.id??r.name} index={i}>
+                        <DrinkCard recipe={r} isFav={favs.includes(r.name)} onFav={()=>toggleFav(r.name)} isTried={tried.includes(r.name)} onTried={()=>handleTried(r.name)} isComanda={comanda.includes(r.name)} onComanda={()=>toggleComanda(r.name)} hasAll={hasAllIngredients(r)} onClick={()=>{explorarScrollRef.current={pos:mainRef.current?.scrollTop||0,tab:"explorar"};setOpen(r);}} onDelete={()=>showConfirm("Excluir esta receita?",()=>r.custom?deleteRecipe(r):deleteBaseRecipe(r),true)} spiritCats={spiritCatsAll} customBg={customBgs[r.name]} packName={activePack&&activePackNames?.has(r.name)?activePack:recipePackMap[r.name]}/>
+                      </Reveal>
+                    );
+                    return(<>
+                      {nameG.map((r,i)=>card(r,i))}
+                      {nameG.length>0&&relG.length>0&&(
+                        <div key="__rel" style={{display:"flex",alignItems:"center",gap:10,margin:"14px 4px 4px"}}>
+                          <div style={{flex:1,height:1,background:"rgba(240,235,225,0.1)"}}/>
+                          <span style={{...CARD_TYPO.sectionHead,color:"rgba(240,235,225,0.4)",fontSize:10,letterSpacing:2,whiteSpace:"nowrap"}}>Relacionados</span>
+                          <div style={{flex:1,height:1,background:"rgba(240,235,225,0.1)"}}/>
+                        </div>
+                      )}
+                      {relG.map((r,i)=>card(r,nameG.length+i))}
+                    </>);
+                  })()}
                 </div>
               )}
             </>
