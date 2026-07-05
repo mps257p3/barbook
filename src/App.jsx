@@ -1403,16 +1403,19 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
   const scanPhoto = useCallback(async (files) => {
     const fileArr = Array.from(files||[]).filter(Boolean);
     if (!fileArr.length) return;
-    if (fileArr.length > 3) {
-      setScanErr("Máximo de 3 imagens por receita. Selecione até 3 prints da mesma receita. 🍹");
+    // Limites reguláveis pelo Manager (Configurações). Default 3 imagens / 10 por dia.
+    const maxImgs = Math.max(1, parseInt(localStorage.getItem('otr_scan_max_images')||'3',10) || 3);
+    const dailyLimit = Math.max(1, parseInt(localStorage.getItem('otr_scan_daily')||'10',10) || 10);
+    if (fileArr.length > maxImgs) {
+      setScanErr(`Máximo de ${maxImgs} ${maxImgs===1?'imagem':'imagens'} por receita. Selecione até ${maxImgs} print${maxImgs===1?'':'s'} da mesma receita. 🍹`);
       return;
     }
     const uid = auth.currentUser?.uid || "anon";
     const today = new Date().toISOString().slice(0, 10);
     const rlKey = `otr_scan_${uid}_${today}`;
     const used = parseInt(localStorage.getItem(rlKey) || "0", 10);
-    if (used >= 10) {
-      setScanErr("Você já usou as 10 leituras de imagem disponíveis por hoje. Volte amanhã — sua barra vai continuar aqui! 🍹");
+    if (used >= dailyLimit) {
+      setScanErr(`Você já usou as ${dailyLimit} leituras de imagem disponíveis por hoje. Volte amanhã — sua barra vai continuar aqui! 🍹`);
       return;
     }
     setScanning(true); setScanErr(null);
@@ -3489,6 +3492,9 @@ export default function OnTheRocks(){
         localStorage.setItem('otr_devmode',isInGroup?'1':'');
         localStorage.setItem('otr_group_packs',JSON.stringify(gPackIds));
         localStorage.setItem('otr_cfg_free',JSON.stringify(freeNames));
+        // Limites de leitura por imagem, reguláveis no Manager (Configurações)
+        localStorage.setItem('otr_scan_daily',String(cfg.scanDailyLimit??10));
+        localStorage.setItem('otr_scan_max_images',String(cfg.scanMaxImages??3));
         configOk=true;
       }
       // Gate de leitura dos packs: só rebaixa a coleção quando packsVersion muda
