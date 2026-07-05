@@ -93,6 +93,9 @@ const FAMILY_DESC = {
 
 const norm = s => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const capFirst = s => typeof s==="string"&&s.length ? s.charAt(0).toUpperCase()+s.slice(1) : s;
+// Corre uma promise (ex.: leitura do Firestore) contra um timeout — se a rede
+// pendurar, rejeita em vez de travar o app pra sempre em "Carregando…".
+const withTimeout = (p, ms=8000) => Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")), ms))]);
 // chave de override de uma receita base: o nome original, mesmo após renomear
 const ovKey = r => r._origName || r.name;
 
@@ -3467,10 +3470,10 @@ export default function OnTheRocks(){
     try{
       // Lê config + spirits (pequenos, sempre). Os packs ficam para depois,
       // atrás do gate de versão — assim corta ~N leituras por abertura.
-      const [configSnap,baseSpiritsSnap]=await Promise.all([
+      const [configSnap,baseSpiritsSnap]=await withTimeout(Promise.all([
         getDoc(doc(db,"manager","config")),
         getDoc(doc(db,"appConfig","spirits")).catch(()=>null)
-      ]);
+      ]));
       if(baseSpiritsSnap&&baseSpiritsSnap.exists()){
         const bs=baseSpiritsSnap.data().spirits||[];
         if(bs.length){setBaseSpirits(bs);try{localStorage.setItem('otr_cfg_base_spirits',JSON.stringify(bs));}catch{}}
@@ -3506,7 +3509,7 @@ export default function OnTheRocks(){
       if(usePacksCache){
         allPs=cachedAllpacks;
       }else{
-        const packsSnap=await getDocs(collection(db,"packs"));
+        const packsSnap=await withTimeout(getDocs(collection(db,"packs")));
         allPs=packsSnap.docs.map(d=>({id:d.id,...d.data()}));
         try{localStorage.setItem('otr_packs_version',packsVersion||'');}catch{}
       }
@@ -3515,7 +3518,13 @@ export default function OnTheRocks(){
       const ps=allPs.filter(p=>p.active&&p.showBanner!==false).sort((a,b)=>(a.order||0)-(b.order||0));
       setAvailPacks(ps);
       localStorage.setItem('otr_cfg_packs',JSON.stringify(ps));
-    }catch(e){console.error(e);}
+    }catch(e){
+      console.error(e);
+      // Rede/Firestore pendurou (timeout) ou falhou: a UI segue com o cache
+      // hidratado no mount. Zera o throttle p/ tentar de novo já na próxima
+      // abertura/volta ao 1º plano, em vez de esperar os 5 min.
+      lastPackFetchRef.current=0;
+    }
     finally{setPackConfigLoaded(true);}
     // se a config falhou, não carrega receitas do manager — evita exibir conteúdo
     // de packs pagos quando o gate de acesso (freeRecipes) não está disponível
@@ -3547,7 +3556,7 @@ export default function OnTheRocks(){
         mRecipes=cachedMgr;
       }else if(isInGroup){
         // grupo dev: lê a coleção completa (as regras liberam via devEmails)
-        const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+        const mgrSnap=await withTimeout(getDocs(collection(db,"managerRecipes")));
         mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
         mRecipes.forEach(r=>{if(r.name)slugToName[r._docId]=r.name;});
       }else{
@@ -3555,14 +3564,14 @@ export default function OnTheRocks(){
         // pack desbloqueado). managerRecipes é admin/dev-only nas regras —
         // receitas pagas ficam ILEGÍVEIS para quem não comprou o pack.
         const bundleIds=['free',...unlockedNow];
-        const snaps=await Promise.all(bundleIds.map(id=>getDoc(doc(db,'packContent',id)).catch(()=>null)));
+        const snaps=await withTimeout(Promise.all(bundleIds.map(id=>getDoc(doc(db,'packContent',id)).catch(()=>null))));
         if(snaps[0]&&snaps[0].exists()){
           const merged=snaps.flatMap(s=>(s&&s.exists()&&s.data().recipes)||[]).map(r=>({...r,fromManager:true}));
           // dedupe por slug (receita presente na Biblioteca E num pack)
           mRecipes=Object.values(merged.reduce((a,r)=>{a[r._docId||r.name]=r;return a;},{}));
         }else{
           // fallback legado: bundles ainda não publicados pelo Manager
-          const mgrSnap=await getDocs(collection(db,"managerRecipes"));
+          const mgrSnap=await withTimeout(getDocs(collection(db,"managerRecipes")));
           mRecipes=mgrSnap.docs.map(d=>({_docId:d.id,...d.data(),fromManager:true}));
         }
         mRecipes.forEach(r=>{if(r.name&&r._docId)slugToName[r._docId]=r.name;});
@@ -3585,7 +3594,12 @@ export default function OnTheRocks(){
         try{localStorage.setItem('otr_cfg_mgr',JSON.stringify(mRecipes));localStorage.setItem('otr_data_version',dataVersion||'');localStorage.setItem('otr_cfg_mgr_unlocked',unlockedKey);}catch{/* quota */}
       }
       setManagerRecipes(mRecipes);
-    }catch(e){console.error(e);}
+    }catch(e){
+      console.error(e);
+      // leitura das receitas pendurou/falhou: mantém o cache já em estado e
+      // permite retry na próxima abertura em vez de esperar o throttle de 5 min.
+      lastPackFetchRef.current=0;
+    }
   },[]);
 
   // ── Re-busca config quando app volta ao primeiro plano ──
