@@ -4150,6 +4150,8 @@ export default function OnTheRocks(){
     if(recipe.custom){setCustomRecipes(p=>p.map(r=>r.name===recipe.name?{...r,rating}:r));}
     else{const k=ovKey(recipe);setOverrides(p=>({...p,[k]:{...(p[k]||{}),rating}}));}
     setOpen(prev=>prev?{...prev,rating}:prev);
+    // Dar nota (>0) marca a receita como "provei" automaticamente
+    if(rating>0)setTried(p=>p.includes(recipe.name)?p:[...p,recipe.name]);
   },[]);
 
   const exportJSON=()=>{
