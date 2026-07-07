@@ -2035,7 +2035,6 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
             <div style={{display:"flex",alignItems:"baseline",gap:9}}>
               <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Ingredientes</div>
-              {recipe.servings&&!/^1\s*(drinque|drink|dose|copo|coquetel)?$/i.test(recipe.servings.trim())&&<span style={{fontSize:10,letterSpacing:.5,color:"rgba(240,235,225,0.55)",padding:"2px 9px",borderRadius:20,background:"rgba(240,235,225,0.05)",fontFamily:"Archivo,sans-serif"}}>rende {recipe.servings}</span>}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:0,border:`1px solid ${theme.border}44`,borderRadius:20,overflow:"hidden"}}>
               <button onClick={()=>setQty(q=>Math.max(1,q-1))} style={{width:28,height:26,background:"none",border:"none",color:qty>1?theme.accent:"rgba(240,235,225,0.2)",fontSize:16,cursor:qty>1?"pointer":"default",lineHeight:1}}>−</button>
