@@ -2700,7 +2700,7 @@ function Tutorial({ onClose, onTabChange }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
+function ProfileTab({ allRecipes, drinkCount, triedCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
   const [carouselIdx,setCarouselIdx]=useState(0);
   const [collectionsOpen,setCollectionsOpen]=useState(false);
   const [authError,setAuthError]=useState(null);
@@ -2785,7 +2785,7 @@ function ProfileTab({ allRecipes, drinkCount, tried, favs, owned, customRecipes,
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[
             ["Receitas",drinkCount,"tudo"],
-            ["Provadas",tried.length,"provados"],
+            ["Provadas",triedCount,"provados"],
             ["Favoritas",favs.length,"favs"],
             ["Minhas receitas",customRecipes.length,"custom"],
           ].map(([l,v,filter])=>(
@@ -3772,6 +3772,13 @@ export default function OnTheRocks(){
   },[allRecipes,devMode,groupPackIds,freeRecipeNames,availPacks,allPacks,unlockedPacks,packConfigLoaded]);
 
   const drinkRecipes=useMemo(()=>accessibleRecipes.filter(r=>!r.categories.includes("Preparos Caseiros")),[accessibleRecipes]);
+  // Conta só as provadas que ainda existem no app: se uma receita provada foi
+  // removida, ela deixa de contar. Enquanto o catálogo carrega, mostra o array cru.
+  const triedCount=useMemo(()=>{
+    if(!drinkRecipes.length)return tried.length;
+    const names=new Set(drinkRecipes.map(r=>r.name));
+    return tried.filter(n=>names.has(n)).length;
+  },[tried,drinkRecipes]);
 
   const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
   useEffect(()=>{
@@ -4446,7 +4453,7 @@ export default function OnTheRocks(){
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.59)",fontWeight:500}}>{packConfigLoaded?`${drinkRecipes.length} receitas`:"—"}</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="provados"?"tudo":"provados");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
-              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{tried.length} provadas</span>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{triedCount} provadas</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favs.length} favoritas</span>
@@ -4937,7 +4944,7 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} triedCount={triedCount} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
           ) : (
             <>
               {/* sub-tela do Perfil: cabeçalho para voltar mantendo o contexto */}
