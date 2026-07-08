@@ -96,6 +96,13 @@ const capFirst = s => typeof s==="string"&&s.length ? s.charAt(0).toUpperCase()+
 // Corre uma promise (ex.: leitura do Firestore) contra um timeout — se a rede
 // pendurar, rejeita em vez de travar o app pra sempre em "Carregando…".
 const withTimeout = (p, ms=8000) => Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")), ms))]);
+// Headers das chamadas de IA: injeta o token do Firebase — o proxy /api/anthropic
+// exige login para identificar o usuário e contar a cota de uso.
+async function aiHeaders(){
+  const h={"Content-Type":"application/json"};
+  try{const t=await auth.currentUser?.getIdToken();if(t)h.Authorization=`Bearer ${t}`;}catch{}
+  return h;
+}
 // chave de override de uma receita base: o nome original, mesmo após renomear
 const ovKey = r => r._origName || r.name;
 
@@ -1429,12 +1436,13 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
         return {type:"image",source:{type:"base64",media_type:file.type||"image/jpeg",data:base64}};
       }));
       const response = await fetch("/api/anthropic", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink ${fileArr.length>1?"das imagens (podem ser partes diferentes de uma mesma receita longa)":"da imagem"} e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml). IMPORTANTE: preserve nomes de marcas, siglas e destilados EXATAMENTE como aparecem na imagem — não substitua, não adicione alternativas entre parênteses, não tente explicar o ingrediente.\n- "steps": array de strings em português, descrevendo o preparo\n- "subPreparations": array de pré-preparos/bases auxiliares (xaropes, infusões, conservas, fat-wash etc.), cada um {"name":"...","ingredients":["..."],"steps":["..."],"yield":""}. NÃO misture os ingredientes/passos dos pré-preparos com os do drink principal. Sem pré-preparos, use [].\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[...imageContents,{type:"text",text:`Extraia a receita ${fileArr.length>1?"destas imagens":"desta imagem"} e retorne o JSON.`}]}] }),
+        method:"POST", headers:await aiHeaders(),
+        body: JSON.stringify({ usageType:"scan", model:"claude-sonnet-4-6", max_tokens:1200, system:`Você é um bartender expert. Extraia a receita de drink ${fileArr.length>1?"das imagens (podem ser partes diferentes de uma mesma receita longa)":"da imagem"} e retorne APENAS um JSON com:\n- "name": nome em português\n- "ingredients": array de strings em português, com medidas em ml (1 fl oz = 30 ml, 1/2 oz = 15 ml, 3/4 oz = 22 ml, 1/4 oz = 7 ml, 2 oz = 60 ml). IMPORTANTE: preserve nomes de marcas, siglas e destilados EXATAMENTE como aparecem na imagem — não substitua, não adicione alternativas entre parênteses, não tente explicar o ingrediente.\n- "steps": array de strings em português, descrevendo o preparo\n- "subPreparations": array de pré-preparos/bases auxiliares (xaropes, infusões, conservas, fat-wash etc.), cada um {"name":"...","ingredients":["..."],"steps":["..."],"yield":""}. NÃO misture os ingredientes/passos dos pré-preparos com os do drink principal. Sem pré-preparos, use [].\n- "notes": string em português com observações relevantes\n- "servings": string (ex: "1", "2 pessoas")\n- "styles": array com estilos do drink entre: ${STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros").join(", ")}\n- "spirits": array com spirits principais entre: ${[...SPIRIT_CATS].join(", ")}\nSem texto fora do JSON.`, messages:[{role:"user",content:[...imageContents,{type:"text",text:`Extraia a receita ${fileArr.length>1?"destas imagens":"desta imagem"} e retorne o JSON.`}]}] }),
       });
       const data = await response.json();
       if (!response.ok) {
-        if (response.status === 429) throw new Error("Limite de uso atingido. Tente novamente mais tarde.");
+        if (response.status === 401) throw new Error("Entre com sua conta Google (aba Perfil) para importar por foto. 🍹");
+        if (response.status === 429) throw new Error(data?.error || "Limite de uso atingido. Tente novamente mais tarde.");
         throw new Error("Serviço indisponível no momento. Tente novamente em breve.");
       }
       // só consome a cota diária quando a leitura de fato aconteceu
@@ -1454,12 +1462,13 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
     setSuggesting(true); setSuggErr(null);
     try {
       const res = await fetch("/api/anthropic", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:600, system:`Você é um bartender especialista. Retorne APENAS um JSON com:\n- "styles": array de estilos entre [${STYLE_PRIORITY.join(", ")}]\n- "spirits": array de spirits entre [${[...new Set([...SPIRIT_CATS,...customSpirits])].sort().join(", ")}]\n- "signature": {"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
+        method:"POST", headers:await aiHeaders(),
+        body: JSON.stringify({ usageType:"profile", model:"claude-haiku-4-5-20251001", max_tokens:600, system:`Você é um bartender especialista. Retorne APENAS um JSON com:\n- "styles": array de estilos entre [${STYLE_PRIORITY.join(", ")}]\n- "spirits": array de spirits entre [${[...new Set([...SPIRIT_CATS,...customSpirits])].sort().join(", ")}]\n- "signature": {"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`, messages:[{role:"user",content:`Nome: ${form.name}\nIngredientes:\n${form.ingredients.filter(Boolean).join("\n")}`}] }),
       });
       const data = await res.json();
       if (!res.ok) {
-        if (res.status === 429) throw new Error("Limite de uso atingido.");
+        if (res.status === 401) throw new Error("Entre com sua conta Google para usar sugestões de IA.");
+        if (res.status === 429) throw new Error(data?.error || "Limite de uso atingido.");
         throw new Error("Serviço indisponível.");
       }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
@@ -1481,11 +1490,15 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
     setSuggestingSig(true); setSuggSigErr(null);
     try {
       const res = await fetch("/api/anthropic", {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ model:"claude-haiku-4-5-20251001", max_tokens:280, system:"Sommelier de coquetéis. Responda APENAS com JSON válido, sem texto adicional.", messages:[{role:"user",content:`Drink: "${form.name}"\nIngredientes: ${form.ingredients.filter(Boolean).join(", ")}\n\nGere perfil em português:\n{"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`}] }),
+        method:"POST", headers:await aiHeaders(),
+        body: JSON.stringify({ usageType:"profile", model:"claude-haiku-4-5-20251001", max_tokens:280, system:"Sommelier de coquetéis. Responda APENAS com JSON válido, sem texto adicional.", messages:[{role:"user",content:`Drink: "${form.name}"\nIngredientes: ${form.ingredients.filter(Boolean).join(", ")}\n\nGere perfil em português:\n{"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","sensacao":"UmaPalavra","ocasiao":"UmaPalavraCurta"}`}] }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error("Serviço indisponível.");
+      if (!res.ok) {
+        if (res.status === 401) throw new Error("Entre com sua conta Google para usar sugestões de IA.");
+        if (res.status === 429) throw new Error(data?.error || "Limite de uso atingido.");
+        throw new Error("Serviço indisponível.");
+      }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
       setForm(f=>({...f,
         ...(parsed.flavors  ? {flavors:parsed.flavors}   : {}),
@@ -1872,10 +1885,15 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const generateSteps=useCallback(async()=>{
     setGenerating(true);setGenErr(null);
     try{
-      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:800,system:"Você é um bartender experiente. Responda APENAS com array JSON de strings, cada string sendo um passo. Sem texto fora do JSON.",messages:[{role:"user",content:`Drink: "${recipe.name}"\nIngredientes:\n${recipe.ingredients.join("\n")}`}]})});
+      const res=await fetch("/api/anthropic",{method:"POST",headers:await aiHeaders(),body:JSON.stringify({usageType:"steps",model:"claude-sonnet-4-6",max_tokens:800,system:"Você é um bartender experiente. Responda APENAS com array JSON de strings, cada string sendo um passo. Sem texto fora do JSON.",messages:[{role:"user",content:`Drink: "${recipe.name}"\nIngredientes:\n${recipe.ingredients.join("\n")}`}]})});
       const data=await res.json();
+      if(!res.ok){
+        if(res.status===401)throw new Error("Entre com sua conta Google para gerar passos com IA.");
+        if(res.status===429)throw new Error(data?.error||"Limite de uso atingido.");
+        throw new Error("Serviço indisponível.");
+      }
       setSteps(JSON.parse((data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim()));
-    }catch{setGenErr("Erro ao gerar. Tente novamente.");}
+    }catch(e){setGenErr(e?.message||"Erro ao gerar. Tente novamente.");}
     setGenerating(false);
   },[recipe]);
 
@@ -4387,8 +4405,9 @@ export default function OnTheRocks(){
     if(cached){try{const p=JSON.parse(cached);setRecipeProfiles(prev=>({...prev,[name]:p}));return;}catch{}}
     profileLoadingRef.current.add(name);
     try{
-      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},
+      const res=await fetch("/api/anthropic",{method:"POST",headers:await aiHeaders(),
         body:JSON.stringify({
+          usageType:"autoProfile",
           model:"claude-haiku-4-5-20251001",max_tokens:280,
           system:"Sommelier de coquetéis. Responda APENAS com JSON válido, sem texto adicional.",
           messages:[{role:"user",content:`Drink: "${name}"\nIngredientes: ${recipe.ingredients.slice(0,6).join(", ")}\n\nGere perfil em português:\n{"flavors":"ADJ • ADJ • ADJ","perfil":"UmaPalavra","perfil_desc":"frase curta sensorial (2-3 palavras)","sensacao":"UmaPalavra","sensacao_desc":"frase curta sensorial (2-3 palavras)","ocasiao":"UmaPalavraCurta","ocasiao_desc":"frase curta de contexto (2-3 palavras)"}`}]
