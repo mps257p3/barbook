@@ -2035,6 +2035,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
             <div style={{display:"flex",alignItems:"baseline",gap:9}}>
               <div style={{...CARD_TYPO.sectionHead,color:theme.accent}}>Ingredientes</div>
+              {recipe.servings&&!/^1\s*(drinque|drink|dose|copo|coquetel)?$/i.test(recipe.servings.trim())&&<span style={{fontSize:10,letterSpacing:.5,color:"rgba(240,235,225,0.55)",padding:"2px 9px",borderRadius:20,background:"rgba(240,235,225,0.05)",fontFamily:"Archivo,sans-serif"}}>rende {recipe.servings}</span>}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:0,border:`1px solid ${theme.border}44`,borderRadius:20,overflow:"hidden"}}>
               <button onClick={()=>setQty(q=>Math.max(1,q-1))} style={{width:28,height:26,background:"none",border:"none",color:qty>1?theme.accent:"rgba(240,235,225,0.2)",fontSize:16,cursor:qty>1?"pointer":"default",lineHeight:1}}>−</button>
@@ -2700,7 +2701,7 @@ function Tutorial({ onClose, onTabChange }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, triedCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
+function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
   const [carouselIdx,setCarouselIdx]=useState(0);
   const [collectionsOpen,setCollectionsOpen]=useState(false);
   const [authError,setAuthError]=useState(null);
@@ -2786,7 +2787,7 @@ function ProfileTab({ allRecipes, drinkCount, triedCount, tried, favs, owned, cu
           {[
             ["Receitas",drinkCount,"tudo"],
             ["Provadas",triedCount,"provados"],
-            ["Favoritas",favs.length,"favs"],
+            ["Favoritas",favCount,"favs"],
             ["Minhas receitas",customRecipes.length,"custom"],
           ].map(([l,v,filter])=>(
             <button key={l} onClick={()=>onGoTo(filter)}
@@ -3779,6 +3780,12 @@ export default function OnTheRocks(){
     const names=new Set(drinkRecipes.map(r=>r.name));
     return tried.filter(n=>names.has(n)).length;
   },[tried,drinkRecipes]);
+  // Mesmo tratamento para favoritas: só conta as que ainda existem no app.
+  const favCount=useMemo(()=>{
+    if(!drinkRecipes.length)return favs.length;
+    const names=new Set(drinkRecipes.map(r=>r.name));
+    return favs.filter(n=>names.has(n)).length;
+  },[favs,drinkRecipes]);
 
   const deepLinkNameRef=useRef(new URLSearchParams(window.location.search).get("r"));
   useEffect(()=>{
@@ -4456,7 +4463,7 @@ export default function OnTheRocks(){
               <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(74,222,128,0.6)",fontWeight:500}}>{triedCount} provadas</span>
             </button>
             <button onClick={()=>{setFilterMode(filterMode==="favs"?"tudo":"favs");setMobileTab("explorar");}} style={{background:"none",border:"none",padding:0,cursor:"pointer",textAlign:"right",fontFamily:"Archivo,sans-serif"}}>
-              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favs.length} favoritas</span>
+              <span style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(200,169,110,0.5)",fontWeight:500}}>{favCount} favoritas</span>
             </button>
           </div>
           {/* botão adicionar receita — ao lado dos contadores */}
@@ -4472,7 +4479,7 @@ export default function OnTheRocks(){
         </div>
 
         <div className="hdr-filters" style={{display:"flex",gap:5,flexWrap:"wrap"}}>
-          {[["tudo","Todas"],["favs",`Favoritas${favs.length?` ${favs.length}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
+          {[["tudo","Todas"],["favs",`Favoritas${favCount?` ${favCount}`:""}`],["naoprovei","Não provei"],["tenho","O que tenho"]].map(([v,l])=>(
             <button key={v} onClick={()=>setFilterMode(v)} style={{padding:"5px 11px",borderRadius:3,fontSize:10,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600,background:filterMode===v?"rgba(160,120,90,0.13)":"rgba(240,235,225,0.04)",border:`1px solid ${filterMode===v?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.08)"}`,color:filterMode===v?"#A0785A":"rgba(240,235,225,0.3)",transition:"all .15s"}}>{l}</button>
           ))}
         </div>
@@ -4944,7 +4951,7 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} triedCount={triedCount} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} triedCount={triedCount} favCount={favCount} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
           ) : (
             <>
               {/* sub-tela do Perfil: cabeçalho para voltar mantendo o contexto */}
@@ -5131,7 +5138,7 @@ export default function OnTheRocks(){
       )}
 
       {/* ── MOBILE NAV ── */}
-      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setCollectionsView(false);setActivePack(null);setMobileTab(t);setOpen(null);}} favCount={favs.length} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}else if(id==="perfil"&&profileView){backToProfile();}}}/>
+      <MobileNav accentColor={mobileTab==="descobrir"&&swipeRecipe?getTheme(swipeRecipe.categories).accent:null} tab={profileView?"perfil":mobileTab} setTab={t=>{prevTabRef.current=mobileTab;if(mobileTab==="ingredientes")barScrollRef.current=window.scrollY||0;window.history.pushState({otr:true},"");window.scrollTo(0,0);if(profileView){exitProfileView();}else if(search!==""){setSearch("");}setCollectionsView(false);setActivePack(null);setMobileTab(t);setOpen(null);}} favCount={favCount} onSameTab={id=>{if(id==="explorar"){setTimeout(()=>searchInputRef.current?.focus(),50);}else if(id==="perfil"&&profileView){backToProfile();}}}/>
 
       {/* ── TELA COLEÇÕES ── */}
       {collectionsView&&(
