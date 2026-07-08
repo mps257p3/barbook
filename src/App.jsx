@@ -3903,25 +3903,37 @@ export default function OnTheRocks(){
   const closeConfirm=useCallback(()=>setConfirmDialog(null),[]);
 
   // ── Compra de pack via Google Play Billing ──────────────────────────────────
-  // Registra o desbloqueio localmente + no doc do usuário e rebaixa o bundle do
-  // pack recém-comprado (refreshPackConfig força e o cache invalida pela chave
-  // otr_cfg_mgr_unlocked). Verificação de compra é no cliente (sem servidor).
+  // A verificação da compra é no SERVIDOR (/api/verify-purchase, checa a Play
+  // Developer API) — é ele quem grava unlockedPacks (o cliente não pode mais
+  // escrever esse campo, ver firestore.rules). unlockPack só espelha o estado
+  // local depois que o servidor já confirmou, para a UI reagir na hora.
   const [buyingPackId,setBuyingPackId]=useState(null);
-  const unlockPack=useCallback(async packId=>{
+  const unlockPack=useCallback(packId=>{
     const next=[...new Set([...unlockedPacks,packId])];
     setUnlockedPacks(next);
     try{localStorage.setItem('otr_unlocked',JSON.stringify(next));}catch{}
-    if(auth.currentUser){
-      try{await setDoc(doc(db,"users",auth.currentUser.uid),{unlockedPacks:next},{merge:true});}catch(e){console.error(e);}
-    }
     refreshPackConfig(true);
   },[unlockedPacks,refreshPackConfig]);
   const buyPack=useCallback(async pk=>{
     if(buyingPackId)return;
     setBuyingPackId(pk.id);
+    let response=null;
     try{
-      await purchasePack(pk.id);
-      await unlockPack(pk.id);
+      const purchase=await purchasePack(pk.id);
+      response=purchase.response;
+      const idToken=await auth.currentUser?.getIdToken();
+      const res=await fetch("/api/verify-purchase",{
+        method:"POST",
+        headers:{"Content-Type":"application/json",...(idToken?{Authorization:`Bearer ${idToken}`}:{})},
+        body:JSON.stringify({packId:pk.id,purchaseToken:purchase.purchaseToken}),
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||!data.ok){
+        await response.complete("fail");
+        throw new Error(data?.error||"Não foi possível confirmar a compra.");
+      }
+      await response.complete("success");
+      unlockPack(pk.id);
       showConfirm(`"${pk.name}" desbloqueada! Bons drinks. 🥂`,null,false);
     }catch(e){
       // AbortError = usuário fechou o fluxo de pagamento — não é erro
@@ -3933,18 +3945,33 @@ export default function OnTheRocks(){
   },[buyingPackId,unlockPack,showConfirm]);
 
   // Restaura compras do Google Play (novo aparelho/reinstalação): compras ativas
-  // na conta Play viram desbloqueios que ainda não constem no perfil.
+  // na conta Play que ainda não constem no perfil passam de novo pela verificação
+  // do servidor (mesmo endpoint da compra) — não bastam gravar direto, o cliente
+  // não tem mais permissão de escrever unlockedPacks (ver firestore.rules).
   useEffect(()=>{
     if(!user||!billingAvailable())return;
     (async()=>{
       try{
         const owned=await listOwnedSkus();
-        const missing=owned.filter(id=>!unlockedPacks.includes(id));
+        const missing=owned.filter(o=>!unlockedPacks.includes(o.sku));
         if(missing.length){
-          const next=[...new Set([...unlockedPacks,...missing])];
+          const idToken=await auth.currentUser?.getIdToken();
+          const verified=[];
+          for(const {sku,purchaseToken} of missing){
+            try{
+              const res=await fetch("/api/verify-purchase",{
+                method:"POST",
+                headers:{"Content-Type":"application/json",...(idToken?{Authorization:`Bearer ${idToken}`}:{})},
+                body:JSON.stringify({packId:sku,purchaseToken}),
+              });
+              const data=await res.json().catch(()=>({}));
+              if(res.ok&&data.ok)verified.push(sku);
+            }catch{/* tenta os demais mesmo se um falhar */}
+          }
+          if(!verified.length)return;
+          const next=[...new Set([...unlockedPacks,...verified])];
           setUnlockedPacks(next);
           try{localStorage.setItem('otr_unlocked',JSON.stringify(next));}catch{}
-          if(auth.currentUser){setDoc(doc(db,"users",auth.currentUser.uid),{unlockedPacks:next},{merge:true}).catch(()=>{});}
           refreshPackConfig(true);
         }
       }catch{/* Play indisponível no momento — segue sem restaurar */}

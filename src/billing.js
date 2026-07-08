@@ -14,7 +14,10 @@ async function getService() {
   return await window.getDigitalGoodsService(PLAY_BILLING);
 }
 
-// Dispara o fluxo de compra do pack. Resolve true ao concluir; lança em erro.
+// Dispara o fluxo de compra do pack. Devolve { response, purchaseToken } —
+// NÃO confirma a compra sozinho: o chamador deve mandar o purchaseToken para
+// /api/verify-purchase e só então chamar response.complete("success"|"fail").
+// Isso é o que impede o usuário de se autodesbloquear sem pagar de verdade.
 // Cancelamento pelo usuário chega como AbortError — o chamador ignora.
 export async function purchasePack(sku) {
   const service = await getService();
@@ -28,17 +31,23 @@ export async function purchasePack(sku) {
     { total: { label: item.title || "Coleção", amount: { currency: item.price.currency, value: item.price.value } } }
   );
   const response = await request.show();
-  // complete('success') confirma (acknowledge) a compra junto ao Play — sem
-  // isso o Google estorna automaticamente em ~3 dias.
-  await response.complete("success");
-  return true;
+  const purchaseToken = response.details?.purchaseToken;
+  if (!purchaseToken) {
+    await response.complete("fail");
+    throw new Error("Não foi possível obter o comprovante da compra.");
+  }
+  return { response, purchaseToken };
 }
 
 // Compras ativas nesta conta Google Play (restauração em novo aparelho/reinstalação).
+// Devolve { sku, purchaseToken } de cada uma — o token é necessário para
+// re-verificar a compra no servidor antes de restaurar o desbloqueio.
 export async function listOwnedSkus() {
   const service = await getService();
   const purchases = await service.listPurchases();
-  return purchases.map(p => p.itemId).filter(Boolean);
+  return purchases
+    .filter(p => p.itemId && p.purchaseToken)
+    .map(p => ({ sku: p.itemId, purchaseToken: p.purchaseToken }));
 }
 
 // Preço formatado de um produto (para exibir no botão), ou null se indisponível.

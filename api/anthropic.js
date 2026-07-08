@@ -1,6 +1,6 @@
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { ensureAdmin } from './_lib/firebaseAdmin.js';
 
 const ALLOWED_ORIGINS = [
   'https://on-the-rocks-manager.vercel.app',
@@ -46,25 +46,6 @@ function isRateLimited(ip) {
   if (hits.size > 5000) hits.clear();
   hits.set(ip, recent);
   return recent.length > RATE_LIMIT;
-}
-
-// Inicializa o firebase-admin uma vez (reaproveitado entre invocações quentes).
-// Só ativa a camada de auth/limite quando a service account está configurada
-// (env FIREBASE_SERVICE_ACCOUNT). Sem ela, o proxy funciona como antes.
-let adminReady = false;
-function ensureAdmin() {
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) return false;
-  if (!adminReady) {
-    try {
-      if (!getApps().length) initializeApp({ credential: cert(JSON.parse(raw)) });
-      adminReady = true;
-    } catch (e) {
-      console.error('firebase-admin init falhou:', e.message);
-      return false;
-    }
-  }
-  return true;
 }
 
 // cache da config (limites diários de IA) por 60s para não ler manager/config a cada chamada
