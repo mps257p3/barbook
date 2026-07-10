@@ -2292,6 +2292,41 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
             </div>
           </div>
         )}
+        {/* pré-preparos */}
+        {recipe.subPreparations?.length>0&&(
+          <div style={{padding:"2px 18px 14px"}}>
+            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent,opacity:.85,marginBottom:10}}>Pré-preparos</div>
+            <div style={{display:"flex",flexDirection:"column",gap:16}}>
+              {recipe.subPreparations.map((sp,si)=>(
+                <div key={si}>
+                  <div style={{fontSize:14,fontWeight:700,color:"rgba(231,224,205,0.9)",marginBottom:6}}>
+                    {sp.name}{sp.yield&&<span style={{fontWeight:400,fontStyle:"italic",color:"rgba(240,235,225,0.55)"}}> — rende {sp.yield}</span>}
+                  </div>
+                  {(sp.ingredients||[]).length>0&&(
+                    <div style={{display:"flex",flexDirection:"column",gap:5,marginBottom:8}}>
+                      {sp.ingredients.map((ing,i)=>(
+                        <div key={i} style={{display:"flex",gap:10,alignItems:"baseline"}}>
+                          <div style={{width:4,height:4,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:8}}/>
+                          <span style={{fontSize:14,color:"rgba(231,224,205,0.75)",lineHeight:1.6}}>{ing}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {(sp.steps||[]).length>0&&(
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {sp.steps.map((s,i)=>(
+                        <div key={i} style={{display:"flex",gap:10,alignItems:"baseline"}}>
+                          <span style={{fontSize:11,fontWeight:700,color:theme.accent,opacity:.75,flexShrink:0,minWidth:14}}>{i+1}</span>
+                          <span style={{fontSize:14,color:"rgba(231,224,205,0.75)",lineHeight:1.6}}>{capFirst(s)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {/* nota */}
         {noteVal&&(
           <div style={{padding:"2px 18px 14px"}}>
