@@ -1839,6 +1839,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const [noteVal,setNoteVal]=useState(recipe.notes||"");
   const [editingNote,setEditingNote]=useState(false);
   const [sharing,setSharing]=useState(false);
+  const [shareError,setShareError]=useState(null);
   const [checked,setChecked]=useState(new Set());
   const [qty,setQty]=useState(1);
   const scaleIng=useCallback((ing,q)=>{
@@ -1858,6 +1859,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
   const shareAsImage=useCallback(async()=>{
     if(!shareCardRef.current||sharing)return;
     setSharing(true);
+    setShareError(null);
     try{
       // carregado sob demanda — html2canvas só é necessário ao compartilhar
       const html2canvas=(await import("html2canvas")).default;
@@ -1878,7 +1880,11 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           setTimeout(()=>URL.revokeObjectURL(url),1000);
         }
       }
-    }catch{}
+    }catch(e){
+      console.error("shareAsImage",e);
+      setShareError("Não foi possível gerar a imagem para compartilhar. Tente novamente.");
+      setTimeout(()=>setShareError(null),5000);
+    }
     setSharing(false);
   },[recipe,sharing]);
 
@@ -1905,6 +1911,10 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
     <div className="otr-modal-backdrop" onClick={posEditMode?undefined:onClose} style={{position:"fixed",inset:0,background:posEditMode?"rgba(0,0,0,0.88)":"rgba(0,0,0,0.92)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:10000,padding:20,backdropFilter:"blur(12px)"}}>
       {posEditMode&&customBg&&<div style={{position:"absolute",inset:0,backgroundImage:`url('${customBg}')`,backgroundSize:"cover",backgroundPosition:heroBgPos,opacity:0.2,pointerEvents:"none"}}/>}
       <div className="otr-modal-sheet" onClick={e=>e.stopPropagation()} style={{background:"#0A0906",border:`1px solid ${theme.border}22`,borderRadius:6,width:"100%",maxWidth:580,maxHeight:"90vh",overflowX:"hidden",overflowY:"auto",boxShadow:`0 32px 80px rgba(0,0,0,0.85), 0 0 40px ${theme.accent}10`,position:"relative"}}>
+
+        {shareError&&(
+          <div style={{position:"absolute",top:12,left:12,right:56,zIndex:42,background:"rgba(180,60,60,0.16)",border:"1px solid rgba(180,60,60,0.4)",borderRadius:6,padding:"8px 12px",fontSize:12,color:"#f0a0a0",fontFamily:"Archivo,sans-serif"}}>{shareError}</div>
+        )}
 
         {/* topo: menu de utilidades + fechar (nível do sheet p/ o menu não ser cortado) */}
         {!posEditMode&&(
@@ -2719,7 +2729,7 @@ function Tutorial({ onClose, onTabChange }) {
 }
 
 // ─── PERFIL (mobile tab) ──────────────────────────────────────────────────────
-function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
+function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs, owned, customRecipes, exportJSON, importRef, user, syncing, syncError, onGoTo, onGoToCollection, onOpenRecipe, onRestoreAll, onRestoreRecipes, onAddRecipe, onTutorial, availPacks, unlockedPacks, accessiblePacks, devMode }) {
   const [carouselIdx,setCarouselIdx]=useState(0);
   const [collectionsOpen,setCollectionsOpen]=useState(false);
   const [authError,setAuthError]=useState(null);
@@ -2778,6 +2788,7 @@ function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs,
                 <div style={{fontFamily:"'Gloock',serif",fontSize:20,fontWeight:400,color:"rgba(231,224,205,0.97)",lineHeight:1.2,letterSpacing:"-0.2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName}</div>
                 <div style={{fontSize:11,color:"rgba(240,235,225,0.71)",marginTop:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:"Archivo,sans-serif"}}>{user.email}</div>
                 {syncing&&<div style={{...CARD_TYPO.counter,color:"#A0785A",marginTop:5,opacity:1}}>sincronizando…</div>}
+                {syncError&&<div style={{...CARD_TYPO.counter,color:"#e08080",marginTop:5,opacity:1}}>⚠ sem conexão — alterações salvas só neste aparelho</div>}
               </div>
               <button onClick={signOutUser} style={{...CARD_TYPO.uiLabel,padding:"6px 14px",borderRadius:20,background:"none",border:"1px solid rgba(240,235,225,0.15)",color:"rgba(240,235,225,0.69)",cursor:"pointer",flexShrink:0}}>sair</button>
             </div>
@@ -3435,6 +3446,9 @@ const RECIPE_PROFILES = {
 export default function OnTheRocks(){
   const [user,setUser]=useState(null);
   const [syncing,setSyncing]=useState(false);
+  // true quando um dado (favoritos, avaliações, receitas próprias etc.) não
+  // conseguiu sincronizar com a nuvem mesmo após retry — ver syncToFirestore.
+  const [syncError,setSyncError]=useState(false);
 
   const [showTutorial,setShowTutorial]=useState(()=>!localStorage.getItem("otr_tutorial_done"));
   const closeTutorial=useCallback(()=>{localStorage.setItem("otr_tutorial_done","1");setShowTutorial(false);},[]);
@@ -3732,18 +3746,27 @@ export default function OnTheRocks(){
 
   // ── Sync to Firestore when data changes ──
   const serverEchoRef=useRef({});
-  const syncToFirestore = useCallback(async (data) => {
+  const syncToFirestore = useCallback(async (data, isRetry=false) => {
     if(!auth.currentUser) return;
     if(!fsInitializedRef.current) return;
     // pula o write se o valor é exatamente o que acabou de chegar do servidor
     const [k,v]=Object.entries(data)[0];
-    if(serverEchoRef.current[k]!==undefined){
+    if(!isRetry && serverEchoRef.current[k]!==undefined){
       const same=serverEchoRef.current[k]===JSON.stringify(v);
       delete serverEchoRef.current[k];
       if(same) return;
     }
-    try{ await setDoc(doc(db,"users",auth.currentUser.uid), data, {merge:true}); }
-    catch(e){ console.error(e); }
+    try{
+      await setDoc(doc(db,"users",auth.currentUser.uid), data, {merge:true});
+      setSyncError(false);
+    }catch(e){
+      console.error("syncToFirestore",e);
+      // sem isso o usuário acha que favoritos/avaliações/etc. foram salvos na
+      // nuvem quando na verdade só ficaram no aparelho — 1 retry automático
+      // (rede instável é o caso comum) e um aviso discreto se persistir.
+      if(!isRetry) setTimeout(()=>syncToFirestore(data,true),5000);
+      else setSyncError(true);
+    }
   },[]);
 
   useEffect(()=>{try{localStorage.setItem("otr_custom",JSON.stringify(customRecipes));}catch{}; syncToFirestore({custom:customRecipes});},[customRecipes]);
@@ -3864,7 +3887,10 @@ export default function OnTheRocks(){
           for(let i=0;i<count;i++)await cache.delete(`/shared-image-${i}`);
           const valid=files.filter(Boolean);
           if(valid.length>0){setSharedFiles(valid);setShowForm(true);}
-        }catch(e){console.error("share retrieve error",e);}
+        }catch(e){
+          console.error("share retrieve error",e);
+          showConfirm("Não foi possível recuperar a imagem compartilhada. Tente compartilhar novamente.",null,false);
+        }
       })();
     }
   },[]);
@@ -3995,7 +4021,10 @@ export default function OnTheRocks(){
       await uploadString(r,dataUrl,"data_url");
       const url=await getDownloadURL(r);
       setCustomBgs(p=>p[name]===dataUrl?{...p,[name]:url}:p); // troca o dataURL pela URL
-    }catch(e){console.error("uploadCustomBg",e);}
+    }catch(e){
+      console.error("uploadCustomBg",e);
+      showConfirm("A foto foi aplicada, mas não sincronizou com a nuvem — ela pode não aparecer em outro aparelho.",null,false);
+    }
   },[bgKey]);
   const handleClearCustomBg=useCallback(async(name)=>{
     setCustomBgs(p=>{const n={...p};delete n[name];return n;});
@@ -5004,7 +5033,7 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="perfil" ? (
-            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} triedCount={triedCount} favCount={favCount} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
+            <ProfileTab allRecipes={allRecipes} drinkCount={drinkRecipes.length} triedCount={triedCount} favCount={favCount} tried={tried} favs={favs} owned={owned} customRecipes={customRecipes} exportJSON={exportJSON} importRef={importRef} user={user} syncing={syncing} syncError={syncError} onGoTo={openProfileList} onGoToCollection={packName=>{setActivePack(packName);setCollectionsView(false);setMobileTab("explorar");}} onOpenRecipe={r=>{setOpen(r);setMobileTab("explorar");}} onRestoreAll={restoreAll} onRestoreRecipes={restoreRecipes} onAddRecipe={()=>setShowForm(true)} onTutorial={()=>{localStorage.removeItem("otr_tutorial_done");setShowTutorial(true);}} availPacks={availPacks} unlockedPacks={unlockedPacks} accessiblePacks={accessiblePacks} devMode={devMode}/>
           ) : (
             <>
               {/* sub-tela do Perfil: cabeçalho para voltar mantendo o contexto */}
