@@ -1,6 +1,4 @@
-import { getAuth } from 'firebase-admin/auth';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { ensureAdmin } from './_lib/firebaseAdmin.js';
+import { verifyFirebaseIdToken, firestoreGet, firestoreSet } from './_lib/firebaseLite.js';
 
 const ALLOWED_ORIGINS = [
   'https://on-the-rocks-manager.vercel.app',
@@ -50,11 +48,11 @@ function isRateLimited(ip) {
 
 // cache da config (limites diários de IA) por 60s para não ler manager/config a cada chamada
 let cfgCache = { at: 0, data: null };
-async function getConfig(db) {
+async function getConfig() {
   const now = Date.now();
   if (cfgCache.data && now - cfgCache.at < 60_000) return cfgCache.data;
   try {
-    const snap = await db.doc('manager/config').get();
+    const snap = await firestoreGet('manager/config');
     cfgCache = { at: now, data: snap.exists ? snap.data() : {} };
   } catch { cfgCache = { at: now, data: cfgCache.data || {} }; }
   return cfgCache.data;
@@ -97,20 +95,19 @@ export default async function handler(req, res) {
   const { usageType, ...anthropicBody } = body;
 
   // ── Camada de auth + limite por usuário (ativa só com a service account) ──
-  let usageRef = null, usageField = null;
-  if (ensureAdmin()) {
+  let usagePath = null, usageField = null, usageCurrent = 0;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     const authz = req.headers.authorization || '';
     const token = authz.startsWith('Bearer ') ? authz.slice(7) : '';
     if (!token) {
       return res.status(401).json({ error: 'Faça login para usar a IA.' });
     }
     let decoded;
-    try { decoded = await getAuth().verifyIdToken(token); }
+    try { decoded = await verifyFirebaseIdToken(token); }
     catch { return res.status(401).json({ error: 'Sessão expirada. Faça login novamente.' }); }
 
     const email = (decoded.email || '').toLowerCase();
-    const db = getFirestore();
-    const cfg = await getConfig(db);
+    const cfg = await getConfig();
     const isAdmin = email === ADMIN_EMAIL;
 
     if (!isAdmin) {
@@ -118,14 +115,14 @@ export default async function handler(req, res) {
       const limit = Number.isFinite(cfg[t.key]) ? cfg[t.key] : t.def;
       const day = new Date().toISOString().slice(0, 10);
       usageField = `${day}_${usageType || 'other'}`;
-      usageRef = db.doc(`aiUsage/${decoded.uid}`);
+      usagePath = `aiUsage/${decoded.uid}`;
       try {
-        const snap = await usageRef.get();
-        const used = (snap.exists && snap.data()[usageField]) || 0;
-        if (used >= limit) {
+        const snap = await firestoreGet(usagePath);
+        usageCurrent = (snap.exists && snap.data()[usageField]) || 0;
+        if (usageCurrent >= limit) {
           return res.status(429).json({ error: `Limite diário de IA atingido (${limit}/dia). Volte amanhã.` });
         }
-      } catch (e) { console.error('leitura de aiUsage falhou:', e.message); usageRef = null; }
+      } catch (e) { console.error('leitura de aiUsage falhou:', e.message); usagePath = null; }
     }
   }
 
@@ -142,8 +139,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     // consome a cota só quando a leitura de fato aconteceu (chamada bem-sucedida)
-    if (response.ok && usageRef && usageField) {
-      try { await usageRef.set({ [usageField]: FieldValue.increment(1) }, { merge: true }); } catch {}
+    if (response.ok && usagePath && usageField) {
+      try { await firestoreSet(usagePath, { [usageField]: usageCurrent + 1 }); } catch {}
     }
     return res.status(response.status).json(data);
   } catch (err) {

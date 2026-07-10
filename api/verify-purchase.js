@@ -1,6 +1,5 @@
 import { GoogleAuth } from 'google-auth-library';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { requireAuth } from './_lib/firebaseAdmin.js';
+import { requireAuth, firestoreGet, firestoreSet, firestoreArrayUnion } from './_lib/firebaseLite.js';
 
 const ALLOWED_ORIGINS = [
   'https://on-the-rocks-manager.vercel.app',
@@ -81,13 +80,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Dados da compra incompletos.' });
     }
 
-    const db = getFirestore();
-
     // Anti-reuso: um purchaseToken só pode desbloquear uma vez. Se já foi
     // verificado por ESTE usuário, responde ok (idempotente — reload/retry
     // não deve dar erro). Se foi verificado por OUTRO usuário, rejeita.
-    const tokenRef = db.doc(`verifiedPurchases/${encodeURIComponent(purchaseToken)}`);
-    const tokenSnap = await tokenRef.get();
+    const tokenPath = `verifiedPurchases/${encodeURIComponent(purchaseToken)}`;
+    const tokenSnap = await firestoreGet(tokenPath);
     if (tokenSnap.exists) {
       const existing = tokenSnap.data();
       if (existing.uid === decoded.uid && existing.packId === packId) {
@@ -100,10 +97,9 @@ export default async function handler(req, res) {
 
     // Verificação passou: grava o desbloqueio (só o servidor pode escrever
     // unlockedPacks — ver firestore.rules) e registra o token como usado.
-    const userRef = db.doc(`users/${decoded.uid}`);
     await Promise.all([
-      userRef.set({ unlockedPacks: FieldValue.arrayUnion(packId) }, { merge: true }),
-      tokenRef.set({ uid: decoded.uid, packId, verifiedAt: FieldValue.serverTimestamp() }),
+      firestoreArrayUnion(`users/${decoded.uid}`, 'unlockedPacks', packId),
+      firestoreSet(tokenPath, { uid: decoded.uid, packId, verifiedAt: new Date().toISOString() }),
     ]);
 
     return res.status(200).json({ ok: true });
