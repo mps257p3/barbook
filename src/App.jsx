@@ -2226,16 +2226,16 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           )}
           {/* nome + divider + flavor */}
           <div style={{position:"absolute",bottom:16,left:16,right:customBg?92:16}}>
-            {styleTags[0]&&<div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.64)",marginBottom:5,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{styleTags[0]}</div>}
+            {styleTags[0]&&<div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.64)",marginBottom:5,textShadow:"0 1px 4px rgba(0,0,0,0.9)"}}>{styleTags[0]}</div>}
             {(recipe.custom||recipe.adjusted)&&<div style={{display:"flex",alignItems:"center",gap:5,marginBottom:5}}>
               <span style={{width:10,height:1,background:theme.accent,display:"inline-block",opacity:0.8}}/>
-              <span style={{fontSize:7,letterSpacing:2,textTransform:"uppercase",color:theme.accent,opacity:.8}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</span>
+              <span style={{fontSize:8,letterSpacing:2,textTransform:"uppercase",color:theme.accent,opacity:.8}}>{recipe.custom?"AUTORAL":"AJUSTADA"}</span>
             </div>}
             <div style={{fontFamily:"'Gloock',serif",fontSize:recipe.name.length>18?20:recipe.name.length>14?24:recipe.name.length>10?28:32,fontWeight:400,lineHeight:1.18,color:"rgba(231,224,205,0.97)",letterSpacing:"-0.3px",textShadow:"0 1px 8px rgba(0,0,0,0.8)"}}>{recipe.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:6,marginTop:7}}>
               <div style={{height:2,width:28,background:theme.accent,borderRadius:2,opacity:0.88}}/>
               <div style={{width:5,height:2,borderRadius:1,background:theme.accent,opacity:0.88}}/>
-              {profile?.flavors&&<span style={{...CARD_TYPO.flavor,color:theme.accent,fontSize:7.5,opacity:.82}}>{profile.flavors.replace(/·/g,"•")}</span>}
+              {profile?.flavors&&<span style={{...CARD_TYPO.flavor,color:theme.accent,fontSize:9,opacity:.82}}>{profile.flavors.replace(/·/g,"•")}</span>}
             </div>
           </div>
         </div>
@@ -2249,7 +2249,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
                   <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,flex:1}}>
                     <span style={{...CARD_TYPO.sigIcon,color:theme.accent,textShadow:`0 0 8px ${theme.accent}88`}}>{item[0]}</span>
                     <span style={CARD_TYPO.sigLabel}>{item[1]}</span>
-                    <span style={{...CARD_TYPO.sigValue,fontSize:7}}>{item[2]}</span>
+                    <span style={{...CARD_TYPO.sigValue,fontSize:11}}>{item[2]}</span>
                   </div>
                 </div>
               ))}
@@ -2257,26 +2257,26 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
           </div>
         )}
         {/* ingredientes */}
-        <div style={{padding:"12px 16px 10px"}}>
-          <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:8}}>Ingredientes</div>
-          <div style={{display:"flex",flexDirection:"column",gap:4}}>
+        <div style={{padding:"14px 18px 12px"}}>
+          <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent,opacity:.85,marginBottom:10}}>Ingredientes</div>
+          <div style={{display:"flex",flexDirection:"column",gap:7}}>
             {recipe.ingredients.slice(0,9).map((ing,i)=>(
-              <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
-                <div style={{width:3,height:3,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:7}}/>
-                <span style={{fontSize:11.5,color:"rgba(240,235,225,0.67)",lineHeight:1.4}}>{ing}</span>
+              <div key={i} style={{display:"flex",gap:10,alignItems:"baseline"}}>
+                <div style={{width:4,height:4,borderRadius:"50%",background:theme.accent,opacity:.42,flexShrink:0,marginTop:8}}/>
+                <span style={{fontSize:14,color:"rgba(231,224,205,0.75)",lineHeight:1.6}}>{ing}</span>
               </div>
             ))}
           </div>
         </div>
         {/* modo de preparo */}
         {steps.length>0&&(
-          <div style={{padding:"2px 16px 10px"}}>
-            <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:8}}>Modo de preparo</div>
-            <div style={{display:"flex",flexDirection:"column",gap:7}}>
+          <div style={{padding:"2px 18px 12px"}}>
+            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent,opacity:.85,marginBottom:10}}>Modo de preparo</div>
+            <div style={{display:"flex",flexDirection:"column",gap:11}}>
               {steps.slice(0,10).map((s,i)=>(
-                <div key={i} style={{display:"flex",gap:9,alignItems:"baseline"}}>
-                  <span style={{fontSize:9,fontWeight:700,color:theme.accent,opacity:.75,flexShrink:0,minWidth:11}}>{i+1}</span>
-                  <span style={{fontSize:11,color:"rgba(240,235,225,0.67)",lineHeight:1.45}}>{capFirst(s)}</span>
+                <div key={i} style={{display:"flex",gap:10,alignItems:"baseline"}}>
+                  <span style={{fontSize:11,fontWeight:700,color:theme.accent,opacity:.75,flexShrink:0,minWidth:14}}>{i+1}</span>
+                  <span style={{fontSize:14,color:"rgba(231,224,205,0.75)",lineHeight:1.6}}>{capFirst(s)}</span>
                 </div>
               ))}
             </div>
@@ -2284,15 +2284,15 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
         )}
         {/* nota */}
         {noteVal&&(
-          <div style={{padding:"2px 16px 12px"}}>
-            <div style={{fontSize:7.5,letterSpacing:2.5,textTransform:"uppercase",color:theme.accent,opacity:.5,marginBottom:6}}>Nota</div>
-            <div style={{fontSize:11,fontStyle:"italic",color:"rgba(240,235,225,0.63)",lineHeight:1.5}}>{noteVal}</div>
+          <div style={{padding:"2px 18px 14px"}}>
+            <div style={{fontSize:9,letterSpacing:2.5,textTransform:"uppercase",fontWeight:700,color:theme.accent,opacity:.85,marginBottom:8}}>Nota</div>
+            <div style={{fontSize:13,fontStyle:"italic",color:"rgba(231,224,205,0.67)",lineHeight:1.7}}>{noteVal}</div>
           </div>
         )}
         {/* rodapé */}
-        <div style={{padding:"8px 16px 13px",borderTop:`1px solid ${theme.accent}15`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div style={{display:"flex",gap:2}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:11,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
-          <div style={{fontSize:7,letterSpacing:2.5,color:"rgba(240,235,225,0.51)",textTransform:"uppercase"}}>on-the-rocks.app</div>
+        <div style={{padding:"10px 18px 15px",borderTop:`1px solid ${theme.accent}15`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"flex",gap:3}}>{[1,2,3,4,5].map(n=><span key={n} style={{fontSize:13,color:n<=recipe.rating?theme.accent:"rgba(240,235,225,0.1)"}}>★</span>)}</div>
+          <div style={{fontSize:8,letterSpacing:2.5,color:"rgba(240,235,225,0.51)",textTransform:"uppercase"}}>on-the-rocks.app</div>
         </div>
       </div>
     </div>
