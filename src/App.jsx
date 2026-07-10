@@ -1863,7 +1863,7 @@ function Modal({recipe,onClose,isFav,onFav,isTried,onTried,isComanda,onComanda,o
     try{
       // carregado sob demanda — html2canvas só é necessário ao compartilhar
       const html2canvas=(await import("html2canvas")).default;
-      const canvas=await html2canvas(shareCardRef.current,{backgroundColor:null,scale:2,logging:false,useCORS:true});
+      const canvas=await html2canvas(shareCardRef.current,{backgroundColor:null,scale:3,logging:false,useCORS:true});
       const blob=await new Promise(res=>canvas.toBlob(res,"image/png"));
       if(blob){
         const file=new File([blob],`${recipe.name.toLowerCase().replace(/\s+/g,"-")}.png`,{type:"image/png"});
