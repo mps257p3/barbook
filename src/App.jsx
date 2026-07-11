@@ -4767,7 +4767,7 @@ export default function OnTheRocks(){
                   </button>
                 </div>
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-                  {(true)&&(
+                  {(user&&accessiblePacks.length>0)&&(
                     <div style={{display:"flex",alignItems:"center",gap:0,width:"100%"}}>
                       <button onClick={()=>setCollectionsView(true)}
                         style={{...CARD_TYPO.uiLabel,width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:5,padding:"6px 8px",borderRadius:20,cursor:"pointer",transition:"all .2s",whiteSpace:"nowrap",
@@ -5108,7 +5108,7 @@ export default function OnTheRocks(){
                     {activeOccasions.length?activeOccasions[0]+(activeOccasions.length>1?` +${activeOccasions.length-1}`:"")+" ×":"Ocasião"}
                   </button>
                   {/* coleções */}
-                  {(true)&&(
+                  {(user&&accessiblePacks.length>0)&&(
                     <div style={{display:"flex",alignItems:"center",gap:0,flexShrink:0}}>
                       <button onClick={()=>setCollectionsView(true)}
                         style={{...CARD_TYPO.uiLabel,padding:"7px 14px",borderRadius:20,cursor:"pointer",transition:"all .15s",
