@@ -2857,7 +2857,7 @@ function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs,
     </div>
   );
   return (
-    <div style={{paddingBottom:100}}>
+    <div style={{paddingBottom:24}}>
       {!loggedIn && contaBlock}
 
       {/* ── Carrossel de packs à venda ── */}
@@ -4790,7 +4790,7 @@ export default function OnTheRocks(){
               </div>
             </div>
           ) : mobileTab==="ingredientes" ? (
-            <div style={{paddingBottom:100,display:"flex",flexDirection:"column",gap:0}}>
+            <div style={{paddingBottom:24,display:"flex",flexDirection:"column",gap:0}}>
               {/* hero */}
               <div style={{position:"relative",margin:"-18px -22px 24px",padding:"16px 24px 14px",overflow:"hidden",background:"linear-gradient(to bottom,rgba(30,16,4,0.98) 0%,rgba(8,5,1,0.99) 100%)"}}>
                 <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 90% 70% at 10% 120%,rgba(160,120,90,0.4) 0%,rgba(160,120,90,0.08) 45%,transparent 70%)",pointerEvents:"none"}}/>
@@ -4889,7 +4889,7 @@ export default function OnTheRocks(){
               })()}
             </div>
           ) : mobileTab==="comanda" ? (
-            <div style={{paddingBottom:100}}>
+            <div style={{paddingBottom:24}}>
               {/* header */}
               <div style={{marginBottom:16}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
