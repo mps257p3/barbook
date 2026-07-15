@@ -2943,7 +2943,7 @@ function ProfileTab({ allRecipes, drinkCount, triedCount, favCount, tried, favs,
             )}
             <div style={{background:"rgba(0,0,0,0.3)",border:"1px solid rgba(240,235,225,0.13)",borderRadius:12,overflow:"hidden",backdropFilter:"blur(8px)"}}>
               {accessiblePacks.length>0?(
-                accessiblePacks.map((pack,i,arr)=>(
+                [...accessiblePacks].sort((a,b)=>a.name.localeCompare(b.name,"pt")).map((pack,i,arr)=>(
                   <button key={pack.id} onClick={()=>onGoToCollection&&onGoToCollection(pack.name)} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",width:"100%",background:"none",border:"none",borderBottom:i<arr.length-1?"1px solid rgba(240,235,225,0.05)":"none",cursor:"pointer",textAlign:"left",boxSizing:"border-box"}}>
                     <div style={{width:3,height:22,borderRadius:2,background:"#C8A96E",opacity:0.85,flexShrink:0}}/>
                     <div style={{flex:1,fontFamily:"'Gloock',serif",fontSize:16,fontWeight:400,color:"rgba(231,224,205,0.93)",lineHeight:1.2}}>{pack.name}</div>
@@ -5283,7 +5283,7 @@ export default function OnTheRocks(){
                     {accessiblePacks.length===1?"1 Coleção obtida":`${accessiblePacks.length} Coleções obtidas`}
                   </div>
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                    {accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).map(pk=>{
+                    {accessiblePacks.filter(pk=>(pk.recipeNames||[]).length>0).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>{
                       const pkSpirits=(pk.spirits||[]).slice(0,5);
                       return(
                       <div key={pk.id} style={{background:"rgba(0,0,0,0.3)",border:`1px solid ${activePack===pk.name?"rgba(160,120,90,0.45)":"rgba(240,235,225,0.1)"}`,borderRadius:12,overflow:"hidden",transition:"border-color .15s"}}>
@@ -5312,7 +5312,7 @@ export default function OnTheRocks(){
                 <div style={{marginBottom:32}}>
                   <div style={{fontSize:11,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(240,235,225,0.53)",fontFamily:"Archivo,sans-serif",fontWeight:500,marginBottom:13}}>Disponíveis</div>
                   <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                    {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).map(pk=>(
+                    {availPacks.filter(p=>!unlockedPacks.includes(p.id)&&!devMode&&!(groupPackIds||[]).includes(p.id)).sort((a,b)=>a.name.localeCompare(b.name,"pt")).map(pk=>(
                       <div key={pk.id} onClick={()=>setInfoPackId(pk.id)} style={{background:"rgba(0,0,0,0.2)",border:"1px solid rgba(240,235,225,0.07)",borderRadius:12,overflow:"hidden",opacity:0.75,cursor:"pointer"}}>
                         <PackCover src={pk.coverImage} name={pk.name} imgStyle={{width:"100%",height:100,objectFit:"cover",display:"block",filter:"brightness(0.7)"}} fallbackHeight={64} dim/>
                         <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10}}>
