@@ -5,7 +5,7 @@
   "theme_color": "#0A0906",
   "background_color": "#0A0906",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "id": "/",
   "start_url": "/",
   "screenshots": [
