@@ -1472,7 +1472,14 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
         throw new Error("Serviço indisponível.");
       }
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
-      setForm(f=>({...f,categories:[...new Set([...f.categories,...(parsed.styles||[]),...(parsed.spirits||[])])]}));
+      // valida contra o vocabulário oferecido no prompt — a IA às vezes ignora
+      // o enum pedido, e sem esse filtro a tag inventada entra na receita sem
+      // nunca aparecer selecionável no seletor de categorias
+      const allowedStyles = new Set(STYLE_PRIORITY);
+      const allowedSpirits = new Set([...SPIRIT_CATS, ...customSpirits]);
+      const validStyles = (parsed.styles||[]).filter(s=>allowedStyles.has(s));
+      const validSpirits = (parsed.spirits||[]).filter(s=>allowedSpirits.has(s));
+      setForm(f=>({...f,categories:[...new Set([...f.categories,...validStyles,...validSpirits])]}));
       if (parsed.signature) {
         setForm(f=>({...f,
           ...(!f.flavors && parsed.signature.flavors ? {flavors:parsed.signature.flavors} : {}),
