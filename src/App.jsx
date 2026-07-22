@@ -1448,7 +1448,13 @@ function RecipeForm({ initial, initialProfile=null, onSave, onClose, customSpiri
       // só consome a cota diária quando a leitura de fato aconteceu
       localStorage.setItem(rlKey, String(used + 1));
       const parsed = JSON.parse((data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
-      const newCats=[...new Set([...(parsed.styles||[]),...(parsed.spirits||[])])];
+      // mesma validação do "sugerir com IA": só aceita o que o prompt ofereceu
+      const allowedScanStyles = new Set(STYLE_PRIORITY.filter(s=>s!=="Preparos Caseiros"));
+      const allowedScanSpirits = new Set(SPIRIT_CATS);
+      const newCats=[...new Set([
+        ...(parsed.styles||[]).filter(s=>allowedScanStyles.has(s)),
+        ...(parsed.spirits||[]).filter(s=>allowedScanSpirits.has(s)),
+      ])];
       setForm(f => ({ ...f, name:parsed.name||f.name, ingredients:parsed.ingredients?.length?parsed.ingredients:f.ingredients, steps:parsed.steps?.length?parsed.steps:f.steps, subPreparations:parsed.subPreparations?.length?parsed.subPreparations.map(s=>({name:s.name||"",ingredients:s.ingredients?.length?s.ingredients:[""],steps:s.steps?.length?s.steps:[""],yield:s.yield||""})):f.subPreparations, notes:parsed.notes||f.notes, servings:parsed.servings||f.servings, categories:newCats.length?newCats:f.categories }));
     } catch (e) { setScanErr(e?.message || "Não foi possível ler a receita. Tente novamente."); }
     setScanning(false);
