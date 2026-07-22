@@ -3688,14 +3688,6 @@ export default function OnTheRocks(){
     getRedirectResult(auth).catch(()=>{});
   },[]);
 
-  // ── Trava orientação em portrait ──
-  useEffect(()=>{
-    const lock=async()=>{try{await screen.orientation?.lock?.('portrait');}catch{}};
-    lock();
-    window.addEventListener('orientationchange',lock);
-    return()=>window.removeEventListener('orientationchange',lock);
-  },[]);
-
   // ── Altura real do viewport no mobile (fix para browser chrome) ──
   useEffect(()=>{
     const update=()=>{
